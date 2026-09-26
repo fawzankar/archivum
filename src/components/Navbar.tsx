@@ -43,9 +43,14 @@ export default function Navbar() {
     setClassOpen(false);
     setDrawerOpen(false);
     setStudentClass(level);
-    const params = new URLSearchParams(searchParams.toString());
+
+    // Class is the global archive profile. Remove stale subject/filter params
+    // so every class-dependent page immediately resolves against the new class.
+    const params = new URLSearchParams();
     params.set('class', String(level));
-    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ''}`, { scroll: false });
+    const nextUrl = `${pathname}?${params.toString()}`;
+    router.replace(nextUrl, { scroll: false });
+    router.refresh();
   };
 
   return (
@@ -56,8 +61,8 @@ export default function Navbar() {
             <span className="w-11 h-11 sm:w-[54px] sm:h-[54px] rounded-full border-2 flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-105" style={{ borderColor: 'var(--ink)', color: 'var(--ink)', background: 'var(--surface)' }}>
               <span className="font-display text-[25px] sm:text-[30px] font-medium leading-none">A</span>
             </span>
-            <span className="hidden xs:block">
-              <span className="block font-display text-[17px] sm:text-[20px] font-medium tracking-[.18em] leading-none">ARCHIVUM</span>
+            <span className="block min-w-0">
+              <span className="block font-display text-[16px] sm:text-[20px] font-semibold tracking-[.16em] leading-none whitespace-nowrap">ARCHIVUM</span>
               <span className="block text-[7px] sm:text-[8px] uppercase tracking-[.24em] mt-1.5 font-bold" style={{ color: 'var(--ink-faint)' }}>SJS STUDENT ARCHIVE</span>
             </span>
           </Link>

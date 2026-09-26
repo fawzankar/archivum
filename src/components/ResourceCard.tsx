@@ -157,7 +157,9 @@ export default function ResourceCard({ resource, onView, compact = false, colorC
             <span className="text-zinc-400">·</span>
             <span className="font-medium">{resource.rating_count > 0 ? `${resource.rating_count} ratings` : 'No ratings yet'}</span>
             <span className="text-zinc-400">·</span>
-            <span className="font-medium">{formatCount(resource.downloads)} downloads</span>
+            <span className="font-medium">
+              {resource.downloads > 0 ? `${formatCount(resource.downloads)} downloads` : 'No downloads yet'}
+            </span>
           </div>
 
           {onView ? (

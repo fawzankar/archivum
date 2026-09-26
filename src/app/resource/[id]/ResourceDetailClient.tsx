@@ -244,9 +244,9 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
               <div className="flex items-center gap-1">
                 <Star className="w-3.5 h-3.5" style={{ color: "var(--accent)", fill: "var(--accent)" }} />
                 <span className="font-semibold text-zinc-900 dark:text-zinc-100">
-                  {avgRating ? avgRating.toFixed(1) : '5.0'}
+                  {ratingCount > 0 ? avgRating.toFixed(1) : 'No ratings'}
                 </span>
-                <span>({ratingCount})</span>
+                {ratingCount > 0 && <span>({ratingCount})</span>}
               </div>
             </div>
           </div>

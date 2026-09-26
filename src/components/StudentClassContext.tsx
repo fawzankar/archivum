@@ -18,6 +18,14 @@ export function StudentClassProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     const stored = Number(localStorage.getItem('archivum_student_class'));
     if ([9, 10, 11, 12].includes(stored)) setStudentClassState(stored as StudentClass);
+
+    const syncFromStorage = (event: StorageEvent) => {
+      if (event.key !== 'archivum_student_class') return;
+      const next = Number(event.newValue);
+      setStudentClassState([9, 10, 11, 12].includes(next) ? next as StudentClass : null);
+    };
+    window.addEventListener('storage', syncFromStorage);
+    return () => window.removeEventListener('storage', syncFromStorage);
   }, []);
 
   const setStudentClass = (value: StudentClass) => {

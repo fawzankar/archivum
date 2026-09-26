@@ -65,6 +65,7 @@ export async function initDb(): Promise<void> {
       { sql: `CREATE TABLE IF NOT EXISTS ratings (id INTEGER PRIMARY KEY AUTOINCREMENT, resource_id INTEGER NOT NULL, session_id TEXT NOT NULL, rating INTEGER NOT NULL, created_at TEXT NOT NULL, UNIQUE(resource_id, session_id))`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS downloads (id INTEGER PRIMARY KEY AUTOINCREMENT, resource_id INTEGER NOT NULL, session_id TEXT NOT NULL, created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, rating INTEGER NOT NULL, review TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
+      { sql: `CREATE TABLE IF NOT EXISTS app_migrations (id TEXT PRIMARY KEY, applied_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS tips (id INTEGER PRIMARY KEY AUTOINCREMENT, class_level INTEGER NOT NULL, subject TEXT NOT NULL DEFAULT 'General', title TEXT NOT NULL, body TEXT NOT NULL, author TEXT, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_tips_class_status ON tips(class_level,status)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status)`, args: [] },
@@ -192,6 +193,27 @@ async function seedDatabase(db: Client) {
     await db.execute({
       sql: `INSERT OR IGNORE INTO resources (slug,title,description,class_level,board,subject,chapter,topic,resource_type,paper_type,year,school_name,file_url,file_size,file_type,file_name,file_hash,status,featured,views,downloads,average_rating,rating_count,tags,created_at,updated_at,approved_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'approved',?,?,?,?,?,?,?,?,?)`,
       args: [slug,title,description,level,'JKBOSE',subject,'Starter Revision','ARCHIVUM Starter','Notes',null,2026,null,fileUrl,0,'application/pdf',fileName,`starter_${slug}`,0,0,0,0,0,`starter,${tag},class${level}`,now,now,now],
+    });
+  }
+
+  // Remove historical placeholder/demo engagement numbers exactly once.
+  // Real views, downloads and ratings are written by the live interaction
+  // endpoints; demo PDFs start at zero and stay zero until someone uses them.
+  const metricsMigration = await db.execute({
+    sql: `SELECT id FROM app_migrations WHERE id = ? LIMIT 1`,
+    args: ['zero_demo_metrics_v1'],
+  });
+  if (!metricsMigration.rows.length) {
+    await db.execute({
+      sql: `UPDATE resources
+            SET views = 0, downloads = 0, average_rating = 0, rating_count = 0
+            WHERE status = 'approved'
+              AND (file_hash LIKE 'seed_hash_%' OR file_hash LIKE 'starter_%')`,
+      args: [],
+    });
+    await db.execute({
+      sql: `INSERT OR IGNORE INTO app_migrations (id, applied_at) VALUES (?, ?)`,
+      args: ['zero_demo_metrics_v1', new Date().toISOString()],
     });
   }
 
