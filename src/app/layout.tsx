@@ -10,6 +10,7 @@ import Chatbot from '@/components/Chatbot';
 import InstallPwaPrompt from '@/components/InstallPwaPrompt';
 import PwaRegister from '@/components/PwaRegister';
 import FirstLaunch from '@/components/FirstLaunch';
+import { Suspense } from 'react';
 
 export const viewport: Viewport = { themeColor: '#111318', width: 'device-width', initialScale: 1, maximumScale: 5 };
 
@@ -36,7 +37,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <ToastProvider>
               <PwaRegister />
               <FirstLaunch />
-              <Navbar />
+              <Suspense fallback={null}>
+
+                <Navbar />
+
+              </Suspense>
               <main className="flex-1">{children}</main>
               <Footer />
               <MobileNav />
