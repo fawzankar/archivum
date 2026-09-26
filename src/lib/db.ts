@@ -94,6 +94,8 @@ export async function initDb(): Promise<void> {
       });
     }
 
+    const now = new Date().toISOString();
+
     const tips = [
       [9,'Make a one-page chapter map','Write the chapter name in the centre and connect formulas, definitions, diagrams and common mistakes around it.','ARCHIVUM'],
       [9,'Use active recall, not rereading','Close the book and explain the topic aloud from memory before checking what you missed.','ARCHIVUM'],
