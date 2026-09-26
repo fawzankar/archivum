@@ -8,6 +8,7 @@ interface StudentClassContextValue {
   studentClass: StudentClass | null;
   setStudentClass: (value: StudentClass) => void;
   resetStudentClass: () => void;
+  isChangingClass: boolean;
 }
 
 const StudentClassContext = createContext<StudentClassContextValue | null>(null);
@@ -30,9 +31,12 @@ export function StudentClassProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const setStudentClass = (value: StudentClass) => {
+    setIsChangingClass(true);
     setStudentClassState(value);
     localStorage.setItem('archivum_student_class', String(value));
     document.cookie = `archivum_class=${value};path=/;max-age=31536000;samesite=lax`;
+    window.dispatchEvent(new CustomEvent('archivum:class-change', { detail: { level: value } }));
+    window.setTimeout(() => setIsChangingClass(false), 450);
   };
 
   const resetStudentClass = () => {
@@ -41,7 +45,10 @@ export function StudentClassProvider({ children }: { children: React.ReactNode }
     document.cookie = 'archivum_class=;path=/;max-age=0;samesite=lax';
   };
 
-  const value = useMemo(() => ({ studentClass, setStudentClass, resetStudentClass }), [studentClass]);
+  const value = useMemo(
+    () => ({ studentClass, setStudentClass, resetStudentClass, isChangingClass }),
+    [studentClass, isChangingClass]
+  );
   return <StudentClassContext.Provider value={value}>{children}</StudentClassContext.Provider>;
 }
 
