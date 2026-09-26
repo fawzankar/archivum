@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useToast } from '@/components/ToastContext';
 import { upload } from '@vercel/blob/client';
 import { compressUpload, MAX_UPLOAD_BYTES, sha256, validateFileSignature } from '@/lib/client-compression';
@@ -13,28 +13,15 @@ import {
   RotateCcw
 } from 'lucide-react';
 import Link from 'next/link';
+import { subjectsForClass } from '@/lib/subjects';
+import { useStudentClass } from '@/components/StudentClassContext';
 
-const SUBJECT_LIST = [
-  'Science',
-  'Mathematics',
-  'Physics',
-  'Chemistry',
-  'Biology',
-  'Urdu',
-  'Social Science',
-  'Computer Science',
-  'Environmental Science',
-  'Economics',
-  'Accountancy',
-  'Business Studies',
-  'History',
-  'Political Science',
-  'Geography',
-  'Other'
-];
+const CLASS_OPTIONS = [9, 10, 11, 12] as const;
+
 
 export default function UploadClient() {
   const { showToast } = useToast();
+  const { studentClass } = useStudentClass();
 
   const [classLevel, setClassLevel] = useState<number>(10);
   const [board, setBoard] = useState<string>('JKBOSE');
@@ -50,6 +37,21 @@ export default function UploadClient() {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [file, setFile] = useState<File | null>(null);
+
+  const subjectOptions = useMemo(() => subjectsForClass(classLevel), [classLevel]);
+
+  useEffect(() => {
+    if (studentClass) setClassLevel(studentClass);
+    const params = new URLSearchParams(window.location.search);
+    const requestedClass = Number(params.get('class'));
+    const requestedSubject = params.get('subject') || '';
+    if (CLASS_OPTIONS.includes(requestedClass as 9 | 10 | 11 | 12)) setClassLevel(requestedClass as 9 | 10 | 11 | 12);
+    if (requestedSubject) setSubject(requestedSubject);
+  }, [studentClass]);
+
+  useEffect(() => {
+    if (!subjectOptions.includes(subject)) setSubject(subjectOptions[0]);
+  }, [subjectOptions, subject]);
 
   const [submitting, setSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -267,7 +269,7 @@ export default function UploadClient() {
               <button
                 key={lvl}
                 type="button"
-                onClick={() => setClassLevel(lvl)}
+                onClick={() => { setClassLevel(lvl); setSubject(subjectsForClass(lvl)[0]); }}
                 className="py-3 px-4 rounded-2xl border text-xs font-semibold transition-all flex items-center justify-between cursor-pointer"
                 style={{
                   borderColor: active ? 'var(--ink)' : 'var(--border)',
@@ -311,29 +313,12 @@ export default function UploadClient() {
               className="w-full text-xs py-2.5 px-3.5 rounded-xl border bg-transparent font-medium outline-none cursor-pointer"
               style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}
             >
-              {SUBJECT_LIST.map((sub) => (
+              {subjectOptions.map((sub) => (
                 <option key={sub} value={sub}>{sub}</option>
               ))}
             </select>
           </div>
         </div>
-
-        {/* Custom Subject field if 'Other' */}
-        {subject === 'Other' && (
-          <div>
-            <label className="block text-xs font-medium mb-1.5" style={{ color: 'var(--ink-muted)' }}>
-              Specify Subject Name <span className="text-rose-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={customSubject}
-              onChange={(e) => setCustomSubject(e.target.value)}
-              placeholder="e.g. Kashmiri, Arabic, Bio-Technology..."
-              className="w-full text-xs py-2.5 px-3.5 rounded-xl border bg-transparent font-medium outline-none"
-              style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}
-            />
-          </div>
-        )}
 
         {/* Previous Paper specific inputs */}
         {resourceType === 'Previous Year Paper' && (

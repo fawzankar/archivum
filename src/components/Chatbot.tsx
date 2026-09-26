@@ -177,13 +177,10 @@ export default function Chatbot() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="ARCHIVUM Guide Chatbot"
-        className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-40 text-white p-3.5 rounded-full shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer"
-        style={{ backgroundColor: 'var(--ink)' }}
+        className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-40 w-12 h-12 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+        style={{ backgroundColor: 'var(--accent)', boxShadow: '0 12px 32px var(--accent-glow)' }}
       >
-        <MessageSquare className="w-5 h-5" />
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-300 whitespace-nowrap text-xs font-semibold pr-1">
-          Guide
-        </span>
+        <Sparkles className="w-5 h-5" />
       </button>
 
       {/* Chat Dialog Window */}

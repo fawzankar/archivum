@@ -47,7 +47,7 @@ export default function FirstLaunch() {
   if (studentClass || !visible) return null;
 
   return (
-    <div className="fixed inset-0 z-[90] overflow-y-auto flex items-center justify-center p-4" style={{ background: 'color-mix(in srgb, var(--ivory) 90%, var(--accent-light))', backdropFilter: 'blur(14px)' }}>
+    <div className="fixed inset-0 z-[90] overflow-y-auto flex items-center justify-center p-4 animate-soft-scale" style={{ background: 'color-mix(in srgb, var(--ivory) 90%, var(--accent-light))', backdropFilter: 'blur(14px)' }}>
       <div className="w-full max-w-xl rounded-[2rem] border p-6 sm:p-10 shadow-2xl" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
         <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}>
           <GraduationCap className="w-7 h-7" />

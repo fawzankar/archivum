@@ -14,7 +14,7 @@ export default async function NotesPage({
   const initialClass = params.class ? parseInt(params.class, 10) : (await getPreferredClass()) || 10;
   const initialSubject = params.subject || '';
 
-  const result = await getResources({ resource_type: 'Notes', class_level: initialClass, limit: 100 });
+  const result = await getResources({ resource_type: 'Notes', limit: 100 });
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">

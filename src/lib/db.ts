@@ -65,7 +65,7 @@ export async function initDb(): Promise<void> {
       { sql: `CREATE TABLE IF NOT EXISTS ratings (id INTEGER PRIMARY KEY AUTOINCREMENT, resource_id INTEGER NOT NULL, session_id TEXT NOT NULL, rating INTEGER NOT NULL, created_at TEXT NOT NULL, UNIQUE(resource_id, session_id))`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS downloads (id INTEGER PRIMARY KEY AUTOINCREMENT, resource_id INTEGER NOT NULL, session_id TEXT NOT NULL, created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, rating INTEGER NOT NULL, review TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
-      { sql: `CREATE TABLE IF NOT EXISTS tips (id INTEGER PRIMARY KEY AUTOINCREMENT, class_level INTEGER NOT NULL, title TEXT NOT NULL, body TEXT NOT NULL, author TEXT, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
+      { sql: `CREATE TABLE IF NOT EXISTS tips (id INTEGER PRIMARY KEY AUTOINCREMENT, class_level INTEGER NOT NULL, subject TEXT NOT NULL DEFAULT 'General', title TEXT NOT NULL, body TEXT NOT NULL, author TEXT, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_tips_class_status ON tips(class_level,status)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_class ON resources(class_level)`, args: [] },
@@ -79,6 +79,7 @@ export async function initDb(): Promise<void> {
 
     // Safe migration for databases created before contributor/review fields existed.
     await db.execute({ sql: `ALTER TABLE resources ADD COLUMN contributor_name TEXT`, args: [] }).catch(() => {});
+    await db.execute({ sql: `ALTER TABLE tips ADD COLUMN subject TEXT NOT NULL DEFAULT 'General'`, args: [] }).catch(() => {});
 
     const admin = await db.execute({
       sql: 'SELECT COUNT(*) AS count FROM admin_users',
@@ -97,18 +98,32 @@ export async function initDb(): Promise<void> {
     const now = new Date().toISOString();
 
     const tips = [
-      [9,'Make a one-page chapter map','Write the chapter name in the centre and connect formulas, definitions, diagrams and common mistakes around it.','ARCHIVUM'],
-      [9,'Use active recall, not rereading','Close the book and explain the topic aloud from memory before checking what you missed.','ARCHIVUM'],
-      [10,'Practise full-mark answers','For Science and Social Science, practise writing complete answers with keywords and labelled diagrams.','ARCHIVUM'],
-      [10,'Keep a formula error list','Whenever you lose marks in Mathematics, add the exact mistake to one short list and revisit it weekly.','ARCHIVUM'],
-      [11,'Build chapter-wise PYQ sets','Group previous questions by chapter so you can spot repeated concepts instead of revising randomly.','ARCHIVUM'],
-      [11,'Time your numericals','Do a short timed set of numerical problems and review the steps where you lost time, not just the final answer.','ARCHIVUM'],
-      [12,'Revise high-weight concepts first','Use your current syllabus and recent school/board papers to prioritise concepts that repeatedly require multi-step answers.','ARCHIVUM'],
-      [12,'Protect the final revision window','Keep the last revision day for formulas, diagrams, definitions and your own mistake list rather than starting new chapters.','ARCHIVUM'],
-      [12,'Write before you look','For derivations and long answers, attempt the structure from memory first, then compare it with your notes.','ARCHIVUM'],
+      [9,'General','Make a one-page chapter map','Write the chapter name in the centre and connect formulas, definitions, diagrams and common mistakes around it.','ARCHIVUM'],
+      [9,'General','Use active recall, not rereading','Close the book and explain the topic aloud from memory before checking what you missed.','ARCHIVUM'],
+      [10,'Science','Practise full-mark answers','For Science and Social Science, practise writing complete answers with keywords and labelled diagrams.','ARCHIVUM'],
+      [10,'Maths','Keep a formula error list','Whenever you lose marks in Mathematics, add the exact mistake to one short list and revisit it weekly.','ARCHIVUM'],
+      [11,'General','Build chapter-wise PYQ sets','Group previous questions by chapter so you can spot repeated concepts instead of revising randomly.','ARCHIVUM'],
+      [11,'Physics','Time your numericals','Do a short timed set of numerical problems and review the steps where you lost time, not just the final answer.','ARCHIVUM'],
+      [12,'General','Revise high-weight concepts first','Use your current syllabus and recent school/board papers to prioritise concepts that repeatedly require multi-step answers.','ARCHIVUM'],
+      [12,'General','Protect the final revision window','Keep the last revision day for formulas, diagrams, definitions and your own mistake list rather than starting new chapters.','ARCHIVUM'],
+      [12,'General','Write before you look','For derivations and long answers, attempt the structure from memory first, then compare it with your notes.','ARCHIVUM'],
     ];
-    for (const [level,title,body,author] of tips) {
-      await db.execute({ sql: `INSERT OR IGNORE INTO tips (class_level,title,body,author,status,created_at) SELECT ?,?,?,?,'approved',? WHERE NOT EXISTS (SELECT 1 FROM tips WHERE class_level=? AND title=?)`, args: [level,title,body,author,now,level,title] });
+    tips.push(
+      [9,'Maths','Show every working line','In school and board-style mathematics, write the key step on each line. A correct method is easier to award marks for than a cramped final answer.','ARCHIVUM'],
+      [9,'Science','Label diagrams before you finish','Draw a clean outline first, then add labels with straight leader lines. Leave enough space so labels do not overlap.','ARCHIVUM'],
+      [9,'English','Build a small quote bank','Keep a page with short, accurate quotations or key phrases from each literature chapter and revise it before writing answers.','ARCHIVUM'],
+      [10,'SST','Use answer headings','For long Social Science answers, use short headings and separate points. This makes recall and checking much easier.','ARCHIVUM'],
+      [10,'Hindi','Practise timed writing','Do one timed writing task every few days so handwriting, structure and time management improve together.','ARCHIVUM'],
+      [10,'Urdu','Revise meanings with context','Learn difficult words alongside the sentence or passage where they occur instead of memorising isolated meanings.','ARCHIVUM'],
+      [11,'Chemistry','Keep a reaction notebook','Write important reactions with conditions, observations and products in one compact revision sheet and revisit it frequently.','ARCHIVUM'],
+      [11,'Biology','Draw from memory','After studying a diagram, close the book and redraw it from memory. Check labels only after the attempt.','ARCHIVUM'],
+      [11,'Maths','Mark questions by confidence','During practice, tag questions as easy, uncertain or difficult. Revisit the uncertain set first during revision.','ARCHIVUM'],
+      [12,'Physics','Check units before finalising','After every numerical, check dimensions, unit conversion and significant figures before moving on.','ARCHIVUM'],
+      [12,'English','Plan long answers first','Spend a short moment identifying the argument, examples and conclusion before writing a long literature or writing answer.','ARCHIVUM'],
+      [12,'Chemistry','Separate formulas from exceptions','Maintain one page for standard formulas and another for exceptions, special cases and common traps.','ARCHIVUM'],
+    );
+    for (const [level,subject,title,body,author] of tips) {
+      await db.execute({ sql: `INSERT OR IGNORE INTO tips (class_level,subject,title,body,author,status,created_at) SELECT ?,?,?,?,?, 'approved',? WHERE NOT EXISTS (SELECT 1 FROM tips WHERE class_level=? AND subject=? AND title=?)`, args: [level,subject,title,body,author,now,level,subject,title] });
     }
 
     // Seeding is intentionally idempotent. Vercel may start several
@@ -145,4 +160,39 @@ async function seedDatabase(db: Client) {
       args: [slug,title,description,classLevel,board,subject,chapter,topic,type,paperType,year,school,fileUrl,fileSize,fileType,fileName,`seed_hash_${slug}`,featured,views,downloads,avg,ratingCount,tags,now,now,now],
     });
   }
+  await db.execute({ sql: `UPDATE resources SET contributor_name='ARCHIVUM Archive' WHERE status='approved' AND (file_hash LIKE 'seed_hash_%' OR file_hash LIKE 'starter_%') AND (contributor_name IS NULL OR TRIM(contributor_name)='')`, args: [] });
+
+  const starterSubjects: Array<[number,string,string,string,string,string]> = [
+    [9,'Maths','Class 9 Maths — ARCHIVUM Starter Notes','Core practice and revision starter pack for Class 9 Maths.','class9-maths-archivum-starter-notes.pdf','maths'],
+    [9,'Science','Class 9 Science — ARCHIVUM Starter Notes','Core concepts and revision starter pack for Class 9 Science.','class9-science-archivum-starter-notes.pdf','science'],
+    [9,'SST','Class 9 SST — ARCHIVUM Starter Notes','History, geography, civics and economics revision starter pack.','class9-sst-archivum-starter-notes.pdf','sst'],
+    [9,'English','Class 9 English — ARCHIVUM Starter Notes','Literature, language and writing revision starter pack.','class9-english-archivum-starter-notes.pdf','english'],
+    [9,'Hindi','Class 9 Hindi — ARCHIVUM Starter Notes','Literature, grammar and writing revision starter pack.','class9-hindi-archivum-starter-notes.pdf','hindi'],
+    [9,'Urdu','Class 9 Urdu — ARCHIVUM Starter Notes','Literature, grammar and writing revision starter pack.','class9-urdu-archivum-starter-notes.pdf','urdu'],
+    [10,'Maths','Class 10 Maths — ARCHIVUM Starter Notes','Core practice and board-style revision starter pack for Class 10 Maths.','class10-maths-archivum-starter-notes.pdf','maths'],
+    [10,'Science','Class 10 Science — ARCHIVUM Starter Notes','Core concepts, diagrams and revision starter pack for Class 10 Science.','class10-science-archivum-starter-notes.pdf','science'],
+    [10,'SST','Class 10 SST — ARCHIVUM Starter Notes','History, geography, civics and economics revision starter pack.','class10-sst-archivum-starter-notes.pdf','sst'],
+    [10,'English','Class 10 English — ARCHIVUM Starter Notes','Literature, language and writing revision starter pack.','class10-english-archivum-starter-notes.pdf','english'],
+    [10,'Hindi','Class 10 Hindi — ARCHIVUM Starter Notes','Literature, grammar and writing revision starter pack.','class10-hindi-archivum-starter-notes.pdf','hindi'],
+    [10,'Urdu','Class 10 Urdu — ARCHIVUM Starter Notes','Literature, grammar and writing revision starter pack.','class10-urdu-archivum-starter-notes.pdf','urdu'],
+    [11,'Maths','Class 11 Maths — ARCHIVUM Starter Notes','Core formulas and practice starter pack for Class 11 Maths.','class11-maths-archivum-starter-notes.pdf','maths'],
+    [11,'Biology','Class 11 Biology — ARCHIVUM Starter Notes','Core diagrams and concepts starter pack for Class 11 Biology.','class11-biology-archivum-starter-notes.pdf','biology'],
+    [11,'Physics','Class 11 Physics — ARCHIVUM Starter Notes','Concepts, derivations and numericals starter pack for Class 11 Physics.','class11-physics-archivum-starter-notes.pdf','physics'],
+    [11,'Chemistry','Class 11 Chemistry — ARCHIVUM Starter Notes','Reactions, concepts and numericals starter pack for Class 11 Chemistry.','class11-chemistry-archivum-starter-notes.pdf','chemistry'],
+    [11,'English','Class 11 English — ARCHIVUM Starter Notes','Literature, language and writing revision starter pack.','class11-english-archivum-starter-notes.pdf','english'],
+    [12,'Maths','Class 12 Maths — ARCHIVUM Starter Notes','Core formulas and board-style practice starter pack for Class 12 Maths.','class12-maths-archivum-starter-notes.pdf','maths'],
+    [12,'Biology','Class 12 Biology — ARCHIVUM Starter Notes','Core diagrams and high-yield concepts starter pack for Class 12 Biology.','class12-biology-archivum-starter-notes.pdf','biology'],
+    [12,'Physics','Class 12 Physics — ARCHIVUM Starter Notes','Concepts, derivations and numericals starter pack for Class 12 Physics.','class12-physics-archivum-starter-notes.pdf','physics'],
+    [12,'Chemistry','Class 12 Chemistry — ARCHIVUM Starter Notes','Reactions, equations and numerical practice starter pack.','class12-chemistry-archivum-starter-notes.pdf','chemistry'],
+    [12,'English','Class 12 English — ARCHIVUM Starter Notes','Literature, language and writing revision starter pack.','class12-english-archivum-starter-notes.pdf','english'],
+  ];
+  for (const [level,subject,title,description,fileName,tag] of starterSubjects) {
+    const slug = fileName.replace('.pdf','');
+    const fileUrl = `/uploads/${fileName}`;
+    await db.execute({
+      sql: `INSERT OR IGNORE INTO resources (slug,title,description,class_level,board,subject,chapter,topic,resource_type,paper_type,year,school_name,file_url,file_size,file_type,file_name,file_hash,status,featured,views,downloads,average_rating,rating_count,tags,created_at,updated_at,approved_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'approved',?,?,?,?,?,?,?,?,?)`,
+      args: [slug,title,description,level,'JKBOSE',subject,'Starter Revision','ARCHIVUM Starter','Notes',null,2026,null,fileUrl,0,'application/pdf',fileName,`starter_${slug}`,0,0,0,0,0,`starter,${tag},class${level}`,now,now,now],
+    });
+  }
+
 }
