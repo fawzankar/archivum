@@ -38,6 +38,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   const [avgRating, setAvgRating] = useState<number>(resource.average_rating);
   const [ratingCount, setRatingCount] = useState<number>(resource.rating_count);
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
+  const [ratingSaving, setRatingSaving] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -88,8 +89,21 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   };
 
   const handleRating = async (rating: number) => {
-    if (ratingSubmitted) return;
+    if (ratingSubmitted || ratingSaving) return;
+    setRatingSaving(true);
     setUserRating(rating);
+
+    // Optimistic display: reflect the user's rating immediately, then reconcile
+    // with the authoritative server aggregate.
+    const previousCount = ratingCount;
+    const previousAverage = avgRating;
+    const optimisticCount = previousCount + 1;
+    const optimisticAverage = previousCount > 0
+      ? ((previousAverage * previousCount) + rating) / optimisticCount
+      : rating;
+    setRatingCount(optimisticCount);
+    setAvgRating(optimisticAverage);
+
     try {
       let sessionId = localStorage.getItem('sjs_session_id');
       if (!sessionId) {
@@ -111,10 +125,14 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
       setAvgRating(json.average_rating);
       setRatingCount(json.rating_count);
       setRatingSubmitted(true);
-      showToast('Thank you for rating! ⭐', 'success');
+      showToast('Rating saved ✓', 'success');
     } catch {
       setUserRating(0);
+      setAvgRating(previousAverage);
+      setRatingCount(previousCount);
       showToast('Could not record rating', 'error');
+    } finally {
+      setRatingSaving(false);
     }
   };
 
@@ -311,7 +329,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
                   key={star}
                   onClick={() => handleRating(star)}
                   className="p-1 transition-transform hover:scale-125 cursor-pointer"
-                  title={`Rate ${star} star`}
+                  title={ratingSaving ? 'Saving rating…' : `Rate ${star} star`}
                 >
                   <Star
                     className="w-5 h-5"

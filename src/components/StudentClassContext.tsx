@@ -14,6 +14,7 @@ const StudentClassContext = createContext<StudentClassContextValue | null>(null)
 
 export function StudentClassProvider({ children }: { children: React.ReactNode }) {
   const [studentClass, setStudentClassState] = useState<StudentClass | null>(null);
+  const [isChangingClass, setIsChangingClass] = useState(false);
 
   useEffect(() => {
     const stored = Number(localStorage.getItem('archivum_student_class'));

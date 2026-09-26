@@ -11,6 +11,7 @@ import InstallPwaPrompt from '@/components/InstallPwaPrompt';
 import PwaRegister from '@/components/PwaRegister';
 import FirstLaunch from '@/components/FirstLaunch';
 import { Suspense } from 'react';
+import ClassTransitionOverlay from '@/components/ClassTransitionOverlay';
 
 export const viewport: Viewport = { themeColor: '#111318', width: 'device-width', initialScale: 1, maximumScale: 5 };
 
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <StudentClassProvider>
             <ToastProvider>
               <PwaRegister />
+              <ClassTransitionOverlay />
               <FirstLaunch />
               <Suspense fallback={null}>
 

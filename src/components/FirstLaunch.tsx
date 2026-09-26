@@ -8,12 +8,12 @@ const classes: StudentClass[] = [9, 10, 11, 12];
 
 export default function FirstLaunch() {
   const { studentClass, setStudentClass } = useStudentClass();
-  const [splash, setSplash] = useState(false);
+  const [splash, setSplash] = useState(true);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const seen = localStorage.getItem('archivum_seen_splash');
-    if (seen) { setVisible(true); return; }
+    if (seen) { setSplash(false); setVisible(true); return; }
     setSplash(true);
     const timer = window.setTimeout(() => {
       localStorage.setItem('archivum_seen_splash','1');
@@ -25,7 +25,7 @@ export default function FirstLaunch() {
 
   if (splash) {
     return (
-      <div className="fixed inset-0 z-[100] overflow-hidden flex items-center justify-center" style={{ background: 'var(--hero-gradient)' }}>
+      <div className="fixed inset-0 z-[9999] overflow-hidden flex items-center justify-center" style={{ background: 'var(--hero-gradient)' }}>
         <div className="absolute inset-0 splash-grid" />
         <div className="relative text-center px-8">
           <div className="splash-orb absolute -inset-12 rounded-full" />

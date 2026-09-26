@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTheme, ACCENTS } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
-import { Search, Plus, Sun, Moon, X, Menu, BookOpen, FileText, Lightbulb, Palette, Check, ChevronRight, Settings2, Layers3, Sparkles } from 'lucide-react';
+import { Search, Plus, Sun, Moon, X, Menu, BookOpen, FileText, Lightbulb, Palette, Check, ChevronRight, Settings2, Layers3, Sparkles, Info, Users } from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -35,6 +35,8 @@ export default function Navbar() {
     { label: 'Previous Papers', href: '/previous-papers', icon: FileText },
     { label: 'Subjects', href: '/subjects', icon: Layers3 },
     { label: 'Tips & Tricks', href: '/tips', icon: Lightbulb },
+    { label: 'About Us', href: '/about', icon: Info },
+    { label: 'Contributors', href: '/contributors', icon: Users },
   ];
   const hrefWithClass = (href: string) => studentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${studentClass}` : href;
   const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
