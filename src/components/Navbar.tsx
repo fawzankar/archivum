@@ -2,19 +2,22 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useTheme, ACCENTS } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import { Search, Plus, Sun, Moon, X, Menu, BookOpen, FileText, Lightbulb, Palette, Check, ChevronRight, Settings2, Layers3, Sparkles } from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { mode, setMode, accent, setAccent } = useTheme();
-  const { studentClass, resetStudentClass } = useStudentClass();
+  const { studentClass, setStudentClass, resetStudentClass } = useStudentClass();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [classOpen, setClassOpen] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -24,7 +27,7 @@ export default function Navbar() {
   }, []);
   useEffect(() => { if (searchOpen) searchRef.current?.focus(); }, [searchOpen]);
   useEffect(() => { document.body.style.overflow = drawerOpen ? 'hidden' : ''; return () => { document.body.style.overflow = ''; }; }, [drawerOpen]);
-  useEffect(() => { setDrawerOpen(false); setPaletteOpen(false); }, [pathname]);
+  useEffect(() => { setDrawerOpen(false); setPaletteOpen(false); setClassOpen(false); }, [pathname]);
 
   const navLinks = [
     { label: 'Home', href: '/' },
@@ -35,6 +38,15 @@ export default function Navbar() {
   ];
   const hrefWithClass = (href: string) => studentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${studentClass}` : href;
   const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
+
+  const changeClass = (level: 9 | 10 | 11 | 12) => {
+    setClassOpen(false);
+    setDrawerOpen(false);
+    setStudentClass(level);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('class', String(level));
+    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ''}`, { scroll: false });
+  };
 
   return (
     <>
@@ -65,7 +77,15 @@ export default function Navbar() {
           </nav>
 
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {studentClass && <span className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-full text-[10px] font-bold" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}>CLASS {studentClass}</span>}
+            <div className="relative hidden lg:block">
+              <button onClick={() => setClassOpen(v => !v)} className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-full text-[10px] font-bold border transition-all duration-300 hover:-translate-y-0.5" style={{ background: 'var(--accent-light)', color: 'var(--accent)', borderColor: 'color-mix(in srgb,var(--accent) 24%,var(--border))' }} aria-label="Change class">
+                <Layers3 className="w-3.5 h-3.5" /> CLASS {studentClass || '—'}
+              </button>
+              {classOpen && <div className="absolute right-0 top-12 w-44 rounded-2xl border p-2 shadow-2xl animate-fade" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+                <p className="px-2 py-1.5 text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--ink-faint)' }}>Your class</p>
+                {[9,10,11,12].map(level => <button key={level} onClick={() => changeClass(level as 9|10|11|12)} className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors hover:bg-black/5 dark:hover:bg-white/5" style={{ color: 'var(--ink)' }}>Class {level}{studentClass === level && <Check className="w-4 h-4" style={{ color: 'var(--accent)' }} />}</button>)}
+              </div>}
+            </div>
             <button onClick={() => setSearchOpen(v => !v)} className="icon-button w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-transform hover:scale-105" aria-label="Search"><Search className="w-[17px] h-[17px]" /></button>
             <span className="hidden sm:block w-px h-8 mx-1" style={{ background: 'var(--border)' }} />
             <button onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')} className="icon-button w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-transform hover:scale-105" aria-label="Toggle theme">{mode === 'dark' ? <Sun className="w-[17px] h-[17px]" /> : <Moon className="w-[17px] h-[17px]" />}</button>
@@ -99,7 +119,10 @@ export default function Navbar() {
             <div className="rounded-3xl border p-4 space-y-3" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)' }}>
               <div className="flex items-center gap-2"><Settings2 className="w-4 h-4" style={{ color: 'var(--accent)' }} /><span className="text-xs font-bold">Your setup</span></div>
               <div className="flex items-center justify-between"><span className="text-xs" style={{ color: 'var(--ink-muted)' }}>Class profile</span><strong className="text-xs">{studentClass ? `Class ${studentClass}` : 'Not set'}</strong></div>
-              <button onClick={() => { resetStudentClass(); setDrawerOpen(false); }} className="w-full rounded-2xl border py-2.5 text-[11px] font-bold transition-all hover:border-[var(--accent)]" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>{studentClass ? 'Change class' : 'Choose class'}</button>
+              <div className="grid grid-cols-4 gap-1.5">
+                {[9,10,11,12].map(level => <button key={level} onClick={() => changeClass(level as 9|10|11|12)} className="rounded-xl border py-2.5 text-[11px] font-bold transition-all duration-300" style={{ borderColor: studentClass === level ? 'var(--accent)' : 'var(--border)', background: studentClass === level ? 'var(--accent-light)' : 'var(--surface)', color: studentClass === level ? 'var(--accent)' : 'var(--ink)' }}>Class {level}</button>)}
+              </div>
+              <button onClick={() => { resetStudentClass(); setDrawerOpen(false); }} className="w-full rounded-2xl border py-2.5 text-[11px] font-bold transition-all hover:border-[var(--accent)]" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>Reset class profile</button>
             </div>
 
             <div className="rounded-3xl border p-4" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)' }}>
