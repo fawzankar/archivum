@@ -2,8 +2,8 @@ import React from 'react';
 import UploadClient from './UploadClient';
 
 export const metadata = {
-  title: 'Upload Resource — SJS CONNECT',
-  description: 'Share your school notes, board papers, and study materials with students across Jammu & Kashmir.',
+  title: 'Upload Resource — ARCHIVUM',
+  description: 'Share notes, papers and study materials with other SJS students. Every submission is reviewed before publication.',
 };
 
 export default function UploadPage() {
@@ -15,7 +15,7 @@ export default function UploadPage() {
           CONTRIBUTE TO THE ARCHIVE
         </span>
         <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-          Upload a Resource
+          Upload to ARCHIVUM
         </h1>
         <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-xl leading-relaxed">
           Help fellow students find the notes and examination papers they need. Submissions are reviewed by our team before publishing.

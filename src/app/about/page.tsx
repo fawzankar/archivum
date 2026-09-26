@@ -4,8 +4,8 @@ import { getContributorLeaderboard } from '@/lib/resources';
 import { Smartphone, BookOpen, Check, Shield, Upload, Users, Heart, ArrowRight } from 'lucide-react';
 
 export const metadata = {
-  title: 'About SJS CONNECT — Our Story & Contributors',
-  description: 'Why SJS CONNECT was built: created by a student during exam preparation to make school and JKBOSE study material freely accessible.',
+  title: 'About ARCHIVUM — Our Story & Contributors',
+  description: 'Why ARCHIVUM was built: created by a student during exam preparation to make school and JKBOSE study material freely accessible.',
 };
 
 export default async function AboutPage() {
@@ -19,13 +19,13 @@ export default async function AboutPage() {
           FOUNDER&apos;S STORY & MISSION
         </span>
         <h1 className="font-display font-bold text-3xl sm:text-5xl ">
-          Why I Built SJS CONNECT
+          Why I Built ARCHIVUM
         </h1>
         <p className="font-display italic text-lg sm:text-xl" style={{ color: 'var(--sage)' }}>
           A student project born out of exam season frustration.
         </p>
         <p className="text-xs sm:text-sm  max-w-2xl leading-relaxed">
-          I created SJS CONNECT during my own high school exam preparation as I was struggling to find notes, syllabus guides, and examination papers specific to my school and the JKBOSE board.
+          I created ARCHIVUM during my own high school exam preparation as I was struggling to find notes, syllabus guides, and examination papers specific to my school and the JKBOSE board.
         </p>
       </div>
 
@@ -42,7 +42,7 @@ export default async function AboutPage() {
             When exams were around the corner, finding dependable study materials was an overwhelming task. Notes were scattered across unorganized WhatsApp chats, papers from our own school pre-boards were lost, and commercial platforms demanded expensive subscriptions for basic PDFs.
           </p>
           <p>
-            I realized my classmates and countless students across Classes 9, 10, 11, and 12 were facing the exact same challenge. So I decided to build <strong>SJS CONNECT</strong>: a clean, fast, mobile-friendly academic repository where any student can find what they need in seconds.
+            I realized my classmates and countless students across Classes 9, 10, 11, and 12 were facing the exact same challenge. So I decided to build <strong>ARCHIVUM</strong>: a clean, fast, mobile-friendly academic repository where any student can find what they need in seconds.
           </p>
           <p>
             Zero accounts required. Zero paywalls. Zero ads. Just authentic chapter notes, solved formula sheets, and past examination papers organized for the way students actually study.
@@ -62,13 +62,13 @@ export default async function AboutPage() {
           </div>
         </div>
         <p className="text-xs sm:text-sm max-w-2xl leading-relaxed" style={{ color: 'var(--ink-muted)' }}>
-          SJS CONNECT is currently a one-person project. Every part of the platform — design, development, moderation, curation and maintenance — is being handled by its founder.
+          ARCHIVUM is currently a one-person project. Every part of the platform — design, development, moderation, curation and maintenance — is being handled by its founder.
         </p>
         <div className="rounded-3xl border p-5 sm:p-6 flex items-center gap-4 shadow-sm" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
           <div className="w-12 h-12 rounded-2xl flex items-center justify-center font-display font-bold text-lg" style={{ backgroundColor: 'var(--accent-light)', color: 'var(--accent)' }}>FK</div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2"><h3 className="font-display font-bold text-base" style={{ color: 'var(--ink)' }}>Fawzan Kar</h3><span className="text-[9px] uppercase tracking-wider font-bold px-2 py-1 rounded-full" style={{ backgroundColor: 'var(--accent-light)', color: 'var(--accent)' }}>Founder · Developer</span></div>
-            <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>Building the platform, curating resources, moderating submissions and keeping SJS CONNECT running.</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--ink-muted)' }}>Building the platform, curating resources, moderating submissions and keeping ARCHIVUM running.</p>
           </div>
         </div>
         <div className="rounded-2xl border overflow-hidden" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
@@ -118,10 +118,10 @@ export default async function AboutPage() {
           </div>
           <div>
             <h3 className="font-display font-bold text-base sm:text-lg ">
-              Install SJS CONNECT as an App
+              Install ARCHIVUM as an App
             </h3>
             <p className="text-xs ">
-              Add SJS CONNECT directly to your mobile home screen for quick offline access.
+              Add ARCHIVUM directly to your mobile home screen for quick offline access.
             </p>
           </div>
         </div>

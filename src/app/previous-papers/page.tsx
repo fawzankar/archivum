@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPreferredClass } from '@/lib/studentClass';
 import { getResources } from '@/lib/resources';
 import PaperFinderClient from './PaperFinderClient';
 
@@ -16,7 +17,8 @@ export default async function PreviousPapersPage({
   }>;
 }) {
   const params = await searchParams;
-  const result = await getResources({ resource_type: 'Previous Year Paper', limit: 100 });
+  const selectedClass = params.class ? parseInt(params.class, 10) : await getPreferredClass();
+  const result = await getResources({ resource_type: 'Previous Year Paper', class_level: selectedClass, limit: 100 });
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
@@ -35,7 +37,7 @@ export default async function PreviousPapersPage({
 
       <PaperFinderClient
         allPapers={result.items}
-        initialClass={params.class ? parseInt(params.class, 10) : undefined}
+        initialClass={selectedClass}
         initialSubject={params.subject}
         initialPaperType={params.paperType}
         initialYear={params.year ? parseInt(params.year, 10) : undefined}

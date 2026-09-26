@@ -1,8 +1,8 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Privacy Policy — SJS CONNECT',
-  description: 'Zero data tracking privacy policy of SJS CONNECT.',
+  title: 'Privacy Policy — ARCHIVUM',
+  description: 'Zero data tracking privacy policy of ARCHIVUM.',
 };
 
 export default function PrivacyPage() {
@@ -27,7 +27,7 @@ export default function PrivacyPage() {
         }}
       >
         <p>
-          <strong className="text-zinc-900 dark:text-zinc-100">SJS CONNECT</strong> adheres strictly to zero unnecessary data collection. We believe students should access school materials without tracking or invasive profiling.
+          <strong className="text-zinc-900 dark:text-zinc-100">ARCHIVUM</strong> adheres strictly to zero unnecessary data collection. We believe students should access school materials without tracking or invasive profiling.
         </p>
 
         <div className="space-y-1.5 pt-2">

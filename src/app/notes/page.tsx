@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPreferredClass } from '@/lib/studentClass';
 import { getResources } from '@/lib/resources';
 import NotesClient from './NotesClient';
 
@@ -10,10 +11,10 @@ export default async function NotesPage({
   searchParams: Promise<{ class?: string; subject?: string }>;
 }) {
   const params = await searchParams;
-  const initialClass = params.class ? parseInt(params.class, 10) : 10;
+  const initialClass = params.class ? parseInt(params.class, 10) : (await getPreferredClass()) || 10;
   const initialSubject = params.subject || '';
 
-  const result = await getResources({ resource_type: 'Notes', limit: 100 });
+  const result = await getResources({ resource_type: 'Notes', class_level: initialClass, limit: 100 });
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">

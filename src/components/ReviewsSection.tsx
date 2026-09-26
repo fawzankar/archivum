@@ -41,7 +41,7 @@ export default function ReviewsSection() {
         <div>
           <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color:'var(--accent)' }}>STUDENT FEEDBACK</span>
           <h2 className="font-display font-bold text-2xl sm:text-3xl" style={{ color:'var(--ink)' }}>Real reviews, from real users.</h2>
-          <p className="text-xs mt-1 max-w-xl" style={{ color:'var(--ink-muted)' }}>Reviews shown here are submitted through SJS CONNECT and approved before publication.</p>
+          <p className="text-xs mt-1 max-w-xl" style={{ color:'var(--ink-muted)' }}>Reviews shown here are submitted through ARCHIVUM and approved before publication.</p>
         </div>
         <MessageSquareQuote className="hidden sm:block w-7 h-7" style={{ color:'var(--accent)' }} />
       </div>

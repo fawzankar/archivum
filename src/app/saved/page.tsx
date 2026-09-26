@@ -2,7 +2,7 @@ import React from 'react';
 import SavedClient from './SavedClient';
 
 export const metadata = {
-  title: 'My Saved Resources — SJS CONNECT',
+  title: 'My Saved Resources — ARCHIVUM',
   description: 'View your device-saved notes, board papers, and study resources.',
 };
 

@@ -20,7 +20,6 @@ const SUBJECT_LIST = [
   'Physics',
   'Chemistry',
   'Biology',
-  'English',
   'Urdu',
   'Social Science',
   'Computer Science',

@@ -65,6 +65,8 @@ export async function initDb(): Promise<void> {
       { sql: `CREATE TABLE IF NOT EXISTS ratings (id INTEGER PRIMARY KEY AUTOINCREMENT, resource_id INTEGER NOT NULL, session_id TEXT NOT NULL, rating INTEGER NOT NULL, created_at TEXT NOT NULL, UNIQUE(resource_id, session_id))`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS downloads (id INTEGER PRIMARY KEY AUTOINCREMENT, resource_id INTEGER NOT NULL, session_id TEXT NOT NULL, created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, rating INTEGER NOT NULL, review TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
+      { sql: `CREATE TABLE IF NOT EXISTS tips (id INTEGER PRIMARY KEY AUTOINCREMENT, class_level INTEGER NOT NULL, title TEXT NOT NULL, body TEXT NOT NULL, author TEXT, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
+      { sql: `CREATE INDEX IF NOT EXISTS idx_tips_class_status ON tips(class_level,status)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_class ON resources(class_level)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_subject ON resources(subject)`, args: [] },
@@ -90,6 +92,21 @@ export async function initDb(): Promise<void> {
         sql: 'INSERT OR IGNORE INTO admin_users (username, password_hash, created_at) VALUES (?, ?, ?)',
         args: [adminUsername, hash, new Date().toISOString()],
       });
+    }
+
+    const tips = [
+      [9,'Make a one-page chapter map','Write the chapter name in the centre and connect formulas, definitions, diagrams and common mistakes around it.','ARCHIVUM'],
+      [9,'Use active recall, not rereading','Close the book and explain the topic aloud from memory before checking what you missed.','ARCHIVUM'],
+      [10,'Practise full-mark answers','For Science and Social Science, practise writing complete answers with keywords and labelled diagrams.','ARCHIVUM'],
+      [10,'Keep a formula error list','Whenever you lose marks in Mathematics, add the exact mistake to one short list and revisit it weekly.','ARCHIVUM'],
+      [11,'Build chapter-wise PYQ sets','Group previous questions by chapter so you can spot repeated concepts instead of revising randomly.','ARCHIVUM'],
+      [11,'Time your numericals','Do a short timed set of numerical problems and review the steps where you lost time, not just the final answer.','ARCHIVUM'],
+      [12,'Revise high-weight concepts first','Use your current syllabus and recent school/board papers to prioritise concepts that repeatedly require multi-step answers.','ARCHIVUM'],
+      [12,'Protect the final revision window','Keep the last revision day for formulas, diagrams, definitions and your own mistake list rather than starting new chapters.','ARCHIVUM'],
+      [12,'Write before you look','For derivations and long answers, attempt the structure from memory first, then compare it with your notes.','ARCHIVUM'],
+    ];
+    for (const [level,title,body,author] of tips) {
+      await db.execute({ sql: `INSERT OR IGNORE INTO tips (class_level,title,body,author,status,created_at) SELECT ?,?,?,?,'approved',? WHERE NOT EXISTS (SELECT 1 FROM tips WHERE class_level=? AND title=?)`, args: [level,title,body,author,now,level,title] });
     }
 
     // Seeding is intentionally idempotent. Vercel may start several

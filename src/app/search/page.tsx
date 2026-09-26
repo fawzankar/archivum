@@ -1,4 +1,5 @@
 import React from 'react';
+import { getPreferredClass } from '@/lib/studentClass';
 import { getResources } from '@/lib/resources';
 import SearchClient from './SearchClient';
 
@@ -21,7 +22,7 @@ export default async function SearchPage({
 }) {
   const params = await searchParams;
   const q = params.q || '';
-  const class_level = params.class ? parseInt(params.class, 10) : undefined;
+  const class_level = params.class ? parseInt(params.class, 10) : await getPreferredClass();
   const subject = params.subject || undefined;
   const resource_type = params.type || undefined;
   const paper_type = params.paperType || undefined;

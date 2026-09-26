@@ -235,7 +235,6 @@ export default function SearchClient({
               <option value="Science">Science</option>
               <option value="Physics">Physics</option>
               <option value="Chemistry">Chemistry</option>
-              <option value="English">English</option>
               <option value="Social Science">Social Science</option>
             </select>
           </div>

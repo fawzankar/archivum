@@ -18,7 +18,7 @@ export default function Chatbot() {
     {
       id: 'welcome',
       sender: 'bot',
-      text: '👋 Hey there! I am the **SJS CONNECT Guide**.\nWhat are you looking for today?',
+      text: '👋 Hey there! I am the **ARCHIVUM Guide**.\nWhat are you looking for today?',
       options: [
         { label: '📚 Find Notes', link: '/notes', action: () => {} },
         { label: '📄 Find Previous Papers', link: '/previous-papers', action: () => {} },
@@ -26,7 +26,7 @@ export default function Chatbot() {
         { label: '⬆️ Upload Resource', link: '/upload', action: () => {} },
         { label: '🔖 Saved Resources', link: '/saved', action: () => {} },
         { label: '📱 Install App', link: '/about#pwa', action: () => {} },
-        { label: '❓ About SJS CONNECT', link: '/about', action: () => {} },
+        { label: '❓ About ARCHIVUM', link: '/about', action: () => {} },
       ],
     },
   ]);
@@ -117,7 +117,7 @@ export default function Chatbot() {
       return {
         id: Date.now().toString(),
         sender: 'bot',
-        text: 'SJS CONNECT is a Progressive Web App (PWA). You can install it on your mobile phone or laptop home screen directly from your browser menu!',
+        text: 'ARCHIVUM is a Progressive Web App (PWA). You can install it on your mobile phone or laptop home screen directly from your browser menu!',
         options: [
           { label: 'Learn how to install 📱', link: '/about#pwa', action: () => setIsOpen(false) },
         ],
@@ -128,7 +128,7 @@ export default function Chatbot() {
       return {
         id: Date.now().toString(),
         sender: 'bot',
-        text: 'SJS CONNECT supports school students of **Classes 9, 10, 11, and 12**.',
+        text: 'ARCHIVUM supports school students of **Classes 9, 10, 11, and 12**.',
         options: [
           { label: 'Class 9', link: '/search?class=9', action: () => setIsOpen(false) },
           { label: 'Class 10', link: '/search?class=10', action: () => setIsOpen(false) },
@@ -142,7 +142,7 @@ export default function Chatbot() {
       return {
         id: Date.now().toString(),
         sender: 'bot',
-        text: 'SJS CONNECT is primarily designed around the **JKBOSE (Jammu and Kashmir Board of School Education)** ecosystem.',
+        text: 'ARCHIVUM is primarily designed around the **JKBOSE (Jammu and Kashmir Board of School Education)** ecosystem.',
         options: [
           { label: 'Browse JKBOSE Resources', link: '/search?board=JKBOSE', action: () => setIsOpen(false) },
         ],
@@ -161,7 +161,7 @@ export default function Chatbot() {
     return {
       id: Date.now().toString(),
       sender: 'bot',
-      text: "I'm the SJS CONNECT Guide, so I can mainly help you navigate the platform.\n\nTry asking me about:\n- Notes\n- Previous Papers\n- Searching\n- Uploading\n- Saved resources\n- Installing the app",
+      text: "I'm the ARCHIVUM Guide, so I can mainly help you navigate the platform.\n\nTry asking me about:\n- Notes\n- Previous Papers\n- Searching\n- Uploading\n- Saved resources\n- Installing the app",
       options: [
         { label: '📚 Notes', link: '/notes', action: () => setIsOpen(false) },
         { label: '📄 Papers', link: '/previous-papers', action: () => setIsOpen(false) },
@@ -176,7 +176,7 @@ export default function Chatbot() {
       {/* Floating Launcher Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        aria-label="SJS CONNECT Guide Chatbot"
+        aria-label="ARCHIVUM Guide Chatbot"
         className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-40 text-white p-3.5 rounded-full shadow-lg flex items-center gap-2 transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer"
         style={{ backgroundColor: 'var(--ink)' }}
       >
@@ -310,7 +310,7 @@ export default function Chatbot() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ask SJS CONNECT Guide..."
+              placeholder="Ask ARCHIVUM Guide..."
               className="flex-1 px-3.5 py-2 text-xs sm:text-sm bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:border-emerald-500 text-gray-900 dark:text-white"
             />
             <button

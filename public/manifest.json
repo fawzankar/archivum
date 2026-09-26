@@ -1,6 +1,6 @@
 {
-  "name": "SJS CONNECT — Find it. Study it. Share it.",
-  "short_name": "SJS CONNECT",
+  "name": "ARCHIVUM — SJS Student Archive",
+  "short_name": "ARCHIVUM",
   "description": "School academic resource hub for Classes 9–12 (JKBOSE Ecosystem)",
   "start_url": "/",
   "display": "standalone",

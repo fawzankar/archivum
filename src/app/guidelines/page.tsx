@@ -1,8 +1,8 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Content Guidelines — SJS CONNECT',
-  description: 'Submission guidelines for academic materials on SJS CONNECT.',
+  title: 'Content Guidelines — ARCHIVUM',
+  description: 'Submission guidelines for academic materials on ARCHIVUM.',
 };
 
 export default function GuidelinesPage() {
@@ -17,7 +17,7 @@ export default function GuidelinesPage() {
           Content Guidelines
         </h1>
         <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          Requirements and quality benchmarks for publishing study materials on SJS CONNECT.
+          Requirements and quality benchmarks for publishing study materials on ARCHIVUM.
         </p>
       </div>
 
@@ -29,7 +29,7 @@ export default function GuidelinesPage() {
         }}
       >
         <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-          Before submitting academic material to SJS CONNECT, please ensure your contribution satisfies these standards:
+          Before submitting academic material to ARCHIVUM, please ensure your contribution satisfies these standards:
         </p>
 
         <ul className="space-y-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">

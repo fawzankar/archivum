@@ -7,7 +7,7 @@ export default function PwaRegister() {
     if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
       navigator.serviceWorker
         .register('/sw.js')
-        .then((reg) => console.log('SJS CONNECT PWA Service Worker registered:', reg.scope))
+        .then((reg) => console.log('ARCHIVUM PWA Service Worker registered:', reg.scope))
         .catch((err) => console.error('PWA SW registration failed:', err));
     }
   }, []);

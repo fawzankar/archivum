@@ -122,7 +122,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
     if (navigator.share) {
       navigator.share({
         title: resource.title,
-        text: `Check out ${resource.title} on SJS CONNECT`,
+        text: `Check out ${resource.title} on ARCHIVUM`,
         url: window.location.href,
       }).catch(() => {});
     } else {
@@ -289,7 +289,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
             <div className="p-4 rounded-2xl border" style={{ borderColor: 'var(--border-light)', backgroundColor: 'var(--surface-raised)' }}>
               <span className="block text-[10px] font-semibold uppercase text-zinc-400">Institution / Source</span>
               <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 mt-1 block truncate">
-                {resource.contributor_name || resource.school_name || 'SJS CONNECT Contributor'}
+                {resource.contributor_name || resource.school_name || 'ARCHIVUM Contributor'}
               </span>
             </div>
           </div>
@@ -301,7 +301,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
                 Was this resource helpful?
               </h4>
               <p className="text-[11px] text-zinc-500">
-                Your feedback helps verify the best study materials for other students.
+                {ratingCount > 0 ? `${avgRating.toFixed(1)} / 5 from ${ratingCount} rating${ratingCount === 1 ? '' : 's'}.` : 'No ratings yet — your rating will be the first.'}
               </p>
             </div>
 

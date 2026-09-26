@@ -52,7 +52,7 @@ export default function InstallPwaPrompt() {
         </div>
         <div>
           <h4 className="font-display font-bold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100">
-            Install SJS CONNECT
+            Install ARCHIVUM
           </h4>
           <p className="text-[11px] text-zinc-500">Fast offline revision on your device.</p>
         </div>

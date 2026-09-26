@@ -17,7 +17,8 @@ import {
   Eye, 
   Search, 
   Clock, 
-  Layers
+  Layers,
+  Lightbulb
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -29,12 +30,13 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   const router = useRouter();
   const { showToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'reviews' | 'guidelines'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines'>('overview');
   const [resources, setResources] = useState<Resource[]>(initialResources);
   const [stats, setStats] = useState<any>(null);
   const [loadingStats, setLoadingStats] = useState(false);
   const [activePdf, setActivePdf] = useState<Resource | null>(null);
   const [pendingReviews, setPendingReviews] = useState<any[]>([]);
+  const [pendingTips, setPendingTips] = useState<any[]>([]);
 
   // Table filters
   const [search, setSearch] = useState('');
@@ -59,6 +61,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   useEffect(() => {
     fetchStats();
     fetch('/api/admin/reviews').then((res) => res.ok ? res.json() : { reviews: [] }).then((data) => setPendingReviews(data.reviews || [])).catch(() => {});
+    fetch('/api/admin/tips').then((res) => res.ok ? res.json() : { tips: [] }).then((data) => setPendingTips(data.tips || [])).catch(() => {});
   }, [fetchStats]);
 
   const handleReviewAction = async (id: number, status: 'approved' | 'rejected') => {
@@ -67,6 +70,13 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       setPendingReviews((prev) => prev.filter((item) => item.id !== id));
       showToast(status === 'approved' ? 'Review published.' : 'Review rejected.', status === 'approved' ? 'success' : 'info');
     } else showToast('Could not update review.', 'error');
+  };
+
+
+  const handleTipAction = async (id: number, status: 'approved' | 'rejected') => {
+    const res = await fetch('/api/admin/tips', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id,status}) });
+    if (res.ok) { setPendingTips((prev) => prev.filter((item) => item.id !== id)); showToast(status === 'approved' ? 'Tip published.' : 'Tip rejected.', status === 'approved' ? 'success' : 'info'); }
+    else showToast('Could not update tip.', 'error');
   };
 
   const handleLogout = async () => {
@@ -186,17 +196,17 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   }, [resources, filterStatus, filterClass, filterType, search]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-8">
       
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
             <Shield className="w-3.5 h-3.5" />
-            <span>EDITORIAL CONTROL SYSTEM</span>
+            <span>ARCHIVUM CONTROL CENTRE</span>
           </div>
           <h1 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-100">
-            CMS Administration
+            Content Management
           </h1>
           <p className="text-xs text-zinc-500">
             Logged in as <span className="font-semibold text-zinc-800 dark:text-zinc-200">{adminUsername}</span>
@@ -216,8 +226,8 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       {/* Stats Counter Row (Styled in 4 pastel blocks matching reference) */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div
-          className="p-5 rounded-2xl flex flex-col justify-between"
-          style={{ backgroundColor: '#D8E6EC' }}
+          className="p-5 rounded-3xl flex flex-col justify-between"
+          style={{ backgroundColor: 'var(--accent-light)' }}
         >
           <span className="text-[11px] font-bold uppercase tracking-wider text-sky-950">
             Approved Resources
@@ -228,8 +238,8 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
 
         <div
-          className="p-5 rounded-2xl flex flex-col justify-between"
-          style={{ backgroundColor: '#F5D6CE' }}
+          className="p-5 rounded-3xl flex flex-col justify-between"
+          style={{ backgroundColor: 'var(--card-peach-bg)' }}
         >
           <span className="text-[11px] font-bold uppercase tracking-wider text-rose-950">
             Pending Moderation
@@ -240,7 +250,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
 
         <div
-          className="p-5 rounded-2xl flex flex-col justify-between"
+          className="p-5 rounded-3xl flex flex-col justify-between"
           style={{ backgroundColor: 'var(--card-lavender-bg)' }}
         >
           <span className="text-[11px] font-bold uppercase tracking-wider ">
@@ -252,7 +262,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
 
         <div
-          className="p-5 rounded-2xl flex flex-col justify-between"
+          className="p-5 rounded-3xl flex flex-col justify-between"
           style={{ backgroundColor: 'var(--card-sky-bg)' }}
         >
           <span className="text-[11px] font-bold uppercase tracking-wider ">
@@ -270,6 +280,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           { id: 'overview', label: 'Overview' },
           { id: 'pending', label: `Pending Queue (${pendingQueue.length})` },
           { id: 'resources', label: `All Resources (${resources.length})` },
+          { id: 'tips', label: `Tips (${pendingTips.length})` },
           { id: 'guidelines', label: 'Admin Guidelines' },
         ].map((tab) => {
           const active = activeTab === tab.id;
@@ -561,23 +572,19 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       )}
 
       {/* Tab 4: Guidelines */}
-      {activeTab === 'reviews' && (
+      {activeTab === 'tips' && (
         <div className="space-y-4">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: 'var(--accent)' }}>COMMUNITY FEEDBACK</span>
-            <h2 className="font-display font-bold text-2xl" style={{ color: 'var(--ink)' }}>Review moderation</h2>
-            <p className="text-xs" style={{ color: 'var(--ink-muted)' }}>Only approved reviews appear publicly.</p>
+            <span className="text-[10px] font-bold uppercase tracking-[.18em]" style={{ color:'var(--accent)' }}>EXAM PLAYBOOK</span>
+            <h2 className="font-display font-bold text-2xl" style={{ color:'var(--ink)' }}>Tip moderation</h2>
+            <p className="text-xs" style={{ color:'var(--ink-muted)' }}>Approve practical, class-specific study tips before they enter the public archive.</p>
           </div>
-          {pendingReviews.length === 0 ? (
-            <div className="rounded-2xl border border-dashed p-8 text-center text-xs" style={{ borderColor: 'var(--border)', color: 'var(--ink-muted)' }}>No pending reviews.</div>
-          ) : pendingReviews.map((item) => (
-            <div key={item.id} className="rounded-2xl border p-5" style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}>
-              <div className="flex items-start justify-between gap-4">
-                <div><p className="font-semibold text-sm" style={{ color: 'var(--ink)' }}>{item.name}</p><div className="flex gap-0.5 mt-1">{[1,2,3,4,5].map((star) => <Star key={star} className="w-3.5 h-3.5" style={{ color: star <= item.rating ? 'var(--accent)' : 'var(--border)', fill: star <= item.rating ? 'var(--accent)' : 'transparent' }} />)}</div></div>
-                <span className="text-[10px]" style={{ color: 'var(--ink-faint)' }}>{new Date(item.created_at).toLocaleDateString()}</span>
-              </div>
-              <p className="text-sm leading-relaxed mt-3" style={{ color: 'var(--ink-muted)' }}>{item.review}</p>
-              <div className="flex gap-2 mt-4"><button onClick={() => handleReviewAction(item.id, 'approved')} className="px-3 py-2 rounded-xl text-xs font-bold" style={{ backgroundColor: 'var(--accent)', color: 'var(--accent-contrast)' }}>Publish</button><button onClick={() => handleReviewAction(item.id, 'rejected')} className="px-3 py-2 rounded-xl border text-xs font-bold" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>Reject</button></div>
+          {pendingTips.length === 0 ? <div className="rounded-2xl border border-dashed p-8 text-center text-xs" style={{borderColor:'var(--border)',color:'var(--ink-muted)'}}>No pending tips.</div> : pendingTips.map((item) => (
+            <div key={item.id} className="rounded-2xl border p-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
+              <div className="flex items-start justify-between gap-4"><div><span className="text-[10px] font-bold uppercase tracking-wider" style={{color:'var(--accent)'}}>Class {item.class_level}</span><h3 className="font-display font-bold text-lg mt-1">{item.title}</h3></div><Lightbulb className="w-5 h-5" style={{color:'var(--accent)'}}/></div>
+              <p className="text-sm leading-relaxed mt-3" style={{color:'var(--ink-muted)'}}>{item.body}</p>
+              <p className="text-[10px] mt-3" style={{color:'var(--ink-faint)'}}>Submitted by {item.author || 'SJS student'}</p>
+              <div className="flex gap-2 mt-4"><button onClick={()=>handleTipAction(item.id,'approved')} className="px-3 py-2 rounded-xl text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Publish</button><button onClick={()=>handleTipAction(item.id,'rejected')} className="px-3 py-2 rounded-xl border text-xs font-bold" style={{borderColor:'var(--border)',color:'var(--ink)'}}>Reject</button></div>
             </div>
           ))}
         </div>

@@ -64,7 +64,7 @@ export default function AdminLoginPage() {
           <h1 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-100">
             CMS Portal Login
           </h1>
-          <p className="text-xs text-zinc-500">SJS CONNECT Academic Moderation & Resource Management</p>
+          <p className="text-xs text-zinc-500">ARCHIVUM Academic Moderation & Resource Management</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4 text-left">

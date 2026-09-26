@@ -150,12 +150,14 @@ export default function ResourceCard({ resource, onView, compact = false, colorC
           style={{ borderColor: 'var(--border-light)' }}
         >
           <div className="flex items-center gap-1.5" style={{ color: 'var(--ink-muted)' }}>
-            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+            <Star className="w-3.5 h-3.5" style={{ color: resource.rating_count > 0 ? 'var(--accent)' : 'var(--border)', fill: resource.rating_count > 0 ? 'var(--accent)' : 'transparent' }} />
             <span className="font-semibold" style={{ color: 'var(--ink)' }}>
-              {resource.average_rating ? resource.average_rating.toFixed(1) : '4.8'}
+              {resource.rating_count > 0 ? resource.average_rating.toFixed(1) : 'No ratings'}
             </span>
             <span className="text-zinc-400">·</span>
-            <span className="font-medium">{formatCount(resource.downloads)}</span>
+            <span className="font-medium">{resource.rating_count > 0 ? `${resource.rating_count} ratings` : 'No ratings yet'}</span>
+            <span className="text-zinc-400">·</span>
+            <span className="font-medium">{formatCount(resource.downloads)} downloads</span>
           </div>
 
           {onView ? (

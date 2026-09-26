@@ -1,8 +1,8 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Terms of Service — SJS CONNECT',
-  description: 'Terms of Service and educational usage guidelines for SJS CONNECT.',
+  title: 'Terms of Service — ARCHIVUM',
+  description: 'Terms of Service and educational usage guidelines for ARCHIVUM.',
 };
 
 export default function TermsPage() {
@@ -27,12 +27,12 @@ export default function TermsPage() {
         }}
       >
         <p>
-          Welcome to <strong className="text-zinc-900 dark:text-zinc-100">SJS CONNECT</strong>. By accessing or using this platform, you agree to these straightforward student guidelines.
+          Welcome to <strong className="text-zinc-900 dark:text-zinc-100">ARCHIVUM</strong>. By accessing or using this platform, you agree to these straightforward student guidelines.
         </p>
 
         <div className="space-y-1.5 pt-2">
           <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">1. Educational Purpose</h3>
-          <p>SJS CONNECT is operated purely for high-school academic study and revision purposes for students of Classes 9, 10, 11, and 12.</p>
+          <p>ARCHIVUM is operated purely for high-school academic study and revision purposes for students of Classes 9, 10, 11, and 12.</p>
         </div>
 
         <div className="space-y-1.5 pt-2">
