@@ -131,21 +131,20 @@ export default function UploadClient() {
           size: preparedFile.size,
         }),
       });
-      const presignJson = await presign.json();
+      const presignJson = await presign.json().catch(() => ({}));
       if (!presign.ok) throw new Error(presignJson.error || 'Could not prepare the file upload.');
 
+      setUploadProgress(15);
       let uploadResponse: Response;
       try {
         uploadResponse = await fetch(presignJson.uploadUrl, {
           method: 'PUT',
-          headers: {
-            'Content-Type': preparedFile.type,
-          },
+          headers: { 'Content-Type': preparedFile.type },
           body: preparedFile,
         });
       } catch {
         throw new Error(
-          'R2 upload was blocked by the bucket CORS policy. In Cloudflare R2, add https://sjswork.vercel.app and http://localhost:3000 as allowed origins, with PUT/GET/HEAD and AllowedHeaders: Content-Type.'
+          'The browser could not reach Cloudflare R2. Check the archivum bucket CORS policy: allow your exact site origin, PUT/GET/HEAD, and the Content-Type header. If CORS is already correct, open DevTools → Network and check the R2 request for a 403/signature error.'
         );
       }
       if (!uploadResponse.ok) {
@@ -153,6 +152,7 @@ export default function UploadClient() {
         throw new Error(detail ? `R2 upload failed (${uploadResponse.status}). ${detail.slice(0, 180)}` : `R2 upload failed (${uploadResponse.status}).`);
       }
       setUploadProgress(100);
+
 
       setUploadStatus('Saving submission details…');
       const res = await fetch('/api/upload', {

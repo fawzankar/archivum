@@ -1,39 +1,80 @@
-%PDF-1.4
+%PDF-1.3
+%“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
+<<
+/F1 2 0 R /F2 3 0 R /F3 4 0 R
+>>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
 endobj
 3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
 endobj
 4 0 obj
-<< /Length 120 >>
-stream
-BT
-/F1 24 Tf
-50 700 Td
-(Some Basic Concepts of Chemistry â€” Revision & Formula Notes) Tj
-/F1 12 Tf
-0 -30 Td
-(SJS CONNECT - Find it. Study it. Share it. [JKBOSE Ecosystem]) Tj
-ET
-endstream
+<<
+/BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+>>
 endobj
 5 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+<<
+/Contents 9 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 8 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+6 0 obj
+<<
+/PageMode /UseNone /Pages 8 0 R /Type /Catalog
+>>
+endobj
+7 0 obj
+<<
+/Author (ARCHIVUM) /CreationDate (D:20260927104821+00'00') /Creator (anonymous) /Keywords () /ModDate (D:20260927104821+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (unspecified) /Title (ARCHIVUM Demo PDF - class11 chem basic concepts) /Trapped /False
+>>
+endobj
+8 0 obj
+<<
+/Count 1 /Kids [ 5 0 R ] /Type /Pages
+>>
+endobj
+9 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 555
+>>
+stream
+GasJO9lHOU&;KZL'm"2lb-?p\G]2uH;'WJHPgZ.D0kRjR!jf`jB`EL?GIL:EBb?/^Olq/L)35Z^Gd6lt4i$4fY&>13%b2&V+9JQ]n>3]gE=Q5)EF+h!?_!Z4$;*o>R=IVC,)[X;o^M:t_tNEPYFj_06hLT4LDO,f-AE`BJsIs/U.UOoXW-U3\A,S&WtkT=Um56:ifU(i;/=p#ml)uk[FkLN<"U:r1*umdl6eDs"5=T<lbdsLaj*OJ,aA[]BphqrOP(6:J:<kTK,ZM&a&nde1oRgk#0c!6mXnm,$:PYAX5&XH>*MJ8<iu$+D[caEr@mO,!9`0jAncZLR&NRla;UUH_D?HWJ@i%A>%bFG_$9f;Tg]eo7=rnsC4p#V%\&OKCiNe<g,0I$]5GtMCP=,M-(2o9A^%:DnANZopb4Q1k]O\g`ntI+7dGMUDPHQ&+X2Bs3TDW,'KIHC4gjgo6gY]b^=-[K&s9/?]>`B<6^u<eXG_8I*JM$m#PqTX:=gML[hG?a8cqgA*kY_jWT&TG3dC/8MWjEqQ6n9Jp:oP$eK:YD#/1~>endstream
 endobj
 xref
-0 6
+0 10
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-00000000115 00000 n 
-0000000244 00000 n 
-0000000415 00000 n 
+0000000061 00000 n 
+0000000112 00000 n 
+0000000219 00000 n 
+0000000331 00000 n 
+0000000446 00000 n 
+0000000649 00000 n 
+0000000717 00000 n 
+0000001016 00000 n 
+0000001075 00000 n 
 trailer
-<< /Size 6 /Root 1 0 R >>
+<<
+/ID 
+[<6d5c9f10c58c16cd6d4b611fe9f7da9b><6d5c9f10c58c16cd6d4b611fe9f7da9b>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 7 0 R
+/Root 6 0 R
+/Size 10
+>>
 startxref
-485
+1720
 %%EOF

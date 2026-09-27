@@ -1,46 +1,80 @@
-%PDF-1.4
+%PDF-1.3
+%“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
+<<
+/F1 2 0 R /F2 3 0 R /F3 4 0 R
+>>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
 endobj
 3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
 endobj
 4 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+<<
+/BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+>>
 endobj
 5 0 obj
-<< /Length 290 >>
+<<
+/Contents 9 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 8 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+6 0 obj
+<<
+/PageMode /UseNone /Pages 8 0 R /Type /Catalog
+>>
+endobj
+7 0 obj
+<<
+/Author (ARCHIVUM) /CreationDate (D:20260927104821+00'00') /Creator (anonymous) /Keywords () /ModDate (D:20260927104821+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (unspecified) /Title (ARCHIVUM Demo PDF - class9 science ARCHIVUM starter notes) /Trapped /False
+>>
+endobj
+8 0 obj
+<<
+/Count 1 /Kids [ 5 0 R ] /Type /Pages
+>>
+endobj
+9 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 552
+>>
 stream
-BT
-/F1 18 Tf
-50 750 Td
-(ARCHIVUM â€” Class 9 Science) Tj
-/F1 11 Tf
-0 -28 Td
-(Starter placeholder PDF for the ARCHIVUM subject archive.) Tj
-0 -18 Td
-(Replace this file with a moderated student contribution when available.) Tj
-0 -18 Td
-(Subject: Science) Tj
-0 -18 Td
-(Class: 9) Tj
-0 -18 Td
-ET
-endstream
+GasJO95i<6'SZ;['k[gY)*;i.G]qG3;$j%u%BS3,S3+Yhif*GAe:3P>R@t.eM%\oYq4@'Mpf`3'9>m`FJM/<5>mlGkjUOU4M=NaBQ5=O'5pDZcUgV15\2[+AS/"X&M-MB$j`ur$na?#)jgU^d5C^=9q1/%R$SA%r6aPj4Q7=Ye$^jJd.r%0$?<t=r$@YFn9$_9!JYg=Ol`r7_Y^q8*om[G&9Zj)c2>>SnJaBn_]liBfXjgs:Ar<Y14#]lJQE0Y.\>,aeH:o40`Lt4i5iIqPL=,W<p$gd._jU\,R81]#K9S0`(O:+!eo!a_%7Y+,?#TS;B6^iN5h4Pe,sS[m]&5,2eY*Lk`^SC&gIr>^(cmU5Tg(.Gep)!;h4?`/+7\Q.?J`\'!B9nQ1SJQ;-T,P9:(PO8CY-pq@@E;3<'?p4+ZU?fK9\#Krs,D.\n_\9i@E)>Z4`qV36V+P`nQ6lYe^!mZ&=`pN9T^F?aC^;BQ!!\Y]EDNF%m_<dC@24)e*_)4b\oEcHi)s9JNA2UVAj>pau'pm,+*u0;nSPE,b=`F;YAY~>endstream
 endobj
 xref
-0 6
+0 10
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000241 00000 n 
-0000000311 00000 n 
+0000000061 00000 n 
+0000000112 00000 n 
+0000000219 00000 n 
+0000000331 00000 n 
+0000000446 00000 n 
+0000000649 00000 n 
+0000000717 00000 n 
+0000001026 00000 n 
+0000001085 00000 n 
 trailer
-<< /Size 6 /Root 1 0 R >>
+<<
+/ID 
+[<614d14b2338b81459c1bd945c1209089><614d14b2338b81459c1bd945c1209089>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 7 0 R
+/Root 6 0 R
+/Size 10
+>>
 startxref
-652
+1727
 %%EOF

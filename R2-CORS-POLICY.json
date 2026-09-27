@@ -2,6 +2,7 @@
   {
     "AllowedOrigins": [
       "https://sjswork.vercel.app",
+      "https://*.vercel.app",
       "http://localhost:3000"
     ],
     "AllowedMethods": [
@@ -10,7 +11,7 @@
       "HEAD"
     ],
     "AllowedHeaders": [
-      "Content-Type"
+      "*"
     ],
     "ExposeHeaders": [
       "ETag"

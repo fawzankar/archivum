@@ -155,3 +155,7 @@ ARCHIVUM enforces a hard **10 GB total file-storage limit** across uploaded reso
 ## Cloudflare R2 CORS
 
 For browser uploads to the private R2 bucket, apply the policy in `R2-CORS-POLICY.json` at Cloudflare R2 → `archivum` → Settings → CORS Policy. Keep the bucket private; this CORS policy does not make objects public.
+
+## R2 browser upload CORS
+
+Direct browser uploads use R2 presigned PUT URLs. Configure the `archivum` bucket CORS policy using `R2-CORS-POLICY.json`. Cloudflare notes that browser requests to presigned URLs require matching CORS rules, including the origin, PUT method, and headers sent by the browser.

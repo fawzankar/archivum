@@ -1,39 +1,80 @@
-%PDF-1.4
+%PDF-1.3
+%“Œ‹ž ReportLab Generated PDF document (opensource)
 1 0 obj
-<< /Type /Catalog /Pages 2 0 R >>
+<<
+/F1 2 0 R /F2 3 0 R /F3 4 0 R
+>>
 endobj
 2 0 obj
-<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+<<
+/BaseFont /Helvetica /Encoding /WinAnsiEncoding /Name /F1 /Subtype /Type1 /Type /Font
+>>
 endobj
 3 0 obj
-<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+<<
+/BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding /Name /F2 /Subtype /Type1 /Type /Font
+>>
 endobj
 4 0 obj
-<< /Length 120 >>
-stream
-BT
-/F1 24 Tf
-50 700 Td
-(Matter in Our Surroundings â€” Class 9 Science Notes & Q&A) Tj
-/F1 12 Tf
-0 -30 Td
-(SJS CONNECT - Find it. Study it. Share it. [JKBOSE Ecosystem]) Tj
-ET
-endstream
+<<
+/BaseFont /Helvetica-Oblique /Encoding /WinAnsiEncoding /Name /F3 /Subtype /Type1 /Type /Font
+>>
 endobj
 5 0 obj
-<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+<<
+/Contents 9 0 R /MediaBox [ 0 0 595.2756 841.8898 ] /Parent 8 0 R /Resources <<
+/Font 1 0 R /ProcSet [ /PDF /Text /ImageB /ImageC /ImageI ]
+>> /Rotate 0 /Trans <<
+
+>> 
+  /Type /Page
+>>
+endobj
+6 0 obj
+<<
+/PageMode /UseNone /Pages 8 0 R /Type /Catalog
+>>
+endobj
+7 0 obj
+<<
+/Author (ARCHIVUM) /CreationDate (D:20260927104821+00'00') /Creator (anonymous) /Keywords () /ModDate (D:20260927104821+00'00') /Producer (ReportLab PDF Library - \(opensource\)) 
+  /Subject (unspecified) /Title (ARCHIVUM Demo PDF - class9 science matter) /Trapped /False
+>>
+endobj
+8 0 obj
+<<
+/Count 1 /Kids [ 5 0 R ] /Type /Pages
+>>
+endobj
+9 0 obj
+<<
+/Filter [ /ASCII85Decode /FlateDecode ] /Length 544
+>>
+stream
+GasJO95i<6'SZ;['k[gY);B/$G]qG3;$j%u%BS3,S3%urif*GAe:3P>R43!8-;'MXja4`%F):q!/eO_Y"hk]GF=eU\MB.@Z$H74:/M?%mKN-.)bZXp`>T>%Fc>p%@6Dc$W=V`8d]_d)#q<d=rcQDUQ4J;K=6;-O`0MJ(cdWru/Y*,`+7;[h7X6[5u_68Yuaa#HU=@O:;/fQk\)jo5\s4;5-PfiT"F$FL`aGh.o]:-C-Q.e&R9QM5"kGDt217]BrG;OD?mq;g4(c3'>.(".;WF$l"_i,;1`.Tq<j]NiE<BVJ[(*g6aY.+?C:/+*d,[PY3C<;NQN@m2SM*CS1Am@`>n!^5O&jqGZ,4rq;_-)gNU"bd/nfo2kR[:MVA\cR)l"m;%i@2ZI@ZnVak,N=_aKQ,.E@RTHd&=.cDm6ODgAc^UKC7G[<;9'a+]i,P.;'M_`d$7"*>\FaZ#29/O>4H)ibP^;.[o,B51hkAMRaoAqe5<8DB!&'2g,69pGG0^hGVV*#oiclH,FQ_"_Z.5NF#BM^Yn&00Cmp$[f~>endstream
 endobj
 xref
-0 6
+0 10
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-00000000115 00000 n 
-0000000244 00000 n 
-0000000415 00000 n 
+0000000061 00000 n 
+0000000112 00000 n 
+0000000219 00000 n 
+0000000331 00000 n 
+0000000446 00000 n 
+0000000649 00000 n 
+0000000717 00000 n 
+0000001010 00000 n 
+0000001069 00000 n 
 trailer
-<< /Size 6 /Root 1 0 R >>
+<<
+/ID 
+[<3cd5b0617e77db2bd62f9d169ee7efa0><3cd5b0617e77db2bd62f9d169ee7efa0>]
+% ReportLab generated PDF document -- digest (opensource)
+
+/Info 7 0 R
+/Root 6 0 R
+/Size 10
+>>
 startxref
-485
+1703
 %%EOF
