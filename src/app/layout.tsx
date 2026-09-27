@@ -48,8 +48,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <main className="flex-1">{children}</main>
               <Footer />
               <MobileNav />
-              <Chatbot />
-              <InstallPwaPrompt />
+              <DeferredClientWidgets />
             </ToastProvider>
           </StudentClassProvider>
         </ThemeProvider>
