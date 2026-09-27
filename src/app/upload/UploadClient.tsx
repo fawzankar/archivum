@@ -133,9 +133,9 @@ export default function UploadClient() {
         }),
       });
       const presignJson = await presign.json();
-      if (!presign.ok) throw new Error(presignJson.error || 'Could not prepare Cloudflare upload.');
+      if (!presign.ok) throw new Error(presignJson.error || 'Could not prepare the file upload.');
 
-      setCompressionStatus('Uploading to Cloudflare…');
+      setCompressionStatus('Uploading securely…');
       const uploadResponse = await fetch(presignJson.uploadUrl, {
         method: 'PUT',
         headers: {
@@ -145,7 +145,7 @@ export default function UploadClient() {
         body: preparedFile,
       });
       if (!uploadResponse.ok) {
-        throw new Error('Cloudflare upload failed. Please try again.');
+        throw new Error('Secure file upload failed. Please try again.');
       }
       setUploadProgress(100);
 

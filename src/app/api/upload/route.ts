@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { execute, initDb } from '@/lib/db';
 import { generateSlug, checkForDuplicates } from '@/lib/resources';
-import { isR2Url, deleteStoredFile } from '@/lib/storage';
+import { isR2Url, deleteStoredFile, getStorageUsageBytes, MAX_FILE_SIZE, MAX_STORAGE_BYTES } from '@/lib/storage';
+import { getReservation, releaseStorageReservation } from '@/lib/storage-quota';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const ALLOWED_CONTENT_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
 
 function text(value: unknown, max = 5000) {
@@ -53,23 +53,48 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid file hash.' }, { status: 400 });
     }
 
+    const reservation = await getReservation(storageKey);
+    if (!reservation || Number(reservation.file_size) !== fileSize) {
+      return NextResponse.json({ error: 'Upload reservation expired. Please upload the file again.' }, { status: 409 });
+    }
+
     // Confirm the object that was uploaded to R2 is not larger than our
     // application limit. This is a small HEAD request, not a file download.
     const head = await fetch(fileUrl, { method: 'HEAD', cache: 'no-store' });
     if (!head.ok) {
+      await releaseStorageReservation(storageKey);
       return NextResponse.json({ error: 'The uploaded file could not be verified.' }, { status: 400 });
     }
     const remoteSize = Number(head.headers.get('content-length') || fileSize);
     const remoteType = (head.headers.get('content-type') || fileType).split(';')[0].toLowerCase();
     if (!Number.isFinite(remoteSize) || remoteSize <= 0 || remoteSize > MAX_FILE_SIZE) {
+      await releaseStorageReservation(storageKey);
+      await deleteStoredFile(storageKey).catch(() => {});
       return NextResponse.json({ error: 'Uploaded file exceeds the 50 MB limit.' }, { status: 400 });
     }
     if (!ALLOWED_CONTENT_TYPES.includes(remoteType)) {
+      await releaseStorageReservation(storageKey);
+      await deleteStoredFile(storageKey).catch(() => {});
       return NextResponse.json({ error: 'Uploaded file type is not allowed.' }, { status: 400 });
+    }
+
+    const usedBytes = await getStorageUsageBytes();
+    if (usedBytes + remoteSize > MAX_STORAGE_BYTES) {
+      await releaseStorageReservation(storageKey);
+      await deleteStoredFile(storageKey).catch(() => {});
+      const remaining = Math.max(0, MAX_STORAGE_BYTES - usedBytes);
+      return NextResponse.json({
+        error: `ARCHIVUM has a hard 10 GB storage limit. Only ${(remaining / 1_000_000).toFixed(1)} MB remains.`,
+        code: 'STORAGE_LIMIT_REACHED',
+        usedBytes,
+        remainingBytes: remaining,
+        limitBytes: MAX_STORAGE_BYTES,
+      }, { status: 507 });
     }
 
     const dupResult = await checkForDuplicates(fileHash, title, class_level, subject);
     if (dupResult.isDuplicate) {
+      await releaseStorageReservation(storageKey);
       await deleteStoredFile(storageKey).catch(() => {});
       return NextResponse.json({ error: dupResult.reason, duplicate: dupResult.existing }, { status: 409 });
     }
@@ -88,9 +113,12 @@ export async function POST(request: Request) {
       ],
     );
     } catch (error) {
+      await releaseStorageReservation(storageKey);
       await deleteStoredFile(storageKey).catch(() => {});
       throw error;
     }
+
+    await releaseStorageReservation(storageKey);
 
     return NextResponse.json({
       success: true,

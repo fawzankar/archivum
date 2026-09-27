@@ -1,12 +1,13 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { NextResponse } from 'next/server';
-import { getR2Client, getR2PublicUrl } from '@/lib/storage';
+import { getR2Client, getR2PublicUrl, MAX_FILE_SIZE } from '@/lib/storage';
+import { reserveStorageBytes, getStorageUsageWithReservations } from '@/lib/storage-quota';
+import { initDb } from '@/lib/db';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const MAX_FILE_SIZE = 50 * 1024 * 1024;
 const ALLOWED_CONTENT_TYPES = ['application/pdf', 'image/jpeg', 'image/png'];
 const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png'];
 
@@ -17,6 +18,7 @@ function safeFilename(value: unknown) {
 
 export async function POST(request: Request) {
   try {
+    await initDb();
     const client = getR2Client();
     if (!client || !process.env.R2_BUCKET_NAME || !process.env.R2_PUBLIC_URL) {
       return NextResponse.json({ error: 'Cloudflare R2 is not configured.' }, { status: 503 });
@@ -37,6 +39,18 @@ export async function POST(request: Request) {
     }
 
     const key = `uploads/${Date.now()}-${crypto.randomUUID()}-${filename}`;
+    const reservation = await reserveStorageBytes(key, size);
+    if (!reservation.allowed) {
+      const quota = await getStorageUsageWithReservations();
+      return NextResponse.json({
+        error: `ARCHIVUM storage is full. Only ${(quota.remainingBytes / 1_000_000).toFixed(1)} MB is available for new uploads.`,
+        code: 'STORAGE_LIMIT_REACHED',
+        usedBytes: quota.usedBytes,
+        reservedBytes: quota.reservedBytes,
+        remainingBytes: quota.remainingBytes,
+        limitBytes: 10_000_000_000,
+      }, { status: 507 });
+    }
     const command = new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: key,
@@ -51,6 +65,7 @@ export async function POST(request: Request) {
       publicUrl: getR2PublicUrl(key),
       key,
       expiresIn: 900,
+      reservationExpiresAt: reservation.expiresAt,
     });
   } catch (error) {
     return NextResponse.json(

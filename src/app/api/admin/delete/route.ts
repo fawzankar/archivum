@@ -11,9 +11,12 @@ export async function POST(request:Request){
     if(!Number.isInteger(n)||n<=0)return NextResponse.json({error:'Resource ID is required'},{status:400});
     const resource=await queryOne<{file_url:string;storage_key:string|null}>('SELECT file_url,storage_key FROM resources WHERE id=?',[n]);
     if(!resource)return NextResponse.json({error:'Resource not found'},{status:404});
+    if(resource.storage_key || resource.file_url) {
+      const removed = await deleteStoredFile(resource.storage_key || resource.file_url);
+      if (!removed) return NextResponse.json({error:'The stored file could not be removed. Nothing was deleted.'},{status:502});
+    }
     if(permanent) {
       await execute('DELETE FROM resources WHERE id=?',[n]);
-      if(resource.storage_key || resource.file_url) await deleteStoredFile(resource.storage_key || resource.file_url).catch(()=>{});
     } else {
       await execute("UPDATE resources SET status='deleted',updated_at=? WHERE id=?",[new Date().toISOString(),n]);
     }

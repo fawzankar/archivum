@@ -1,6 +1,7 @@
 import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import fs from 'fs/promises';
 import path from 'path';
+import { queryOne } from './db';
 
 function r2Configured() {
   return Boolean(
@@ -13,6 +14,35 @@ function r2Configured() {
 }
 
 let r2Client: S3Client | null = null;
+
+export const MAX_STORAGE_BYTES = 10_000_000_000; // 10 GB app-wide
+export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB per file
+
+export async function getStorageUsageBytes() {
+  const row = await queryOne<{ total: number }>(
+    "SELECT COALESCE(SUM(file_size),0) AS total FROM resources WHERE status != 'deleted'"
+  );
+  return Number(row?.total ?? 0);
+}
+
+export function formatStorageSize(bytes: number) {
+  if (bytes < 1024 * 1024) return `${Math.max(0, bytes / 1024).toFixed(1)} KB`;
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+  return `${(bytes / 1_000_000_000).toFixed(2)} GB`;
+}
+
+export function getStorageQuotaStatus(usedBytes: number) {
+  const remainingBytes = Math.max(0, MAX_STORAGE_BYTES - usedBytes);
+  return {
+    usedBytes,
+    limitBytes: MAX_STORAGE_BYTES,
+    remainingBytes,
+    percent: Math.min(100, (usedBytes / MAX_STORAGE_BYTES) * 100),
+    used: formatStorageSize(usedBytes),
+    remaining: formatStorageSize(remainingBytes),
+    limit: '10 GB',
+  };
+}
 
 export function getR2Client() {
   if (!r2Configured()) return null;

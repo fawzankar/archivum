@@ -18,7 +18,8 @@ import {
   Search, 
   Clock, 
   Layers,
-  Lightbulb
+  Lightbulb,
+  HardDrive
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -224,7 +225,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       </div>
 
       {/* Stats Counter Row (Styled in 4 pastel blocks matching reference) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <div
           className="p-5 rounded-3xl flex flex-col justify-between"
           style={{ backgroundColor: 'var(--accent-light)' }}
@@ -233,7 +234,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
             Approved Resources
           </span>
           <div className="font-display font-bold text-3xl text-sky-950 mt-2">
-            {stats ? stats.totalApproved : '...'}
+            {stats ? stats.published : '...'}
           </div>
         </div>
 
@@ -272,6 +273,25 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
             {stats ? stats.totalViews : '...'}
           </div>
         </div>
+        <div
+          className="p-5 rounded-3xl flex flex-col justify-between"
+          style={{ backgroundColor: 'var(--surface-raised)', border: '1px solid var(--border)' }}
+        >
+        <div className="flex items-center justify-between gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider">Storage</span>
+          <HardDrive className="w-4 h-4" style={{ color: 'var(--accent)' }} />
+        </div>
+        <div className="font-display font-bold text-2xl mt-2">
+          {stats?.storage ? `${stats.storage.used} / ${stats.storage.limit}` : '...'}
+        </div>
+        <div className="mt-3 h-1.5 rounded-full overflow-hidden" style={{ background: 'var(--border)' }}>
+          <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, Number(stats?.storage?.percent ?? 0))}%`, background: 'var(--accent)' }} />
+        </div>
+        <div className="text-[10px] mt-2" style={{ color: 'var(--ink-muted)' }}>
+          {stats?.storage ? `${stats.storage.remaining} remaining` : 'Checking quota…'}
+        </div>
+      </div>
+
       </div>
 
       {/* Navigation Tabs */}

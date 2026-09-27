@@ -149,3 +149,7 @@ Because the admin upload page sends the PDF directly from the browser to the sig
 ```
 
 If you later attach a custom domain to ARCHIVUM, add that origin too.
+
+## ARCHIVUM storage limits
+
+ARCHIVUM enforces a hard **10 GB total file-storage limit** across uploaded resources. Individual uploads are limited to **50 MB**. The admin dashboard shows current storage usage and remaining capacity. Deleted resources have their stored object removed so the space becomes available again.
