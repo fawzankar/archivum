@@ -151,3 +151,7 @@ If you later attach a custom domain to ARCHIVUM, add that origin too.
 ## ARCHIVUM storage limits
 
 ARCHIVUM enforces a hard **10 GB total file-storage limit** across uploaded resources. Individual uploads are limited to **50 MB**. The admin dashboard shows current storage usage and remaining capacity. Deleted resources have their stored object removed so the space becomes available again.
+
+## Cloudflare R2 CORS
+
+For browser uploads to the private R2 bucket, apply the policy in `R2-CORS-POLICY.json` at Cloudflare R2 → `archivum` → Settings → CORS Policy. Keep the bucket private; this CORS policy does not make objects public.
