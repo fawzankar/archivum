@@ -1,3 +1,50 @@
 import React from 'react';
-export const metadata={title:'Privacy Policy — ARCHIVUM',description:'Privacy policy for ARCHIVUM.'};
-export default function PrivacyPage(){return <main className="page-shell"><div className="page-intro"><div><h1 className="font-display">Privacy policy</h1><p>How ARCHIVUM handles information used by the archive, uploads, ratings and your local preferences.</p></div><div className="page-note">Last updated: September 2026</div></div><article className="mt-12 max-w-3xl space-y-9 text-sm leading-7" style={{color:'var(--ink-muted)'}}><section><h2 className="font-display text-2xl" style={{color:'var(--ink)'}}>1. Browsing</h2><p className="mt-3">Students can browse, search, read and download resources without creating a student account. Class choice, saved resources and theme preferences are stored locally in the browser where the app uses local storage.</p></section><section><h2 className="font-display text-2xl" style={{color:'var(--ink)'}}>2. Contributions</h2><p className="mt-3">Uploads and tips include the contributor information entered in the form. Submissions are reviewed before publication, and approved material may display the contributor name on the resource or contributor page.</p></section><section><h2 className="font-display text-2xl" style={{color:'var(--ink)'}}>3. Ratings and downloads</h2><p className="mt-3">The app records anonymous counters needed for resource ratings and downloads. These counters are used to operate the archive and are not presented as a student profile.</p></section><section><h2 className="font-display text-2xl" style={{color:'var(--ink)'}}>4. Contact</h2><p className="mt-3">If you have a privacy question about a submission, contact the ARCHIVUM team through the founder's public contact link on the About page.</p></section></article></main>}
+
+export const metadata = {
+  title: 'Privacy Policy — ARCHIVUM',
+  description: 'Zero data tracking privacy policy of ARCHIVUM.',
+};
+
+export default function PrivacyPage() {
+  return (
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+      {/* Editorial Header */}
+      <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
+        <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
+          DATA & PRIVACY
+        </span>
+        <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
+          Privacy Policy
+        </h1>
+        <p className="text-xs text-zinc-400">Last updated: September 2026</p>
+      </div>
+
+      <div
+        className="rounded-3xl border p-6 sm:p-8 space-y-6 shadow-sm text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed"
+        style={{
+          backgroundColor: 'var(--surface)',
+          borderColor: 'var(--border)',
+        }}
+      >
+        <p>
+          <strong className="text-zinc-900 dark:text-zinc-100">ARCHIVUM</strong> adheres strictly to zero unnecessary data collection. We believe students should access school materials without tracking or invasive profiling.
+        </p>
+
+        <div className="space-y-1.5 pt-2">
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">1. Zero Student Profiling</h3>
+          <p>We do not collect names, phone numbers, or passwords from students browsing, reading, or downloading notes and examination papers.</p>
+        </div>
+
+        <div className="space-y-1.5 pt-2">
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">2. Local Device Storage</h3>
+          <p>Saved resources, recently viewed items, and dark/light mode preferences are held exclusively in your local browser storage and never uploaded to our servers.</p>
+        </div>
+
+        <div className="space-y-1.5 pt-2">
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">3. Anonymous Counters</h3>
+          <p>Download tallies and star ratings employ anonymous, randomized session tokens stored on your device to protect against duplicate voting without tracking personal identity.</p>
+        </div>
+      </div>
+    </div>
+  );
+}

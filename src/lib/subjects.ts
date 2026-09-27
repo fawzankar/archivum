@@ -8,15 +8,15 @@ export const CLASS_SUBJECTS: Record<StudentClass, string[]> = {
 };
 
 export const SUBJECT_DETAILS: Record<string, { icon: string; description: string }> = {
-  Maths: { icon: '', description: 'Formulas, worked examples and practice sets.' },
-  Science: { icon: '', description: 'Physics, chemistry and biology concepts, diagrams and revision material.' },
-  SST: { icon: '', description: 'History, geography, civics, economics and related J&K topics.' },
-  English: { icon: '', description: 'Literature, language and writing practice.' },
-  Hindi: { icon: '', description: 'Literature, grammar and writing practice.' },
-  Urdu: { icon: '', description: 'Literature, grammar and writing practice.' },
-  Biology: { icon: '', description: 'Diagrams, concepts and chapter revision.' },
-  Physics: { icon: '', description: 'Derivations, numericals and concept revision.' },
-  Chemistry: { icon: '', description: 'Reactions, equations and numerical practice.' },
+  Maths: { icon: '∑', description: 'Formulas, worked examples and practice sets.' },
+  Science: { icon: '✦', description: 'Concept notes, diagrams and revision material.' },
+  SST: { icon: '◎', description: 'History, geography, civics and economics.' },
+  English: { icon: 'Aa', description: 'Literature, language and writing practice.' },
+  Hindi: { icon: 'ह', description: 'Literature, grammar and writing practice.' },
+  Urdu: { icon: 'ا', description: 'Literature, grammar and writing practice.' },
+  Biology: { icon: '⌁', description: 'Diagrams, concepts and chapter revision.' },
+  Physics: { icon: 'φ', description: 'Derivations, numericals and concept revision.' },
+  Chemistry: { icon: '◇', description: 'Reactions, equations and numerical practice.' },
 };
 
 export function subjectsForClass(level: number) {

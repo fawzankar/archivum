@@ -6,7 +6,7 @@ export type Mode = 'light' | 'dark';
 export type Accent = 'mono' | 'violet' | 'sky' | 'ocean' | 'rose';
 
 export const ACCENTS: Array<{ id: Accent; label: string; color: string }> = [
-  { id: 'mono', label: 'Deep blue', color: '#0b5c75' },
+  { id: 'mono', label: 'Mono', color: '#111318' },
   { id: 'violet', label: 'Violet', color: '#7c3aed' },
   { id: 'sky', label: 'Sky', color: '#0284c7' },
   { id: 'ocean', label: 'Ocean', color: '#0891b2' },

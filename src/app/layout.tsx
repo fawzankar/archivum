@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Libre_Baskerville } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeContext';
 import { ToastProvider } from '@/components/ToastContext';
@@ -12,23 +13,24 @@ import { Suspense } from 'react';
 import ClassTransitionOverlay from '@/components/ClassTransitionOverlay';
 import DeferredClientWidgets from '@/components/DeferredClientWidgets';
 
+const libreBaskerville = Libre_Baskerville({ subsets: ['latin'], weight: ['400','700'], variable: '--font-libre-baskerville', display: 'swap' });
 
 export const viewport: Viewport = { themeColor: '#111318', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
 
 export const metadata: Metadata = {
-  title: 'ARCHIVUM — SJS study archive',
-  description: 'A class-wise study archive for SJS students: notes, previous papers and practical exam tips for Classes 9–12.',
+  title: 'ARCHIVUM — Sister Organisation of QUEST',
+  description: 'A place for SJS students for all the materials they need — notes, papers, study material and exam tips for Classes 9–12.',
   keywords: 'SJS, ARCHIVUM, JKBOSE, school notes, previous papers, study material, exam tips',
   manifest: '/manifest.json',
-  icons: { icon: [{ url: '/archivum-logo-light.png', sizes: '1024x1024', type: 'image/png' }, { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' }], apple: '/archivum-logo-light.png' },
+  icons: { icon: [{ url: '/archivum-icon.png', sizes: '512x512', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/archivum-icon.png' },
   appleWebApp: { capable: true, title: 'ARCHIVUM', statusBarStyle: 'black-translucent' },
-  openGraph: { title: 'ARCHIVUM — SJS study archive', description: 'A sister organisation of SJS Quest for SJS students: notes, papers, study material and exam tips.', siteName: 'ARCHIVUM', type: 'website' },
+  openGraph: { title: 'ARCHIVUM — Sister Organisation of QUEST', description: 'A sister organisation of SJS Quest for SJS students: notes, papers, study material and exam tips.', siteName: 'ARCHIVUM', type: 'website' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: 'var(--ivory)', color: 'var(--ink)' }}>
+      <body className={`${libreBaskerville.variable} min-h-screen flex flex-col antialiased`} style={{ backgroundColor: 'var(--ivory)', color: 'var(--ink)' }}>
         <ThemeProvider>
           <StudentClassProvider>
             <ToastProvider>

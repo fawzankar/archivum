@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
 import PdfViewerModal from '@/components/PdfViewerModal';
-import { BookOpen, FolderOpen } from 'lucide-react';
+import { BookOpen, FolderOpen, ArrowRight, Layers3 } from 'lucide-react';
 import { CLASS_SUBJECTS, resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
 
 interface NotesClientProps {
@@ -44,14 +44,14 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
   return (
     <div className="space-y-7 sm:space-y-9">
       <section className="rounded-[2rem] border overflow-hidden premium-shadow" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-        <div className="p-5 sm:p-7" style={{ background: 'var(--surface)' }}>
+        <div className="p-5 sm:p-7" style={{ background: 'linear-gradient(135deg, var(--accent-light), var(--surface))' }}>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-medium" style={{ color: 'var(--accent)' }}>Class {selectedClass}</p>
-              <h2 className="font-display font-bold text-2xl sm:text-3xl mt-2">Choose the subject you are revising</h2>
-              <p className="text-xs sm:text-sm mt-1.5" style={{ color: 'var(--ink-muted)' }}>The class selector changes the subjects and resources shown below.</p>
+              <span className="text-[10px] font-bold uppercase tracking-[.22em]" style={{ color: 'var(--accent)' }}>CLASS {selectedClass} · NOTES LIBRARY</span>
+              <h2 className="font-display font-bold text-2xl sm:text-3xl mt-2">Choose a subject</h2>
+              <p className="text-xs sm:text-sm mt-1.5" style={{ color: 'var(--ink-muted)' }}>Your class profile controls the subject list, so you only see what applies to you.</p>
             </div>
-            
+            <Layers3 className="w-6 h-6 shrink-0" style={{ color: 'var(--accent)' }} />
           </div>
         </div>
 
@@ -92,7 +92,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
       )}
 
       <div className="flex items-end justify-between gap-4">
-        <div><h3 className="font-display font-bold text-xl mt-1">{activeSubject || 'All subjects'} <span className="text-sm font-medium" style={{ color: 'var(--ink-faint)' }}> ({filteredNotes.length})</span></h3></div>
+        <div><p className="text-[10px] uppercase tracking-[.18em] font-bold" style={{ color: 'var(--accent)' }}>ARCHIVE RESULTS</p><h3 className="font-display font-bold text-xl mt-1">{activeSubject || 'All subjects'} <span className="text-sm font-medium" style={{ color: 'var(--ink-faint)' }}>· {filteredNotes.length}</span></h3></div>
         <span className="hidden sm:block text-[11px]" style={{ color: 'var(--ink-muted)' }}>Class {selectedClass}</span>
       </div>
 
@@ -105,7 +105,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
           <BookOpen className="w-10 h-10 mx-auto" style={{ color: 'var(--ink-faint)' }} />
           <h3 className="font-display font-bold text-lg">No notes yet for {activeSubject || 'this class'}</h3>
           <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>The subject is available in ARCHIVUM. Upload the first useful resource for Class {selectedClass}.</p>
-          <a href={`/upload?class=${selectedClass}${activeSubject ? `&subject=${encodeURIComponent(activeSubject)}` : ''}`} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}>Upload a resource</a>
+          <a href={`/upload?class=${selectedClass}${activeSubject ? `&subject=${encodeURIComponent(activeSubject)}` : ''}`} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}>Upload a resource <ArrowRight className="w-3.5 h-3.5" /></a>
         </div>
       )}
       <PdfViewerModal resource={activePdf} onClose={() => setActivePdf(null)} />
