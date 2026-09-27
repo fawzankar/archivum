@@ -18,7 +18,7 @@
   --accent-on-hero: #3474e8;
   --hero-ink: #1b2330;
   --hero-muted: #697586;
-  --hero-gradient: radial-gradient(circle at 78% 18%, rgba(104,154,246,.14), transparent 30%), linear-gradient(180deg, #f8f9fc 0%, #f3f6fa 100%);
+  --hero-gradient: #f6f8fb;
   --sage: var(--accent);
   --sage-light: var(--accent-light);
   --rose: #e11d48;
@@ -37,7 +37,7 @@
   --card-peach-bg: #2b1d1a; --card-peach-text: #ffb7aa; --card-sky-bg: #14242c; --card-sky-text: #9edcf5;
   --card-lavender-bg: #211b30; --card-lavender-text: #d0c0ff; --card-yellow-bg: #2a2618; --card-yellow-text: #f1dd9a;
   --card-sage-bg: #18251c; --card-sage-text: #b7d8be;
-  --hero-gradient: radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 42%), linear-gradient(135deg, #0d1118 0%, #151b25 55%, #0d1118 100%);
+  --hero-gradient: #0d1118;
   --hero-ink: #f7f9fc; --hero-muted: rgba(247,249,252,.72); --accent-on-hero: #a9c7ff;
 }
 
@@ -78,7 +78,7 @@ body { background: var(--ivory); color: var(--ink); font-family: 'Helvetica Neue
 .animate-fade { animation:fadeIn .28s cubic-bezier(.16,1,.3,1) both; }
 .splash-logo { animation:splashIn .9s cubic-bezier(.16,1,.3,1) both, floatIcon 2.2s ease-in-out .9s infinite; }
 .splash-orb { background:color-mix(in srgb,var(--accent) 28%,transparent); filter:blur(24px); animation:pulseOrb 2.2s ease-in-out infinite; }
-.splash-grid { opacity:.25; background-image:linear-gradient(color-mix(in srgb,var(--accent) 20%,transparent) 1px,transparent 1px),linear-gradient(90deg,color-mix(in srgb,var(--accent) 20%,transparent) 1px,transparent 1px); background-size:42px 42px; mask-image:linear-gradient(to bottom,black,transparent 80%); }
+.splash-grid { opacity:.08; background-image:linear-gradient(color-mix(in srgb,var(--accent) 18%,transparent) 1px,transparent 1px); background-size:56px 56px; mask-image:linear-gradient(to bottom,black,transparent 70%); }
 .hero-accent-panel { background:var(--accent); color:var(--accent-contrast); box-shadow:0 22px 70px var(--accent-glow); }
 .premium-shadow { box-shadow:0 20px 55px color-mix(in srgb,var(--ink) 10%,transparent); }
 
@@ -150,8 +150,8 @@ button, a { -webkit-tap-highlight-color: transparent; }
   .brand-logo { width: 30px !important; height: 30px !important; border-radius: 10px; }
 }
 
-:root { --accent-light: color-mix(in srgb,var(--accent) 14%,#fff); --accent-glow: color-mix(in srgb,var(--accent) 22%,transparent); }
-.dark { --accent-light: color-mix(in srgb,var(--accent) 18%,#101217); --accent-glow: color-mix(in srgb,var(--accent) 28%,transparent); }
+:root { --accent-light: color-mix(in srgb,var(--accent) 20%,#fff); --accent-glow: color-mix(in srgb,var(--accent) 30%,transparent); }
+.dark { --accent-light: color-mix(in srgb,var(--accent) 22%,#101217); --accent-glow: color-mix(in srgb,var(--accent) 34%,transparent); }
 
 /* v31 visual polish */
 .brand-logo { color:var(--accent); }
@@ -188,3 +188,15 @@ button, input, textarea, select { font-family: inherit; }
 .editorial-rule { border-top: 1px solid var(--border); }
 .hero-kicker { color: var(--accent-on-hero); font-size: 10px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
+
+
+/* Final identity pass: strong, singular accent without generic gradient/glass treatment. */
+.hero-editorial { position: relative; background: var(--hero-gradient); border-bottom: 1px solid color-mix(in srgb,var(--accent) 28%,var(--border)); }
+.hero-editorial::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--accent); box-shadow:0 0 18px color-mix(in srgb,var(--accent) 55%,transparent); }
+.hero-accent-rule { width:72px; height:3px; background:var(--accent); box-shadow:0 0 16px color-mix(in srgb,var(--accent) 45%,transparent); }
+.accent-focus { border-color:color-mix(in srgb,var(--accent) 48%,var(--border)) !important; box-shadow:0 8px 24px color-mix(in srgb,var(--accent) 12%,transparent); }
+.archivum-css-logo { background: var(--accent); -webkit-mask-image:url('/archivum-logo-mask.png'); mask-image:url('/archivum-logo-mask.png'); -webkit-mask-mode:alpha; mask-mode:alpha; }
+@media (prefers-reduced-motion:no-preference) {
+  .accent-focus { transition: border-color .18s ease, box-shadow .18s ease, color .18s ease; }
+  .accent-focus:hover { box-shadow:0 12px 30px color-mix(in srgb,var(--accent) 18%,transparent); }
+}
