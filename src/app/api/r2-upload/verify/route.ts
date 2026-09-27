@@ -19,7 +19,10 @@ export async function GET(request: Request) {
       size: Number(head.ContentLength || 0),
       contentType: head.ContentType || null,
     });
-  } catch {
-    return NextResponse.json({ exists: false }, { status: 404 });
+  } catch (error) {
+    const err = error as { name?: string; Code?: string; code?: string; $metadata?: { httpStatusCode?: number }; message?: string };
+    const status = err.$metadata?.httpStatusCode;
+    const code = err.Code || err.code || err.name || 'R2_VERIFY_FAILED';
+    return NextResponse.json({ exists: false, code, status: status ?? null, error: err.message || 'Could not verify the R2 object.' }, { status: 200 });
   }
 }

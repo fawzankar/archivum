@@ -1,4 +1,4 @@
-import { DeleteObjectCommand, HeadBucketCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { NextResponse } from 'next/server';
 import { getR2Client, MAX_FILE_SIZE } from '@/lib/storage';
@@ -24,46 +24,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Cloudflare R2 is not configured.' }, { status: 503 });
     }
 
-    // Validate the configured R2 account/bucket/credentials before creating a
-    // presigned URL. A presigned URL can be generated locally even when the
-    // account ID or bucket is wrong; the browser then sees the resulting 403
-    // as a generic CORS/fetch error. Fail here with the real server-side error.
-    try {
-      await client.send(new HeadBucketCommand({ Bucket: process.env.R2_BUCKET_NAME }));
-    } catch (error) {
-      const err = error as { name?: string; Code?: string; code?: string; $metadata?: { httpStatusCode?: number }; message?: string };
-      const status = err.$metadata?.httpStatusCode;
-      const code = err.Code || err.code || err.name || 'R2_BUCKET_CHECK_FAILED';
-      return NextResponse.json({
-        error: `Cloudflare R2 bucket check failed (${code}${status ? `, HTTP ${status}` : ''}). Check R2_ACCOUNT_ID, R2_BUCKET_NAME, and that the R2 API token has Object Read & Write access to the archivum bucket.`,
-        code: 'R2_CONFIGURATION_ERROR',
-      }, { status: 503 });
-    }
-
-    // Verify write permission too. This catches the common case where the
-    // S3 credentials can create a presigned URL but cannot actually write to
-    // the selected bucket.
-    const healthKey = `system/archivum-upload-check-${crypto.randomUUID()}.txt`;
-    try {
-      await client.send(new PutObjectCommand({
-        Bucket: process.env.R2_BUCKET_NAME,
-        Key: healthKey,
-        Body: 'ARCHIVUM R2 upload check',
-        ContentType: 'text/plain',
-      }));
-      await client.send(new DeleteObjectCommand({
-        Bucket: process.env.R2_BUCKET_NAME,
-        Key: healthKey,
-      }));
-    } catch (error) {
-      const err = error as { name?: string; Code?: string; code?: string; $metadata?: { httpStatusCode?: number }; message?: string };
-      const status = err.$metadata?.httpStatusCode;
-      const code = err.Code || err.code || err.name || 'R2_WRITE_CHECK_FAILED';
-      return NextResponse.json({
-        error: `Cloudflare R2 write check failed (${code}${status ? `, HTTP ${status}` : ''}). Check R2_ACCOUNT_ID, R2_BUCKET_NAME, the R2 endpoint/jurisdiction, and that the R2 API token has Object Read & Write access to the archivum bucket.`,
-        code: 'R2_WRITE_CONFIGURATION_ERROR',
-      }, { status: 503 });
-    }
+    // IMPORTANT: Do not call HeadBucket here. Cloudflare R2 Object Read & Write
+    // tokens are scoped to object operations; bucket-level HeadBucket can return
+    // HTTP 403 even when PutObject/HeadObject are fully permitted. That 403 was
+    // the reason the app was incorrectly reporting an R2 bucket/CORS failure.
+    // The actual upload and the server-side HeadObject verification below are
+    // the authoritative checks.
 
     const body = await request.json();
     const filename = safeFilename(body.filename);
