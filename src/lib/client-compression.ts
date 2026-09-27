@@ -75,7 +75,11 @@ async function compressPdf(file: File, onProgress?: (message: string) => void): 
   });
 
   if (bytes.byteLength >= file.size) return file;
-  return new File([bytes], file.name, {
+  // Copy into a plain ArrayBuffer so TypeScript/DOM BlobPart accepts it under
+  // the newer ArrayBufferLike typings used by Next.js/Vercel.
+  const output = new ArrayBuffer(bytes.byteLength);
+  new Uint8Array(output).set(bytes);
+  return new File([output], file.name, {
     type: 'application/pdf',
     lastModified: file.lastModified,
   });
