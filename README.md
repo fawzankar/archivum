@@ -100,3 +100,52 @@ The Turso schema and starter data initialization is idempotent and safe when mul
 - Uploads require a contributor name so approved uploads can power the contributor leaderboard.
 - Public reviews are user-submitted and moderation-gated; no fabricated testimonials are seeded.
 - Footer and About page credit Fawzan Kar as the current solo founder/developer.
+
+
+## Cloudflare R2 PDF storage
+
+ARCHIVUM stores uploaded PDFs/images in Cloudflare R2 and stores only their metadata and public URL in Turso. This keeps Vercel from carrying large upload/download traffic and lets PDFs be served directly from Cloudflare.
+
+### Cloudflare setup
+
+1. Create a Cloudflare account and open **R2 Object Storage**.
+2. Create a bucket, for example `archivum`.
+3. Create an R2 API token with **Object Read & Write** access to that bucket.
+4. Give the bucket a public URL using an R2 public development URL or, preferably, a custom domain such as `cdn.yourdomain.com`.
+5. In Vercel, add:
+   - `R2_ACCOUNT_ID`
+   - `R2_ACCESS_KEY_ID`
+   - `R2_SECRET_ACCESS_KEY`
+   - `R2_BUCKET_NAME`
+   - `R2_PUBLIC_URL`
+6. Redeploy.
+
+`R2_PUBLIC_URL` must be the public base URL that serves objects from the bucket. Uploaded objects are placed under `uploads/`.
+
+Uploads use a short-lived signed PUT URL, so R2 credentials never reach the browser. PDFs are then served directly from the R2 public URL with a one-year immutable cache header.
+
+### Local development
+
+Without R2 variables, the app can still use `public/uploads` for local-only development. Vercel deployments should use R2.
+
+
+### R2 CORS
+
+Because the admin upload page sends the PDF directly from the browser to the signed R2 URL, add a bucket CORS rule allowing your ARCHIVUM origin. For local development and production, use both origins:
+
+```json
+[
+  {
+    "AllowedOrigins": [
+      "http://localhost:3000",
+      "https://sjswork.vercel.app"
+    ],
+    "AllowedMethods": ["PUT", "GET", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+If you later attach a custom domain to ARCHIVUM, add that origin too.

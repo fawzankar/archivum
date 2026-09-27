@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useToast } from '@/components/ToastContext';
-import { upload } from '@vercel/blob/client';
 import { compressUpload, MAX_UPLOAD_BYTES, sha256, validateFileSignature } from '@/lib/client-compression';
 import { 
   Upload, 
@@ -120,28 +119,35 @@ export default function UploadClient() {
       }
 
       const hash = await sha256(preparedFile);
-      const extension = preparedFile.name.toLowerCase().endsWith('.pdf')
-        ? '.pdf'
-        : preparedFile.name.toLowerCase().endsWith('.png') ? '.png' : '.jpg';
-      const pathname = `uploads/${Date.now()}-${crypto.randomUUID()}${extension}`;
-
       setCompressionStatus(preparedFile.size < file.size
         ? `Compressed from ${(file.size / 1024 / 1024).toFixed(2)} MB to ${(preparedFile.size / 1024 / 1024).toFixed(2)} MB`
         : 'File is already optimized — uploading…');
 
-      const blob = await upload(pathname, preparedFile, {
-        access: 'public',
-        handleUploadUrl: '/api/blob-upload',
-        multipart: true,
-        contentType: preparedFile.type,
-        clientPayload: JSON.stringify({
-          size: preparedFile.size,
+      const presign = await fetch('/api/r2-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          filename: preparedFile.name,
           contentType: preparedFile.type,
+          size: preparedFile.size,
         }),
-        onUploadProgress: ({ percentage }) => {
-          setUploadProgress(Math.round(percentage));
-        },
       });
+      const presignJson = await presign.json();
+      if (!presign.ok) throw new Error(presignJson.error || 'Could not prepare Cloudflare upload.');
+
+      setCompressionStatus('Uploading to Cloudflare…');
+      const uploadResponse = await fetch(presignJson.uploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': preparedFile.type,
+          'Cache-Control': 'public, max-age=31536000, immutable',
+        },
+        body: preparedFile,
+      });
+      if (!uploadResponse.ok) {
+        throw new Error('Cloudflare upload failed. Please try again.');
+      }
+      setUploadProgress(100);
 
       setCompressionStatus('Saving submission details…');
       const res = await fetch('/api/upload', {
@@ -160,7 +166,8 @@ export default function UploadClient() {
           chapter: chapter.trim() || null,
           topic: topic.trim() || null,
           description: description.trim() || null,
-          blobUrl: blob.url,
+          fileUrl: presignJson.publicUrl,
+          storageKey: presignJson.key,
           fileName: preparedFile.name,
           fileType: preparedFile.type,
           fileSize: preparedFile.size,

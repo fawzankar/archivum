@@ -1,11 +1,12 @@
 import crypto from 'crypto';
+import { unstable_cache } from 'next/cache';
 import { execute, initDb, query, queryOne } from './db';
 
 export interface Resource {
   id: number; slug: string; title: string; description: string | null; class_level: number; board: string;
   subject: string; chapter: string | null; topic: string | null; resource_type: string; paper_type: string | null;
   year: number | null; school_name: string | null; contributor_name: string | null; file_url: string; file_size: number; file_type: string;
-  file_name: string; file_hash: string | null; status: 'pending'|'approved'|'rejected'|'deleted'; rejection_reason: string | null;
+  file_name: string; storage_key: string | null; file_hash: string | null; status: 'pending'|'approved'|'rejected'|'deleted'; rejection_reason: string | null;
   featured: number; views: number; downloads: number; average_rating: number; rating_count: number; tags: string | null;
   created_at: string; updated_at: string; approved_at: string | null;
 }
@@ -23,7 +24,7 @@ export function generateSlug(title: string): string {
 export function computeFileHash(buffer: Buffer) { return crypto.createHash('md5').update(buffer).digest('hex'); }
 export function sanitizeFilename(filename: string) { return filename.replace(/[^a-zA-Z0-9_.-]/g, '_'); }
 
-export async function getResources(options: ResourceFilterOptions = {}) {
+async function getResourcesUncached(options: ResourceFilterOptions = {}) {
   await initDb();
   const { class_level, subject, resource_type, paper_type, year, school_name, chapter, topic, search, status='approved', featured,
     sortBy='newest', page=1, limit=20 } = options;
@@ -47,11 +48,30 @@ export async function getResources(options: ResourceFilterOptions = {}) {
   }
   const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
   const orderSql = sortBy === 'downloads' ? 'ORDER BY downloads DESC, created_at DESC' : sortBy === 'rating' ? 'ORDER BY average_rating DESC, rating_count DESC, created_at DESC' : sortBy === 'relevance' && search ? 'ORDER BY featured DESC, views DESC, downloads DESC' : 'ORDER BY created_at DESC';
-  const totalRow = await queryOne<{count:number}>(`SELECT COUNT(*) AS count FROM resources ${whereSql}`, params);
-  const totalCount = Number(totalRow?.count ?? 0);
   const offset = (safePage - 1) * safeLimit;
-  const items = await query<Resource>(`SELECT * FROM resources ${whereSql} ${orderSql} LIMIT ? OFFSET ?`, [...params, safeLimit, offset]);
+  const [totalRow, items] = await Promise.all([
+    queryOne<{count:number}>(`SELECT COUNT(*) AS count FROM resources ${whereSql}`, params),
+    query<Resource>(`SELECT * FROM resources ${whereSql} ${orderSql} LIMIT ? OFFSET ?`, [...params, safeLimit, offset]),
+  ]);
+  const totalCount = Number(totalRow?.count ?? 0);
   return { items, totalCount, totalPages: Math.ceil(totalCount / safeLimit) || 1, currentPage: safePage };
+}
+
+export async function getResources(options: ResourceFilterOptions = {}) {
+  const normalized = {
+    ...options,
+    status: options.status ?? 'approved',
+    page: options.page ?? 1,
+    limit: options.limit ?? 20,
+    sortBy: options.sortBy ?? 'newest',
+  };
+  if (normalized.status !== 'approved') return getResourcesUncached(normalized);
+  const key = JSON.stringify(normalized);
+  return unstable_cache(
+    () => getResourcesUncached(normalized),
+    ['resources', key],
+    { revalidate: 30 }
+  )();
 }
 
 export async function getResourceById(id:number) { return queryOne<Resource>('SELECT * FROM resources WHERE id = ?', [id]); }
@@ -102,13 +122,27 @@ export async function checkForDuplicates(fileHash:string,title:string,classLevel
   return {isDuplicate:false};
 }
 
-export async function getRealStats() {
-  const total = await queryOne<{count:number}>("SELECT COUNT(*) AS count FROM resources WHERE status='approved'");
-  const classRows = await query<{class_level:number;count:number}>("SELECT class_level,COUNT(*) AS count FROM resources WHERE status='approved' GROUP BY class_level");
-  const subjectRows = await query<{sub:string;count:number}>("SELECT LOWER(subject) AS sub,COUNT(*) AS count FROM resources WHERE status='approved' GROUP BY LOWER(subject)");
-  const totals = await queryOne<{downloads:number;views:number}>("SELECT COALESCE(SUM(downloads),0) AS downloads,COALESCE(SUM(views),0) AS views FROM resources WHERE status='approved'");
-  return {totalApproved:Number(total?.count??0),classCounts:Object.fromEntries(classRows.map(r=>[r.class_level,Number(r.count)])),subjectCounts:Object.fromEntries(subjectRows.map(r=>[r.sub,Number(r.count)])),totalDownloads:Number(totals?.downloads??0),totalViews:Number(totals?.views??0)};
+async function getRealStatsUncached() {
+  const [total, classRows, subjectRows, totals] = await Promise.all([
+    queryOne<{count:number}>("SELECT COUNT(*) AS count FROM resources WHERE status='approved'"),
+    query<{class_level:number;count:number}>("SELECT class_level,COUNT(*) AS count FROM resources WHERE status='approved' GROUP BY class_level"),
+    query<{sub:string;count:number}>("SELECT LOWER(subject) AS sub,COUNT(*) AS count FROM resources WHERE status='approved' GROUP BY LOWER(subject)"),
+    queryOne<{downloads:number;views:number}>("SELECT COALESCE(SUM(downloads),0) AS downloads,COALESCE(SUM(views),0) AS views FROM resources WHERE status='approved'"),
+  ]);
+  return {
+    totalApproved:Number(total?.count??0),
+    classCounts:Object.fromEntries(classRows.map(r=>[r.class_level,Number(r.count)])),
+    subjectCounts:Object.fromEntries(subjectRows.map(r=>[r.sub,Number(r.count)])),
+    totalDownloads:Number(totals?.downloads??0),
+    totalViews:Number(totals?.views??0)
+  };
 }
+
+export const getRealStats = unstable_cache(
+  getRealStatsUncached,
+  ['real-stats'],
+  { revalidate: 30 }
+);
 
 
 export async function getContributorLeaderboard(limit = 10) {

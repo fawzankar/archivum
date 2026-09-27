@@ -7,7 +7,7 @@ import HomeClient from './HomeClient';
 import { Archive, ArrowRight, BookOpen, FileText, Lightbulb, Upload, Sparkles, Layers3 } from 'lucide-react';
 import { subjectsForClass, SUBJECT_DETAILS } from '@/lib/subjects';
 
-export const revalidate=0;
+export const revalidate=30;
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ class?: string }> }){
  const params = await searchParams;
