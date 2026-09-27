@@ -3,11 +3,13 @@ import { Users, Upload, Trophy } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
-type Contributor = { contributor_name: string; uploads: number };
+type Contributor = { contributor_name: string; uploads: number; latest_title: string | null; latest_id: number | null };
 
 export default async function ContributorsPage() {
   const contributors = await query<Contributor>(`
-    SELECT contributor_name, COUNT(*) as uploads
+    SELECT contributor_name, COUNT(*) as uploads,
+      (SELECT r2.title FROM resources r2 WHERE r2.status='approved' AND r2.contributor_name = resources.contributor_name ORDER BY r2.created_at DESC LIMIT 1) as latest_title,
+      (SELECT r3.id FROM resources r3 WHERE r3.status='approved' AND r3.contributor_name = resources.contributor_name ORDER BY r3.created_at DESC LIMIT 1) as latest_id
     FROM resources
     WHERE status = 'approved'
       AND contributor_name IS NOT NULL
@@ -36,7 +38,7 @@ export default async function ContributorsPage() {
         ) : contributors.map((c, i) => (
           <div key={c.contributor_name} className="rounded-3xl border p-4 sm:p-5 flex items-center gap-4" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
             <div className="w-11 h-11 rounded-2xl flex items-center justify-center font-display font-bold" style={{background:'var(--accent-light)',color:'var(--accent)'}}>{i+1}</div>
-            <div className="min-w-0 flex-1"><div className="font-display font-bold truncate">{c.contributor_name}</div><div className="text-xs mt-1" style={{color:'var(--ink-muted)'}}>Approved contributor</div></div>
+            <div className="min-w-0 flex-1"><div className="font-display font-medium truncate">{c.contributor_name}</div><div className="text-[11px] mt-1 truncate" style={{color:'var(--ink-muted)'}}>{c.latest_title ? `Latest: ${c.latest_title}` : 'Approved contributor'}</div></div>
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-bold" style={{background:'var(--surface-raised)',color:'var(--ink-muted)'}}><Upload className="w-3.5 h-3.5"/>{c.uploads} {c.uploads === 1 ? 'upload' : 'uploads'}</div>
           </div>
         ))}

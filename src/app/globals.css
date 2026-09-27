@@ -56,8 +56,8 @@
 html { scroll-behavior: smooth; min-height: 100%; }
 body { background: var(--ivory); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.6; -webkit-font-smoothing: antialiased; min-height: 100%; overflow-x: hidden; }
 .font-display { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; letter-spacing: -0.015em; }
-.font-display.font-bold { font-weight: 400; }
-.font-display.font-semibold { font-weight: 400; }
+.font-display.font-bold { font-weight: 500; }
+.font-display.font-semibold { font-weight: 500; }
 .app-touch-active:active { transform: scale(.98); }
 .safe-area-bottom { padding-bottom: max(env(safe-area-inset-bottom,0px),16px); }
 .no-scrollbar::-webkit-scrollbar { display:none; } .no-scrollbar { scrollbar-width:none; -ms-overflow-style:none; }
@@ -114,18 +114,23 @@ button, a { -webkit-tap-highlight-color: transparent; }
 /* Keep long archive sections cheap to render while preserving layout. */
 .archive-section { content-visibility: auto; contain-intrinsic-size: 1px 520px; }
 
-.quest-word { font-family: var(--font-libre-baskerville), Georgia, serif; letter-spacing: .08em; font-weight: 700; }
+.quest-word { font-family: var(--font-libre-baskerville), Georgia, serif; letter-spacing: .06em; font-weight: 700; }
 .glass-header-accent { background: color-mix(in srgb,var(--surface) 68%,var(--accent-light) 32%); }
 @media (min-width: 640px) {
   .glass-header-accent { box-shadow: 0 12px 42px color-mix(in srgb,var(--accent) 10%,transparent), inset 0 1px 0 rgba(255,255,255,.55); }
 }
 
-.archivum-mark { display:block; background:var(--accent); -webkit-mask:url('/archivum-mark.svg') center/contain no-repeat; mask:url('/archivum-mark.svg') center/contain no-repeat; }
-
-/* ARCHIVUM visual system: quiet typography, stronger accents, compact controls. */
-.font-bold, .font-semibold, .font-medium { font-weight: 500 !important; }
+.archivum-mark { display:none; }
+.archivum-css-logo {
+  position:relative; display:block; width:100%; height:100%; color:var(--accent);
+  background:currentColor;
+  -webkit-mask:url('/archivum-logo-mask.png') center/contain no-repeat;
+  mask:url('/archivum-logo-mask.png') center/contain no-repeat;
+  transition:color .25s ease, transform .25s ease, filter .25s ease;
+}
+.archivum-css-logo .archivum-cross { display:none; }
 .brand-sister { font-weight: 700 !important; }
-.quest-word { font-family: var(--font-libre-baskerville), Georgia, serif; font-weight: 700 !important; letter-spacing: .08em; }
+.quest-word { font-family: var(--font-libre-baskerville), Georgia, serif; font-weight: 700 !important; letter-spacing: .06em; }
 .brand-logo { background: color-mix(in srgb,var(--accent) 16%,var(--surface)); color: var(--accent); border: 1px solid color-mix(in srgb,var(--accent) 28%,var(--border)); box-shadow: inset 0 0 0 1px color-mix(in srgb,var(--accent) 8%,transparent), 0 8px 24px color-mix(in srgb,var(--accent) 14%,transparent); }
 .header-icon { width: 34px; height: 34px; min-width: 34px; padding: 0; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; line-height: 0; }
 .header-icon svg { width: 16px; height: 16px; display: block; flex: 0 0 auto; margin: 0; }
@@ -144,3 +149,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 
 :root { --accent-light: color-mix(in srgb,var(--accent) 14%,#fff); --accent-glow: color-mix(in srgb,var(--accent) 22%,transparent); }
 .dark { --accent-light: color-mix(in srgb,var(--accent) 18%,#101217); --accent-glow: color-mix(in srgb,var(--accent) 28%,transparent); }
+
+/* v31 visual polish */
+.brand-logo { color:var(--accent); }
+.brand-sister { font-weight:700 !important; }
+.header-icon { box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 5px 18px color-mix(in srgb,var(--accent) 9%,transparent); }
+.hero-overlap { margin-top:-76px; padding-top:76px; }
+@media (max-width:640px){ .hero-overlap { margin-top:-66px; padding-top:66px; } }
+.goated-glow { animation: goatedGlow 3.8s ease-in-out infinite; }
+@keyframes goatedGlow { 0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent), 0 18px 55px color-mix(in srgb,var(--accent) 10%,transparent)} 50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--accent) 5%,transparent), 0 24px 70px color-mix(in srgb,var(--accent) 22%,transparent)} }

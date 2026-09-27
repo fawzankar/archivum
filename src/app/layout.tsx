@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   description: 'A place for SJS students for all the materials they need — notes, papers, study material and exam tips for Classes 9–12.',
   keywords: 'SJS, ARCHIVUM, JKBOSE, school notes, previous papers, study material, exam tips',
   manifest: '/manifest.json',
-  icons: { icon: [{ url: '/favicon.ico', sizes: 'any' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/icon-192.png' },
+  icons: { icon: [{ url: '/archivum-icon.png', sizes: '512x512', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/archivum-icon.png' },
   appleWebApp: { capable: true, title: 'ARCHIVUM', statusBarStyle: 'black-translucent' },
   openGraph: { title: 'ARCHIVUM — Sister Organisation of QUEST', description: 'A sister organisation of SJS Quest for SJS students: notes, papers, study material and exam tips.', siteName: 'ARCHIVUM', type: 'website' },
 };

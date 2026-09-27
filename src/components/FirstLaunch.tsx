@@ -11,7 +11,7 @@ export default function FirstLaunch() {
   const { studentClass, setStudentClass } = useStudentClass();
   const router = useRouter();
   const pathname = usePathname();
-  const [splash, setSplash] = useState(false);
+  const [splash, setSplash] = useState(pathname === '/');
   const [visible, setVisible] = useState(pathname !== '/');
 
   // Show the splash once per browser session. Navigating away and back to Home
@@ -47,7 +47,7 @@ export default function FirstLaunch() {
         <div className="relative text-center px-8">
           <div className="splash-orb absolute -inset-12 rounded-full" />
           <div className="relative mx-auto w-28 h-28 sm:w-36 sm:h-36 rounded-[2rem] flex items-center justify-center splash-logo" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)', boxShadow: '0 30px 80px color-mix(in srgb, var(--accent) 38%, transparent)' }}>
-            <span aria-hidden="true" className="archivum-mark w-14 h-14 sm:w-20 sm:h-20" style={{background:'var(--accent-contrast)'}} />
+            <span aria-hidden="true" className="archivum-css-logo w-14 h-14 sm:w-20 sm:h-20" style={{color:'var(--accent-contrast)'}} />
             <Sparkles className="absolute -right-2 -top-2 w-8 h-8" />
           </div>
           <div className="relative mt-8">

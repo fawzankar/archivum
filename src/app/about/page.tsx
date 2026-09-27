@@ -10,20 +10,21 @@ export default function AboutPage() {
             <Archive className="w-7 h-7"/>
           </div>
           <p className="mt-8 text-[10px] uppercase tracking-[.25em] font-bold" style={{color:'var(--accent-on-hero)'}}>ABOUT ARCHIVUM</p>
-          <h1 className="font-display text-4xl sm:text-6xl font-bold mt-2" style={{color:'var(--hero-ink)'}}>Built from a problem I faced myself.</h1>
+          <p className="text-[10px] uppercase tracking-[.2em] font-medium mt-6" style={{color:'var(--hero-muted)'}}>FOUNDER OF ARCHIVUM · FAWZAN KAR</p>
+          <h1 className="font-display text-4xl sm:text-6xl font-bold mt-2" style={{color:'var(--hero-ink)'}}>Built from a problem Fawzan Kar faced himself.</h1>
           <p className="mt-5 max-w-2xl text-sm sm:text-base leading-7" style={{color:'var(--hero-muted)'}}>ARCHIVUM is a student-built place for SJS students to preserve, discover and share useful academic material.</p>
         </div>
 
         <div className="p-7 sm:p-12 space-y-10">
           <div className="prose prose-zinc max-w-none">
             <p className="text-sm sm:text-base leading-7" style={{color:'var(--ink-muted)'}}>
-              When I was actually being really attentive about previous-year papers and finding quick notes, I realised how difficult it was to get everything I needed in one reliable place. Finding a particular paper could take a lot of time, and useful notes were often scattered around.
+              Fawzan Kar, the founder of ARCHIVUM, had firsthand experience with how difficult it could be to find previous-year papers and quick notes in one reliable place. Finding a particular paper could take a lot of time, and useful notes were often scattered around.
             </p>
             <p className="text-sm sm:text-base leading-7 mt-5" style={{color:'var(--ink-muted)'}}>
-              I also had my juniors asking me for previous-year papers. Unfortunately, when I received some of those papers at the time, I just went through them and moved on, so they were not properly stored or preserved for the future.
+              His juniors also asked him for previous-year papers. Unfortunately, when he received some of those papers at the time, he went through them and moved on, so they were not properly stored or preserved for the future.
             </p>
             <p className="text-sm sm:text-base leading-7 mt-5" style={{color:'var(--ink-muted)'}}>
-              That is what led me to ARCHIVUM: a simple archive for preserving these documents and making them easier to find for my fellow Josephites. The idea is not just to collect files, but to make useful material easier to discover when someone actually needs it.
+              That experience led Fawzan Kar to create ARCHIVUM: a simple archive for preserving these documents and making them easier to find for fellow Josephites. The idea is not just to collect files, but to make useful material easier to discover when someone actually needs it.
             </p>
           </div>
 
@@ -46,10 +47,10 @@ export default function AboutPage() {
             <p className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>SISTER ORGANISATION</p>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 mt-2">
               <div>
-                <h2 className="font-display font-bold text-2xl">ARCHIVUM × SJS Quest</h2>
-                <p className="text-sm leading-6 mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>ARCHIVUM is a sister organisation of SJS Quest, the St. Joseph's School, Baramulla newsletter club. SJS Quest focuses on school stories, magazines and creative work; ARCHIVUM focuses on preserving and finding academic material.</p>
+                <h2 className="font-display font-bold text-2xl">ARCHIVUM × <span className="quest-word">QUEST</span></h2>
+                <p className="text-sm leading-6 mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>ARCHIVUM is a sister organisation of SJS <span className="quest-word">QUEST</span>, the St. Joseph's School, Baramulla newsletter club. <span className="quest-word">QUEST</span> focuses on school stories, magazines and creative work; ARCHIVUM focuses on preserving and finding academic material.</p>
               </div>
-              <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Visit SJS Quest <ArrowRight className="w-3.5 h-3.5"/></a>
+              <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><span className="quest-word">VISIT QUEST</span> <ArrowRight className="w-3.5 h-3.5"/></a>
             </div>
           </div>
 
@@ -59,7 +60,7 @@ export default function AboutPage() {
               <div>
                 <h2 className="font-display font-bold text-xl">Want ARCHIVUM for your school?</h2>
                 <p className="text-sm leading-6 mt-2" style={{color:'var(--ink-muted)'}}>
-                  If you want a similar archive for your own school, message me and ask for the code. I’m happy to provide it for free.
+                  If another school wants a similar archive, they can message Fawzan Kar and ask for the code. He is happy to provide it for free.
                 </p>
                 <a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 mt-5 rounded-full px-4 py-2.5 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>
                   Message / find Fawzan <ArrowRight className="w-3.5 h-3.5"/>

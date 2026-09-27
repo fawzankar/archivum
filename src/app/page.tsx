@@ -21,7 +21,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
    getRealStats(),
  ]);
  return <div className="pb-24 space-y-14 sm:space-y-20">
-   <section className="relative overflow-hidden" style={{background:'var(--hero-gradient)'}}>
+   <section className="relative overflow-hidden -mt-[68px] pt-[68px] sm:-mt-[76px] sm:pt-[76px]" style={{background:'var(--hero-gradient)'}}>
      <div className="absolute inset-0 opacity-30" style={{backgroundImage:'radial-gradient(circle at 20% 30%, color-mix(in srgb,var(--accent) 45%,transparent), transparent 26%), radial-gradient(circle at 85% 60%, color-mix(in srgb,var(--accent) 35%,transparent), transparent 24%)'}}/>
      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[1.15fr_.85fr] gap-10 items-end">
        <div className="max-w-3xl"><div className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.18em]" style={{borderColor:'color-mix(in srgb,var(--accent) 45%,white 20%)',color:'var(--accent-on-hero)',background:'color-mix(in srgb,var(--surface) 8%,transparent)'}}><Sparkles className="w-3.5 h-3.5"/> Class {activeClass} archive</div><h1 className="font-display font-bold text-5xl sm:text-6xl lg:text-7xl leading-[.95] tracking-[-.04em] mt-6" style={{color:'var(--hero-ink)'}}>Everything you need.<br/><span style={{color:'var(--accent-on-hero)',opacity:.62}}>One archive.</span></h1><p className="text-sm sm:text-base max-w-xl mt-6 leading-relaxed" style={{color:'var(--hero-muted)'}}>ARCHIVUM keeps SJS notes, previous papers, study material and exam tips organised around your class—so you spend less time hunting and more time studying.</p><div className="mt-7 max-w-2xl"><HomeClient initialSearch=""/></div></div>
@@ -31,8 +31,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
    <section className="archive-section max-w-7xl mx-auto px-4 sm:px-6">
      <div className="rounded-[2rem] border p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
-       <div><span className="brand-sister text-[10px] uppercase tracking-[.16em]" style={{color:'var(--accent)'}}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span><h2 className="font-display font-bold text-2xl mt-1">Meet our sister organisation: SJS Quest</h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>School stories, magazines, photography and creative work from the SJS community — all in one place.</p></div>
-       <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Visit Quest <ArrowRight className="w-3.5 h-3.5"/></a>
+       <div><span className="brand-sister text-[10px] uppercase tracking-[.16em]" style={{color:'var(--accent)'}}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span><h2 className="font-display font-bold text-2xl mt-1">Meet our sister organisation: SJS <span className="quest-word">QUEST</span></h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>School stories, magazines, photography and creative work from the SJS community — all in one place.</p></div>
+       <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><span className="quest-word">VISIT QUEST</span> <ArrowRight className="w-3.5 h-3.5"/></a>
      </div>
    </section>
 
