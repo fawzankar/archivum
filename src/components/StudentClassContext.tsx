@@ -18,8 +18,17 @@ export function StudentClassProvider({ children }: { children: React.ReactNode }
   const [isChangingClass, setIsChangingClass] = useState(false);
 
   useEffect(() => {
+    const urlClass = Number(new URLSearchParams(window.location.search).get('class') || '');
     const stored = Number(localStorage.getItem('archivum_student_class'));
-    if ([9, 10, 11, 12].includes(stored)) setStudentClassState(stored as StudentClass);
+    const initial = [9, 10, 11, 12].includes(urlClass)
+      ? urlClass
+      : ([9, 10, 11, 12].includes(stored) ? stored : null);
+
+    if (initial) {
+      setStudentClassState(initial as StudentClass);
+      localStorage.setItem('archivum_student_class', String(initial));
+      document.cookie = `archivum_class=${initial};path=/;max-age=31536000;samesite=lax`;
+    }
 
     const syncFromStorage = (event: StorageEvent) => {
       if (event.key !== 'archivum_student_class') return;

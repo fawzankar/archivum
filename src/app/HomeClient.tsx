@@ -40,14 +40,14 @@ export default function HomeClient({ initialSearch = '' }: { initialSearch?: str
       {/* Search Input Bar (Matching reference mockup exactly) */}
       <form onSubmit={handleSearch} className="relative w-full">
         <div
-          className="relative flex items-center w-full rounded-2xl border transition-all duration-200 shadow-sm focus-within:shadow-md focus-within:border-zinc-400"
+          className="relative flex items-center w-full rounded-[14px] sm:rounded-[16px] border transition-all duration-200 shadow-sm focus-within:shadow-md"
           style={{
             backgroundColor: 'var(--surface)',
             borderColor: 'var(--border)',
           }}
         >
           <Search
-            className="w-4 h-4 ml-4 shrink-0"
+            className="w-4 h-4 ml-3.5 sm:ml-4 shrink-0"
             style={{ color: 'var(--ink-muted)' }}
           />
 
@@ -57,12 +57,12 @@ export default function HomeClient({ initialSearch = '' }: { initialSearch?: str
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search notes, papers, subjects..."
-            className="w-full py-3.5 px-3.5 text-xs sm:text-sm bg-transparent outline-none font-sans font-normal"
+            className="w-full min-w-0 py-3 px-3 text-xs sm:py-3.5 sm:px-3.5 sm:text-sm bg-transparent outline-none font-sans font-normal"
             style={{ color: 'var(--ink)' }}
           />
 
           {/* ⌘ K keyboard shortcut hint */}
-          <div className="mr-3 shrink-0 flex items-center">
+          <div className="mr-2.5 sm:mr-3 shrink-0 flex items-center">
             <span
               className="hidden sm:inline-flex items-center text-[10px] font-mono px-2 py-1 rounded-md border font-medium"
               style={{
@@ -78,7 +78,7 @@ export default function HomeClient({ initialSearch = '' }: { initialSearch?: str
       </form>
 
       {/* "Try searching: class 10 science · chemical reactions · previous papers" */}
-      <div className="flex flex-wrap items-center gap-2 text-xs" style={{ color: 'var(--ink-muted)' }}>
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[10px] sm:text-xs" style={{ color: 'var(--ink-muted)' }}>
         <span className="text-zinc-400">Try searching:</span>
         <button
           type="button"

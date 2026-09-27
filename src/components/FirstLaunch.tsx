@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Archive, ArrowRight, Check, GraduationCap, Sparkles } from 'lucide-react';
 import { useStudentClass, type StudentClass } from './StudentClassContext';
 
@@ -8,6 +9,7 @@ const classes: StudentClass[] = [9, 10, 11, 12];
 
 export default function FirstLaunch() {
   const { studentClass, setStudentClass } = useStudentClass();
+  const router = useRouter();
   const [splash, setSplash] = useState(true);
   const [visible, setVisible] = useState(false);
 
@@ -46,6 +48,15 @@ export default function FirstLaunch() {
 
   if (studentClass || !visible) return null;
 
+  const chooseClass = (level: StudentClass) => {
+    setStudentClass(level);
+    // The homepage is server-rendered from the class query/cookie, so make the
+    // selected class part of the URL immediately instead of waiting for a
+    // later refresh or relying only on client storage.
+    router.replace(`/?class=${level}`, { scroll: false });
+    router.refresh();
+  };
+
   return (
     <div className="fixed inset-0 z-[90] overflow-y-auto flex items-center justify-center p-4 animate-soft-scale" style={{ background: 'color-mix(in srgb, var(--ivory) 90%, var(--accent-light))', backdropFilter: 'blur(14px)' }}>
       <div className="w-full max-w-xl rounded-[2rem] border p-6 sm:p-10 shadow-2xl" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
@@ -59,7 +70,7 @@ export default function FirstLaunch() {
         </div>
         <div className="grid grid-cols-2 gap-3 mt-8">
           {classes.map((level) => (
-            <button key={level} onClick={() => setStudentClass(level)} className="group rounded-2xl border p-4 sm:p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[.98]" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)', color: 'var(--ink)' }}>
+            <button key={level} onClick={() => chooseClass(level)} className="group rounded-2xl border p-4 sm:p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[.98]" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)', color: 'var(--ink)' }}>
               <div className="flex items-center justify-between">
                 <span className="font-display text-3xl font-bold">{level}</span>
                 <span className="w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}><Check className="w-4 h-4 opacity-0 group-hover:opacity-100" /></span>
