@@ -45,16 +45,16 @@ export default function FirstLaunch() {
       <div className="fixed inset-0 z-[9999] overflow-hidden flex items-center justify-center" style={{ background: 'var(--hero-gradient)' }}>
         <div className="absolute inset-0 splash-grid" />
         <div className="relative text-center px-8">
-          <div className="splash-orb absolute -inset-12 rounded-full" />
-          <div className="relative mx-auto w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center splash-logo" style={{ color: 'var(--accent)' }}>
-            <span className="absolute inset-0 border border-[var(--accent)] opacity-20" />
-            <img src="/archivum-official-logo.png" alt="ARCHIVUM" className="relative w-[72%] h-[72%] object-contain archivum-splash-logo" />
+          <div className="splash-orb absolute -inset-16 rounded-full" />
+          <div className="premium-splash-logo relative mx-auto w-28 h-28 sm:w-36 sm:h-36 rounded-[22px] flex items-center justify-center splash-logo" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)', boxShadow: '0 30px 80px color-mix(in srgb, var(--accent) 38%, transparent)' }}>
+            <span aria-hidden="true" className="archivum-css-logo w-14 h-14 sm:w-20 sm:h-20" style={{color:'var(--accent-contrast)'}} />
+            
           </div>
           <div className="relative mt-8">
-            <p className="brand-sister text-[10px]" style={{ color: 'var(--accent)' }}>Sister organisation of <span className="quest-word">QUEST</span></p>
+            <p className="brand-sister text-[10px] uppercase tracking-[0.16em]" style={{ color: 'var(--accent-on-hero)' }}>SJS • ARCHIVE</p>
             <h1 className="font-display text-4xl sm:text-5xl tracking-[.035em] mt-2" style={{ color: 'var(--hero-ink)' }}>ARCHIVUM</h1>
             <p className="mt-3 text-xs sm:text-sm max-w-xs mx-auto leading-relaxed" style={{ color: 'var(--hero-muted)' }}>A place for SJS students for all the materials they need.</p>
-            <p className="mt-6 text-[11px] max-w-sm mx-auto leading-5" style={{ color: 'var(--hero-muted)' }}>ARCHIVUM was started by Fawzan Kar after too many useful papers and quick notes were difficult to find when they were actually needed.</p>
+            <p className="mt-6 text-xs max-w-sm mx-auto leading-relaxed" style={{ color: 'var(--hero-muted)' }}>Fawzan Kar started ARCHIVUM after seeing how often students had to hunt through old papers and scattered notes to prepare for exams.</p>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function FirstLaunch() {
           <GraduationCap className="w-7 h-7" />
         </div>
         <div className="mt-6 space-y-2">
-          <p className="text-xs font-semibold" style={{ color: 'var(--accent)' }}>Set your study profile</p>
+          <p className="text-[10px] uppercase tracking-[0.2em] font-bold" style={{ color: 'var(--accent)' }}>Personalise ARCHIVUM</p>
           <h2 className="font-display font-bold text-3xl sm:text-4xl" style={{ color: 'var(--ink)' }}>Which class are you in?</h2>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-muted)' }}>We’ll tune notes, papers, subjects and exam tips around your class. You can change this anytime from the menu.</p>
         </div>

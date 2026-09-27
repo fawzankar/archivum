@@ -1,16 +1,33 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 
 export default function HomeClient({ initialSearch = '' }: { initialSearch?: string }) {
   const [query, setQuery] = useState(initialSearch);
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Global ⌘K / Ctrl+K listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    router.push(query.trim() ? `/search?q=${encodeURIComponent(query.trim())}` : '/search');
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+    } else {
+      router.push('/search');
+    }
   };
 
   const handleQuickSearch = (term: string) => {
@@ -19,30 +36,76 @@ export default function HomeClient({ initialSearch = '' }: { initialSearch?: str
   };
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-3">
+      {/* Search Input Bar (Matching reference mockup exactly) */}
       <form onSubmit={handleSearch} className="relative w-full">
-        <div className="premium-search relative flex items-center w-full min-h-[56px]">
-          <Search className="w-5 h-5 ml-4 shrink-0" style={{ color: 'var(--accent)' }} />
+        <div
+          className="relative flex items-center w-full rounded-[14px] sm:rounded-[16px] border transition-all duration-200 shadow-sm focus-within:shadow-md"
+          style={{
+            backgroundColor: 'var(--surface)',
+            borderColor: 'var(--border)',
+          }}
+        >
+          <Search
+            className="w-4 h-4 ml-3.5 sm:ml-4 shrink-0"
+            style={{ color: 'var(--ink-muted)' }}
+          />
+
           <input
+            ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search a subject, chapter, paper or topic"
-            className="w-full min-w-0 py-4 px-3 text-sm bg-transparent outline-none"
+            placeholder="Search notes, papers, subjects..."
+            className="w-full min-w-0 py-3 px-3 text-xs sm:py-3.5 sm:px-3.5 sm:text-sm bg-transparent outline-none font-sans font-normal"
             style={{ color: 'var(--ink)' }}
-            aria-label="Search the ARCHIVUM archive"
           />
-          <button type="submit" className="mr-2 premium-button premium-button-primary text-xs shrink-0">Search</button>
+
+          {/* ⌘ K keyboard shortcut hint */}
+          <div className="mr-2.5 sm:mr-3 shrink-0 flex items-center">
+            <span
+              className="hidden sm:inline-flex items-center text-[10px] font-mono px-2 py-1 rounded-md border font-medium"
+              style={{
+                borderColor: 'var(--border)',
+                backgroundColor: 'var(--surface-raised)',
+                color: 'var(--ink-faint)',
+              }}
+            >
+              ⌘ K
+            </span>
+          </div>
         </div>
       </form>
-      <div className="flex flex-wrap items-center gap-2 text-xs" style={{ color: 'var(--ink-muted)' }}>
-        <span>Try</span>
-        <button type="button" onClick={() => handleQuickSearch('class 10 science')} className="font-medium hover:text-[var(--accent)]">Class 10 Science</button>
-        <span aria-hidden="true" style={{ color: 'var(--border)' }}>•</span>
-        <button type="button" onClick={() => handleQuickSearch('chemical reactions')} className="font-medium hover:text-[var(--accent)]">Chemical Reactions</button>
-        <span aria-hidden="true" style={{ color: 'var(--border)' }}>•</span>
-        <button type="button" onClick={() => handleQuickSearch('previous papers')} className="font-medium hover:text-[var(--accent)]">Previous Papers</button>
-        
+
+      {/* "Try searching: class 10 science · chemical reactions · previous papers" */}
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[10px] sm:text-xs" style={{ color: 'var(--ink-muted)' }}>
+        <span className="text-zinc-400">Try searching:</span>
+        <button
+          type="button"
+          onClick={() => handleQuickSearch('class 10 science')}
+          className="hover:underline transition-colors cursor-pointer"
+          style={{ color: 'var(--ink-muted)' }}
+        >
+          class 10 science
+        </button>
+        <span className="text-zinc-300 dark:text-zinc-700">·</span>
+        <button
+          type="button"
+          onClick={() => handleQuickSearch('chemical reactions')}
+          className="hover:underline transition-colors cursor-pointer"
+          style={{ color: 'var(--ink-muted)' }}
+        >
+          chemical reactions
+        </button>
+        <span className="text-zinc-300 dark:text-zinc-700">·</span>
+        <button
+          type="button"
+          onClick={() => handleQuickSearch('previous papers')}
+          className="hover:underline transition-colors cursor-pointer"
+          style={{ color: 'var(--ink-muted)' }}
+        >
+          previous papers
+        </button>
       </div>
     </div>
   );
