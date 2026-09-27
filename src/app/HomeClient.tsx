@@ -1,111 +1,42 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search } from 'lucide-react';
 
 export default function HomeClient({ initialSearch = '' }: { initialSearch?: string }) {
   const [query, setQuery] = useState(initialSearch);
   const router = useRouter();
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  // Global ⌘K / Ctrl+K listener
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        inputRef.current?.focus();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-    } else {
-      router.push('/search');
-    }
+    const value = query.trim();
+    router.push(value ? `/search?q=${encodeURIComponent(value)}` : '/search');
   };
 
-  const handleQuickSearch = (term: string) => {
-    setQuery(term);
-    router.push(`/search?q=${encodeURIComponent(term)}`);
-  };
+  const quickSearches = ['Class 10 Science', 'Chemical reactions', 'Previous papers'];
 
   return (
-    <div className="w-full space-y-3">
-      {/* Search Input Bar (Matching reference mockup exactly) */}
-      <form onSubmit={handleSearch} className="relative w-full">
-        <div
-          className="relative flex items-center w-full rounded-[14px] sm:rounded-[16px] border transition-all duration-200 shadow-sm focus-within:shadow-md"
-          style={{
-            backgroundColor: 'var(--surface)',
-            borderColor: 'var(--border)',
-          }}
-        >
-          <Search
-            className="w-4 h-4 ml-3.5 sm:ml-4 shrink-0"
-            style={{ color: 'var(--ink-muted)' }}
-          />
-
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search notes, papers, subjects..."
-            className="w-full min-w-0 py-3 px-3 text-xs sm:py-3.5 sm:px-3.5 sm:text-sm bg-transparent outline-none font-sans font-normal"
-            style={{ color: 'var(--ink)' }}
-          />
-
-          {/* ⌘ K keyboard shortcut hint */}
-          <div className="mr-2.5 sm:mr-3 shrink-0 flex items-center">
-            <span
-              className="hidden sm:inline-flex items-center text-[10px] font-mono px-2 py-1 rounded-md border font-medium"
-              style={{
-                borderColor: 'var(--border)',
-                backgroundColor: 'var(--surface-raised)',
-                color: 'var(--ink-faint)',
-              }}
-            >
-              ⌘ K
-            </span>
-          </div>
-        </div>
+    <div className="home-search">
+      <form onSubmit={handleSearch} className="home-search__box">
+        <Search className="w-5 h-5 ml-4 shrink-0" style={{color:'var(--ink-muted)'}} />
+        <input
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          placeholder="Search the archive by subject, chapter or paper"
+          aria-label="Search the ARCHIVUM archive"
+        />
+        <button type="submit" className="btn btn-primary mr-1.5">
+          Search
+        </button>
       </form>
-
-      {/* "Try searching: class 10 science · chemical reactions · previous papers" */}
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-[10px] sm:text-xs" style={{ color: 'var(--ink-muted)' }}>
-        <span className="text-zinc-400">Try searching:</span>
-        <button
-          type="button"
-          onClick={() => handleQuickSearch('class 10 science')}
-          className="hover:underline transition-colors cursor-pointer"
-          style={{ color: 'var(--ink-muted)' }}
-        >
-          class 10 science
-        </button>
-        <span className="text-zinc-300 dark:text-zinc-700">·</span>
-        <button
-          type="button"
-          onClick={() => handleQuickSearch('chemical reactions')}
-          className="hover:underline transition-colors cursor-pointer"
-          style={{ color: 'var(--ink-muted)' }}
-        >
-          chemical reactions
-        </button>
-        <span className="text-zinc-300 dark:text-zinc-700">·</span>
-        <button
-          type="button"
-          onClick={() => handleQuickSearch('previous papers')}
-          className="hover:underline transition-colors cursor-pointer"
-          style={{ color: 'var(--ink-muted)' }}
-        >
-          previous papers
-        </button>
+      <div className="home-search__hint">
+        Try: {quickSearches.map((term, index) => (
+          <React.Fragment key={term}>
+            {index > 0 && <span className="mx-1.5" style={{color:'var(--border)'}}>|</span>}
+            <button type="button" onClick={() => router.push(`/search?q=${encodeURIComponent(term)}`)} style={{color:'var(--accent)'}}>{term}</button>
+          </React.Fragment>
+        ))}
       </div>
     </div>
   );
