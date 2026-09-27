@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useToast } from '@/components/ToastContext';
-import { compressUpload, MAX_UPLOAD_BYTES, sha256, validateFileSignature } from '@/lib/client-compression';
+import { MAX_UPLOAD_BYTES, sha256, validateFileSignature } from '@/lib/client-file-utils';
 import { 
   Upload, 
   FileText, 
@@ -54,7 +54,7 @@ export default function UploadClient() {
 
   const [submitting, setSubmitting] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [compressionStatus, setCompressionStatus] = useState<string | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
   const [successSubmitted, setSuccessSubmitted] = useState(false);
 
@@ -76,7 +76,7 @@ export default function UploadClient() {
       }
 
       setFile(selectedFile);
-      setCompressionStatus(null);
+      setUploadStatus(null);
 
       if (!title) {
         const cleanName = selectedFile.name.replace(/\.[^/.]+$/, '').replace(/[_.-]+/g, ' ');
@@ -103,12 +103,13 @@ export default function UploadClient() {
     setDuplicateWarning(null);
 
     try {
-      setCompressionStatus('Optimizing your file…');
+      setUploadStatus('Preparing upload…');
       setUploadProgress(0);
 
-      const preparedFile = await compressUpload(file, setCompressionStatus);
+      // Compression is intentionally disabled for now. Upload the original file unchanged.
+      const preparedFile = file;
       if (preparedFile.size > MAX_UPLOAD_BYTES) {
-        showToast('The compressed file is still larger than 50 MB.', 'error');
+        showToast('File size exceeds the 50 MB maximum limit.', 'error');
         return;
       }
 
@@ -119,9 +120,7 @@ export default function UploadClient() {
       }
 
       const hash = await sha256(preparedFile);
-      setCompressionStatus(preparedFile.size < file.size
-        ? `Compressed from ${(file.size / 1024 / 1024).toFixed(2)} MB to ${(preparedFile.size / 1024 / 1024).toFixed(2)} MB`
-        : 'File is already optimized — uploading…');
+      setUploadStatus('Uploading securely…');
 
       const presign = await fetch('/api/r2-upload', {
         method: 'POST',
@@ -135,20 +134,18 @@ export default function UploadClient() {
       const presignJson = await presign.json();
       if (!presign.ok) throw new Error(presignJson.error || 'Could not prepare the file upload.');
 
-      setCompressionStatus('Uploading securely…');
       let uploadResponse: Response;
       try {
         uploadResponse = await fetch(presignJson.uploadUrl, {
           method: 'PUT',
           headers: {
             'Content-Type': preparedFile.type,
-            'Cache-Control': 'public, max-age=31536000, immutable',
           },
           body: preparedFile,
         });
       } catch {
         throw new Error(
-          'R2 upload was blocked by the bucket CORS policy. In Cloudflare R2, add https://sjswork.vercel.app and http://localhost:3000 as allowed origins, with PUT/GET/HEAD and AllowedHeaders: *.'
+          'R2 upload was blocked by the bucket CORS policy. In Cloudflare R2, add https://sjswork.vercel.app and http://localhost:3000 as allowed origins, with PUT/GET/HEAD and AllowedHeaders: Content-Type.'
         );
       }
       if (!uploadResponse.ok) {
@@ -157,7 +154,7 @@ export default function UploadClient() {
       }
       setUploadProgress(100);
 
-      setCompressionStatus('Saving submission details…');
+      setUploadStatus('Saving submission details…');
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -194,7 +191,7 @@ export default function UploadClient() {
       showToast(error instanceof Error ? error.message : 'Network error during upload', 'error');
     } finally {
       setSubmitting(false);
-      setCompressionStatus(null);
+      setUploadStatus(null);
       setUploadProgress(0);
     }
   };
@@ -209,7 +206,7 @@ export default function UploadClient() {
     setContributorName('');
     setSuccessSubmitted(false);
     setDuplicateWarning(null);
-    setCompressionStatus(null);
+    setUploadStatus(null);
     setUploadProgress(0);
   };
 
@@ -495,7 +492,7 @@ export default function UploadClient() {
               {file ? file.name : 'Choose a PDF file or drag it here'}
             </div>
             <div className="text-[11px] text-zinc-400 mt-0.5">
-              {file ? `${(file.size / (1024 * 1024)).toFixed(2)} MB · max 50 MB` : 'PDF, JPG, or PNG files up to 50 MB · auto-compressed before upload'}
+              {file ? `${(file.size / (1024 * 1024)).toFixed(2)} MB · max 50 MB` : 'PDF, JPG, or PNG files up to 50 MB'}
             </div>
           </div>
         </div>
@@ -504,7 +501,7 @@ export default function UploadClient() {
       {submitting && (
         <div className="rounded-2xl border p-4 space-y-2" style={{ borderColor: 'var(--border)', backgroundColor: 'var(--surface-raised)' }}>
           <div className="flex items-center justify-between text-xs">
-            <span style={{ color: 'var(--ink-muted)' }}>{compressionStatus || 'Preparing upload…'}</span>
+            <span style={{ color: 'var(--ink-muted)' }}>{uploadStatus || 'Preparing upload…'}</span>
             <span className="font-semibold" style={{ color: 'var(--ink)' }}>{uploadProgress}%</span>
           </div>
           <div className="h-2 rounded-full overflow-hidden bg-zinc-200">

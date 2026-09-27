@@ -20,7 +20,7 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
    const r=await fetch(query);
    if(r.ok){const j=await r.json();setTips(j.tips||[]);}
  };
- const shuffled=useMemo(()=>[...tips].sort(()=>Math.random()-.5),[tips]);
+ const shuffled=useMemo(()=>[...tips], [tips]);
 
  const submit=async(e:React.FormEvent)=>{
    e.preventDefault(); setSending(true); setStatus('');
