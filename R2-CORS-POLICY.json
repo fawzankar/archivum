@@ -1,11 +1,8 @@
 [
   {
-    "AllowedOrigins": [
-      "https://sjswork.vercel.app",
-      "http://localhost:3000"
-    ],
+    "AllowedOrigins": ["*"],
     "AllowedMethods": ["PUT", "GET", "HEAD"],
-    "AllowedHeaders": ["Content-Type"],
+    "AllowedHeaders": ["*"],
     "ExposeHeaders": ["ETag"],
     "MaxAgeSeconds": 3600
   }

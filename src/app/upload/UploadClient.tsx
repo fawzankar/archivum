@@ -159,9 +159,23 @@ export default function UploadClient() {
             reject(new Error(`R2 upload failed with HTTP ${xhr.status}. ${detail.slice(0, 220)}`));
           }
         };
-        xhr.onerror = () => reject(new Error(
-          'The browser blocked the R2 request before it returned an HTTP response. This indicates an R2 CORS/preflight/network problem. Confirm the bucket CORS origin exactly matches the site currently open in your browser.'
-        ));
+        xhr.onerror = async () => {
+          // A completed PUT can still surface as XHR onerror when R2's final
+          // response is blocked by CORS. Ask our same-origin server to verify
+          // the object before declaring the upload failed.
+          try {
+            const verify = await fetch(`/api/r2-upload/verify?key=${encodeURIComponent(presignJson.key)}`);
+            const verifyJson = await verify.json().catch(() => ({}));
+            if (verify.ok && verifyJson.exists) {
+              setUploadProgress(100);
+              resolve();
+              return;
+            }
+          } catch {}
+          reject(new Error(
+            'The upload connection was blocked by R2/browser CORS before the response could be read, and the server could not verify the object. Replace the bucket CORS policy with the ARCHIVUM v21 policy, then retry.'
+          ));
+        };
         xhr.onabort = () => reject(new Error('The R2 upload was cancelled.'));
         xhr.ontimeout = () => reject(new Error('The R2 upload timed out. Please retry.'));
         xhr.timeout = 15 * 60 * 1000;
