@@ -1,28 +1,4 @@
 import React from 'react';
 import SavedClient from './SavedClient';
-
-export const metadata = {
-  title: 'My Saved Resources — ARCHIVUM',
-  description: 'View your device-saved notes, board papers, and study resources.',
-};
-
-export default function SavedPage() {
-  return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-      {/* Editorial Header */}
-      <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
-        <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
-          OFFLINE CACHE & BOOKMARKS
-        </span>
-        <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-          Saved Resources
-        </h1>
-        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-xl leading-relaxed">
-          Your personal collection of saved notes and examination papers stored locally on this device.
-        </p>
-      </div>
-
-      <SavedClient />
-    </div>
-  );
-}
+export const metadata={title:'Saved Resources — ARCHIVUM',description:'View your saved notes, papers and study resources.'};
+export default function SavedPage(){return <div className="page-shell"><div className="page-intro"><div><h1 className="font-display">Keep the material you want to find again.</h1><p>Your bookmarks and recently viewed resources stay on this device, ready for the next revision session.</p></div><div className="page-note">Saved items are stored locally in your browser.</div></div><div className="mt-10"><SavedClient/></div></div>}

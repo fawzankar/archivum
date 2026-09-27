@@ -2,10 +2,9 @@ import React from 'react';
 import { getPreferredClass } from '@/lib/studentClass';
 import { getTips } from '@/lib/tips';
 import TipsClient from './TipsClient';
-
 export const revalidate=0;
-export default async function TipsPage({searchParams}:{searchParams:Promise<{class?:string; subject?:string}>}){
+export default async function TipsPage({searchParams}:{searchParams:Promise<{class?:string;subject?:string}>}){
  const params=await searchParams; const preferred=await getPreferredClass(); const selected=Number(params.class)||preferred||10; const subject=typeof params.subject==='string'?params.subject:'';
  const tips=await getTips([9,10,11,12].includes(selected)?selected:10,subject||undefined,12);
- return <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8"><div className="max-w-3xl space-y-3"><span className="text-[10px] font-bold uppercase tracking-[.2em]" style={{color:'var(--accent)'}}>EXAM PLAYBOOK · CLASS {selected}</span><h1 className="font-display font-bold text-4xl sm:text-5xl tracking-tight">Tips & Tricks from the SJS community.</h1><p className="text-sm sm:text-base leading-relaxed" style={{color:'var(--ink-muted)'}}>Short, practical study moves for revision, papers and exam-day preparation. Tips are class-specific and community submissions are moderated before they appear.</p></div><TipsClient initialTips={tips} initialClass={selected}/></div>;
+ return <div className="page-shell"><div className="page-intro"><div><h1 className="font-display">Small things that can make revision easier.</h1><p>Tips are short on purpose: a useful way to remember a chapter, approach a paper, revise before an annual exam, or avoid a mistake another student has already made.</p></div><div className="page-note">Choose Class {selected} and a subject to see the tips that match your current study list.</div></div><div className="mt-10"><TipsClient initialTips={tips} initialClass={selected}/></div></div>;
 }
