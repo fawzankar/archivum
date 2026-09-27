@@ -6,13 +6,11 @@ import { StudentClassProvider } from '@/components/StudentClassContext';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import MobileNav from '@/components/MobileNav';
-import dynamic from 'next/dynamic';
-const Chatbot = dynamic(() => import('@/components/Chatbot'), { ssr: false });
-const InstallPwaPrompt = dynamic(() => import('@/components/InstallPwaPrompt'), { ssr: false });
 import PwaRegister from '@/components/PwaRegister';
 import FirstLaunch from '@/components/FirstLaunch';
 import { Suspense } from 'react';
 import ClassTransitionOverlay from '@/components/ClassTransitionOverlay';
+import DeferredClientWidgets from '@/components/DeferredClientWidgets';
 
 export const viewport: Viewport = { themeColor: '#111318', width: 'device-width', initialScale: 1, maximumScale: 5 };
 
