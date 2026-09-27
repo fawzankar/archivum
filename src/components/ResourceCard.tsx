@@ -15,13 +15,7 @@ interface ResourceCardProps {
 }
 
 // 5 calibrated theme-adaptive pastel classes from globals.css
-const PASTEL_CLASSES = [
-  'pastel-block-peach',
-  'pastel-block-sky',
-  'pastel-block-lavender',
-  'pastel-block-yellow',
-  'pastel-block-sage',
-];
+const PASTEL_CLASSES = ['pastel-block-sage'];
 
 export default function ResourceCard({ resource, onView, compact = false, colorClass }: ResourceCardProps) {
   const [saved, setSaved] = useState(() => isResourceSaved(resource.id));
@@ -50,7 +44,7 @@ export default function ResourceCard({ resource, onView, compact = false, colorC
 
   return (
     <div
-      className="group relative flex flex-col rounded-2xl overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-md border select-none"
+      className="group relative flex flex-col rounded-xl overflow-hidden transition-colors duration-200 border select-none hover:border-[var(--accent)]"
       style={{
         backgroundColor: 'var(--surface)',
         borderColor: 'var(--border)',
@@ -59,7 +53,7 @@ export default function ResourceCard({ resource, onView, compact = false, colorC
       {/* Top Theme-Adaptive Pastel Block with PDF Icon & Save Bookmark */}
       <Link
         href={`/resource/${resource.slug || resource.id}`}
-        className={`relative ${compact ? 'h-24' : 'h-28 sm:h-32'} w-full flex flex-col items-center justify-center transition-opacity group-hover:opacity-95 ${pastelClass}`}
+        className={`relative ${compact ? 'h-24' : 'h-28 sm:h-32'} w-full flex flex-col items-center justify-center border-b ${pastelClass}`}
         onClick={onView ? (e) => { e.preventDefault(); onView(resource); } : undefined}
       >
         {/* PDF Symbol in center with current color */}
@@ -77,7 +71,7 @@ export default function ResourceCard({ resource, onView, compact = false, colorC
         <button
           onClick={handleSaveToggle}
           title={saved ? 'Remove from saved' : 'Save resource'}
-          className="absolute top-2.5 right-2.5 p-1.5 rounded-full transition-transform hover:scale-110 active:scale-95 shadow-sm cursor-pointer"
+          className="absolute top-2.5 right-2.5 p-1.5 rounded-md transition-colors cursor-pointer"
           style={{
             backgroundColor: 'var(--surface)',
             color: saved ? 'var(--rose)' : 'var(--ink-muted)',

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { ArrowRight, Check, GraduationCap, Sparkles } from 'lucide-react';
+import { ArrowRight, Check, GraduationCap } from 'lucide-react';
 import { useStudentClass, type StudentClass } from './StudentClassContext';
 
 const classes: StudentClass[] = [9, 10, 11, 12];
@@ -46,9 +46,9 @@ export default function FirstLaunch() {
         <div className="absolute inset-0 splash-grid" />
         <div className="relative text-center px-8">
           <div className="splash-orb absolute -inset-12 rounded-full" />
-          <div className="relative mx-auto w-28 h-28 sm:w-36 sm:h-36 rounded-[2rem] flex items-center justify-center splash-logo" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)', boxShadow: '0 30px 80px color-mix(in srgb, var(--accent) 38%, transparent)' }}>
+          <div className="relative mx-auto w-28 h-28 sm:w-36 sm:h-36 rounded-xl flex items-center justify-center splash-logo" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)', boxShadow: '0 30px 80px color-mix(in srgb, var(--accent) 38%, transparent)' }}>
             <span aria-hidden="true" className="archivum-css-logo w-14 h-14 sm:w-20 sm:h-20" style={{color:'var(--accent-contrast)'}} />
-            <Sparkles className="absolute -right-2 -top-2 w-8 h-8" />
+            
           </div>
           <div className="relative mt-8">
             <p className="brand-sister text-[10px] uppercase tracking-[0.22em]" style={{ color: 'var(--accent-on-hero)' }}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></p>
@@ -72,9 +72,9 @@ export default function FirstLaunch() {
   };
 
   return (
-    <div className="fixed inset-0 z-[90] overflow-y-auto flex items-center justify-center p-4 animate-soft-scale" style={{ background: 'color-mix(in srgb, var(--ivory) 90%, var(--accent-light))', backdropFilter: 'blur(14px)' }}>
-      <div className="w-full max-w-xl rounded-[2rem] border p-6 sm:p-10 shadow-2xl" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-        <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}>
+    <div className="fixed inset-0 z-[90] overflow-y-auto flex items-center justify-center p-4 animate-soft-scale" style={{ background: 'color-mix(in srgb, var(--ivory) 90%, var(--accent-light))',  }}>
+      <div className="w-full max-w-xl rounded-xl border p-6 sm:p-10 shadow-2xl" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+        <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}>
           <GraduationCap className="w-7 h-7" />
         </div>
         <div className="mt-6 space-y-2">
@@ -84,7 +84,7 @@ export default function FirstLaunch() {
         </div>
         <div className="grid grid-cols-2 gap-3 mt-8">
           {classes.map((level) => (
-            <button key={level} onClick={() => chooseClass(level)} className="group rounded-2xl border p-4 sm:p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[.98]" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)', color: 'var(--ink)' }}>
+            <button key={level} onClick={() => chooseClass(level)} className="group rounded-xl border p-4 sm:p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[.98]" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)', color: 'var(--ink)' }}>
               <div className="flex items-center justify-between">
                 <span className="font-display text-3xl font-bold">{level}</span>
                 <span className="w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}><Check className="w-4 h-4 opacity-0 group-hover:opacity-100" /></span>
