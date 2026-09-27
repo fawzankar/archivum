@@ -1,6 +1,5 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M256 64L388 410H338L309 331H203L174 410H124L256 64Z" fill="currentColor"/>
-  <path d="M219 286H293L256 185L219 286Z" fill="var(--logo-cutout,#fff)"/>
-  <path d="M188 360H324" stroke="currentColor" stroke-width="18" stroke-linecap="round" opacity=".72"/>
-  <path d="M221 405H291" stroke="currentColor" stroke-width="12" stroke-linecap="round" opacity=".38"/>
+  <path d="M256 70L391 408H344L312 326H200L168 408H121L256 70Z" fill="currentColor"/>
+  <path d="M218 281H294L256 181L218 281Z" fill="var(--logo-cutout,#fff)"/>
+  <path d="M205 326H307" stroke="currentColor" stroke-width="18" stroke-linecap="round"/>
 </svg>

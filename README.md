@@ -166,3 +166,6 @@ Direct browser uploads use R2 presigned PUT URLs. Configure the `archivum` bucke
 The upload presign route now verifies that the configured R2 account, bucket, and Object Read & Write credentials can access the bucket before returning a browser upload URL. If this check fails, ARCHIVUM reports the actual R2 configuration problem instead of a misleading browser CORS error.
 
 If the bucket was created in a specific R2 jurisdiction, set `R2_JURISDICTION` to the matching value (`eu`, `us`, `fedramp`, or `fedramp-high`). Leave it as `default` for normal buckets.
+
+## PWA / offline mode
+ARCHIVUM ships as a real installable Progressive Web App. In supported browsers, use the in-app **Install ARCHIVUM** prompt or the browser's install option. The service worker caches the application shell, visited pages, public archive data, and successfully opened resource files for offline use. iOS uses Safari's **Share → Add to Home Screen** flow.

@@ -1,14 +1,21 @@
 {
+  "id": "/?source=pwa",
   "name": "ARCHIVUM — Sister Organisation of QUEST",
   "short_name": "ARCHIVUM",
-  "description": "ARCHIVUM — the SJS student archive and sister organisation of QUEST.",
-  "start_url": "/",
+  "description": "The SJS student archive for notes, previous papers, study material and exam tips.",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
   "background_color": "#08090c",
-  "theme_color": "#3f78e8",
+  "theme_color": "#111318",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["education", "productivity"],
+  "prefer_related_applications": false,
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

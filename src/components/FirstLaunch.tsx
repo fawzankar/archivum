@@ -11,12 +11,11 @@ export default function FirstLaunch() {
   const { studentClass, setStudentClass } = useStudentClass();
   const router = useRouter();
   const pathname = usePathname();
-  const [splash, setSplash] = useState(pathname === '/');
+  const [splash, setSplash] = useState(false);
   const [visible, setVisible] = useState(pathname !== '/');
 
-  // The home splash is intentionally shown on every landing, not just first launch.
-  // It does not run on inner pages, and class query changes on the same home route
-  // do not restart it.
+  // Show the splash once per browser session. Navigating away and back to Home
+  // in the same session does not replay it; a fresh session gets the 4s intro.
   useEffect(() => {
     if (pathname !== '/') {
       setSplash(false);
@@ -24,6 +23,14 @@ export default function FirstLaunch() {
       return;
     }
 
+    const key = 'archivum_home_splash_seen_v1';
+    if (window.sessionStorage.getItem(key) === '1') {
+      setSplash(false);
+      setVisible(true);
+      return;
+    }
+
+    window.sessionStorage.setItem(key, '1');
     setSplash(true);
     setVisible(false);
     const timer = window.setTimeout(() => {

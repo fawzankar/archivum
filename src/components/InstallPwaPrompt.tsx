@@ -1,15 +1,22 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Smartphone, X } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 
 export default function InstallPwaPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showPrompt, setShowPrompt] = useState(false);
+  const [ios, setIos] = useState(false);
 
   useEffect(() => {
-    const dismissed = localStorage.getItem('sjs_pwa_dismissed');
+    const dismissed = localStorage.getItem('archivum_pwa_dismissed');
     if (dismissed) return;
+
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone === true;
+    if (standalone) return;
+
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !(window as any).MSStream;
+    setIos(isIOS);
 
     const handleBeforeInstall = (e: Event) => {
       e.preventDefault();
@@ -18,10 +25,15 @@ export default function InstallPwaPrompt() {
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
+    if (isIOS) setShowPrompt(true);
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
   }, []);
 
   const handleInstall = async () => {
+    if (ios) {
+      setShowPrompt(false);
+      return;
+    }
     if (!deferredPrompt) return;
     deferredPrompt.prompt();
     const choice = await deferredPrompt.userChoice;
@@ -33,7 +45,7 @@ export default function InstallPwaPrompt() {
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    localStorage.setItem('sjs_pwa_dismissed', 'true');
+    localStorage.setItem('archivum_pwa_dismissed', 'true');
   };
 
   if (!showPrompt) return null;
@@ -48,13 +60,11 @@ export default function InstallPwaPrompt() {
     >
       <div className="flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 bg-emerald-50 text-emerald-800">
-          <Smartphone className="w-4 h-4" />
+          <Download className="w-4 h-4" />
         </div>
         <div>
-          <h4 className="font-display font-bold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100">
-            Install ARCHIVUM
-          </h4>
-          <p className="text-[11px] text-zinc-500">Fast offline revision on your device.</p>
+          <h4 className="font-display text-xs sm:text-sm" style={{ color:'var(--ink)' }}>Install ARCHIVUM</h4>
+          <p className="text-[11px]" style={{ color:'var(--ink-muted)' }}>{ios ? 'Tap Share → Add to Home Screen.' : 'Fast offline revision on your device.'}</p>
         </div>
       </div>
 
@@ -63,7 +73,7 @@ export default function InstallPwaPrompt() {
           onClick={handleInstall}
           className="px-3 py-1.5 text-xs font-semibold rounded-full text-white bg-zinc-900 hover:bg-zinc-800 transition-colors cursor-pointer"
         >
-          Install
+          {ios ? 'Got it' : 'Install'}
         </button>
         <button
           onClick={handleDismiss}
