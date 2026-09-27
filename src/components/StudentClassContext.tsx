@@ -15,7 +15,6 @@ const StudentClassContext = createContext<StudentClassContextValue | null>(null)
 
 export function StudentClassProvider({ children }: { children: React.ReactNode }) {
   const [studentClass, setStudentClassState] = useState<StudentClass | null>(null);
-  const [isChangingClass, setIsChangingClass] = useState(false);
 
   useEffect(() => {
     const urlClass = Number(new URLSearchParams(window.location.search).get('class') || '');
@@ -40,14 +39,10 @@ export function StudentClassProvider({ children }: { children: React.ReactNode }
   }, []);
 
   const setStudentClass = (value: StudentClass) => {
-    setIsChangingClass(true);
     setStudentClassState(value);
     localStorage.setItem('archivum_student_class', String(value));
     document.cookie = `archivum_class=${value};path=/;max-age=31536000;samesite=lax`;
     window.dispatchEvent(new CustomEvent('archivum:class-change', { detail: { level: value } }));
-    // Let Next.js handle the route transition itself. A fixed 450ms timer
-    // made class switching feel slow even when the next route was already ready.
-    window.requestAnimationFrame(() => setIsChangingClass(false));
   };
 
   const resetStudentClass = () => {
@@ -57,8 +52,8 @@ export function StudentClassProvider({ children }: { children: React.ReactNode }
   };
 
   const value = useMemo(
-    () => ({ studentClass, setStudentClass, resetStudentClass, isChangingClass }),
-    [studentClass, isChangingClass]
+    () => ({ studentClass, setStudentClass, resetStudentClass, isChangingClass: false }),
+    [studentClass]
   );
   return <StudentClassContext.Provider value={value}>{children}</StudentClassContext.Provider>;
 }

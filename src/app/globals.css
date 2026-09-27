@@ -121,3 +121,26 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 .archivum-mark { display:block; background:var(--accent); -webkit-mask:url('/archivum-mark.svg') center/contain no-repeat; mask:url('/archivum-mark.svg') center/contain no-repeat; }
+
+/* ARCHIVUM visual system: quiet typography, stronger accents, compact controls. */
+.font-bold, .font-semibold, .font-medium { font-weight: 500 !important; }
+.brand-sister { font-weight: 700 !important; }
+.quest-word { font-family: var(--font-libre-baskerville), Georgia, serif; font-weight: 700 !important; letter-spacing: .08em; }
+.brand-logo { background: color-mix(in srgb,var(--accent) 16%,var(--surface)); color: var(--accent); border: 1px solid color-mix(in srgb,var(--accent) 28%,var(--border)); box-shadow: inset 0 0 0 1px color-mix(in srgb,var(--accent) 8%,transparent), 0 8px 24px color-mix(in srgb,var(--accent) 14%,transparent); }
+.header-icon { width: 34px; height: 34px; min-width: 34px; padding: 0; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; line-height: 0; }
+.header-icon svg { width: 16px; height: 16px; display: block; flex: 0 0 auto; margin: 0; }
+.menu-circle { position: relative; }
+.menu-circle svg { width: 17px; height: 17px; }
+.glass-header-accent { background: color-mix(in srgb,var(--surface) 66%,var(--accent-light) 34%); border-color: color-mix(in srgb,var(--accent) 30%,var(--border)); box-shadow: 0 14px 44px color-mix(in srgb,var(--accent) 12%,transparent), inset 0 1px 0 rgba(255,255,255,.42); }
+.archivum-mark { color: inherit; }
+
+@media (max-width: 640px) {
+  body { font-size: 12.5px; }
+  .header-icon { width: 32px; height: 32px; min-width: 32px; }
+  .header-icon svg { width: 15px; height: 15px; }
+  .menu-circle svg { width: 16px; height: 16px; }
+  .brand-logo { width: 30px !important; height: 30px !important; border-radius: 10px; }
+}
+
+:root { --accent-light: color-mix(in srgb,var(--accent) 14%,#fff); --accent-glow: color-mix(in srgb,var(--accent) 22%,transparent); }
+.dark { --accent-light: color-mix(in srgb,var(--accent) 18%,#101217); --accent-glow: color-mix(in srgb,var(--accent) 28%,transparent); }

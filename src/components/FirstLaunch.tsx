@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Archive, ArrowRight, Check, GraduationCap, Sparkles } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { ArrowRight, Check, GraduationCap, Sparkles } from 'lucide-react';
 import { useStudentClass, type StudentClass } from './StudentClassContext';
 
 const classes: StudentClass[] = [9, 10, 11, 12];
@@ -10,20 +10,28 @@ const classes: StudentClass[] = [9, 10, 11, 12];
 export default function FirstLaunch() {
   const { studentClass, setStudentClass } = useStudentClass();
   const router = useRouter();
-  const [splash, setSplash] = useState(true);
-  const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
+  const [splash, setSplash] = useState(pathname === '/');
+  const [visible, setVisible] = useState(pathname !== '/');
 
+  // The home splash is intentionally shown on every landing, not just first launch.
+  // It does not run on inner pages, and class query changes on the same home route
+  // do not restart it.
   useEffect(() => {
-    const seen = localStorage.getItem('archivum_seen_splash');
-    if (seen) { setSplash(false); setVisible(true); return; }
+    if (pathname !== '/') {
+      setSplash(false);
+      setVisible(true);
+      return;
+    }
+
     setSplash(true);
+    setVisible(false);
     const timer = window.setTimeout(() => {
-      localStorage.setItem('archivum_seen_splash','1');
       setSplash(false);
       window.requestAnimationFrame(() => setVisible(true));
-    }, 1700);
+    }, 4000);
     return () => window.clearTimeout(timer);
-  }, []);
+  }, [pathname]);
 
   if (splash) {
     return (
@@ -36,8 +44,8 @@ export default function FirstLaunch() {
             <Sparkles className="absolute -right-2 -top-2 w-8 h-8" />
           </div>
           <div className="relative mt-8">
-            <p className="text-[10px] uppercase tracking-[0.24em] font-bold" style={{ color: 'var(--accent-on-hero)' }}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></p>
-            <h1 className="font-display font-bold text-4xl sm:text-5xl tracking-tight mt-2" style={{ color: 'var(--hero-ink)' }}>ARCHIVUM</h1>
+            <p className="brand-sister text-[10px] uppercase tracking-[0.22em]" style={{ color: 'var(--accent-on-hero)' }}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></p>
+            <h1 className="font-display text-4xl sm:text-5xl tracking-[.035em] mt-2" style={{ color: 'var(--hero-ink)' }}>ARCHIVUM</h1>
             <p className="mt-3 text-xs sm:text-sm max-w-xs mx-auto leading-relaxed" style={{ color: 'var(--hero-muted)' }}>A place for SJS students for all the materials they need.</p>
             <p className="mt-6 text-[10px] uppercase tracking-[0.18em] font-semibold" style={{ color: 'var(--hero-muted)' }}>Webapp developed by Fawzan Kar</p>
           </div>

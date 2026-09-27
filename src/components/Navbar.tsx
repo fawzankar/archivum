@@ -2,15 +2,17 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
-import { Search, Plus, Sun, Moon, X, Menu, BookOpen, FileText, Lightbulb, Palette, Check, ChevronRight, Settings2, Layers3, Sparkles, Info, Users } from 'lucide-react';
+import {
+  Search, Plus, Sun, Moon, X, Menu, BookOpen, FileText, Lightbulb,
+  Palette, Check, ChevronRight, Settings2, Layers3, Info, Users,
+} from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const { mode, setMode, accent, setAccent } = useTheme();
   const { studentClass, setStudentClass, resetStudentClass } = useStudentClass();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -21,17 +23,34 @@ export default function Navbar() {
   const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Warm all four class home routes once, quietly, after first paint.
   useEffect(() => {
-    const timer = window.setTimeout(() => [9, 10, 11, 12].forEach(level => router.prefetch(`/?class=${level}`)), 500);
+    const timer = window.setTimeout(() => {
+      [9, 10, 11, 12].forEach(level => router.prefetch(`/?class=${level}`));
+    }, 250);
     return () => window.clearTimeout(timer);
   }, [router]);
-  useEffect(() => { if (searchOpen) searchRef.current?.focus(); }, [searchOpen]);
-  useEffect(() => { document.body.style.overflow = drawerOpen ? 'hidden' : ''; return () => { document.body.style.overflow = ''; }; }, [drawerOpen]);
-  useEffect(() => { setDrawerOpen(false); setPaletteOpen(false); setClassOpen(false); }, [pathname]);
+
+  useEffect(() => {
+    if (searchOpen) requestAnimationFrame(() => searchRef.current?.focus());
+  }, [searchOpen]);
+
+  useEffect(() => {
+    document.body.style.overflow = drawerOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [drawerOpen]);
+
+  useEffect(() => {
+    setDrawerOpen(false);
+    setPaletteOpen(false);
+    setClassOpen(false);
+    setSearchOpen(false);
+  }, [pathname]);
 
   const navLinks = [
     { label: 'Home', href: '/' },
@@ -42,106 +61,149 @@ export default function Navbar() {
     { label: 'About Us', href: '/about', icon: Info },
     { label: 'Contributors', href: '/contributors', icon: Users },
   ];
-  const hrefWithClass = (href: string) => studentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${studentClass}` : href;
+
+  const hrefWithClass = (href: string) =>
+    studentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${studentClass}` : href;
+
   const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 
   const changeClass = (level: 9 | 10 | 11 | 12) => {
     setClassOpen(false);
     setDrawerOpen(false);
     setStudentClass(level);
-
-    // One client navigation is enough. router.refresh() caused a second
-    // server round-trip and made class switching feel unnecessarily slow.
-    const params = new URLSearchParams();
-    params.set('class', String(level));
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    router.replace(`${pathname}?class=${level}`, { scroll: false });
   };
 
   return (
     <>
-      <header className={`relative sticky top-3 sm:top-4 z-40 mx-2 sm:mx-4 lg:mx-6 rounded-[1.75rem] sm:rounded-[2rem] border transition-all duration-300 ${scrolled ? 'premium-shadow' : ''}`} style={{ background: 'color-mix(in srgb,var(--surface) 68%,var(--accent-light) 32%)', borderColor: 'color-mix(in srgb,var(--accent) 18%,var(--border))', backdropFilter: 'blur(28px) saturate(1.55)', WebkitBackdropFilter: 'blur(28px) saturate(1.55)', boxShadow: scrolled ? '0 20px 55px color-mix(in srgb,var(--accent) 12%,transparent)' : '0 10px 36px color-mix(in srgb,var(--accent) 8%,transparent)' }}>
-        <div className="max-w-[1480px] mx-auto px-2.5 sm:px-4 lg:px-5 h-[58px] sm:h-[62px] flex items-center justify-between gap-3">
+      <header
+        className={`relative sticky top-2 sm:top-3 z-40 mx-2 sm:mx-4 lg:mx-6 rounded-[1.45rem] sm:rounded-[1.75rem] border transition-[box-shadow,background,border-color] duration-200 ${scrolled ? 'premium-shadow' : ''}`}
+        style={{
+          background: 'color-mix(in srgb,var(--surface) 70%,var(--accent-light) 30%)',
+          borderColor: 'color-mix(in srgb,var(--accent) 28%,var(--border))',
+          backdropFilter: 'blur(26px) saturate(1.7)',
+          WebkitBackdropFilter: 'blur(26px) saturate(1.7)',
+          boxShadow: scrolled
+            ? '0 18px 50px color-mix(in srgb,var(--accent) 16%,transparent), inset 0 1px 0 rgba(255,255,255,.45)'
+            : '0 8px 30px color-mix(in srgb,var(--accent) 10%,transparent), inset 0 1px 0 rgba(255,255,255,.35)',
+        }}
+      >
+        <div className="max-w-[1480px] mx-auto px-2.5 sm:px-4 lg:px-5 h-[54px] sm:h-[60px] flex items-center justify-between gap-2.5">
           <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0 group min-w-0" aria-label="ARCHIVUM home">
-            <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-[12px] flex items-center justify-center transition-all duration-300 group-hover:-rotate-3 group-hover:scale-105" style={{ color: 'var(--accent)', background: 'var(--accent-light)' }}>
-              <span aria-hidden="true" className="archivum-mark w-full h-full m-1.5" />
+            <span className="brand-logo w-8 h-8 sm:w-9 sm:h-9 rounded-[11px] flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:-rotate-2 group-hover:scale-105">
+              <span aria-hidden="true" className="archivum-mark w-[78%] h-[78%]" />
             </span>
             <span className="block min-w-0">
-              <span className="block font-display text-[12px] sm:text-[14px] font-semibold tracking-[.13em] leading-none whitespace-nowrap">ARCHIVUM</span>
-              <span className="block text-[6px] sm:text-[7px] uppercase tracking-[.16em] mt-1 font-bold" style={{ color: 'var(--ink-faint)' }}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span>
+              <span className="block font-display text-[12px] sm:text-[14px] tracking-[.16em] leading-none whitespace-nowrap">ARCHIVUM</span>
+              <span className="brand-sister block text-[6.5px] sm:text-[7px] uppercase tracking-[.13em] mt-1 whitespace-nowrap">SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span>
             </span>
           </Link>
 
-          <nav className="hidden xl:flex items-center gap-0.5">
-            {navLinks.map(item => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              return (
-                <Link key={item.href} href={hrefWithClass(item.href)} className="relative inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[10px] font-semibold transition-all duration-300 hover:-translate-y-0.5" style={{ color: active ? 'var(--ink)' : 'var(--ink-muted)' }}>
-                  {Icon && <Icon className="w-3 h-3" />}
-                  {item.label}
-                  {active && <span className="absolute left-1/2 -bottom-1.5 -translate-x-1/2 w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <div className="relative hidden lg:block">
-              <button onClick={() => setClassOpen(v => !v)} className="inline-flex items-center gap-2 px-2.5 py-2 rounded-full text-[9px] font-bold border transition-all duration-300 hover:-translate-y-0.5" style={{ background: 'var(--accent-light)', color: 'var(--accent)', borderColor: 'color-mix(in srgb,var(--accent) 24%,var(--border))' }} aria-label="Change class">
+          <div className="flex items-center gap-1.5 sm:gap-2 ml-auto">
+            <div className="relative hidden md:block">
+              <button
+                onClick={() => setClassOpen(v => !v)}
+                className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[9px] border transition-colors hover:border-[var(--accent)]"
+                style={{ background: 'var(--accent-light)', color: 'var(--accent)', borderColor: 'color-mix(in srgb,var(--accent) 30%,var(--border))' }}
+                aria-label="Change class"
+              >
                 <Layers3 className="w-3.5 h-3.5" /> CLASS {studentClass || '—'}
               </button>
-              {classOpen && <div className="absolute right-0 top-12 w-44 rounded-2xl border p-2 shadow-2xl animate-fade" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                <p className="px-2 py-1.5 text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--ink-faint)' }}>Your class</p>
-                {[9,10,11,12].map(level => <button key={level} onClick={() => changeClass(level as 9|10|11|12)} className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors hover:bg-black/5 dark:hover:bg-white/5" style={{ color: 'var(--ink)' }}>Class {level}{studentClass === level && <Check className="w-4 h-4" style={{ color: 'var(--accent)' }} />}</button>)}
-              </div>}
+              {classOpen && (
+                <div className="absolute right-0 top-11 w-40 rounded-2xl border p-2 shadow-2xl animate-fade" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+                  <p className="px-2 py-1.5 text-[9px] uppercase tracking-wider" style={{ color: 'var(--ink-faint)' }}>Your class</p>
+                  {[9, 10, 11, 12].map(level => (
+                    <button key={level} onClick={() => changeClass(level as 9|10|11|12)} className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-colors hover:bg-black/5 dark:hover:bg-white/5" style={{ color: 'var(--ink)' }}>
+                      Class {level}{studentClass === level && <Check className="w-4 h-4" style={{ color: 'var(--accent)' }} />}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-            <button onClick={() => setSearchOpen(v => !v)} className="icon-button w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center p-0 leading-none transition-transform hover:scale-105" aria-label="Search"><Search className="w-[17px] h-[17px]" /></button>
-            <span className="hidden sm:block w-px h-8 mx-1" style={{ background: 'var(--border)' }} />
-            <button onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')} className="icon-button w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center p-0 leading-none transition-transform hover:scale-105" aria-label="Toggle theme">{mode === 'dark' ? <Sun className="w-[17px] h-[17px]" /> : <Moon className="w-[17px] h-[17px]" />}</button>
-            <div className="relative hidden sm:block">
-              <button onClick={() => setPaletteOpen(v => !v)} className="icon-button w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center p-0 leading-none transition-transform hover:scale-105" aria-label="Accent theme"><Palette className="w-[17px] h-[17px]" style={{ color: 'var(--accent)' }} /></button>
-              {paletteOpen && <div className="absolute right-0 top-14 w-56 rounded-2xl border p-2 shadow-2xl animate-fade" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                <p className="px-2 py-1.5 text-[10px] uppercase tracking-wider font-bold" style={{ color: 'var(--ink-faint)' }}>Accent</p>
-                {ACCENTS.map(item => <button key={item.id} onClick={() => { setAccent(item.id); setPaletteOpen(false); }} className="w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5" style={{ color: 'var(--ink)' }}><span className="w-4 h-4 rounded-full" style={{ background: item.color }} /><span className="flex-1 text-left">{item.label}</span>{accent === item.id && <Check className="w-4 h-4" style={{ color: 'var(--accent)' }} />}</button>)}
-              </div>}
-            </div>
-            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[9px] font-bold transition-all hover:-translate-y-0.5" style={{ color:'var(--accent)', background:'var(--accent-light)' }}>Visit Quest <ChevronRight className="w-3 h-3" /></a>
-            <Link href={hrefWithClass('/upload')} className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[10px] font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)', boxShadow: '0 10px 28px var(--accent-glow)' }}><Plus className="w-3.5 h-3.5" /> Upload</Link>
-            <button onClick={() => setDrawerOpen(true)} className="icon-button w-8 h-8 sm:w-9 sm:h-9 rounded-full md:flex xl:hidden items-center justify-center p-0 leading-none transition-transform hover:scale-105 [&>svg]:block" aria-label="Open menu"><Menu className="w-[18px] h-[18px] block" /></button>
+
+            <button onClick={() => setSearchOpen(v => !v)} className="icon-button header-icon" aria-label="Search">
+              <Search />
+            </button>
+            <button onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')} className="icon-button header-icon" aria-label="Toggle theme">
+              {mode === 'dark' ? <Sun /> : <Moon />}
+            </button>
+
+            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hidden md:inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[9px] transition-colors" style={{ color:'var(--accent)', background:'var(--accent-light)' }}>
+              Visit Quest <ChevronRight className="w-3 h-3" />
+            </a>
+            <Link href={hrefWithClass('/upload')} className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[10px] transition-all hover:-translate-y-0.5" style={{ background:'var(--accent)', color:'var(--accent-contrast)', boxShadow:'0 9px 24px var(--accent-glow)' }}>
+              <Plus className="w-3.5 h-3.5" /> Upload
+            </Link>
+
+            <button
+              onClick={() => setDrawerOpen(true)}
+              className="icon-button header-icon menu-circle"
+              aria-label="Open menu"
+              aria-expanded={drawerOpen}
+            >
+              <Menu />
+            </button>
           </div>
         </div>
 
-        {searchOpen && <div className="absolute left-2 right-2 sm:left-auto sm:right-3 top-[calc(100%+10px)] sm:w-[min(520px,calc(100vw-2rem))] rounded-2xl border p-2.5 shadow-2xl animate-fade" style={{ background: 'color-mix(in srgb,var(--surface) 84%,var(--accent-light) 16%)', borderColor: 'color-mix(in srgb,var(--accent) 18%,var(--border))', backdropFilter: 'blur(26px) saturate(1.45)', WebkitBackdropFilter: 'blur(26px) saturate(1.45)' }}><form onSubmit={e => { e.preventDefault(); const q = (searchRef.current?.value || '').trim(); router.push(q ? `/search?q=${encodeURIComponent(q)}` : '/search'); setSearchOpen(false); }} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}><Search className="w-4 h-4 shrink-0" style={{ color: 'var(--accent)' }} /><input ref={searchRef} className="min-w-0 flex-1 bg-transparent outline-none text-sm" placeholder="Search your class archive…" style={{ color: 'var(--ink)' }} /><button type="button" onClick={() => setSearchOpen(false)} className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5" style={{ color: 'var(--ink-muted)' }}><X className="w-4 h-4" /></button></form></div>}
+        {searchOpen && (
+          <form
+            onSubmit={e => {
+              e.preventDefault();
+              const q = (searchRef.current?.value || '').trim();
+              router.push(q ? `/search?q=${encodeURIComponent(q)}` : '/search');
+              setSearchOpen(false);
+            }}
+            className="absolute right-2 sm:right-3 top-[calc(100%+8px)] w-[calc(100%-1rem)] sm:w-[min(480px,calc(100vw-2rem))] rounded-full border px-3 py-2 shadow-2xl animate-fade flex items-center gap-2.5"
+            style={{ background:'color-mix(in srgb,var(--surface) 82%,var(--accent-light) 18%)', borderColor:'color-mix(in srgb,var(--accent) 28%,var(--border))', backdropFilter:'blur(24px) saturate(1.6)' }}
+          >
+            <Search className="w-4 h-4 shrink-0" style={{ color:'var(--accent)' }} />
+            <input ref={searchRef} className="min-w-0 flex-1 bg-transparent outline-none text-xs sm:text-sm" placeholder="Search the archive…" style={{ color:'var(--ink)' }} />
+            <button type="button" onClick={() => setSearchOpen(false)} className="w-7 h-7 rounded-full flex items-center justify-center" style={{ color:'var(--ink-muted)' }} aria-label="Close search"><X className="w-4 h-4" /></button>
+          </form>
+        )}
       </header>
 
-      <div className={`fixed inset-0 z-50 xl:hidden transition-opacity duration-300 ${drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-        <div className="absolute inset-0 bg-black/55 backdrop-blur-sm" onClick={() => setDrawerOpen(false)} />
-        <aside className={`absolute right-0 top-0 h-full w-[88%] max-w-sm p-4 flex flex-col shadow-2xl transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`} style={{ background: 'var(--surface)' }}>
-          <div className="flex items-center justify-between p-2 pb-5 border-b" style={{ borderColor: 'var(--border-light)' }}>
-            <div className="flex items-center gap-2.5"><span className="w-10 h-10 rounded-[13px] flex items-center justify-center" style={{ color:'var(--accent)', background:'var(--accent-light)' }}><span aria-hidden="true" className="archivum-mark w-full h-full m-1.5" /></span><div><div className="font-display font-semibold tracking-[.16em]">ARCHIVUM</div><div className="text-[9px] uppercase tracking-[.16em]" style={{ color: 'var(--ink-faint)' }}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></div></div></div>
-            <button onClick={() => setDrawerOpen(false)} className="icon-button w-10 h-10 rounded-full flex items-center justify-center"><X className="w-[18px] h-[18px] block" /></button>
+      <div className={`fixed inset-0 z-50 transition-opacity duration-200 ${drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setDrawerOpen(false)} />
+        <aside className={`absolute right-0 top-0 h-full w-[88%] max-w-[420px] p-4 flex flex-col shadow-2xl transition-transform duration-300 ease-[cubic-bezier(.16,1,.3,1)] ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`} style={{ background:'var(--surface)', borderLeft:'1px solid var(--border)' }}>
+          <div className="flex items-center justify-between p-2 pb-5 border-b" style={{ borderColor:'var(--border-light)' }}>
+            <div className="flex items-center gap-2.5">
+              <span className="brand-logo w-10 h-10 rounded-[13px] flex items-center justify-center"><span aria-hidden="true" className="archivum-mark w-[78%] h-[78%]" /></span>
+              <div><div className="font-display tracking-[.16em]">ARCHIVUM</div><div className="brand-sister text-[8px] uppercase tracking-[.13em]"><span>SISTER ORGANISATION OF </span><span className="quest-word">QUEST</span></div></div>
+            </div>
+            <button onClick={() => setDrawerOpen(false)} className="icon-button header-icon" aria-label="Close menu"><X /></button>
           </div>
 
-          <div className="flex-1 overflow-y-auto py-5 space-y-6">
-            <div className="space-y-1">{navLinks.map(item => { const Icon = item.icon; return <Link key={item.href} href={hrefWithClass(item.href)} onClick={() => setDrawerOpen(false)} className="flex items-center gap-3 px-3.5 py-3.5 rounded-2xl text-xs font-bold transition-all duration-300 hover:translate-x-1" style={{ background: isActive(item.href) ? 'var(--accent-light)' : 'transparent', color: isActive(item.href) ? 'var(--accent)' : 'var(--ink)' }}>{Icon && <Icon className="w-4 h-4" />}{item.label}<ChevronRight className="w-3.5 h-3.5 ml-auto opacity-40" /></Link>; })}</div>
-            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl border text-xs font-bold" style={{borderColor:'color-mix(in srgb,var(--accent) 25%,var(--border))',color:'var(--accent)',background:'var(--accent-light)'}}>Visit Quest <ChevronRight className="w-3.5 h-3.5" /></a>
-            <Link href={hrefWithClass('/upload')} onClick={() => setDrawerOpen(false)} className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-xs font-bold transition-transform active:scale-[.98]" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}><Plus className="w-3.5 h-3.5" /> Upload resource</Link>
+          <div className="flex-1 overflow-y-auto py-5 space-y-5">
+            <div className="space-y-1">
+              {navLinks.map(item => {
+                const Icon = item.icon;
+                return <Link key={item.href} href={hrefWithClass(item.href)} onClick={() => setDrawerOpen(false)} className="flex items-center gap-3 px-3.5 py-3 rounded-2xl text-xs transition-colors" style={{ background:isActive(item.href)?'var(--accent-light)':'transparent', color:isActive(item.href)?'var(--accent)':'var(--ink)' }}>{Icon && <Icon className="w-4 h-4" />}{item.label}<ChevronRight className="w-3.5 h-3.5 ml-auto opacity-40" /></Link>;
+              })}
+            </div>
 
-            <div className="rounded-3xl border p-4 space-y-3" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)' }}>
-              <div className="flex items-center gap-2"><Settings2 className="w-4 h-4" style={{ color: 'var(--accent)' }} /><span className="text-xs font-bold">Your setup</span></div>
-              <div className="flex items-center justify-between"><span className="text-xs" style={{ color: 'var(--ink-muted)' }}>Class profile</span><strong className="text-xs">{studentClass ? `Class ${studentClass}` : 'Not set'}</strong></div>
+            <div className="grid grid-cols-2 gap-2">
+              <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 py-3 rounded-2xl border text-xs" style={{borderColor:'color-mix(in srgb,var(--accent) 28%,var(--border))',color:'var(--accent)',background:'var(--accent-light)'}}>Visit Quest <ChevronRight className="w-3.5 h-3.5" /></a>
+              <Link href={hrefWithClass('/upload')} onClick={() => setDrawerOpen(false)} className="inline-flex items-center justify-center gap-2 py-3 rounded-2xl text-xs" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><Plus className="w-3.5 h-3.5" /> Upload</Link>
+            </div>
+
+            <div className="rounded-3xl border p-4 space-y-3" style={{borderColor:'var(--border)',background:'var(--surface-raised)'}}>
+              <div className="flex items-center gap-2"><Settings2 className="w-4 h-4" style={{color:'var(--accent)'}} /><span className="text-xs">Your setup</span></div>
+              <div className="flex items-center justify-between"><span className="text-xs" style={{color:'var(--ink-muted)'}}>Class profile</span><span className="text-xs">{studentClass ? `Class ${studentClass}` : 'Not set'}</span></div>
               <div className="grid grid-cols-4 gap-1.5">
-                {[9,10,11,12].map(level => <button key={level} onClick={() => changeClass(level as 9|10|11|12)} className="rounded-xl border py-2.5 text-[11px] font-bold transition-all duration-300" style={{ borderColor: studentClass === level ? 'var(--accent)' : 'var(--border)', background: studentClass === level ? 'var(--accent-light)' : 'var(--surface)', color: studentClass === level ? 'var(--accent)' : 'var(--ink)' }}>Class {level}</button>)}
+                {[9,10,11,12].map(level => <button key={level} onClick={() => changeClass(level as 9|10|11|12)} className="rounded-xl border py-2.5 text-[11px] transition-all" style={{borderColor:studentClass===level?'var(--accent)':'var(--border)',background:studentClass===level?'var(--accent-light)':'var(--surface)',color:studentClass===level?'var(--accent)':'var(--ink)'}}>Class {level}</button>)}
               </div>
-              <button onClick={() => { resetStudentClass(); setDrawerOpen(false); }} className="w-full rounded-2xl border py-2.5 text-[11px] font-bold transition-all hover:border-[var(--accent)]" style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}>Reset class profile</button>
+              <button onClick={() => { resetStudentClass(); setDrawerOpen(false); }} className="w-full rounded-2xl border py-2.5 text-[11px]" style={{borderColor:'var(--border)',color:'var(--ink)'}}>Reset class profile</button>
             </div>
 
-            <div className="rounded-3xl border p-4" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)' }}>
-              <div className="flex items-center gap-2 mb-3"><Palette className="w-4 h-4" style={{ color: 'var(--accent)' }} /><span className="text-xs font-bold">Theme accents</span></div>
-              <div className="grid grid-cols-5 gap-2">{ACCENTS.map(item => <button key={item.id} onClick={() => setAccent(item.id)} className="h-9 rounded-xl border-2 flex items-center justify-center transition-transform hover:scale-105" style={{ background: item.color, borderColor: accent === item.id ? 'var(--ink)' : 'transparent' }} aria-label={item.label}>{accent === item.id && <Check className="w-4 h-4" style={{ color: '#fff' }} />}</button>)}</div>
+            <div className="rounded-3xl border p-4" style={{borderColor:'var(--border)',background:'var(--surface-raised)'}}>
+              <div className="flex items-center gap-2 mb-3"><Palette className="w-4 h-4" style={{color:'var(--accent)'}} /><span className="text-xs">Theme accents</span></div>
+              <div className="grid grid-cols-5 gap-2">{ACCENTS.map(item => <button key={item.id} onClick={() => setAccent(item.id)} className="h-9 rounded-xl border-2 flex items-center justify-center transition-transform hover:scale-105" style={{background:item.color,borderColor:accent===item.id?'var(--ink)':'transparent'}} aria-label={item.label}>{accent===item.id && <Check className="w-4 h-4" style={{color:'#fff'}} />}</button>)}</div>
             </div>
           </div>
-          <div className="pt-4 border-t text-[10px] leading-relaxed" style={{ borderColor: 'var(--border-light)', color: 'var(--ink-faint)' }}>ARCHIVUM is a student resource archive. Cross-check important syllabus and exam information with official school or board sources.</div>
+
+          <div className="pt-4 border-t text-[10px] leading-relaxed" style={{borderColor:'var(--border-light)',color:'var(--ink-faint)'}}>ARCHIVUM is a student resource archive. Cross-check important syllabus and exam information with official school or board sources.</div>
         </aside>
       </div>
     </>

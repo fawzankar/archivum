@@ -31,8 +31,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
    <section className="archive-section max-w-7xl mx-auto px-4 sm:px-6">
      <div className="rounded-[2rem] border p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
-       <div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>SJS NETWORK</span><h2 className="font-display font-bold text-2xl mt-1">Meet our sister organisation: SJS Quest</h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>School stories, magazines, photography and creative work from the SJS community — all in one place.</p></div>
-       <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Visit SJS Quest <ArrowRight className="w-3.5 h-3.5"/></a>
+       <div><span className="brand-sister text-[10px] uppercase tracking-[.16em]" style={{color:'var(--accent)'}}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span><h2 className="font-display font-bold text-2xl mt-1">Meet our sister organisation: SJS Quest</h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>School stories, magazines, photography and creative work from the SJS community — all in one place.</p></div>
+       <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Visit Quest <ArrowRight className="w-3.5 h-3.5"/></a>
      </div>
    </section>
 
