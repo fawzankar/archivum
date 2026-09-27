@@ -91,7 +91,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           <Link href={`/subjects?class=${activeClass}`} className="hidden sm:inline-flex items-center gap-2 text-sm font-semibold" style={{ color: 'var(--accent)' }}>All subjects <ArrowUpRight className="w-4 h-4" /></Link>
         </div>
         <div className="border-t" style={{ borderColor: 'var(--border)' }}>
-          {subjectsForClass(activeClass).map((subject) => {
+          {subjectsForClass(activeClass).map((subject, index) => {
             const detail = SUBJECT_DETAILS[subject];
             return <div key={subject} className="subject-index-item grid grid-cols-[44px_1fr_auto] sm:grid-cols-[64px_1fr_auto] items-center gap-4">
               <span className="font-display text-xl" style={{ color: 'var(--accent)' }}>{String(index + 1).padStart(2, '0')}</span>

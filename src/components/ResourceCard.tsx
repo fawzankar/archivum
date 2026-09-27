@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Resource } from '@/lib/resources';
 import { isResourceSaved, toggleSaveResource } from '@/lib/savedStorage';
 import { useToast } from './ToastContext';
-import { Bookmark, BookmarkCheck, FileText, Star } from 'lucide-react';
+import { ArrowUpRight, Bookmark, BookmarkCheck, FileText, Star } from 'lucide-react';
 
 interface ResourceCardProps {
   resource: Resource;
