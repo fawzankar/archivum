@@ -1,7 +1,7 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { NextResponse } from 'next/server';
-import { getR2Client, getR2PublicUrl, MAX_FILE_SIZE } from '@/lib/storage';
+import { getR2Client, MAX_FILE_SIZE } from '@/lib/storage';
 import { reserveStorageBytes, getStorageUsageWithReservations } from '@/lib/storage-quota';
 import { initDb } from '@/lib/db';
 
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   try {
     await initDb();
     const client = getR2Client();
-    if (!client || !process.env.R2_BUCKET_NAME || !process.env.R2_PUBLIC_URL) {
+    if (!client || !process.env.R2_BUCKET_NAME) {
       return NextResponse.json({ error: 'Cloudflare R2 is not configured.' }, { status: 503 });
     }
 
@@ -62,14 +62,14 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       uploadUrl,
-      publicUrl: getR2PublicUrl(key),
+      fileUrl: `r2://${key}`,
       key,
       expiresIn: 900,
       reservationExpiresAt: reservation.expiresAt,
     });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Could not prepare R2 upload.' },
+      { error: error instanceof Error ? error.message : 'Could not prepare the Cloudflare R2 upload.' },
       { status: 500 }
     );
   }

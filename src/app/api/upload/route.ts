@@ -1,7 +1,8 @@
+import { HeadObjectCommand } from '@aws-sdk/client-s3';
 import { NextResponse } from 'next/server';
 import { execute, initDb } from '@/lib/db';
 import { generateSlug, checkForDuplicates } from '@/lib/resources';
-import { isR2Url, deleteStoredFile, getStorageUsageBytes, MAX_FILE_SIZE, MAX_STORAGE_BYTES } from '@/lib/storage';
+import { isR2Url, deleteStoredFile, getR2Client, getStorageUsageBytes, MAX_FILE_SIZE, MAX_STORAGE_BYTES } from '@/lib/storage';
 import { getReservation, releaseStorageReservation } from '@/lib/storage-quota';
 
 export const runtime = 'nodejs';
@@ -40,8 +41,8 @@ export async function POST(request: Request) {
     if (!title || ![9, 10, 11, 12].includes(class_level) || !subject || !resource_type || !contributor_name) {
       return NextResponse.json({ error: 'Missing or invalid required metadata.' }, { status: 400 });
     }
-    if (!fileUrl || !fileUrl.startsWith('https://') || !isR2Url(fileUrl)) {
-      return NextResponse.json({ error: 'Invalid Cloudflare R2 file URL.' }, { status: 400 });
+    if (!fileUrl || !isR2Url(fileUrl)) {
+      return NextResponse.json({ error: 'Invalid Cloudflare R2 file reference.' }, { status: 400 });
     }
     if (!storageKey || !storageKey.startsWith('uploads/')) {
       return NextResponse.json({ error: 'Invalid Cloudflare R2 storage key.' }, { status: 400 });
@@ -58,15 +59,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Upload reservation expired. Please upload the file again.' }, { status: 409 });
     }
 
-    // Confirm the object that was uploaded to R2 is not larger than our
-    // application limit. This is a small HEAD request, not a file download.
-    const head = await fetch(fileUrl, { method: 'HEAD', cache: 'no-store' });
-    if (!head.ok) {
+    // Confirm the private R2 object exists and matches our limits using a
+    // server-side HEAD request. No public bucket URL is required.
+    const r2Client = getR2Client();
+    const objectKey = storageKey.startsWith('r2://') ? storageKey.slice(5) : storageKey;
+    if (!r2Client) {
       await releaseStorageReservation(storageKey);
-      return NextResponse.json({ error: 'The uploaded file could not be verified.' }, { status: 400 });
+      return NextResponse.json({ error: 'Cloudflare R2 is not configured on the server.' }, { status: 503 });
     }
-    const remoteSize = Number(head.headers.get('content-length') || fileSize);
-    const remoteType = (head.headers.get('content-type') || fileType).split(';')[0].toLowerCase();
+    let head;
+    try {
+      head = await r2Client.send(new HeadObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME!,
+        Key: objectKey,
+      }));
+    } catch {
+      await releaseStorageReservation(storageKey);
+      return NextResponse.json({ error: 'The uploaded file could not be verified in Cloudflare R2.' }, { status: 400 });
+    }
+    const remoteSize = Number(head.ContentLength || fileSize);
+    const remoteType = (head.ContentType || fileType).split(';')[0].toLowerCase();
     if (!Number.isFinite(remoteSize) || remoteSize <= 0 || remoteSize > MAX_FILE_SIZE) {
       await releaseStorageReservation(storageKey);
       await deleteStoredFile(storageKey).catch(() => {});

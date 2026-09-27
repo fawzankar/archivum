@@ -166,7 +166,7 @@ export default function UploadClient() {
           chapter: chapter.trim() || null,
           topic: topic.trim() || null,
           description: description.trim() || null,
-          fileUrl: presignJson.publicUrl,
+          fileUrl: presignJson.fileUrl,
           storageKey: presignJson.key,
           fileName: preparedFile.name,
           fileType: preparedFile.type,

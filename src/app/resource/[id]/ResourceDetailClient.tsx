@@ -55,6 +55,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   };
 
   const handleDownload = async () => {
+    let downloadUrl = `/api/resources/${resource.id}/file`;
     try {
       let sessionId = localStorage.getItem('sjs_session_id');
       if (!sessionId) {
@@ -69,6 +70,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
       });
 
       const result = await response.json().catch(() => ({}));
+      downloadUrl = result.download_url || downloadUrl;
       if (!response.ok || !result.success) {
         throw new Error(result.error || 'Download could not be started');
       }
@@ -76,7 +78,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
       setDownloads(result.downloads ?? resource.downloads);
 
       const link = document.createElement('a');
-      link.href = resource.file_url;
+      link.href = downloadUrl;
       link.download = resource.file_name || resource.title;
       document.body.appendChild(link);
       link.click();
@@ -84,7 +86,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
 
       showToast('Downloading document... 📥');
     } catch {
-      window.open(resource.file_url, '_blank');
+      window.open(downloadUrl, '_blank');
     }
   };
 
@@ -242,7 +244,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
               </button>
 
               <a
-                href={resource.file_url}
+                href={`/api/resources/${resource.id}/file`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-5 py-3 rounded-full font-medium text-xs sm:text-sm border transition-colors flex items-center gap-2 hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer"

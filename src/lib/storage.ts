@@ -8,8 +8,7 @@ function r2Configured() {
     process.env.R2_ACCOUNT_ID &&
     process.env.R2_ACCESS_KEY_ID &&
     process.env.R2_SECRET_ACCESS_KEY &&
-    process.env.R2_BUCKET_NAME &&
-    process.env.R2_PUBLIC_URL
+    process.env.R2_BUCKET_NAME
   );
 }
 
@@ -61,16 +60,20 @@ export function getR2Client() {
 
 export function getR2PublicUrl(key: string) {
   const base = process.env.R2_PUBLIC_URL?.replace(/\/+$/, '');
-  if (!base) throw new Error('R2_PUBLIC_URL is not configured.');
-  return `${base}/${key.split('/').map(encodeURIComponent).join('/')}`;
+  return base ? `${base}/${key.split('/').map(encodeURIComponent).join('/')}` : `r2://${key}`;
 }
 
 export function isR2Url(url: string) {
+  if (url.startsWith('r2://')) return url.slice(5).startsWith('uploads/');
   const base = process.env.R2_PUBLIC_URL?.replace(/\/+$/, '');
   return Boolean(base && url.startsWith(`${base}/`));
 }
 
 export function r2KeyFromUrl(url: string) {
+  if (url.startsWith('r2://')) {
+    const key = url.slice(5);
+    return key.startsWith('uploads/') ? key : null;
+  }
   const base = process.env.R2_PUBLIC_URL?.replace(/\/+$/, '');
   if (!base || !url.startsWith(`${base}/`)) return null;
   return decodeURIComponent(url.slice(base.length + 1));

@@ -47,7 +47,7 @@ export default function PdfViewerModal({ resource, onClose }: PdfViewerModalProp
 
           <div className="flex items-center gap-2 shrink-0">
             <a
-              href={resource.file_url}
+              href={`/api/resources/${resource.id}/file`}
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-xs font-semibold rounded-full border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-1.5"
@@ -57,7 +57,7 @@ export default function PdfViewerModal({ resource, onClose }: PdfViewerModalProp
               <span className="hidden sm:inline">Open in Tab</span>
             </a>
             <a
-              href={resource.file_url}
+              href={`/api/resources/${resource.id}/file`}
               download={resource.file_name || resource.title}
               className="px-4 py-2 text-xs font-semibold rounded-full text-white bg-zinc-900 hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
             >
@@ -78,14 +78,14 @@ export default function PdfViewerModal({ resource, onClose }: PdfViewerModalProp
           {isImage ? (
             <div className="w-full h-full flex items-center justify-center overflow-auto">
               <img
-                src={resource.file_url}
+                src={`/api/resources/${resource.id}/file`}
                 alt={resource.title}
                 className="max-h-full max-w-full object-contain rounded-lg shadow-sm"
               />
             </div>
           ) : (
             <iframe
-              src={`${resource.file_url}#toolbar=0`}
+              src={`/api/resources/${resource.id}/file#toolbar=0`}
               className="w-full h-full rounded-2xl border bg-white shadow-inner"
               style={{ borderColor: 'var(--border)' }}
               title={resource.title}
