@@ -10,33 +10,39 @@ export default function HomeClient({ initialSearch = '' }: { initialSearch?: str
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    const value = query.trim();
-    router.push(value ? `/search?q=${encodeURIComponent(value)}` : '/search');
+    router.push(query.trim() ? `/search?q=${encodeURIComponent(query.trim())}` : '/search');
   };
 
-  const quickSearches = ['Class 10 Science', 'Chemical reactions', 'Previous papers'];
+  const handleQuickSearch = (term: string) => {
+    setQuery(term);
+    router.push(`/search?q=${encodeURIComponent(term)}`);
+  };
 
   return (
-    <div className="home-search">
-      <form onSubmit={handleSearch} className="home-search__box">
-        <Search className="w-5 h-5 ml-4 shrink-0" style={{color:'var(--ink-muted)'}} />
-        <input
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          placeholder="Search the archive by subject, chapter or paper"
-          aria-label="Search the ARCHIVUM archive"
-        />
-        <button type="submit" className="btn btn-primary mr-1.5">
-          Search
-        </button>
+    <div className="w-full space-y-4">
+      <form onSubmit={handleSearch} className="relative w-full">
+        <div className="premium-search relative flex items-center w-full min-h-[56px]">
+          <Search className="w-5 h-5 ml-4 shrink-0" style={{ color: 'var(--accent)' }} />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search a subject, chapter, paper or topic"
+            className="w-full min-w-0 py-4 px-3 text-sm bg-transparent outline-none"
+            style={{ color: 'var(--ink)' }}
+            aria-label="Search the ARCHIVUM archive"
+          />
+          <button type="submit" className="mr-2 premium-button premium-button-primary text-xs shrink-0">Search</button>
+        </div>
       </form>
-      <div className="home-search__hint">
-        Try: {quickSearches.map((term, index) => (
-          <React.Fragment key={term}>
-            {index > 0 && <span className="mx-1.5" style={{color:'var(--border)'}}>|</span>}
-            <button type="button" onClick={() => router.push(`/search?q=${encodeURIComponent(term)}`)} style={{color:'var(--accent)'}}>{term}</button>
-          </React.Fragment>
-        ))}
+      <div className="flex flex-wrap items-center gap-2 text-xs" style={{ color: 'var(--ink-muted)' }}>
+        <span>Try</span>
+        <button type="button" onClick={() => handleQuickSearch('class 10 science')} className="font-medium hover:text-[var(--accent)]">Class 10 Science</button>
+        <span aria-hidden="true" style={{ color: 'var(--border)' }}>•</span>
+        <button type="button" onClick={() => handleQuickSearch('chemical reactions')} className="font-medium hover:text-[var(--accent)]">Chemical Reactions</button>
+        <span aria-hidden="true" style={{ color: 'var(--border)' }}>•</span>
+        <button type="button" onClick={() => handleQuickSearch('previous papers')} className="font-medium hover:text-[var(--accent)]">Previous Papers</button>
+        
       </div>
     </div>
   );

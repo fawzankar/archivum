@@ -1,38 +1,21 @@
 {
   "id": "/?source=pwa",
-  "name": "ARCHIVUM \u2014 SJS student archive",
+  "name": "ARCHIVUM — Sister Organisation of QUEST",
   "short_name": "ARCHIVUM",
-  "description": "Notes, previous papers and study material for SJS students in Classes 9\u201312.",
+  "description": "The SJS student archive for notes, previous papers, study material and exam tips.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": [
-    "window-controls-overlay",
-    "standalone",
-    "minimal-ui"
-  ],
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#f4f7fa",
-  "theme_color": "#145A73",
+  "background_color": "#08090c",
+  "theme_color": "#111318",
   "lang": "en",
   "dir": "ltr",
-  "categories": [
-    "education",
-    "productivity"
-  ],
+  "categories": ["education", "productivity"],
   "prefer_related_applications": false,
   "icons": [
-    {
-      "src": "/archivum-icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/archivum-icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
+    { "src": "/archivum-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/archivum-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

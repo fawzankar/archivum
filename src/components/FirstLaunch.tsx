@@ -2,50 +2,60 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { Check, GraduationCap } from 'lucide-react';
+import { ArrowRight, Check, GraduationCap } from 'lucide-react';
 import { useStudentClass, type StudentClass } from './StudentClassContext';
-import { useTheme } from './ThemeContext';
 
 const classes: StudentClass[] = [9, 10, 11, 12];
 
 export default function FirstLaunch() {
   const { studentClass, setStudentClass } = useStudentClass();
-  const { mode } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
   const [splash, setSplash] = useState(pathname === '/');
   const [visible, setVisible] = useState(pathname !== '/');
 
+  // Show the splash once per browser session. Navigating away and back to Home
+  // in the same session does not replay it; a fresh session gets the 4s intro.
   useEffect(() => {
     if (pathname !== '/') {
-      setSplash(false); setVisible(true); return;
+      setSplash(false);
+      setVisible(true);
+      return;
     }
-    const key = 'archivum_home_splash_seen_v2';
+
+    const key = 'archivum_home_splash_seen_v1';
     if (window.sessionStorage.getItem(key) === '1') {
-      setSplash(false); setVisible(true); return;
+      setSplash(false);
+      setVisible(true);
+      return;
     }
+
     window.sessionStorage.setItem(key, '1');
-    setSplash(true); setVisible(false);
+    setSplash(true);
+    setVisible(false);
     const timer = window.setTimeout(() => {
       setSplash(false);
       window.requestAnimationFrame(() => setVisible(true));
-    }, 2600);
+    }, 4000);
     return () => window.clearTimeout(timer);
   }, [pathname]);
 
   if (splash) {
     return (
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden" style={{background:'var(--hero-gradient)'}}>
+      <div className="fixed inset-0 z-[9999] overflow-hidden flex items-center justify-center" style={{ background: 'var(--hero-gradient)' }}>
         <div className="absolute inset-0 splash-grid" />
-        <div className="relative text-center px-7">
-          <div className="splash-logo mx-auto w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>
-            <img src={mode === 'dark' ? '/archivum-logo-light.png' : '/archivum-logo-dark.png'} alt="ARCHIVUM" className="w-[72%] h-[72%] object-contain" />
+        <div className="relative text-center px-8">
+          <div className="splash-orb absolute -inset-12 rounded-full" />
+          <div className="relative mx-auto w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center splash-logo" style={{ color: 'var(--accent)' }}>
+            <span className="absolute inset-0 border border-[var(--accent)] opacity-20" />
+            <img src="/archivum-official-logo.png" alt="ARCHIVUM" className="relative w-[72%] h-[72%] object-contain archivum-splash-logo" />
           </div>
-          <p className="mt-7 text-xs font-medium" style={{color:'var(--accent-on-hero)'}}>ARCHIVUM</p>
-          <h1 className="mt-1 text-3xl sm:text-4xl font-semibold" style={{color:'var(--hero-ink)'}}>Study material for SJS students.</h1>
-          <p className="mt-3 max-w-md mx-auto text-sm" style={{color:'var(--hero-muted)'}}>
-            Notes, previous papers and useful exam advice, arranged by class and subject.
-          </p>
+          <div className="relative mt-8">
+            <p className="brand-sister text-[10px]" style={{ color: 'var(--accent)' }}>Sister organisation of <span className="quest-word">QUEST</span></p>
+            <h1 className="font-display text-4xl sm:text-5xl tracking-[.035em] mt-2" style={{ color: 'var(--hero-ink)' }}>ARCHIVUM</h1>
+            <p className="mt-3 text-xs sm:text-sm max-w-xs mx-auto leading-relaxed" style={{ color: 'var(--hero-muted)' }}>A place for SJS students for all the materials they need.</p>
+            <p className="mt-6 text-[11px] max-w-sm mx-auto leading-5" style={{ color: 'var(--hero-muted)' }}>ARCHIVUM was started by Fawzan Kar after too many useful papers and quick notes were difficult to find when they were actually needed.</p>
+          </div>
         </div>
       </div>
     );
@@ -55,31 +65,35 @@ export default function FirstLaunch() {
 
   const chooseClass = (level: StudentClass) => {
     setStudentClass(level);
-    router.replace(`/?class=${level}`, {scroll:false});
-    router.refresh();
+    // The homepage is server-rendered from the class query/cookie, so make the
+    // selected class part of the URL immediately instead of waiting for a
+    // later refresh or relying only on client storage.
+    router.replace(`/?class=${level}`, { scroll: false });
   };
 
   return (
-    <div className="fixed inset-0 z-[90] overflow-y-auto flex items-center justify-center p-4" style={{background:'color-mix(in srgb,var(--ivory) 92%,var(--accent-light))'}}>
-      <div className="w-full max-w-lg archive-surface p-6 sm:p-9">
-        <div className="w-11 h-11 flex items-center justify-center" style={{background:'var(--accent-light)',color:'var(--accent)',borderRadius:'7px'}}>
-          <GraduationCap className="w-5 h-5" />
+    <div className="fixed inset-0 z-[90] overflow-y-auto flex items-center justify-center p-4 animate-soft-scale" style={{ background: 'color-mix(in srgb, var(--ivory) 90%, var(--accent-light))',  }}>
+      <div className="w-full max-w-xl rounded-xl border p-6 sm:p-10 shadow-2xl" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
+        <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}>
+          <GraduationCap className="w-7 h-7" />
         </div>
-        <h2 className="mt-6 text-2xl sm:text-3xl font-semibold">Which class are you in?</h2>
-        <p className="mt-3 text-sm leading-relaxed" style={{color:'var(--ink-muted)'}}>
-          Choose once and the archive will keep your subjects and resources centred on your class. You can change it later from the menu.
-        </p>
-        <div className="grid grid-cols-2 gap-2.5 mt-7">
-          {classes.map(level => (
-            <button key={level} onClick={() => chooseClass(level)} className="border p-4 text-left" style={{borderColor:'var(--border)',background:'var(--surface-raised)',borderRadius:'8px'}}>
+        <div className="mt-6 space-y-2">
+          <p className="text-xs font-semibold" style={{ color: 'var(--accent)' }}>Set your study profile</p>
+          <h2 className="font-display font-bold text-3xl sm:text-4xl" style={{ color: 'var(--ink)' }}>Which class are you in?</h2>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--ink-muted)' }}>We’ll tune notes, papers, subjects and exam tips around your class. You can change this anytime from the menu.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-3 mt-8">
+          {classes.map((level) => (
+            <button key={level} onClick={() => chooseClass(level)} className="group rounded-xl border p-4 sm:p-5 text-left transition-all hover:-translate-y-0.5 hover:shadow-lg active:scale-[.98]" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)', color: 'var(--ink)' }}>
               <div className="flex items-center justify-between">
-                <span className="text-2xl font-semibold">Class {level}</span>
-                <Check className="w-4 h-4" style={{color:'var(--accent)'}} />
+                <span className="font-display text-3xl font-bold">{level}</span>
+                <span className="w-8 h-8 rounded-full flex items-center justify-center transition-colors" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}><Check className="w-4 h-4 opacity-0 group-hover:opacity-100" /></span>
               </div>
-              <span className="block text-xs mt-3" style={{color:'var(--ink-muted)'}}>Open your class archive</span>
+              <span className="block text-[11px] mt-4 font-semibold" style={{ color: 'var(--ink-muted)' }}>Class {level} archive</span>
             </button>
           ))}
         </div>
+        <div className="mt-6 flex items-center gap-2 text-[10px] font-medium" style={{ color: 'var(--ink-faint)' }}><ArrowRight className="w-3.5 h-3.5" /> Your choice is stored only on this device.</div>
       </div>
     </div>
   );
