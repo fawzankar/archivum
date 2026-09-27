@@ -41,6 +41,18 @@ export default function AboutPage() {
             ))}
           </div>
 
+
+          <div className="rounded-3xl border p-6 sm:p-8" style={{background:'var(--surface-raised)',borderColor:'var(--border)'}}>
+            <p className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>SISTER ORGANISATION</p>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 mt-2">
+              <div>
+                <h2 className="font-display font-bold text-2xl">ARCHIVUM × SJS Quest</h2>
+                <p className="text-sm leading-6 mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>ARCHIVUM is a sister organisation of SJS Quest, the St. Joseph's School, Baramulla newsletter club. SJS Quest focuses on school stories, magazines and creative work; ARCHIVUM focuses on preserving and finding academic material.</p>
+              </div>
+              <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-full px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Visit SJS Quest <ArrowRight className="w-3.5 h-3.5"/></a>
+            </div>
+          </div>
+
           <div className="rounded-3xl border p-6 sm:p-8" style={{background:'var(--accent-light)',borderColor:'color-mix(in srgb,var(--accent) 22%,var(--border))'}}>
             <div className="flex gap-4">
               <Heart className="w-5 h-5 shrink-0 mt-0.5" style={{color:'var(--accent)'}}/>

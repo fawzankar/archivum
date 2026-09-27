@@ -105,12 +105,12 @@ export default function SearchClient({
   );
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       
       {/* Large Clean Search Bar (Same design language as homepage) */}
       <form onSubmit={handleSearchSubmit} className="relative w-full">
         <div
-          className="relative flex items-center w-full rounded-2xl border transition-all duration-200 shadow-sm focus-within:shadow-md focus-within:border-zinc-400"
+          className="relative flex items-center w-full rounded-2xl border transition-all duration-200 focus-within:shadow-lg"
           style={{
             backgroundColor: 'var(--surface)',
             borderColor: 'var(--border)',
@@ -149,7 +149,7 @@ export default function SearchClient({
 
       {/* Filter Chips / Quick Selectors */}
       <div
-        className="p-4 sm:p-5 rounded-2xl border space-y-4"
+        className="p-3 sm:p-4 rounded-2xl border space-y-4"
         style={{
           backgroundColor: 'var(--surface)',
           borderColor: 'var(--border)',

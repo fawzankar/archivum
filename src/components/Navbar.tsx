@@ -25,6 +25,10 @@ export default function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  useEffect(() => {
+    const timer = window.setTimeout(() => [9, 10, 11, 12].forEach(level => router.prefetch(`/?class=${level}`)), 500);
+    return () => window.clearTimeout(timer);
+  }, [router]);
   useEffect(() => { if (searchOpen) searchRef.current?.focus(); }, [searchOpen]);
   useEffect(() => { document.body.style.overflow = drawerOpen ? 'hidden' : ''; return () => { document.body.style.overflow = ''; }; }, [drawerOpen]);
   useEffect(() => { setDrawerOpen(false); setPaletteOpen(false); setClassOpen(false); }, [pathname]);
@@ -46,26 +50,24 @@ export default function Navbar() {
     setDrawerOpen(false);
     setStudentClass(level);
 
-    // Class is the global archive profile. Remove stale subject/filter params
-    // so every class-dependent page immediately resolves against the new class.
+    // One client navigation is enough. router.refresh() caused a second
+    // server round-trip and made class switching feel unnecessarily slow.
     const params = new URLSearchParams();
     params.set('class', String(level));
-    const nextUrl = `${pathname}?${params.toString()}`;
-    router.replace(nextUrl, { scroll: false });
-    router.refresh();
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
   return (
     <>
-      <header className={`sticky top-3 sm:top-4 z-40 mx-2 sm:mx-4 lg:mx-6 rounded-[1.75rem] sm:rounded-[2rem] border transition-all duration-500 ${scrolled ? 'premium-shadow' : ''}`} style={{ background: 'color-mix(in srgb,var(--surface) 91%,transparent)', borderColor: 'color-mix(in srgb,var(--border) 85%,transparent)', backdropFilter: 'blur(26px) saturate(1.2)' }}>
+      <header className={`relative sticky top-3 sm:top-4 z-40 mx-2 sm:mx-4 lg:mx-6 rounded-[1.75rem] sm:rounded-[2rem] border transition-all duration-300 ${scrolled ? 'premium-shadow' : ''}`} style={{ background: 'color-mix(in srgb,var(--surface) 68%,var(--accent-light) 32%)', borderColor: 'color-mix(in srgb,var(--accent) 18%,var(--border))', backdropFilter: 'blur(28px) saturate(1.55)', WebkitBackdropFilter: 'blur(28px) saturate(1.55)', boxShadow: scrolled ? '0 20px 55px color-mix(in srgb,var(--accent) 12%,transparent)' : '0 10px 36px color-mix(in srgb,var(--accent) 8%,transparent)' }}>
         <div className="max-w-[1480px] mx-auto px-2.5 sm:px-4 lg:px-5 h-[58px] sm:h-[62px] flex items-center justify-between gap-3">
           <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0 group min-w-0" aria-label="ARCHIVUM home">
-            <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 flex items-center justify-center transition-all duration-500 group-hover:rotate-6 group-hover:scale-105" style={{ borderColor: 'var(--ink)', color: 'var(--ink)', background: 'var(--surface)' }}>
-              <span className="font-display text-[18px] sm:text-[20px] font-medium leading-none">A</span>
+            <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-[12px] flex items-center justify-center transition-all duration-300 group-hover:-rotate-3 group-hover:scale-105" style={{ color: 'var(--accent)', background: 'var(--accent-light)' }}>
+              <span aria-hidden="true" className="archivum-mark w-full h-full m-1.5" />
             </span>
             <span className="block min-w-0">
               <span className="block font-display text-[12px] sm:text-[14px] font-semibold tracking-[.13em] leading-none whitespace-nowrap">ARCHIVUM</span>
-              <span className="block text-[6px] sm:text-[7px] uppercase tracking-[.20em] mt-1 font-bold" style={{ color: 'var(--ink-faint)' }}>SJS STUDENT ARCHIVE</span>
+              <span className="block text-[6px] sm:text-[7px] uppercase tracking-[.16em] mt-1 font-bold" style={{ color: 'var(--ink-faint)' }}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span>
             </span>
           </Link>
 
@@ -103,24 +105,26 @@ export default function Navbar() {
                 {ACCENTS.map(item => <button key={item.id} onClick={() => { setAccent(item.id); setPaletteOpen(false); }} className="w-full flex items-center gap-3 px-2.5 py-2 rounded-xl text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5" style={{ color: 'var(--ink)' }}><span className="w-4 h-4 rounded-full" style={{ background: item.color }} /><span className="flex-1 text-left">{item.label}</span>{accent === item.id && <Check className="w-4 h-4" style={{ color: 'var(--accent)' }} />}</button>)}
               </div>}
             </div>
+            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hidden lg:inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-[9px] font-bold transition-all hover:-translate-y-0.5" style={{ color:'var(--accent)', background:'var(--accent-light)' }}>Visit Quest <ChevronRight className="w-3 h-3" /></a>
             <Link href={hrefWithClass('/upload')} className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[10px] font-bold transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)', boxShadow: '0 10px 28px var(--accent-glow)' }}><Plus className="w-3.5 h-3.5" /> Upload</Link>
             <button onClick={() => setDrawerOpen(true)} className="icon-button w-8 h-8 sm:w-9 sm:h-9 rounded-full md:flex xl:hidden items-center justify-center p-0 leading-none transition-transform hover:scale-105 [&>svg]:block" aria-label="Open menu"><Menu className="w-[18px] h-[18px] block" /></button>
           </div>
         </div>
 
-        {searchOpen && <div className="border-t rounded-b-[1.75rem] animate-fade" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}><form onSubmit={e => { e.preventDefault(); const q = (searchRef.current?.value || '').trim(); window.location.href = q ? `/search?q=${encodeURIComponent(q)}` : '/search'; }} className="max-w-7xl mx-auto px-4 sm:px-7 py-3.5 flex items-center gap-3"><Search className="w-4 h-4" style={{ color: 'var(--accent)' }} /><input ref={searchRef} className="flex-1 bg-transparent outline-none text-sm" placeholder="Search your class archive…" style={{ color: 'var(--ink)' }} /><button type="button" onClick={() => setSearchOpen(false)} className="p-2" style={{ color: 'var(--ink-muted)' }}><X className="w-4 h-4" /></button></form></div>}
+        {searchOpen && <div className="absolute left-2 right-2 sm:left-auto sm:right-3 top-[calc(100%+10px)] sm:w-[min(520px,calc(100vw-2rem))] rounded-2xl border p-2.5 shadow-2xl animate-fade" style={{ background: 'color-mix(in srgb,var(--surface) 84%,var(--accent-light) 16%)', borderColor: 'color-mix(in srgb,var(--accent) 18%,var(--border))', backdropFilter: 'blur(26px) saturate(1.45)', WebkitBackdropFilter: 'blur(26px) saturate(1.45)' }}><form onSubmit={e => { e.preventDefault(); const q = (searchRef.current?.value || '').trim(); router.push(q ? `/search?q=${encodeURIComponent(q)}` : '/search'); setSearchOpen(false); }} className="flex items-center gap-2 rounded-xl px-3 py-2" style={{ background: 'var(--surface)', border: '1px solid var(--border)' }}><Search className="w-4 h-4 shrink-0" style={{ color: 'var(--accent)' }} /><input ref={searchRef} className="min-w-0 flex-1 bg-transparent outline-none text-sm" placeholder="Search your class archive…" style={{ color: 'var(--ink)' }} /><button type="button" onClick={() => setSearchOpen(false)} className="p-1.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5" style={{ color: 'var(--ink-muted)' }}><X className="w-4 h-4" /></button></form></div>}
       </header>
 
-      <div className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ${drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+      <div className={`fixed inset-0 z-50 xl:hidden transition-opacity duration-300 ${drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
         <div className="absolute inset-0 bg-black/55 backdrop-blur-sm" onClick={() => setDrawerOpen(false)} />
         <aside className={`absolute right-0 top-0 h-full w-[88%] max-w-sm p-4 flex flex-col shadow-2xl transition-transform duration-500 ease-[cubic-bezier(.16,1,.3,1)] ${drawerOpen ? 'translate-x-0' : 'translate-x-full'}`} style={{ background: 'var(--surface)' }}>
           <div className="flex items-center justify-between p-2 pb-5 border-b" style={{ borderColor: 'var(--border-light)' }}>
-            <div className="flex items-center gap-2.5"><span className="w-10 h-10 rounded-full border flex items-center justify-center" style={{ borderColor: 'var(--ink)' }}><span className="font-display text-lg">A</span></span><div><div className="font-display font-semibold tracking-[.16em]">ARCHIVUM</div><div className="text-[9px] uppercase tracking-[.16em]" style={{ color: 'var(--ink-faint)' }}>SJS student archive</div></div></div>
+            <div className="flex items-center gap-2.5"><span className="w-10 h-10 rounded-[13px] flex items-center justify-center" style={{ color:'var(--accent)', background:'var(--accent-light)' }}><span aria-hidden="true" className="archivum-mark w-full h-full m-1.5" /></span><div><div className="font-display font-semibold tracking-[.16em]">ARCHIVUM</div><div className="text-[9px] uppercase tracking-[.16em]" style={{ color: 'var(--ink-faint)' }}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></div></div></div>
             <button onClick={() => setDrawerOpen(false)} className="icon-button w-10 h-10 rounded-full flex items-center justify-center"><X className="w-[18px] h-[18px] block" /></button>
           </div>
 
           <div className="flex-1 overflow-y-auto py-5 space-y-6">
             <div className="space-y-1">{navLinks.map(item => { const Icon = item.icon; return <Link key={item.href} href={hrefWithClass(item.href)} onClick={() => setDrawerOpen(false)} className="flex items-center gap-3 px-3.5 py-3.5 rounded-2xl text-xs font-bold transition-all duration-300 hover:translate-x-1" style={{ background: isActive(item.href) ? 'var(--accent-light)' : 'transparent', color: isActive(item.href) ? 'var(--accent)' : 'var(--ink)' }}>{Icon && <Icon className="w-4 h-4" />}{item.label}<ChevronRight className="w-3.5 h-3.5 ml-auto opacity-40" /></Link>; })}</div>
+            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl border text-xs font-bold" style={{borderColor:'color-mix(in srgb,var(--accent) 25%,var(--border))',color:'var(--accent)',background:'var(--accent-light)'}}>Visit Quest <ChevronRight className="w-3.5 h-3.5" /></a>
             <Link href={hrefWithClass('/upload')} onClick={() => setDrawerOpen(false)} className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl text-xs font-bold transition-transform active:scale-[.98]" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}><Plus className="w-3.5 h-3.5" /> Upload resource</Link>
 
             <div className="rounded-3xl border p-4 space-y-3" style={{ borderColor: 'var(--border)', background: 'var(--surface-raised)' }}>

@@ -45,7 +45,9 @@ export function StudentClassProvider({ children }: { children: React.ReactNode }
     localStorage.setItem('archivum_student_class', String(value));
     document.cookie = `archivum_class=${value};path=/;max-age=31536000;samesite=lax`;
     window.dispatchEvent(new CustomEvent('archivum:class-change', { detail: { level: value } }));
-    window.setTimeout(() => setIsChangingClass(false), 450);
+    // Let Next.js handle the route transition itself. A fixed 450ms timer
+    // made class switching feel slow even when the next route was already ready.
+    window.requestAnimationFrame(() => setIsChangingClass(false));
   };
 
   const resetStudentClass = () => {

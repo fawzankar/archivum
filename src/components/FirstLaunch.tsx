@@ -32,11 +32,11 @@ export default function FirstLaunch() {
         <div className="relative text-center px-8">
           <div className="splash-orb absolute -inset-12 rounded-full" />
           <div className="relative mx-auto w-28 h-28 sm:w-36 sm:h-36 rounded-[2rem] flex items-center justify-center splash-logo" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)', boxShadow: '0 30px 80px color-mix(in srgb, var(--accent) 38%, transparent)' }}>
-            <Archive className="w-14 h-14 sm:w-20 sm:h-20" strokeWidth={1.7} />
+            <span aria-hidden="true" className="archivum-mark w-14 h-14 sm:w-20 sm:h-20" style={{background:'var(--accent-contrast)'}} />
             <Sparkles className="absolute -right-2 -top-2 w-8 h-8" />
           </div>
           <div className="relative mt-8">
-            <p className="text-[10px] uppercase tracking-[0.32em] font-bold" style={{ color: 'var(--accent-on-hero)' }}>SJS STUDENT ARCHIVE</p>
+            <p className="text-[10px] uppercase tracking-[0.24em] font-bold" style={{ color: 'var(--accent-on-hero)' }}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></p>
             <h1 className="font-display font-bold text-4xl sm:text-5xl tracking-tight mt-2" style={{ color: 'var(--hero-ink)' }}>ARCHIVUM</h1>
             <p className="mt-3 text-xs sm:text-sm max-w-xs mx-auto leading-relaxed" style={{ color: 'var(--hero-muted)' }}>A place for SJS students for all the materials they need.</p>
             <p className="mt-6 text-[10px] uppercase tracking-[0.18em] font-semibold" style={{ color: 'var(--hero-muted)' }}>Webapp developed by Fawzan Kar</p>
@@ -54,7 +54,6 @@ export default function FirstLaunch() {
     // selected class part of the URL immediately instead of waiting for a
     // later refresh or relying only on client storage.
     router.replace(`/?class=${level}`, { scroll: false });
-    router.refresh();
   };
 
   return (

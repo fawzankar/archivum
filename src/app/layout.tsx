@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Libre_Baskerville } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeContext';
 import { ToastProvider } from '@/components/ToastContext';
@@ -12,26 +13,23 @@ import { Suspense } from 'react';
 import ClassTransitionOverlay from '@/components/ClassTransitionOverlay';
 import DeferredClientWidgets from '@/components/DeferredClientWidgets';
 
+const libreBaskerville = Libre_Baskerville({ subsets: ['latin'], weight: ['400','700'], variable: '--font-libre-baskerville', display: 'swap' });
+
 export const viewport: Viewport = { themeColor: '#111318', width: 'device-width', initialScale: 1, maximumScale: 5 };
 
 export const metadata: Metadata = {
-  title: 'ARCHIVUM — SJS Student Archive',
+  title: 'ARCHIVUM — Sister Organisation of QUEST',
   description: 'A place for SJS students for all the materials they need — notes, papers, study material and exam tips for Classes 9–12.',
   keywords: 'SJS, ARCHIVUM, JKBOSE, school notes, previous papers, study material, exam tips',
   manifest: '/manifest.json',
   icons: { icon: '/icon-192.png', apple: '/icon-192.png' },
-  openGraph: { title: 'ARCHIVUM — SJS Student Archive', description: 'Your class-focused academic archive for SJS students.', siteName: 'ARCHIVUM', type: 'website' },
+  openGraph: { title: 'ARCHIVUM — Sister Organisation of QUEST', description: 'A sister organisation of SJS Quest for SJS students: notes, papers, study material and exam tips.', siteName: 'ARCHIVUM', type: 'website' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor: 'var(--ivory)', color: 'var(--ink)' }}>
+      <body className={`${libreBaskerville.variable} min-h-screen flex flex-col antialiased`} style={{ backgroundColor: 'var(--ivory)', color: 'var(--ink)' }}>
         <ThemeProvider>
           <StudentClassProvider>
             <ToastProvider>
