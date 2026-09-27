@@ -1,13 +1,24 @@
 import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import fs from 'fs/promises';
+import crypto from 'crypto';
 import path from 'path';
 import { queryOne } from './db';
+
+function getR2SecretAccessKey() {
+  // Cloudflare R2 API-token responses expose a token value; for the S3-compatible
+  // API, Cloudflare defines the Secret Access Key as SHA-256(token value).
+  // Prefer an explicitly supplied S3 secret, but support the token-value form too.
+  const tokenValue = process.env.R2_TOKEN_VALUE?.trim();
+  if (tokenValue) return crypto.createHash('sha256').update(tokenValue).digest('hex');
+  if (process.env.R2_SECRET_ACCESS_KEY) return process.env.R2_SECRET_ACCESS_KEY.trim();
+  return '';
+}
 
 function r2Configured() {
   return Boolean(
     process.env.R2_ACCOUNT_ID &&
-    process.env.R2_ACCESS_KEY_ID &&
-    process.env.R2_SECRET_ACCESS_KEY &&
+    (process.env.R2_ACCESS_KEY_ID || process.env.R2_TOKEN_ID) &&
+    getR2SecretAccessKey() &&
     process.env.R2_BUCKET_NAME
   );
 }
@@ -46,14 +57,12 @@ export function getStorageQuotaStatus(usedBytes: number) {
 export function getR2Client() {
   if (!r2Configured()) return null;
   if (!r2Client) {
-    const jurisdiction = (process.env.R2_JURISDICTION || '').trim().toLowerCase();
-    const endpointSuffix = jurisdiction && jurisdiction !== 'default' ? `.${jurisdiction}` : '';
     r2Client = new S3Client({
       region: 'auto',
-      endpoint: `https://${process.env.R2_ACCOUNT_ID}${endpointSuffix}.r2.cloudflarestorage.com`,
+      endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
       credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+        accessKeyId: (process.env.R2_ACCESS_KEY_ID || process.env.R2_TOKEN_ID)!,
+        secretAccessKey: getR2SecretAccessKey(),
       },
     });
   }

@@ -1,4 +1,0 @@
-import { NextResponse } from 'next/server';
-import { getResourceById,getResourceBySlug,getRelatedResources,incrementViewCount } from '@/lib/resources';
-export const dynamic='force-dynamic';
-export async function GET(_request:Request,{params}:{params:Promise<{id:string}>}){ try { const {id}=await params; let resource=Number.isNaN(Number(id))?null:await getResourceById(Number(id)); if(!resource) resource=await getResourceBySlug(id); if(!resource||resource.status!=='approved') return NextResponse.json({error:'Resource not found'},{status:404}); await incrementViewCount(resource.id); const related=await getRelatedResources(resource,4); return NextResponse.json({resource:{...resource,views:resource.views+1},related}); } catch(e){return NextResponse.json({error:e instanceof Error?e.message:'Server error'},{status:500});} }

@@ -114,8 +114,9 @@ ARCHIVUM stores uploaded PDFs/images in a private Cloudflare R2 bucket and store
 4. Keep the bucket private. No public URL is required because ARCHIVUM uses signed upload/download URLs.
 5. In Vercel, add:
    - `R2_ACCOUNT_ID`
-   - `R2_ACCESS_KEY_ID`
-   - `R2_SECRET_ACCESS_KEY`
+   - `R2_ACCESS_KEY_ID` (Cloudflare token `id`; `R2_TOKEN_ID` is accepted as an alternative)
+   - `R2_SECRET_ACCESS_KEY` (preferred S3 secret)
+   - `R2_TOKEN_VALUE` (alternative: paste the Token Value from the R2 API-token result; the app derives the S3 secret as Cloudflare documents)
    - `R2_BUCKET_NAME`
    - `R2_PUBLIC_URL` (optional; leave blank for a private bucket)
 6. Redeploy.
