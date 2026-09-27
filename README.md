@@ -120,7 +120,7 @@ ARCHIVUM stores uploaded PDFs/images in a private Cloudflare R2 bucket and store
    - `R2_PUBLIC_URL` (optional; leave blank for a private bucket)
 6. Redeploy.
 
-Uploaded objects are placed under `uploads/`. Uploads use short-lived signed PUT URLs, and downloads use short-lived signed GET URLs. R2 credentials never reach the browser.
+Uploaded objects are placed under `uploads/`. Uploads use short-lived signed PUT URLs, and downloads use short-lived signed GET URLs. R2 credentials never reach the browser. The upload form also performs real client-side compression before the signed upload: PDFs have their embedded images recompressed, while JPG/PNG images are optimized. The original file is kept automatically when compression would make it larger.
 
 ### Local development
 

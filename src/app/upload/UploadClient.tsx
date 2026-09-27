@@ -106,7 +106,7 @@ export default function UploadClient() {
       setCompressionStatus('Optimizing your file…');
       setUploadProgress(0);
 
-      const preparedFile = await compressUpload(file);
+      const preparedFile = await compressUpload(file, setCompressionStatus);
       if (preparedFile.size > MAX_UPLOAD_BYTES) {
         showToast('The compressed file is still larger than 50 MB.', 'error');
         return;
@@ -136,16 +136,24 @@ export default function UploadClient() {
       if (!presign.ok) throw new Error(presignJson.error || 'Could not prepare the file upload.');
 
       setCompressionStatus('Uploading securely…');
-      const uploadResponse = await fetch(presignJson.uploadUrl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': preparedFile.type,
-          'Cache-Control': 'public, max-age=31536000, immutable',
-        },
-        body: preparedFile,
-      });
+      let uploadResponse: Response;
+      try {
+        uploadResponse = await fetch(presignJson.uploadUrl, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': preparedFile.type,
+            'Cache-Control': 'public, max-age=31536000, immutable',
+          },
+          body: preparedFile,
+        });
+      } catch {
+        throw new Error(
+          'R2 upload was blocked by the bucket CORS policy. In Cloudflare R2, add https://sjswork.vercel.app and http://localhost:3000 as allowed origins, with PUT/GET/HEAD and AllowedHeaders: *.'
+        );
+      }
       if (!uploadResponse.ok) {
-        throw new Error('Secure file upload failed. Please try again.');
+        const detail = await uploadResponse.text().catch(() => '');
+        throw new Error(detail ? `R2 upload failed (${uploadResponse.status}). ${detail.slice(0, 180)}` : `R2 upload failed (${uploadResponse.status}).`);
       }
       setUploadProgress(100);
 
