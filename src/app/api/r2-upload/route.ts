@@ -52,6 +52,9 @@ export async function POST(request: Request) {
       }, { status: 507 });
     }
 
+    // Sign the exact Content-Type that the browser will send. Cloudflare R2
+    // requires the client header to match when ContentType is included in the
+    // presigned PutObject request.
     const command = new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: key,

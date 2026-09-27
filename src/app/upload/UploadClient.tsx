@@ -134,24 +134,39 @@ export default function UploadClient() {
       const presignJson = await presign.json().catch(() => ({}));
       if (!presign.ok) throw new Error(presignJson.error || 'Could not prepare the file upload.');
 
-      setUploadProgress(15);
-      let uploadResponse: Response;
-      try {
-        uploadResponse = await fetch(presignJson.uploadUrl, {
-          method: 'PUT',
-          headers: { 'Content-Type': preparedFile.type },
-          body: preparedFile,
-        });
-      } catch {
-        throw new Error(
-          'The browser could not reach Cloudflare R2. Check the archivum bucket CORS policy: allow your exact site origin, PUT/GET/HEAD, and the Content-Type header. If CORS is already correct, open DevTools → Network and check the R2 request for a 403/signature error.'
-        );
-      }
-      if (!uploadResponse.ok) {
-        const detail = await uploadResponse.text().catch(() => '');
-        throw new Error(detail ? `R2 upload failed (${uploadResponse.status}). ${detail.slice(0, 180)}` : `R2 upload failed (${uploadResponse.status}).`);
-      }
-      setUploadProgress(100);
+      // Upload directly to the signed R2 URL. XHR gives us the real HTTP
+      // status and byte progress; fetch collapses many CORS/403 failures into
+      // the unhelpful generic "Failed to fetch" message.
+      await new Promise<void>((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('PUT', presignJson.uploadUrl, true);
+        xhr.setRequestHeader('Content-Type', preparedFile.type);
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            setUploadProgress(Math.max(1, Math.min(99, Math.round((event.loaded / event.total) * 100))));
+          }
+        };
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            setUploadProgress(100);
+            resolve();
+            return;
+          }
+          const detail = (xhr.responseText || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          if (xhr.status === 403) {
+            reject(new Error(`R2 rejected the upload with HTTP 403. This is usually a presigned-signature mismatch or R2 permission/bucket mismatch. ${detail.slice(0, 220)}`));
+          } else {
+            reject(new Error(`R2 upload failed with HTTP ${xhr.status}. ${detail.slice(0, 220)}`));
+          }
+        };
+        xhr.onerror = () => reject(new Error(
+          'The browser blocked the R2 request before it returned an HTTP response. This indicates an R2 CORS/preflight/network problem. Confirm the bucket CORS origin exactly matches the site currently open in your browser.'
+        ));
+        xhr.onabort = () => reject(new Error('The R2 upload was cancelled.'));
+        xhr.ontimeout = () => reject(new Error('The R2 upload timed out. Please retry.'));
+        xhr.timeout = 15 * 60 * 1000;
+        xhr.send(preparedFile);
+      });
 
 
       setUploadStatus('Saving submission details…');
