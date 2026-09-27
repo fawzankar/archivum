@@ -24,13 +24,24 @@ export function isCloudDatabaseConfigured() {
   return Boolean(process.env.TURSO_DATABASE_URL);
 }
 
+function jsonSafeValue(value: unknown): unknown {
+  if (typeof value === 'bigint') return Number(value);
+  if (Array.isArray(value)) return value.map(jsonSafeValue);
+  if (value && typeof value === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [key, item] of Object.entries(value)) out[key] = jsonSafeValue(item);
+    return out;
+  }
+  return value;
+}
+
 export async function query<T = Record<string, unknown>>(
   sql: string,
   args: InArgs = [],
 ): Promise<T[]> {
   await initDb();
   const result = await getClient().execute({ sql, args });
-  return result.rows as unknown as T[];
+  return result.rows.map((row) => jsonSafeValue(row)) as T[];
 }
 
 export async function queryOne<T = Record<string, unknown>>(

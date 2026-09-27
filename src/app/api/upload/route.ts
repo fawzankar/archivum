@@ -135,7 +135,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       message: 'Resource submitted successfully! It has been sent to the ARCHIVUM moderation team.',
-      resourceId: result.lastInsertRowid,
+      resourceId: Number(result.lastInsertRowid),
       compressedSize: remoteSize,
       duplicateWarning: null,
     });
