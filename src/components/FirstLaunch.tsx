@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Check } from 'lucide-react';
 import { useStudentClass, type StudentClass } from './StudentClassContext';
+import { useTheme } from './ThemeContext';
 
 const classes: StudentClass[] = [9,10,11,12];
 
 export default function FirstLaunch() {
   const { studentClass, setStudentClass } = useStudentClass();
+  const { mode } = useTheme();
   const router = useRouter();
   const pathname = usePathname();
   const [splash, setSplash] = useState(pathname === '/');
@@ -26,7 +28,7 @@ export default function FirstLaunch() {
   if (splash) return <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden" style={{background:'var(--ivory)'}}>
     <div className="absolute inset-0 splash-grid" />
     <div className="relative text-center px-8">
-      <div className="splash-logo mx-auto w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center"><img src="/archivum-logo-dark.png" alt="ARCHIVUM logo" className="w-28 h-28 sm:w-36 sm:h-36 object-contain" /></div>
+      <div className="splash-logo mx-auto w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center"><img src={mode === 'dark' ? '/archivum-logo-dark.png' : '/archivum-logo-light.png'} alt="ARCHIVUM logo" className="w-28 h-28 sm:w-36 sm:h-36 object-contain drop-shadow-[0_14px_24px_rgba(15,35,45,0.18)] dark:drop-shadow-[0_14px_28px_rgba(0,0,0,0.35)]" /></div>
       <h1 className="font-display text-4xl sm:text-5xl mt-7">ARCHIVUM</h1>
       <p className="max-w-sm mx-auto mt-3 text-sm leading-6" style={{color:'var(--ink-muted)'}}>A student archive for SJS notes, papers and the material you wish you had kept from last year.</p>
     </div>

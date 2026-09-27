@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Menu, Search, X, Sun, Moon, Check, Plus } from 'lucide-react';
 import { useStudentClass, type StudentClass } from './StudentClassContext';
-import { useTheme } from './ThemeContext';
+import { ACCENTS, useTheme } from './ThemeContext';
 
 const navLinks = [
   {href:'/', label:'Home'},
@@ -15,11 +15,6 @@ const navLinks = [
   {href:'/about', label:'About'},
   {href:'/contributors', label:'Contributors'},
 ];
-const ACCENTS = [
-  {id:'mono',color:'#0b5c75',label:'Deep blue'}, {id:'violet',color:'#5d4c9e',label:'Violet'},
-  {id:'sky',color:'#166c91',label:'Sky'}, {id:'ocean',color:'#0b6f73',label:'Ocean'}, {id:'rose',color:'#9b4057',label:'Rose'},
-];
-
 export default function Navbar(){
   const pathname=usePathname(); const router=useRouter(); const searchParams=useSearchParams();
   const {studentClass,setStudentClass,resetStudentClass}=useStudentClass(); const {mode,setMode,accent,setAccent}=useTheme();

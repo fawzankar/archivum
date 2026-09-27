@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   description: 'A class-wise study archive for SJS students: notes, previous papers and practical exam tips for Classes 9–12.',
   keywords: 'SJS, ARCHIVUM, JKBOSE, school notes, previous papers, study material, exam tips',
   manifest: '/manifest.json',
-  icons: { icon: [{ url: '/archivum-logo-dark.png', sizes: '1024x1024', type: 'image/png' }, { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' }], apple: '/archivum-logo-dark.png' },
+  icons: { icon: [{ url: '/archivum-logo-light.png', sizes: '1024x1024', type: 'image/png' }, { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' }], apple: '/archivum-logo-light.png' },
   appleWebApp: { capable: true, title: 'ARCHIVUM', statusBarStyle: 'black-translucent' },
   openGraph: { title: 'ARCHIVUM — SJS study archive', description: 'A sister organisation of SJS Quest for SJS students: notes, papers, study material and exam tips.', siteName: 'ARCHIVUM', type: 'website' },
 };
