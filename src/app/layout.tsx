@@ -16,7 +16,6 @@ export const viewport: Viewport = { themeColor: '#176b86', width: 'device-width'
 export const metadata: Metadata = {
   title: 'ARCHIVUM — Academic Archive',
   description: 'Academic notes, previous papers, study material and exam resources for SJS students in Classes 9–12.',
-  keywords: 'SJS, ARCHIVUM, JKBOSE, school notes, previous papers, study material, exam tips',
   manifest: '/manifest.json',
   icons: { icon: [{ url: '/archivum-icon.png', sizes: '512x512', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/archivum-icon.png' },
   appleWebApp: { capable: true, title: 'ARCHIVUM', statusBarStyle: 'black-translucent' },
