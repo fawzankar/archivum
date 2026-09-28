@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Newsreader } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeContext';
 import { ToastProvider } from '@/components/ToastContext';
@@ -13,8 +12,6 @@ import { Suspense } from 'react';
 import ClassTransitionOverlay from '@/components/ClassTransitionOverlay';
 import DeferredClientWidgets from '@/components/DeferredClientWidgets';
 
-const newsreader = Newsreader({ subsets: ['latin'], weight: ['400','500','600','700'], variable: '--font-newsreader', display: 'swap' });
-
 export const viewport: Viewport = { themeColor: '#171311', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
 export const metadata: Metadata = {
   title: 'ARCHIVUM — Sister Organisation of QUEST',
@@ -27,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><body className={`${newsreader.variable} min-h-screen flex flex-col antialiased`} style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
+  return <html lang="en" suppressHydrationWarning><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
     <ThemeProvider><StudentClassProvider><ToastProvider>
       <PwaRegister /><ClassTransitionOverlay /><FirstLaunch />
       <Suspense fallback={null}><Navbar /></Suspense>

@@ -8,7 +8,7 @@ export interface Resource {
   year: number | null; school_name: string | null; contributor_name: string | null; file_url: string; file_size: number; file_type: string;
   file_name: string; storage_key: string | null; file_hash: string | null; status: 'pending'|'approved'|'rejected'|'deleted'; rejection_reason: string | null;
   featured: number; views: number; downloads: number; average_rating: number; rating_count: number; tags: string | null;
-  created_at: string; updated_at: string; approved_at: string | null;
+  created_at: string; updated_at: string; approved_at: string | null; photo_keys: string | null;
 }
 
 export interface ResourceFilterOptions {

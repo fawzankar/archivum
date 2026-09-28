@@ -70,7 +70,7 @@ export async function initDb(): Promise<void> {
 
     await db.batch([
       { sql: `CREATE TABLE IF NOT EXISTS admin_users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, created_at TEXT NOT NULL)`, args: [] },
-      { sql: `CREATE TABLE IF NOT EXISTS resources (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT UNIQUE NOT NULL, title TEXT NOT NULL, description TEXT, class_level INTEGER NOT NULL, board TEXT NOT NULL DEFAULT 'JKBOSE', subject TEXT NOT NULL, chapter TEXT, topic TEXT, resource_type TEXT NOT NULL, paper_type TEXT, year INTEGER, school_name TEXT, contributor_name TEXT, file_url TEXT NOT NULL, storage_key TEXT, file_size INTEGER NOT NULL DEFAULT 0, file_type TEXT NOT NULL DEFAULT 'application/pdf', file_name TEXT NOT NULL, file_hash TEXT, status TEXT NOT NULL DEFAULT 'pending', rejection_reason TEXT, featured INTEGER NOT NULL DEFAULT 0, views INTEGER NOT NULL DEFAULT 0, downloads INTEGER NOT NULL DEFAULT 0, average_rating REAL NOT NULL DEFAULT 0.0, rating_count INTEGER NOT NULL DEFAULT 0, tags TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, approved_at TEXT)`, args: [] },      { sql: `CREATE TABLE IF NOT EXISTS storage_reservations (storage_key TEXT PRIMARY KEY, file_size INTEGER NOT NULL, expires_at TEXT NOT NULL, created_at TEXT NOT NULL)`, args: [] },
+      { sql: `CREATE TABLE IF NOT EXISTS resources (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT UNIQUE NOT NULL, title TEXT NOT NULL, description TEXT, class_level INTEGER NOT NULL, board TEXT NOT NULL DEFAULT 'JKBOSE', subject TEXT NOT NULL, chapter TEXT, topic TEXT, resource_type TEXT NOT NULL, paper_type TEXT, year INTEGER, school_name TEXT, contributor_name TEXT, file_url TEXT NOT NULL, storage_key TEXT, file_size INTEGER NOT NULL DEFAULT 0, file_type TEXT NOT NULL DEFAULT 'application/pdf', file_name TEXT NOT NULL, file_hash TEXT, status TEXT NOT NULL DEFAULT 'pending', rejection_reason TEXT, featured INTEGER NOT NULL DEFAULT 0, views INTEGER NOT NULL DEFAULT 0, downloads INTEGER NOT NULL DEFAULT 0, average_rating REAL NOT NULL DEFAULT 0.0, rating_count INTEGER NOT NULL DEFAULT 0, tags TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, approved_at TEXT, photo_keys TEXT)`, args: [] },      { sql: `CREATE TABLE IF NOT EXISTS storage_reservations (storage_key TEXT PRIMARY KEY, file_size INTEGER NOT NULL, expires_at TEXT NOT NULL, created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS subjects (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, class_level INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS chapters (id INTEGER PRIMARY KEY AUTOINCREMENT, subject_id INTEGER NOT NULL, name TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS ratings (id INTEGER PRIMARY KEY AUTOINCREMENT, resource_id INTEGER NOT NULL, session_id TEXT NOT NULL, rating INTEGER NOT NULL, created_at TEXT NOT NULL, UNIQUE(resource_id, session_id))`, args: [] },
@@ -92,6 +92,7 @@ export async function initDb(): Promise<void> {
     // Safe migration for databases created before contributor/review fields existed.
     await db.execute({ sql: `ALTER TABLE resources ADD COLUMN contributor_name TEXT`, args: [] }).catch(() => {});
     await db.execute({ sql: `ALTER TABLE resources ADD COLUMN storage_key TEXT`, args: [] }).catch(() => {});
+    await db.execute({ sql: `ALTER TABLE resources ADD COLUMN photo_keys TEXT`, args: [] }).catch(() => {});
     await db.execute({ sql: `ALTER TABLE tips ADD COLUMN subject TEXT NOT NULL DEFAULT 'General'`, args: [] }).catch(() => {});
 
     const admin = await db.execute({
@@ -207,6 +208,13 @@ async function seedDatabase(db: Client) {
       args: [slug,title,description,level,'JKBOSE',subject,'Starter Revision','ARCHIVUM Starter','Notes',null,2026,null,fileUrl,0,'application/pdf',fileName,`starter_${slug}`,0,0,0,0,0,`starter,${tag},class${level}`,now,now,now],
     });
   }
+
+
+  await db.execute({
+    sql: `INSERT OR IGNORE INTO resources (slug,title,description,class_level,board,subject,chapter,topic,resource_type,paper_type,year,school_name,contributor_name,file_url,storage_key,file_size,file_type,file_name,file_hash,status,featured,views,downloads,average_rating,rating_count,tags,created_at,updated_at,approved_at,photo_keys)
+          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'approved',?,?,?,?,?,?,?,?,?,?)`,
+    args: ['class-11-physics-units-and-measurement-handwritten-notes-fawzan-kar','Class 11 Physics — Units and Measurement Handwritten Notes','Handwritten notes covering Units and Measurement for Class 11 Physics, contributed to the ARCHIVUM student community.',11,'JKBOSE','Physics','Units and Measurement','Units and Measurement','Notes',null,2026,null,'Fawzan Kar','/uploads/class11_physics_units_and_measurement_handwritten_notes_fawzan_kar.pdf',null,10299099,'application/pdf','class11_physics_units_and_measurement_handwritten_notes_fawzan_kar.pdf','local_units_measurement_fawzan_kar_v1',0,0,0,0,0,'class11,physics,units and measurement,handwritten,notes,jkbose',now,now,now,null],
+  });
 
   // Remove historical placeholder/demo engagement numbers exactly once.
   // Real views, downloads and ratings are written by the live interaction

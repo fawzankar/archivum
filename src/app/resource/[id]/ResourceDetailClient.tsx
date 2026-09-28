@@ -6,7 +6,7 @@ import { Resource } from '@/lib/resources';
 import { isResourceSaved, toggleSaveResource, addRecentlyViewed } from '@/lib/savedStorage';
 import ResourceCard from '@/components/ResourceCard';
 import { useToast } from '@/components/ToastContext';
-import { FileText, Download, Eye, Bookmark, BookmarkCheck, Check, Star, Share2, ArrowLeft, ExternalLink } from 'lucide-react';
+import { FileText, Download, Eye, Bookmark, BookmarkCheck, Check, Star, Share2, ArrowLeft, ExternalLink, Image as ImageIcon } from 'lucide-react';
 
 interface ResourceDetailProps { resource: Resource; relatedResources: Resource[]; }
 
@@ -18,9 +18,14 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   const [ratingCount, setRatingCount] = useState(resource.rating_count);
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const [ratingSaving, setRatingSaving] = useState(false);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const { showToast } = useToast();
 
   useEffect(() => { addRecentlyViewed(resource); }, [resource]);
+  useEffect(() => {
+    if (!resource.photo_keys) return;
+    fetch(`/api/resources/${resource.id}/photos`).then(r => r.json()).then(data => setPhotoUrls(Array.isArray(data.photos) ? data.photos.map((p: {url:string}) => p.url) : [])).catch(() => {});
+  }, [resource.id, resource.photo_keys]);
 
   const handleSaveToggle = () => {
     const next = toggleSaveResource(resource);
@@ -107,6 +112,8 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
           </div>
 
           {resource.description && <section><span className="detail-kicker">About this document</span><p className="mt-2 max-w-3xl text-sm leading-7" style={{color:'var(--ink-muted)'}}>{resource.description}</p></section>}
+
+          {photoUrls.length > 0 && <section><div className="flex items-center gap-2"><ImageIcon className="w-4 h-4" style={{color:'var(--accent)'}}/><span className="detail-kicker">Community preview</span></div><p className="mt-1 text-xs" style={{color:'var(--ink-muted)'}}>Supporting photos shared by the contributor.</p><div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">{photoUrls.map((url,i)=><a key={url} href={url} target="_blank" rel="noopener noreferrer" className="rounded-2xl overflow-hidden border aspect-[4/3] bg-[var(--surface-raised)] block hover:-translate-y-1 transition-transform" style={{borderColor:'var(--border)'}}><img src={url} alt={`Supporting page ${i+1}`} className="w-full h-full object-cover" loading="lazy" /></a>)}</div></section>}
 
           <section>
             <div className="flex items-end justify-between gap-4"><div><span className="detail-kicker">Academic record</span><h2 className="font-display text-2xl mt-1">Everything attached to this file.</h2></div><ExternalLink className="hidden sm:block w-5 h-5" style={{color:'var(--ink-faint)'}} /></div>

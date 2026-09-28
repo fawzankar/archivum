@@ -2,10 +2,10 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export type Mode = 'light' | 'dark';
-export type Accent = 'mono' | 'red' | 'ocean' | 'pink';
+export type Accent = 'citrus' | 'red' | 'ocean' | 'pink';
 
 export const ACCENTS: { id: Accent; label: string; color: string }[] = [
-  { id: 'mono', label: 'Mono', color: '#171a1f' },
+  { id: 'citrus', label: 'Citrus', color: '#D18A28' },
   { id: 'red', label: 'Red', color: '#b33a32' },
   { id: 'ocean', label: 'Ocean', color: '#176b86' },
   { id: 'pink', label: 'Pink', color: '#bf4f78' },
@@ -23,7 +23,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<Mode>('light');
-  const [accent, setAccentState] = useState<Accent>('mono');
+  const [accent, setAccentState] = useState<Accent>('citrus');
   const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
