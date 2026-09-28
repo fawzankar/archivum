@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
+  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');if(['sapphire','sage','amethyst','ash','frost'].includes(a||''))document.documentElement.setAttribute('data-accent',a)}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
     <ThemeProvider><StudentClassProvider><ToastProvider>
       <PwaRegister /><NavigationProgress /><ClassTransitionOverlay /><FirstLaunch />
       <Suspense fallback={null}><Navbar /></Suspense>

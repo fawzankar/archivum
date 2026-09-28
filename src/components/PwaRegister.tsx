@@ -5,13 +5,9 @@ import { useEffect } from 'react';
 export default function PwaRegister() {
   useEffect(() => {
     if (!('serviceWorker' in navigator) || process.env.NODE_ENV !== 'production') return;
-
-    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
-      .then((registration) => {
-        registration.update().catch(() => {});
-      })
-      .catch(() => {});
+    navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).then(registration => {
+      registration.update().catch(() => {});
+    }).catch(() => {});
   }, []);
-
   return null;
 }

@@ -25,7 +25,10 @@ export default function InstallPwaPrompt() {
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstall);
-    if (isIOS) setShowPrompt(true);
+    if (isIOS) {
+      const timer = window.setTimeout(() => setShowPrompt(true), 1800);
+      return () => { window.clearTimeout(timer); window.removeEventListener('beforeinstallprompt', handleBeforeInstall); };
+    }
     return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstall);
   }, []);
 
