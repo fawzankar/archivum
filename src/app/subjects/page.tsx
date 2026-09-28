@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, GraduationCap } from 'lucide-react';
+import { ArrowRight, GraduationCap } from 'lucide-react';
+import SubjectPicker from '@/components/SubjectPicker';
 import { CLASS_SUBJECTS, SUBJECT_DETAILS } from '@/lib/subjects';
 import { getPreferredClass } from '@/lib/studentClass';
 
@@ -30,10 +31,7 @@ export default async function SubjectsPage() {
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {CLASS_SUBJECTS[level as keyof typeof CLASS_SUBJECTS].map(subject => {
                 const detail = SUBJECT_DETAILS[subject];
-                return <Link key={subject} href={`/notes?class=${level}&subject=${encodeURIComponent(subject)}`} className="group rounded-3xl border p-5 min-h-[145px] flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:shadow-xl" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-                  <span className="w-11 h-11 rounded-2xl flex items-center justify-center font-display font-bold text-lg transition-transform duration-300 group-hover:scale-110" style={{ background: 'var(--accent-light)', color: 'var(--accent)' }}>{detail?.icon || '•'}</span>
-                  <div><h3 className="font-display font-bold mt-5">{subject}</h3><p className="text-[10px] leading-relaxed mt-1.5" style={{ color: 'var(--ink-muted)' }}>{detail?.description}</p></div>
-                </Link>;
+                return <SubjectPicker key={subject} subject={subject} classLevel={level} description={detail?.description} />;
               })}
             </div>
           </section>

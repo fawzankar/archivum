@@ -4,7 +4,8 @@ import { getResources, getRealStats } from '@/lib/resources';
 import { getPreferredClass } from '@/lib/studentClass';
 import ResourceCard from '@/components/ResourceCard';
 import HomeClient from './HomeClient';
-import { ArrowRight, BookOpen, FileText, Lightbulb, Upload, Archive, Layers3 } from 'lucide-react';
+import { ArrowRight, BookOpen, FileText, Lightbulb, Upload, Archive } from 'lucide-react';
+import SubjectPicker from '@/components/SubjectPicker';
 import { subjectsForClass, SUBJECT_DETAILS } from '@/lib/subjects';
 
 export const revalidate = 30;
@@ -87,16 +88,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
             <Link href={`/subjects?class=${activeClass}`} className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold" style={{color:'var(--accent)'}}>All subjects <ArrowRight className="w-3.5 h-3.5"/></Link>
           </div>
           <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px border" style={{background:'var(--border)',borderColor:'var(--border)'}}>
-            {subjects.map(subject => {
-              const detail = SUBJECT_DETAILS[subject];
-              return (
-                <div key={subject} className="bg-[var(--surface)] min-h-[160px] p-5 flex flex-col justify-between group">
-                  <div className="flex items-start justify-between"><span className="text-xl font-display" style={{color:'var(--accent)'}}>{detail?.icon || '•'}</span><Layers3 className="w-3.5 h-3.5 opacity-20 group-hover:opacity-50" /></div>
-                  <div><h3 className="font-semibold text-sm">{subject}</h3><p className="text-[10px] mt-1 line-clamp-2" style={{color:'var(--ink-muted)'}}>{detail?.description}</p></div>
-                  <div className="flex gap-3 mt-4 text-[10px] font-semibold"><Link href={`/notes?class=${activeClass}&subject=${encodeURIComponent(subject)}`} style={{color:'var(--accent)'}}>Notes</Link><Link href={`/previous-papers?class=${activeClass}&subject=${encodeURIComponent(subject)}`} style={{color:'var(--ink-muted)'}}>Papers</Link></div>
-                </div>
-              );
-            })}
+            {subjects.map(subject => <SubjectPicker key={subject} subject={subject} classLevel={activeClass} description={SUBJECT_DETAILS[subject]?.description} />)}
           </div>
         </section>
 
@@ -112,7 +104,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           <div className="border p-6 sm:p-9" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
               <div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>Recently added</span><h2 className="font-display text-3xl mt-2">Fresh into the archive.</h2><p className="text-sm mt-2 max-w-xl" style={{color:'var(--ink-muted)'}}>New material is reviewed before publication. The numbers shown here are real activity, not placeholders.</p></div>
-              <Link href={`/search?class=${activeClass}`} className="shrink-0 inline-flex items-center gap-2 px-4 py-2.5 text-xs font-semibold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Explore all <ArrowRight className="w-3.5 h-3.5"/></Link>
+              <Link href={`/search?class=${activeClass}`} className="editorial-cta">Explore all <ArrowRight className="w-3.5 h-3.5"/></Link>
             </div>
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-8">{recent.items.map(r => <ResourceCard key={r.id} resource={r}/>)}</div>
           </div>
