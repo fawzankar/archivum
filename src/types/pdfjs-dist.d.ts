@@ -29,7 +29,8 @@ declare module 'pdfjs-dist/build/pdf.mjs' {
   }
 
   export interface PDFDocumentInitParameters {
-    url: string;
+    data?: Uint8Array<ArrayBufferLike>;
+    url?: string;
     disableAutoFetch?: boolean;
     disableStream?: boolean;
     rangeChunkSize?: number;
