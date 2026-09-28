@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server';
 import { getR2Client, MAX_FILE_SIZE } from '@/lib/storage';
 import { reserveStorageBytes, getStorageUsageWithReservations } from '@/lib/storage-quota';
 import { initDb } from '@/lib/db';
+import { getAdminSession } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,6 +18,7 @@ function safeFilename(value: unknown) {
 }
 
 export async function POST(request: Request) {
+  if (!await getAdminSession()) return NextResponse.json({ error: 'Admin authentication required.' }, { status: 401 });
   try {
     await initDb();
     const client = getR2Client();

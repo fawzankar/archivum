@@ -22,8 +22,8 @@ function r2Configured() {
 
 let r2Client: S3Client | null = null;
 
-export const MAX_STORAGE_BYTES = 10_000_000_000; // 10 GB app-wide
-export const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50 MB per file
+export const MAX_STORAGE_BYTES = 10_000_000_000;
+export const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 export async function getStorageUsageBytes() {
   const row = await queryOne<{ total: number }>(

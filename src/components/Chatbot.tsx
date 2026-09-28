@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { MessageSquare, X, Send, BookOpen, FileText, Search, Upload, Bookmark, Smartphone, HelpCircle, ArrowRight } from 'lucide-react';
+import { MessageSquare, X, Send, BookOpen, FileText, Search, Bookmark, Smartphone, HelpCircle, ArrowRight } from 'lucide-react';
 
 interface ChatMessage {
   id: string;
@@ -23,7 +23,6 @@ export default function Chatbot() {
         { label: '📚 Find Notes', link: '/notes', action: () => {} },
         { label: '📄 Find Previous Papers', link: '/previous-papers', action: () => {} },
         { label: '🔎 Search Resources', link: '/search', action: () => {} },
-        { label: '⬆️ Upload Resource', link: '/upload', action: () => {} },
         { label: '🔖 Saved Resources', link: '/saved', action: () => {} },
         { label: '📱 Install App', link: '/about#pwa', action: () => {} },
         { label: '❓ About ARCHIVUM', link: '/about', action: () => {} },
@@ -88,18 +87,7 @@ export default function Chatbot() {
           { label: 'School Pre-board Papers', link: '/previous-papers?paperType=Pre-board', action: () => setIsOpen(false) },
         ],
       };
-    }
-
-    if (q.includes('upload') || q.includes('share') || q.includes('submit') || q.includes('contribute')) {
-      return {
-        id: Date.now().toString(),
-        sender: 'bot',
-        text: 'Have notes or papers to share with fellow students? Anyone can submit resources! No account required.',
-        options: [
-          { label: 'Upload a Resource Now ⬆️', link: '/upload', action: () => setIsOpen(false) },
-        ],
-      };
-    }
+    };
 
     if (q.includes('save') || q.includes('bookmark') || q.includes('saved')) {
       return {
@@ -159,19 +147,17 @@ export default function Chatbot() {
     return {
       id: Date.now().toString(),
       sender: 'bot',
-      text: "I'm the ARCHIVUM Guide, so I can mainly help you navigate the platform.\n\nTry asking me about:\n- Notes\n- Previous Papers\n- Searching\n- Uploading\n- Saved resources\n- Installing the app",
+      text: "I'm the ARCHIVUM Guide, so I can mainly help you navigate the platform.\n\nTry asking me about:\n- Notes\n- Previous Papers\n- Searching\n- Saved resources\n- Installing the app",
       options: [
         { label: '📚 Notes', link: '/notes', action: () => setIsOpen(false) },
         { label: '📄 Papers', link: '/previous-papers', action: () => setIsOpen(false) },
         { label: '🔎 Search', link: '/search', action: () => setIsOpen(false) },
-        { label: '⬆️ Upload', link: '/upload', action: () => setIsOpen(false) },
       ],
     };
   };
 
   return (
     <>
-      {}
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="ARCHIVUM Guide Chatbot"
@@ -181,7 +167,6 @@ export default function Chatbot() {
         <MessageSquare className="w-5 h-5" />
       </button>
 
-      {}
       {isOpen && (
         <div
           className="fixed bottom-24 right-4 md:bottom-20 md:right-6 z-50 w-[92vw] max-w-sm sm:max-w-md h-[500px] max-h-[75vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden animate-fade"
@@ -190,7 +175,6 @@ export default function Chatbot() {
             borderColor: 'var(--border)',
           }}
         >
-          {}
           <div
             className="p-4 border-b flex items-center justify-between"
             style={{
@@ -217,7 +201,6 @@ export default function Chatbot() {
             </button>
           </div>
 
-          {}
           <div className="flex-1 p-4 overflow-y-auto space-y-4" style={{ backgroundColor: 'var(--surface)' }}>
             {messages.map((msg) => (
               <div
@@ -234,7 +217,6 @@ export default function Chatbot() {
                   {msg.text}
                 </div>
 
-                {}
                 {msg.options && msg.options.length > 0 && (
                   <div className="mt-2.5 flex flex-wrap gap-1.5 max-w-[95%]">
                     {msg.options.map((opt, i) => (
@@ -265,7 +247,6 @@ export default function Chatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {}
           <div className="px-3 py-2 bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex gap-1.5 overflow-x-auto text-xs no-scrollbar">
             <button
               onClick={() => handleSend('How do I find notes?')}
@@ -280,12 +261,6 @@ export default function Chatbot() {
               📄 Papers
             </button>
             <button
-              onClick={() => handleSend('How to upload?')}
-              className="px-2.5 py-1 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 shrink-0 hover:border-emerald-500"
-            >
-              ⬆️ Upload
-            </button>
-            <button
               onClick={() => handleSend('Saved resources')}
               className="px-2.5 py-1 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 shrink-0 hover:border-emerald-500"
             >
@@ -293,7 +268,6 @@ export default function Chatbot() {
             </button>
           </div>
 
-          {}
           <form
             onSubmit={(e) => {
               e.preventDefault();

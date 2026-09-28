@@ -102,8 +102,8 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
         <div className="text-center py-16 rounded-3xl border space-y-3" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
           <BookOpen className="w-10 h-10 mx-auto" style={{ color: 'var(--ink-faint)' }} />
           <h3 className="font-display font-bold text-lg">No notes yet for {activeSubject || 'this class'}</h3>
-          <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>The subject is available in ARCHIVUM. Upload the first useful resource for Class {selectedClass}.</p>
-          <a href={`/upload?class=${selectedClass}${activeSubject ? `&subject=${encodeURIComponent(activeSubject)}` : ''}`} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}>Upload a resource <ArrowRight className="w-3.5 h-3.5" /></a>
+          <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>The subject is available in ARCHIVUM. Check back when new material is added to the archive.</p>
+          <a href={`/about`} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}>About ARCHIVUM <ArrowRight className="w-3.5 h-3.5" /></a>
         </div>
       )}
     </div>

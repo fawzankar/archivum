@@ -106,7 +106,6 @@ export default function SearchClient({
   return (
     <div className="space-y-6">
       
-      {}
       <form onSubmit={handleSearchSubmit} className="relative w-full">
         <div
           className="relative flex items-center w-full rounded-2xl border transition-all duration-200 focus-within:shadow-lg"
@@ -146,7 +145,6 @@ export default function SearchClient({
         </div>
       </form>
 
-      {}
       <div
         className="p-3 sm:p-4 rounded-2xl border space-y-4"
         style={{
@@ -156,7 +154,6 @@ export default function SearchClient({
       >
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
           
-          {}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
             <span className="text-[11px] font-semibold text-zinc-400 mr-1 uppercase tracking-wider">Class:</span>
             {[
@@ -185,7 +182,6 @@ export default function SearchClient({
             })}
           </div>
 
-          {}
           <div className="flex items-center gap-2 ml-auto">
             <span className="text-[11px] font-medium text-zinc-400">Sort by:</span>
             <select
@@ -203,9 +199,7 @@ export default function SearchClient({
 
         </div>
 
-        {}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-3 border-t" style={{ borderColor: 'var(--border-light)' }}>
-          {}
           <div>
             <select
               value={selectedType}
@@ -221,7 +215,6 @@ export default function SearchClient({
             </select>
           </div>
 
-          {}
           <div>
             <select
               value={selectedSubject}
@@ -238,7 +231,6 @@ export default function SearchClient({
             </select>
           </div>
 
-          {}
           <div>
             <select
               value={selectedPaperType}
@@ -254,7 +246,6 @@ export default function SearchClient({
             </select>
           </div>
 
-          {}
           <div className="flex items-center justify-end">
             {hasFilters && (
               <button
@@ -270,7 +261,6 @@ export default function SearchClient({
         </div>
       </div>
 
-      {}
       <div className="flex items-center justify-between text-xs" style={{ color: 'var(--ink-muted)' }}>
         <span>
           Found <strong className="font-semibold" style={{ color: 'var(--ink)' }}>{data.totalCount}</strong> resources
@@ -278,7 +268,6 @@ export default function SearchClient({
         {loading && <span className="text-zinc-400">Updating...</span>}
       </div>
 
-      {}
       {data.items.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.items.map((r) => (
@@ -309,7 +298,6 @@ export default function SearchClient({
         </div>
       )}
 
-      {}
       {data.totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 pt-6">
           <button
@@ -334,7 +322,6 @@ export default function SearchClient({
         </div>
       )}
 
-      {}
       <PdfViewerModal resource={activePdf} onClose={() => setActivePdf(null)} />
     </div>
   );

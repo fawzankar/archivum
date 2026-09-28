@@ -29,7 +29,6 @@ export default function SavedClient() {
   return (
     <div className="space-y-12">
       
-      {}
       <section className="space-y-5">
         <div className="flex items-center justify-between">
           <h2 className="font-display font-bold text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -72,7 +71,6 @@ export default function SavedClient() {
         )}
       </section>
 
-      {}
       {recentItems.length > 0 && (
         <section className="space-y-5 pt-8 border-t" style={{ borderColor: 'var(--border-light)' }}>
           <h2 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -88,7 +86,6 @@ export default function SavedClient() {
         </section>
       )}
 
-      {}
       <PdfViewerModal resource={activePdf} onClose={() => setActivePdf(null)} />
     </div>
   );

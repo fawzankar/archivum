@@ -4,6 +4,7 @@ import { execute, initDb } from '@/lib/db';
 import { generateSlug, checkForDuplicates } from '@/lib/resources';
 import { isR2Url, deleteStoredFile, getR2Client, getStorageUsageBytes, MAX_FILE_SIZE, MAX_STORAGE_BYTES } from '@/lib/storage';
 import { getReservation, releaseStorageReservation } from '@/lib/storage-quota';
+import { getAdminSession } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,6 +18,7 @@ function text(value: unknown, max = 5000) {
 }
 
 export async function POST(request: Request) {
+  if (!await getAdminSession()) return NextResponse.json({ error: 'Admin authentication required.' }, { status: 401 });
   try {
     await initDb();
     const body = await request.json();

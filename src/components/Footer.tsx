@@ -7,7 +7,7 @@ import { ArrowUpRight } from 'lucide-react';
 export default function Footer() {
   const groups = [
     { title:'Library', items:[['Notes','/notes'],['Previous papers','/previous-papers'],['Subjects','/subjects'],['Tips & Tricks','/tips']] },
-    { title:'Community', items:[['Upload material','/upload'],['Contributors','/contributors'],['Guidelines','/guidelines']] },
+    { title:'Community', items:[['About ARCHIVUM','/about'],['Contributors','/contributors'],['Guidelines','/guidelines']] },
     { title:'About', items:[['About ARCHIVUM','/about'],['Privacy','/privacy'],['Terms','/terms']] },
   ];
   return <footer className="site-footer" style={{ borderColor:'var(--border)', background:'var(--surface)' }}>

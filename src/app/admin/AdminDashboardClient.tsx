@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import PdfViewerModal from '@/components/PdfViewerModal';
+import AdminUploadPanel from '@/components/AdminUploadPanel';
 import { useToast } from '@/components/ToastContext';
 import { 
   Shield, 
@@ -19,7 +20,8 @@ import {
   Clock, 
   Layers,
   Lightbulb,
-  HardDrive
+  HardDrive,
+  UploadCloud
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -31,7 +33,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   const router = useRouter();
   const { showToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines' | 'upload'>('overview');
   const [resources, setResources] = useState<Resource[]>(initialResources);
   const [stats, setStats] = useState<any>(null);
   const [loadingStats, setLoadingStats] = useState(false);
@@ -194,7 +196,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-8">
       
-      {}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
@@ -219,7 +220,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </button>
       </div>
 
-      {}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <div
           className="p-5 rounded-3xl flex flex-col justify-between"
@@ -289,7 +289,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
 
       </div>
 
-      {}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar border-b" style={{ borderColor: 'var(--border-light)' }}>
         {[
           { id: 'overview', label: 'Overview' },
@@ -297,6 +296,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           { id: 'resources', label: `All Resources (${resources.length})` },
           { id: 'tips', label: `Tips (${pendingTips.length})` },
           { id: 'guidelines', label: 'Admin Guidelines' },
+          { id: 'upload', label: 'Add resource' },
         ].map((tab) => {
           const active = activeTab === tab.id;
           return (
@@ -315,7 +315,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         })}
       </div>
 
-      {}
       {activeTab === 'overview' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
@@ -388,7 +387,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
       )}
 
-      {}
       {activeTab === 'pending' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between text-xs text-zinc-500">
@@ -445,10 +443,8 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
       )}
 
-      {}
       {activeTab === 'resources' && (
         <div className="space-y-6">
-          {}
           <div
             className="p-4 rounded-2xl border flex flex-wrap items-center gap-3"
             style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
@@ -492,7 +488,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
             </select>
           </div>
 
-          {}
           <div
             className="rounded-2xl border overflow-hidden shadow-sm"
             style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
@@ -586,7 +581,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
       )}
 
-      {}
       {activeTab === 'tips' && (
         <div className="space-y-4">
           <div>
@@ -603,6 +597,19 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
             </div>
           ))}
         </div>
+      )}
+
+      {activeTab === 'upload' && (
+        <section className="space-y-5">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h2 className="font-display font-bold text-2xl">Add a resource</h2>
+              <p className="mt-1 text-sm" style={{ color: 'var(--ink-muted)' }}>Publish new archive material from the CMS. Student-facing uploads are disabled.</p>
+            </div>
+            <UploadCloud className="w-6 h-6" style={{ color: 'var(--accent)' }} />
+          </div>
+          <AdminUploadPanel />
+        </section>
       )}
 
       {activeTab === 'guidelines' && (
@@ -625,7 +632,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
       )}
 
-      {}
       <PdfViewerModal resource={activePdf} onClose={() => setActivePdf(null)} />
     </div>
   );

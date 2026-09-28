@@ -1,11 +1,13 @@
 import { HeadObjectCommand } from '@aws-sdk/client-s3';
 import { NextResponse } from 'next/server';
 import { getR2Client } from '@/lib/storage';
+import { getAdminSession } from '@/lib/auth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
+  if (!await getAdminSession()) return NextResponse.json({ exists: false, error: 'Admin authentication required.' }, { status: 401 });
   try {
     const client = getR2Client();
     const bucket = process.env.R2_BUCKET_NAME;

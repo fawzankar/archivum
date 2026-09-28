@@ -11,6 +11,7 @@ import FirstLaunch from '@/components/FirstLaunch';
 import { Suspense } from 'react';
 import ClassTransitionOverlay from '@/components/ClassTransitionOverlay';
 import DeferredClientWidgets from '@/components/DeferredClientWidgets';
+import NavigationProgress from '@/components/NavigationProgress';
 
 export const viewport: Viewport = { themeColor: '#176b86', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
 export const metadata: Metadata = {
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en" suppressHydrationWarning><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
     <ThemeProvider><StudentClassProvider><ToastProvider>
-      <PwaRegister /><ClassTransitionOverlay /><FirstLaunch />
+      <PwaRegister /><NavigationProgress /><ClassTransitionOverlay /><FirstLaunch />
       <Suspense fallback={null}><Navbar /></Suspense>
       <main className="flex-1">{children}</main>
       <Footer /><MobileNav /><DeferredClientWidgets />

@@ -71,7 +71,7 @@ export default function AboutPage() {
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Link href="/contributors" className="inline-flex items-center justify-center gap-2 rounded-lg border px-5 py-3 text-xs font-bold" style={{borderColor:'var(--border)'}}>Meet contributors <ArrowRight className="w-3.5 h-3.5"/></Link>
-            <Link href="/upload" className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Contribute material <ArrowRight className="w-3.5 h-3.5"/></Link>
+            <Link href="/subjects" className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Explore the archive <ArrowRight className="w-3.5 h-3.5"/></Link>
           </div>
         </div>
       </section>
