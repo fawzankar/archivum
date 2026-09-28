@@ -101,7 +101,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
           <div className="flex items-center gap-2 text-[9px] uppercase tracking-[.16em] font-bold" style={{color:'var(--accent)'}}><span>Class {resource.class_level}</span><span>·</span><span>{resource.subject}</span><span>·</span><span>{resource.resource_type || 'Notes'}</span></div>
           <div className="mt-6 w-12 h-12 grid place-items-center border" style={{background:'var(--surface)',borderColor:'var(--border)',color:'var(--accent)'}}><FileText className="w-6 h-6" /></div>
           <h1 className="font-display mt-5 max-w-3xl text-3xl sm:text-5xl leading-[.98]" style={{color:'var(--ink)'}}>{resource.title}</h1>
-          <div className="mt-5 inline-flex items-center gap-1.5 text-[10px] font-semibold" style={{color:'var(--accent)'}}><Check className="w-3.5 h-3.5" /> Reviewed for the archive</div>
+          
         </header>
 
         <div className="p-5 sm:p-8 space-y-7">

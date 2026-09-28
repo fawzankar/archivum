@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
-import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Layers3, Info, Users, RotateCcw, MessageCircle } from 'lucide-react';
+import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Layers3, Info, Users, RotateCcw, MessageCircle, Sun, Moon } from 'lucide-react';
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],
@@ -15,7 +15,7 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { accent, setAccent } = useTheme();
+  const { accent, setAccent, mode, setMode } = useTheme();
   const { studentClass, displayName, resetStudentProfile } = useStudentClass();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -75,7 +75,12 @@ export default function Navbar() {
           </div>
 
           <div className="menu-section menu-appearance">
-            <div className="menu-section-label">Choose a colour</div>
+            <div className="menu-section-label">Appearance</div>
+            <div className="appearance-toggle">
+              <button type="button" className={mode === 'light' ? 'active' : ''} onClick={() => setMode('light')}><Sun /> Light</button>
+              <button type="button" className={mode === 'dark' ? 'active' : ''} onClick={() => setMode('dark')}><Moon /> Dark</button>
+            </div>
+            <div className="menu-section-label theme-label">Choose a colour</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ background: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
 

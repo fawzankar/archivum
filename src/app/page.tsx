@@ -39,6 +39,18 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     </section>
 
     <main className="archive-shell home-main">
+      <section className="home-quick-section">
+        <div className="home-quick-intro">
+          <h2>Pick up where you need to be.</h2>
+          <p>Jump straight into the part of the archive you use most.</p>
+        </div>
+        <div className="home-quick-links">
+          <Link href={`/notes?class=${activeClass}`}><span className="home-quick-index">01</span><span><strong>Study notes</strong><small>Chapter-wise material for your class</small></span><ArrowRight /></Link>
+          <Link href={`/previous-papers?class=${activeClass}`}><span className="home-quick-index">02</span><span><strong>Previous papers</strong><small>Past papers and practice sets</small></span><ArrowRight /></Link>
+          <Link href={`/saved?class=${activeClass}`}><span className="home-quick-index">03</span><span><strong>Your saved shelf</strong><small>Keep the resources you want nearby</small></span><ArrowRight /></Link>
+        </div>
+      </section>
+
       <section className="home-recent">
         <div className="home-section-head"><div><h2>Recently added</h2><p>A few things that have landed in your class archive.</p></div><Link href={`/search?class=${activeClass}`}>See everything <ArrowRight/></Link></div>
         {recent.items.length ? <div className="home-resource-list">{recent.items.map(r => <ResourceCard key={r.id} resource={r}/>)}</div> : <div className="home-empty">New material will show up here as it is added.</div>}

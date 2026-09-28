@@ -12,6 +12,7 @@ import { Suspense } from 'react';
 import ClassTransitionOverlay from '@/components/ClassTransitionOverlay';
 import DeferredClientWidgets from '@/components/DeferredClientWidgets';
 import NavigationProgress from '@/components/NavigationProgress';
+import SplashScreen from '@/components/SplashScreen';
 
 export const viewport: Viewport = { themeColor: '#0474C4', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
 export const metadata: Metadata = {
@@ -24,9 +25,9 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');if(['sapphire','sage','amethyst','ash','frost'].includes(a||''))document.documentElement.setAttribute('data-accent',a)}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
+  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');const t=localStorage.getItem('archivum_theme');if(['sapphire','sage','amethyst','ash','frost'].includes(a||''))document.documentElement.setAttribute('data-accent',a);if(t==='dark')document.documentElement.classList.add('dark')}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
     <ThemeProvider><StudentClassProvider><ToastProvider>
-      <PwaRegister /><NavigationProgress /><ClassTransitionOverlay /><FirstLaunch />
+      <PwaRegister /><SplashScreen /><NavigationProgress /><ClassTransitionOverlay /><FirstLaunch />
       <Suspense fallback={null}><Navbar /></Suspense>
       <main className="flex-1">{children}</main>
       <Footer /><MobileNav /><DeferredClientWidgets />
