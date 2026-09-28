@@ -4,58 +4,87 @@ import { getResources, getRealStats } from '@/lib/resources';
 import { getPreferredClass } from '@/lib/studentClass';
 import ResourceCard from '@/components/ResourceCard';
 import HomeClient from './HomeClient';
-import { Archive, ArrowRight, BookOpen, FileText, Lightbulb, Upload, Layers3 } from 'lucide-react';
+import { ArrowRight, BookOpen, FileText, Lightbulb, Upload, Layers3, Archive, PenLine } from 'lucide-react';
 import { subjectsForClass, SUBJECT_DETAILS } from '@/lib/subjects';
 
-export const revalidate=30;
+export const revalidate = 30;
 
-export default async function HomePage({ searchParams }: { searchParams: Promise<{ class?: string }> }){
- const params = await searchParams;
- const preferred=await getPreferredClass();
- const requestedClass = params.class ? Number(params.class) : undefined;
- const activeClass = [9,10,11,12].includes(requestedClass || 0) ? requestedClass as number : preferred || 10;
- const classForQuery = activeClass;
- const [featured,recent,stats]=await Promise.all([
-   getResources({featured:true,class_level:classForQuery,limit:3}),
-   getResources({sortBy:'newest',class_level:classForQuery,limit:3}),
-   getRealStats(),
- ]);
- return <div className="pb-24 space-y-14 sm:space-y-20">
-   <section className="hero-editorial relative overflow-hidden -mt-[68px] pt-[68px] sm:-mt-[76px] sm:pt-[76px]">
-     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-14 sm:py-20 lg:py-24 grid lg:grid-cols-[1.15fr_.85fr] gap-10 items-end">
-       <div className="max-w-3xl"><div className="hero-kicker">CLASS {activeClass} ARCHIVE</div><div className="hero-accent-rule mt-4" aria-hidden="true"/><h1 className="font-display font-bold text-5xl sm:text-6xl lg:text-7xl leading-[.95] tracking-[-.04em] mt-6" style={{color:'var(--hero-ink)'}}>Everything you need.<br/><span style={{color:'var(--accent-on-hero)',opacity:.62}}>One archive.</span></h1><p className="text-sm sm:text-base max-w-xl mt-6 leading-relaxed" style={{color:'var(--hero-muted)'}}>ARCHIVUM keeps SJS notes, previous papers, study material and exam tips organised around your class—so you spend less time hunting and more time studying.</p><div className="mt-7 max-w-2xl"><HomeClient initialSearch=""/></div></div>
-       <div className="hidden lg:block"><div className="relative rounded-xl border p-6 overflow-hidden" style={{background:'var(--surface)',borderColor:'color-mix(in srgb,var(--accent) 28%,var(--border))'}}><div className="flex items-center justify-between"><div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><Archive className="w-6 h-6"/></div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--hero-muted)'}}>LIVE LIBRARY</span></div><div className="mt-12"><div className="text-5xl font-display font-bold" style={{color:'var(--hero-ink)'}}>{stats.classCounts[activeClass]||0}</div><p className="text-xs mt-1" style={{color:'var(--hero-muted)'}}>resources for Class {activeClass}</p></div><div className="mt-8 grid grid-cols-2 gap-2"><div className="rounded-xl p-3" style={{background:'color-mix(in srgb,var(--surface) 10%,transparent)'}}><div className="text-lg font-bold" style={{color:'var(--hero-ink)'}}>{stats.totalDownloads}</div><div className="text-[9px] uppercase tracking-wider" style={{color:'var(--hero-muted)'}}>{stats.totalDownloads === 1 ? 'download' : 'real downloads'}</div></div><div className="rounded-xl p-3" style={{background:'color-mix(in srgb,var(--surface) 10%,transparent)'}}><div className="text-lg font-bold" style={{color:'var(--hero-ink)'}}>{stats.totalViews}</div><div className="text-[9px] uppercase tracking-wider" style={{color:'var(--hero-muted)'}}>{stats.totalViews === 1 ? 'view' : 'real views'}</div></div></div></div></div>
-     </div>
-   </section>
+export default async function HomePage({ searchParams }: { searchParams: Promise<{ class?: string }> }) {
+  const params = await searchParams;
+  const preferred = await getPreferredClass();
+  const requestedClass = params.class ? Number(params.class) : undefined;
+  const activeClass = [9,10,11,12].includes(requestedClass || 0) ? requestedClass as number : preferred || 10;
+  const [featured,recent,stats] = await Promise.all([
+    getResources({featured:true,class_level:activeClass,limit:3}),
+    getResources({sortBy:'newest',class_level:activeClass,limit:3}),
+    getRealStats(),
+  ]);
 
-   <section className="archive-section sister-callout max-w-7xl mx-auto px-4 sm:px-6">
-     <div className="rounded-xl border p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
-       <div><span className="brand-sister text-[10px] uppercase tracking-[.16em]" style={{color:'var(--accent)'}}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span><h2 className="font-display font-bold text-2xl mt-1">Meet our sister organisation: SJS <span className="quest-word">QUEST</span></h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>School stories, magazines, photography and creative work from the SJS community — all in one place.</p></div>
-       <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><span className="quest-word">VISIT QUEST</span> <ArrowRight className="w-3.5 h-3.5"/></a>
-     </div>
-   </section>
+  const study = [
+    {n:'01',name:'Notes',desc:'Chapter-wise revision material',icon:BookOpen,href:`/notes?class=${activeClass}`},
+    {n:'02',name:'Papers',desc:'Previous exams and practice',icon:FileText,href:`/previous-papers?class=${activeClass}`},
+    {n:'03',name:'Tips',desc:'Small things that improve scores',icon:Lightbulb,href:`/tips?class=${activeClass}`},
+    {n:'04',name:'Contribute',desc:'Add useful material to the archive',icon:Upload,href:'/upload'},
+  ];
 
-   <section className="archive-section max-w-7xl mx-auto px-4 sm:px-6 space-y-5"><div className="flex items-end justify-between gap-4"><div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>YOUR STUDY DESK</span><h2 className="font-display font-bold text-2xl sm:text-3xl mt-1">Built around Class {activeClass}</h2></div><Link href={`/tips?class=${activeClass}`} className="text-xs font-bold inline-flex items-center gap-1" style={{color:'var(--accent)'}}>Exam tips <ArrowRight className="w-3.5 h-3.5"/></Link></div><div className="grid grid-cols-2 lg:grid-cols-4 gap-3"><Link href={`/notes?class=${activeClass}`} className="group rounded-xl border p-5 min-h-[150px] flex flex-col justify-between" style={{background:'var(--surface)',borderColor:'var(--border)'}}><div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{background:'var(--accent-light)',color:'var(--accent)'}}><BookOpen className="w-5 h-5"/></div><div><div className="font-display font-bold text-lg">Notes</div><div className="text-[11px]" style={{color:'var(--ink-muted)'}}>Chapter-wise revision</div></div></Link><Link href={`/previous-papers?class=${activeClass}`} className="group rounded-xl border p-5 min-h-[150px] flex flex-col justify-between" style={{background:'var(--surface)',borderColor:'var(--border)'}}><div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{background:'var(--accent-light)',color:'var(--accent)'}}><FileText className="w-5 h-5"/></div><div><div className="font-display font-bold text-lg">Papers</div><div className="text-[11px]" style={{color:'var(--ink-muted)'}}>Past exam practice</div></div></Link><Link href={`/tips?class=${activeClass}`} className="group rounded-xl border p-5 min-h-[150px] flex flex-col justify-between" style={{background:'var(--surface)',borderColor:'var(--border)'}}><div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{background:'var(--accent-light)',color:'var(--accent)'}}><Lightbulb className="w-5 h-5"/></div><div><div className="font-display font-bold text-lg">Tips</div><div className="text-[11px]" style={{color:'var(--ink-muted)'}}>Random exam playbook</div></div></Link><Link href="/upload" className="group rounded-xl border p-5 min-h-[150px] flex flex-col justify-between" style={{background:'var(--accent)',color:'var(--accent-contrast)',borderColor:'var(--accent)'}}><div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{background:'color-mix(in srgb,var(--surface) 14%,transparent)'}}><Upload className="w-5 h-5"/></div><div><div className="font-display font-bold text-lg">Contribute</div><div className="text-[11px] opacity-75">Share useful material</div></div></Link></div></section>
+  return <div className="home-shell pb-24">
+    <section className="archive-hero">
+      <div className="hero-inner">
+        <div className="animate-rise">
+          <div className="hero-eyebrow">SJS STUDENT ARCHIVE · CLASS {activeClass}</div>
+          <div className="hero-rule" />
+          <h1 className="hero-title">The things you need,<br/><em>kept in one place.</em></h1>
+          <p className="hero-copy">Notes, previous papers, study material and practical exam guidance — arranged around your class, without the noise of a thousand tabs.</p>
+          <div className="hero-search"><HomeClient /></div>
+        </div>
+        <div className="hero-index animate-soft-scale">
+          <div><div className="hero-index-label">ARCHIVE / {new Date().getFullYear()}</div><div className="hero-number mt-5">{stats.classCounts[activeClass] || 0}</div><div className="text-[11px] mt-2" style={{color:'var(--hero-muted)'}}>catalogued resources for Class {activeClass}</div></div>
+          <div className="hero-index-grid mt-10">
+            <div className="hero-stat"><strong>{stats.totalDownloads}</strong><span>downloads</span></div>
+            <div className="hero-stat"><strong>{stats.totalViews}</strong><span>views</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-   <section className="archive-section max-w-7xl mx-auto px-4 sm:px-6 space-y-5">
-     <div className="flex items-end justify-between gap-4">
-       <div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>CLASS {activeClass} SUBJECTS</span><h2 className="font-display font-bold text-2xl sm:text-3xl mt-1">Choose a subject</h2><p className="text-xs sm:text-sm mt-1" style={{color:'var(--ink-muted)'}}>Your class controls this list, so ARCHIVUM stays focused on what you actually study.</p></div>
-       <Link href={`/subjects?class=${activeClass}`} className="hidden sm:inline-flex items-center gap-1 text-xs font-bold" style={{color:'var(--accent)'}}>All subjects <ArrowRight className="w-3.5 h-3.5"/></Link>
-     </div>
-     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-       {subjectsForClass(activeClass).map(subject => { const detail = SUBJECT_DETAILS[subject]; return <div key={subject} className="group subject-card rounded-xl border p-4 sm:p-5 min-h-[175px] flex flex-col justify-between transition-colors duration-200 hover:border-[var(--accent)]" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
-         <div className="subject-mark w-11 h-11 rounded-lg flex items-center justify-center font-display font-bold text-lg" style={{background:'var(--accent-light)',color:'var(--accent)'}}>{detail?.icon || '•'}</div>
-         <div><h3 className="font-display font-bold text-base sm:text-lg">{subject}</h3><p className="text-[10px] mt-1" style={{color:'var(--ink-muted)'}}>{detail?.description}</p></div>
-         <div className="grid grid-cols-2 gap-2 mt-4">
-           <Link href={`/notes?class=${activeClass}&subject=${encodeURIComponent(subject)}`} className="inline-flex items-center justify-center gap-1.5 rounded-xl py-2 text-[10px] font-bold transition-all hover:-translate-y-0.5" style={{background:'var(--accent-light)',color:'var(--accent)'}}><BookOpen className="w-3 h-3"/> Notes</Link>
-           <Link href={`/previous-papers?class=${activeClass}&subject=${encodeURIComponent(subject)}`} className="inline-flex items-center justify-center gap-1.5 rounded-xl py-2 text-[10px] font-bold border transition-all hover:-translate-y-0.5" style={{background:'var(--surface-raised)',borderColor:'var(--border)',color:'var(--ink-muted)'}}><FileText className="w-3 h-3"/> PYQs</Link>
-         </div>
-       </div> })}
-     </div>
-   </section>
+    <section className="section-wrap section-block archive-section">
+      <div className="archive-callout">
+        <div><div className="text-[9px] uppercase tracking-[.22em] font-bold opacity-70">A sister project, quietly connected</div><h2 className="mt-2">ARCHIVUM × <span className="quest-word">QUEST</span></h2><p>SJS Quest documents the creative side of school life. ARCHIVUM serves the academic side — a separate identity, built for a different job.</p></div>
+        <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer">Visit Quest <ArrowRight className="inline w-3 h-3 ml-1"/></a>
+      </div>
+    </section>
 
-   <section className="archive-section max-w-7xl mx-auto px-4 sm:px-6 space-y-5"><div className="flex items-end justify-between"><div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--ink-faint)'}}>CURATED</span><h2 className="font-display font-bold text-2xl sm:text-3xl mt-1">Featured for you</h2></div><Link href={`/notes?class=${activeClass}`} className="text-xs font-bold inline-flex items-center gap-1" style={{color:'var(--accent)'}}>View library <ArrowRight className="w-3.5 h-3.5"/></Link></div><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">{featured.items.map(r=><ResourceCard key={r.id} resource={r}/>)}</div></section>
+    <section className="section-wrap section-block archive-section">
+      <div className="section-heading"><div><div className="section-kicker">Your study desk</div><h2 className="section-title">Everything begins with Class {activeClass}.</h2></div><Link className="text-link" href={`/tips?class=${activeClass}`}>Exam tips <ArrowRight className="w-3 h-3"/></Link></div>
+      <div className="study-grid">
+        {study.map(({n,name,desc,icon:Icon,href})=><Link href={href} key={name} className="study-tile group"><div className="flex items-center justify-between"><span className="study-index">{n}</span><Icon className="study-icon w-5 h-5" strokeWidth={1.5}/></div><div><div className="study-name">{name}</div><div className="study-desc">{desc}</div></div></Link>)}
+      </div>
+    </section>
 
-   <section className="archive-section max-w-7xl mx-auto px-4 sm:px-6"><div className="rounded-[2rem] p-6 sm:p-8 border" style={{background:'var(--accent-light)',borderColor:'color-mix(in srgb,var(--accent) 20%,var(--border))'}}><div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6"><div><span className="text-[10px] font-bold uppercase tracking-[.18em]" style={{color:'var(--accent)'}}>RECENTLY ADDED</span><h2 className="font-display font-bold text-2xl mt-1">Fresh into the Class {activeClass} archive</h2><p className="text-xs mt-2 max-w-xl" style={{color:'var(--ink-muted)'}}>New material is reviewed before publication. Real views, downloads and ratings are shown without inflated placeholders.</p></div><Link href={`/search?class=${activeClass}`} className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Explore all <ArrowRight className="w-3.5 h-3.5"/></Link></div><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-7">{recent.items.map(r=><ResourceCard key={r.id} resource={r}/>)}</div></div></section>
- </div>;
+    <section className="section-wrap section-block archive-section">
+      <div className="section-heading"><div><div className="section-kicker">Class {activeClass} / catalogue</div><h2 className="section-title">Choose a subject.</h2><p className="section-note">Your class controls this list, keeping the archive focused on what you actually study.</p></div><Link className="text-link hidden sm:inline-flex" href={`/subjects?class=${activeClass}`}>All subjects <ArrowRight className="w-3 h-3"/></Link></div>
+      <div className="subject-grid">
+        {subjectsForClass(activeClass).map(subject=>{const detail=SUBJECT_DETAILS[subject];return <article className="subject-card" key={subject}>
+          <div className="flex items-start justify-between"><div className="subject-mark">{detail?.icon || '•'}</div><Layers3 className="w-4 h-4 opacity-20"/></div>
+          <div><h3 className="subject-name">{subject}</h3><p className="text-[10px] mt-1" style={{color:'var(--ink-muted)'}}>{detail?.description}</p><div className="subject-actions"><Link className="subject-action primary" href={`/notes?class=${activeClass}&subject=${encodeURIComponent(subject)}`}><BookOpen className="w-3 h-3"/> Notes</Link><Link className="subject-action" href={`/previous-papers?class=${activeClass}&subject=${encodeURIComponent(subject)}`}><FileText className="w-3 h-3"/> PYQs</Link></div></div>
+        </article>})}
+      </div>
+    </section>
+
+    <section className="section-wrap section-block archive-section">
+      <div className="section-heading"><div><div className="section-kicker">Curated shelf</div><h2 className="section-title">Featured for Class {activeClass}.</h2></div><Link className="text-link" href={`/notes?class=${activeClass}`}>Open library <ArrowRight className="w-3 h-3"/></Link></div>
+      <div className="feature-grid">{featured.items.map(r=><ResourceCard key={r.id} resource={r}/>)}</div>
+    </section>
+
+    <section className="recent-band archive-section">
+      <div className="section-wrap">
+        <div className="section-heading"><div><div className="section-kicker">Recently added</div><h2 className="section-title">Fresh into the archive.</h2><p className="section-note">New material is reviewed before publication. The numbers shown here are real views, downloads and ratings.</p></div><Link className="text-link" href={`/search?class=${activeClass}`}>Explore all <ArrowRight className="w-3 h-3"/></Link></div>
+        <div className="feature-grid">{recent.items.map(r=><ResourceCard key={r.id} resource={r}/>)}</div>
+      </div>
+    </section>
+
+    <section className="section-wrap section-block archive-section">
+      <div className="flex items-center gap-3 border-t pt-7" style={{borderColor:'var(--line)'}}><PenLine className="w-4 h-4" style={{color:'var(--gold)'}}/><p className="text-[10px] uppercase tracking-[.16em]" style={{color:'var(--ink-faint)'}}>ARCHIVUM / built for SJS students / class 9—12</p></div>
+    </section>
+  </div>;
 }
