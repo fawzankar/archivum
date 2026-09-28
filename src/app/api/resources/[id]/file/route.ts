@@ -24,6 +24,10 @@ function headersFor(resource: { file_type: string; file_name: string }, size: nu
   return headers;
 }
 
+function responseBody(bytes: Uint8Array) {
+  return new Blob([Uint8Array.from(bytes).buffer]);
+}
+
 function parseRange(value: string | null, size: number) {
   if (!value) return null;
   const match = /^bytes=(\d*)-(\d*)$/.exec(value.trim());
@@ -91,9 +95,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       const headers = headersFor(resource, body.byteLength);
       if (range) {
         headers.set('Content-Range', `bytes ${range.start}-${range.end}/${info.size}`);
-        return new NextResponse(body, { status: 206, headers });
+        return new NextResponse(responseBody(body), { status: 206, headers });
       }
-      return new NextResponse(body, { status: 200, headers });
+      return new NextResponse(responseBody(body), { status: 200, headers });
     }
 
     const key = resource.storage_key || r2KeyFromUrl(resource.file_url);
@@ -115,7 +119,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     if (object.ETag) headers.set('ETag', object.ETag);
     if (object.ContentRange) headers.set('Content-Range', object.ContentRange);
     const partial = Boolean(object.ContentRange);
-    return new NextResponse(bytes, { status: partial ? 206 : 200, headers });
+    return new NextResponse(responseBody(bytes), { status: partial ? 206 : 200, headers });
   } catch (error) {
     console.error('[resource-file:GET]', error);
     return NextResponse.json({ error: 'Unable to open this document.' }, { status: 500 });
