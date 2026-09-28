@@ -1,8 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Resource } from '@/lib/resources';
-import { X, ExternalLink, Download, FileText } from 'lucide-react';
+import {
+  X, ExternalLink, Download, FileText, ChevronLeft, ChevronRight,
+  ZoomIn, ZoomOut, RotateCcw, Maximize2, Loader2, AlertTriangle
+} from 'lucide-react';
 
 interface PdfViewerModalProps {
   resource: Resource | null;
@@ -10,89 +13,116 @@ interface PdfViewerModalProps {
 }
 
 export default function PdfViewerModal({ resource, onClose }: PdfViewerModalProps) {
+  const [loading, setLoading] = useState(true);
+  const [failed, setFailed] = useState(false);
+  const [page, setPage] = useState(1);
+  const [zoom, setZoom] = useState(100);
+
+  const fileUrl = useMemo(() => resource ? `/api/resources/${resource.id}/file` : '', [resource]);
+  const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png)$/i.test(resource.file_name || '')));
+
+  useEffect(() => {
+    if (!resource) return;
+    setLoading(true);
+    setFailed(false);
+    setPage(1);
+    setZoom(100);
+    const timer = window.setTimeout(() => setFailed(true), 9000);
+    return () => window.clearTimeout(timer);
+  }, [resource?.id]);
+
+  useEffect(() => {
+    if (!resource) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+      if (!isImage && event.key === 'ArrowLeft') setPage(value => Math.max(1, value - 1));
+      if (!isImage && event.key === 'ArrowRight') setPage(value => value + 1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [resource, onClose, isImage]);
+
   if (!resource) return null;
 
-  const isImage = resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png)$/i.test(resource.file_name || '');
+  const frameUrl = isImage ? fileUrl : `${fileUrl}#page=${page}&zoom=${zoom}&toolbar=0&navpanes=0&view=FitH`;
+
+  const changeZoom = (delta: number) => setZoom(value => Math.min(180, Math.max(60, value + delta)));
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm animate-fade">
-      <div
-        className="rounded-3xl border w-full max-w-5xl h-[88vh] flex flex-col shadow-2xl overflow-hidden"
-        style={{
-          backgroundColor: 'var(--surface)',
-          borderColor: 'var(--border)',
-        }}
-      >
-        {/* Header */}
-        <div
-          className="p-4 sm:p-5 border-b flex items-center justify-between gap-4"
-          style={{
-            borderColor: 'var(--border-light)',
-            backgroundColor: 'var(--surface-raised)',
-          }}
-        >
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 bg-emerald-50 text-emerald-800">
-              <FileText className="w-5 h-5 stroke-[1.75]" />
-            </div>
-            <div className="truncate">
-              <h3 className="font-display font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 truncate">
-                {resource.title}
-              </h3>
-              <p className="text-[11px] text-zinc-500">
-                Class {resource.class_level} · {resource.subject} · {resource.resource_type}
-              </p>
+    <div className="pdf-reader-shell" role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
+      <div className="pdf-reader-backdrop" onClick={onClose} />
+      <section className="pdf-reader-window">
+        <header className="pdf-reader-header">
+          <div className="min-w-0 flex items-center gap-3">
+            <div className="pdf-reader-file-icon"><FileText /></div>
+            <div className="min-w-0">
+              <strong className="block truncate">{resource.title}</strong>
+              <span className="block truncate">Class {resource.class_level} · {resource.subject} · {resource.resource_type || 'Notes'}</span>
             </div>
           </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <a
-              href={`/api/resources/${resource.id}/file`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 text-xs font-semibold rounded-full border hover:bg-black/5 dark:hover:bg-white/5 transition-colors flex items-center gap-1.5"
-              style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Open in Tab</span>
-            </a>
-            <a
-              href={`/api/resources/${resource.id}/file`}
-              download={resource.file_name || resource.title}
-              className="px-4 py-2 text-xs font-semibold rounded-full text-white bg-zinc-900 hover:bg-zinc-800 transition-colors flex items-center gap-1.5"
-            >
-              <Download className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Download</span>
-            </a>
-            <button
-              onClick={onClose}
-              className="p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-full transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
+          <div className="pdf-reader-actions">
+            {!isImage && <>
+              <button type="button" onClick={() => changeZoom(-10)} aria-label="Zoom out"><ZoomOut /></button>
+              <span className="pdf-reader-zoom">{zoom}%</span>
+              <button type="button" onClick={() => changeZoom(10)} aria-label="Zoom in"><ZoomIn /></button>
+              <button type="button" onClick={() => { setPage(1); setZoom(100); }} aria-label="Reset view"><RotateCcw /></button>
+              <button type="button" onClick={() => setPage(value => Math.max(1, value - 1))} aria-label="Previous page"><ChevronLeft /></button>
+              <div className="pdf-reader-page"><span>Page</span><strong>{page}</strong></div>
+              <button type="button" onClick={() => setPage(value => value + 1)} aria-label="Next page"><ChevronRight /></button>
+            </>}
+            <a href={fileUrl} target="_blank" rel="noopener noreferrer" aria-label="Open in new tab"><ExternalLink /></a>
+            <a href={fileUrl} download={resource.file_name || resource.title} aria-label="Download"><Download /></a>
+            <button type="button" onClick={onClose} aria-label="Close reader"><X /></button>
           </div>
-        </div>
+        </header>
 
-        {/* Viewer Content */}
-        <div className="flex-1 bg-zinc-100 dark:bg-zinc-900 p-2 sm:p-4 overflow-hidden flex items-center justify-center">
-          {isImage ? (
-            <div className="w-full h-full flex items-center justify-center overflow-auto">
-              <img
-                src={`/api/resources/${resource.id}/file`}
-                alt={resource.title}
-                className="max-h-full max-w-full object-contain rounded-lg shadow-sm"
-              />
+        <div className="pdf-reader-stage">
+          {loading && !failed && (
+            <div className="pdf-reader-loading">
+              <div className="pdf-reader-loading-card">
+                <Loader2 className="animate-spin" />
+                <strong>Opening your document…</strong>
+                <span>ARCHIVUM is preparing the reading view.</span>
+              </div>
             </div>
-          ) : (
-            <iframe
-              src={`/api/resources/${resource.id}/file#toolbar=0`}
-              className="w-full h-full rounded-2xl border bg-white shadow-inner"
-              style={{ borderColor: 'var(--border)' }}
-              title={resource.title}
-            />
+          )}
+
+          {failed && (
+            <div className="pdf-reader-error">
+              <div className="pdf-reader-error-card">
+                <div className="pdf-reader-error-icon"><AlertTriangle /></div>
+                <h3>That document did not render here.</h3>
+                <p>The file is still available. Try opening it in a new tab or downloading the original.</p>
+                <div className="flex flex-wrap justify-center gap-2 mt-5">
+                  <a className="pdf-reader-primary" href={fileUrl} target="_blank" rel="noopener noreferrer"><ExternalLink /> Open document</a>
+                  <a className="pdf-reader-secondary" href={fileUrl} download={resource.file_name || resource.title}><Download /> Download</a>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!failed && (
+            <div className={`pdf-reader-frame ${loading ? 'is-loading' : ''}`}>
+              {isImage ? (
+                <img src={frameUrl} alt={resource.title} onLoad={() => setLoading(false)} onError={() => setFailed(true)} />
+              ) : (
+                <iframe
+                  key={`${resource.id}-${page}-${zoom}`}
+                  src={frameUrl}
+                  title={resource.title}
+                  onLoad={() => setLoading(false)}
+                  onError={() => setFailed(true)}
+                />
+              )}
+            </div>
           )}
         </div>
-      </div>
+
+        <footer className="pdf-reader-footer">
+          <span>ESC to close · ← → to move between pages</span>
+          <span>{resource.file_name || 'document.pdf'}</span>
+        </footer>
+      </section>
     </div>
   );
 }

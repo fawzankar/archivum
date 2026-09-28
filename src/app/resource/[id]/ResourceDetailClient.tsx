@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Resource } from '@/lib/resources';
 import { isResourceSaved, toggleSaveResource, addRecentlyViewed } from '@/lib/savedStorage';
 import ResourceCard from '@/components/ResourceCard';
+import PdfViewerModal from '@/components/PdfViewerModal';
 import { useToast } from '@/components/ToastContext';
 import { FileText, Download, Eye, Bookmark, BookmarkCheck, Check, Star, Share2, ArrowLeft, ExternalLink, Image as ImageIcon } from 'lucide-react';
 
@@ -19,6 +20,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const [ratingSaving, setRatingSaving] = useState(false);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+  const [readerOpen, setReaderOpen] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => { addRecentlyViewed(resource); }, [resource]);
@@ -106,7 +108,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
           <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b" style={{borderColor:'var(--border-light)'}}>
             <div className="flex flex-wrap gap-2">
               <button onClick={handleDownload} className="resource-primary-action"><Download /> Download</button>
-              <a href={`/api/resources/${resource.id}/file`} target="_blank" rel="noopener noreferrer" className="resource-secondary-action"><Eye /> Read online</a>
+              <button type="button" onClick={() => setReaderOpen(true)} className="resource-secondary-action"><Eye /> Read online</button>
             </div>
             <div className="flex items-center gap-4 text-[10px]" style={{color:'var(--ink-muted)'}}><span>{downloads} downloads</span><span>{resource.views} views</span><span>{formatFileSize(resource.file_size)}</span></div>
           </div>
@@ -134,6 +136,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
       </article>
 
       {relatedResources.length > 0 && <section className="space-y-5"><div><span className="detail-kicker">Related material</span><h2 className="font-display text-3xl mt-1">More for Class {resource.class_level} {resource.subject}</h2></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">{relatedResources.slice(0,3).map(res => <ResourceCard key={res.id} resource={res} />)}</div></section>}
+      <PdfViewerModal resource={readerOpen ? resource : null} onClose={() => setReaderOpen(false)} />
     </div>
   );
 }

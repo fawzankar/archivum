@@ -21,21 +21,38 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
   return (
     <div className="pb-20">
-      <section className="hero-editorial pt-4 sm:pt-8">
-        <div className="archive-shell relative py-10 sm:py-14 lg:py-16">
-          <div className="max-w-5xl animate-rise">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-bold" style={{background:'var(--accent-light)',color:'var(--accent)'}}>
-              <Sparkles className="w-3.5 h-3.5" /> CLASS {activeClass} SPACE
+      <section className="hero-app">
+        <div className="archive-shell py-5 sm:py-7 lg:py-9">
+          <div className="hero-app-grid">
+            <div className="hero-app-main animate-rise">
+              <div className="hero-app-topline">
+                <span className="hero-app-status"><span className="hero-app-status-dot" /> Class {activeClass}</span>
+                <span className="hero-app-topline-copy"><Sparkles className="w-3.5 h-3.5" /> Made for your study routine</span>
+              </div>
+              <PersonalGreeting activeClass={activeClass} />
+              <h1 className="hero-app-title">Everything you need to<br className="hidden sm:block" /> study, in one place.</h1>
+              <p className="hero-app-copy">Find notes, previous papers, tips and useful material without digging through chats or folders.</p>
+              <div className="hero-app-search"><HomeClient /></div>
             </div>
-            <PersonalGreeting activeClass={activeClass} />
-            <div className="hero-accent-rule mt-6" />
-            <h1 className="font-display text-[3rem] sm:text-6xl lg:text-[5.4rem] leading-[.95] tracking-[-.055em] mt-6" style={{color:'var(--hero-ink)'}}>
-              Study smarter.<br />Find what you need.
-            </h1>
-            <p className="max-w-2xl mt-5 text-sm sm:text-base leading-7" style={{color:'var(--hero-muted)'}}>
-              A lively student community for notes, previous papers, chapter material and practical exam help — organised around your class.
-            </p>
-            <div className="mt-7 max-w-2xl"><HomeClient /></div>
+
+            <aside className="hero-app-side">
+              <div className="hero-app-side-head">
+                <div><span className="hero-side-label">YOUR CLASS</span><strong>Class {activeClass}</strong></div>
+                <span className="hero-side-mark"><BookOpen className="w-4 h-4" /></span>
+              </div>
+              <div className="hero-app-side-stat">
+                <strong>Explore by subject</strong>
+                <span>Pick a subject and jump straight into Notes or PYQs.</span>
+              </div>
+              <div className="hero-app-mini-grid">
+                <Link href={`/notes?class=${activeClass}`} className="hero-mini-card">
+                  <span className="hero-mini-icon"><BookOpen /></span><span><strong>Notes</strong><small>Revise chapters</small></span><ArrowRight />
+                </Link>
+                <Link href={`/previous-papers?class=${activeClass}`} className="hero-mini-card">
+                  <span className="hero-mini-icon"><FileText /></span><span><strong>PYQs</strong><small>Practise papers</small></span><ArrowRight />
+                </Link>
+              </div>
+            </aside>
           </div>
         </div>
       </section>

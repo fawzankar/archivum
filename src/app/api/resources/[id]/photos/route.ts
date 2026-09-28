@@ -15,7 +15,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     const keys: string[] = resource.photo_keys ? JSON.parse(resource.photo_keys) : [];
     const client = getR2Client();
     if (!client || !process.env.R2_BUCKET_NAME || !keys.length) return NextResponse.json({ photos: [] });
-    const photos = await Promise.all(keys.slice(0, 6).map(async key => ({
+    const photos = await Promise.all(keys.slice(0, 6).map(async (key: string) => ({
       key,
       url: await getSignedUrl(client, new GetObjectCommand({ Bucket: process.env.R2_BUCKET_NAME!, Key: key }), { expiresIn: 900 }),
     })));
