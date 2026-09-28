@@ -8,7 +8,7 @@ export const metadata = {
 export default function PrivacyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-      {/* Editorial Header */}
+      {}
       <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
         <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
           DATA & PRIVACY

@@ -39,7 +39,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   const [pendingReviews, setPendingReviews] = useState<any[]>([]);
   const [pendingTips, setPendingTips] = useState<any[]>([]);
 
-  // Table filters
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState<number | undefined>(undefined);
   const [filterStatus, setFilterStatus] = useState<string>('');
@@ -129,23 +128,19 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
     }
   };
 
-  const handleDelete = async (id: number, permanent = false) => {
-    if (!confirm(`Are you sure you want to ${permanent ? 'PERMANENTLY' : 'soft'} delete this resource?`)) return;
+  const handleDelete = async (id: number) => {
+    if (!confirm('Permanently delete this resource, its photos, storage object, ratings and download records? This cannot be undone.')) return;
 
     try {
       const res = await fetch('/api/admin/delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, permanent }),
+        body: JSON.stringify({ id }),
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast(`Resource ${permanent ? 'permanently' : 'soft'} deleted`);
-        if (permanent) {
-          setResources((prev) => prev.filter((r) => r.id !== id));
-        } else {
-          setResources((prev) => prev.map((r) => (r.id === id ? { ...r, status: 'deleted' } : r)));
-        }
+        showToast('Resource permanently deleted');
+        setResources((prev) => prev.filter((r) => r.id !== id));
         fetchStats();
       } else {
         showToast(data.error || 'Delete failed', 'error');
@@ -199,7 +194,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-6 sm:space-y-8">
       
-      {/* Header Bar */}
+      {}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
@@ -224,7 +219,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </button>
       </div>
 
-      {/* Stats Counter Row (Styled in 4 pastel blocks matching reference) */}
+      {}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
         <div
           className="p-5 rounded-3xl flex flex-col justify-between"
@@ -294,7 +289,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
 
       </div>
 
-      {/* Navigation Tabs */}
+      {}
       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar border-b" style={{ borderColor: 'var(--border-light)' }}>
         {[
           { id: 'overview', label: 'Overview' },
@@ -320,7 +315,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         })}
       </div>
 
-      {/* Tab 1: Overview */}
+      {}
       {activeTab === 'overview' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
@@ -393,7 +388,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
       )}
 
-      {/* Tab 2: Pending Queue */}
+      {}
       {activeTab === 'pending' && (
         <div className="space-y-4">
           <div className="flex items-center justify-between text-xs text-zinc-500">
@@ -450,10 +445,10 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
       )}
 
-      {/* Tab 3: All Resources Table */}
+      {}
       {activeTab === 'resources' && (
         <div className="space-y-6">
-          {/* Filter Bar */}
+          {}
           <div
             className="p-4 rounded-2xl border flex flex-wrap items-center gap-3"
             style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
@@ -497,7 +492,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
             </select>
           </div>
 
-          {/* Table */}
+          {}
           <div
             className="rounded-2xl border overflow-hidden shadow-sm"
             style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
@@ -574,7 +569,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
                           </button>
 
                           <button
-                            onClick={() => handleDelete(item.id, false)}
+                            onClick={() => handleDelete(item.id)}
                             title="Delete"
                             className="p-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 cursor-pointer"
                           >
@@ -591,7 +586,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
       )}
 
-      {/* Tab 4: Guidelines */}
+      {}
       {activeTab === 'tips' && (
         <div className="space-y-4">
           <div>
@@ -630,7 +625,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </div>
       )}
 
-      {/* PDF Modal */}
+      {}
       <PdfViewerModal resource={activePdf} onClose={() => setActivePdf(null)} />
     </div>
   );

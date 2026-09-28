@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 
 const JWT_SECRET =
   process.env.JWT_SECRET ||
-  (process.env.NODE_ENV === 'production' ? '' : 'dev-only-sjs-connect-secret-change-me');
+  (process.env.NODE_ENV === 'production' ? '' : 'dev-only-archivum-secret-change-me');
 const COOKIE_NAME = 'sjs_admin_token';
 
 export interface AdminPayload {

@@ -24,12 +24,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Cloudflare R2 is not configured.' }, { status: 503 });
     }
 
-    // IMPORTANT: Do not call HeadBucket here. Cloudflare R2 Object Read & Write
-    // tokens are scoped to object operations; bucket-level HeadBucket can return
-    // HTTP 403 even when PutObject/HeadObject are fully permitted. That 403 was
-    // the reason the app was incorrectly reporting an R2 bucket/CORS failure.
-    // The actual upload and the server-side HeadObject verification below are
-    // the authoritative checks.
 
     const body = await request.json();
     const filename = safeFilename(body.filename);
@@ -59,9 +53,6 @@ export async function POST(request: Request) {
       }, { status: 507 });
     }
 
-    // Sign the exact Content-Type that the browser will send. Cloudflare R2
-    // requires the client header to match when ContentType is included in the
-    // presigned PutObject request.
     const command = new PutObjectCommand({
       Bucket: process.env.R2_BUCKET_NAME,
       Key: key,

@@ -62,8 +62,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Upload reservation expired. Please upload the file again.' }, { status: 409 });
     }
 
-    // Confirm the private R2 object exists and matches our limits using a
-    // server-side HEAD request. No public bucket URL is required.
     const r2Client = getR2Client();
     const objectKey = storageKey.startsWith('r2://') ? storageKey.slice(5) : storageKey;
     if (!r2Client) {

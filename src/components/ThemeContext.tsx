@@ -23,7 +23,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mode, setModeState] = useState<Mode>('light');
-  const [accent, setAccentState] = useState<Accent>('citrus');
+  const [accent, setAccentState] = useState<Accent>('ocean');
   const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
