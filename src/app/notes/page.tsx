@@ -3,7 +3,7 @@ import { getPreferredClass } from '@/lib/studentClass';
 import { getResources } from '@/lib/resources';
 import NotesClient from './NotesClient';
 
-export const revalidate = 0;
+export const revalidate = 30;
 
 export default async function NotesPage({
   searchParams,

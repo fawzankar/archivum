@@ -161,7 +161,7 @@ export default function Chatbot() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="ARCHIVUM Guide Chatbot"
-        className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-40 w-12 h-12 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+        className="fixed bottom-[96px] right-4 md:bottom-6 md:right-6 z-40 w-12 h-12 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
         style={{ backgroundColor: 'var(--accent)', boxShadow: '0 12px 32px var(--accent-glow)' }}
       >
         <MessageSquare className="w-5 h-5" />
@@ -169,7 +169,7 @@ export default function Chatbot() {
 
       {isOpen && (
         <div
-          className="fixed bottom-24 right-4 md:bottom-20 md:right-6 z-50 w-[92vw] max-w-sm sm:max-w-md h-[500px] max-h-[75vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden animate-fade"
+          className="fixed bottom-[160px] right-4 md:bottom-20 md:right-6 z-50 w-[92vw] max-w-sm sm:max-w-md h-[500px] max-h-[75vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden animate-fade"
           style={{
             backgroundColor: 'var(--surface)',
             borderColor: 'var(--border)',

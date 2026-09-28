@@ -562,3 +562,14 @@ body{background:var(--app-bg)!important}
 @keyframes navProgress{from{transform:scaleX(.18)}to{transform:scaleX(.88)}}
 @media(max-width:800px){.product-preview{grid-template-columns:1fr}.product-preview-side{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0}.product-preview-side>div+div{padding:0 0 0 14px;border-top:0;border-left:1px solid var(--border)}}
 @media(max-width:640px){.product-preview-window{transform:none;border-radius:19px}.product-preview-body{grid-template-columns:1fr}.product-preview-sidebar{display:none}.product-preview-content{padding:20px}.product-preview-content h3{font-size:20px}.product-preview-row{grid-template-columns:1fr}.product-preview-side{grid-template-columns:1fr}.product-preview-side>div+div{padding:14px 0 0;border-left:0;border-top:1px solid var(--border)}}
+
+/* App polish: feedback, compact footer, and touch-first navigation */
+.site-footer-minimal{border-top:1px solid var(--border);padding:18px 0 calc(92px + env(safe-area-inset-bottom));background:var(--surface)}
+.site-footer-minimal p{margin:0;text-align:center;color:var(--ink-muted);font-size:11px;line-height:1.6}
+.site-footer-minimal strong{color:var(--ink)}
+.site-footer-minimal a{color:var(--accent);font-weight:650}
+.feedback-input{width:100%;border:1px solid var(--border);background:var(--surface-raised);color:var(--ink);border-radius:14px;padding:12px 13px;font-size:13px;line-height:1.5;outline:none;transition:border-color .16s,box-shadow .16s}
+.feedback-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.feedback-textarea{min-height:170px;resize:vertical}
+.resource-card{cursor:pointer;-webkit-tap-highlight-color:transparent}
+@media(max-width:640px){.site-footer-minimal{padding-bottom:calc(102px + env(safe-area-inset-bottom))}.site-footer-minimal p{padding:0 18px}.contributors-page{} body{overflow-x:hidden}.resource-card-main{padding:18px}.resource-card h3{font-size:21px}.resource-card-foot{padding:11px 14px}.mobile-nav{bottom:max(12px,env(safe-area-inset-bottom))!important}.hero-app-grid{gap:10px!important}}

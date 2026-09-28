@@ -21,7 +21,8 @@ import {
   Layers,
   Lightbulb,
   HardDrive,
-  UploadCloud
+  UploadCloud,
+  MessageCircle
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -33,13 +34,14 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   const router = useRouter();
   const { showToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines' | 'upload'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines' | 'upload' | 'feedback'>('overview');
   const [resources, setResources] = useState<Resource[]>(initialResources);
   const [stats, setStats] = useState<any>(null);
   const [loadingStats, setLoadingStats] = useState(false);
   const [activePdf, setActivePdf] = useState<Resource | null>(null);
   const [pendingReviews, setPendingReviews] = useState<any[]>([]);
   const [pendingTips, setPendingTips] = useState<any[]>([]);
+  const [feedback, setFeedback] = useState<any[]>([]);
 
   const [search, setSearch] = useState('');
   const [filterClass, setFilterClass] = useState<number | undefined>(undefined);
@@ -64,6 +66,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
     fetchStats();
     fetch('/api/admin/reviews').then((res) => res.ok ? res.json() : { reviews: [] }).then((data) => setPendingReviews(data.reviews || [])).catch(() => {});
     fetch('/api/admin/tips').then((res) => res.ok ? res.json() : { tips: [] }).then((data) => setPendingTips(data.tips || [])).catch(() => {});
+    fetch('/api/admin/feedback').then((res) => res.ok ? res.json() : { feedback: [] }).then((data) => setFeedback(data.feedback || [])).catch(() => {});
   }, [fetchStats]);
 
   const handleReviewAction = async (id: number, status: 'approved' | 'rejected') => {
@@ -74,6 +77,8 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
     } else showToast('Could not update review.', 'error');
   };
 
+
+  const handleFeedbackStatus = async (id:number,status:'read'|'archived') => { const res=await fetch('/api/admin/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status})}); if(res.ok){setFeedback(prev=>prev.map(item=>item.id===id?{...item,status}:item));showToast(status==='read'?'Feedback marked read.':'Feedback archived.');} else showToast('Could not update feedback.','error'); };
 
   const handleTipAction = async (id: number, status: 'approved' | 'rejected') => {
     const res = await fetch('/api/admin/tips', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id,status}) });
@@ -295,6 +300,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           { id: 'pending', label: `Pending Queue (${pendingQueue.length})` },
           { id: 'resources', label: `All Resources (${resources.length})` },
           { id: 'tips', label: `Tips (${pendingTips.length})` },
+          { id: 'feedback', label: `Feedback (${feedback.filter((item:any)=>item.status==='new').length})` },
           { id: 'guidelines', label: 'Admin Guidelines' },
           { id: 'upload', label: 'Add resource' },
         ].map((tab) => {
@@ -597,6 +603,13 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
             </div>
           ))}
         </div>
+      )}
+
+      {activeTab === 'feedback' && (
+        <section className="space-y-4">
+          <div><h2 className="font-display font-bold text-2xl">Student feedback</h2><p className="text-sm mt-1" style={{color:'var(--ink-muted)'}}>Messages sent from the Feedback page appear here.</p></div>
+          {feedback.length===0?<div className="rounded-2xl border p-10 text-center text-sm" style={{background:'var(--surface)',borderColor:'var(--border)',color:'var(--ink-muted)'}}>No feedback yet.</div>:<div className="grid gap-3">{feedback.map((item:any)=><article key={item.id} className="rounded-2xl border p-4 sm:p-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}><div className="flex items-start justify-between gap-3"><div className="min-w-0"><strong className="text-sm">{item.name||'Anonymous student'}</strong><div className="text-[11px] mt-1 break-all" style={{color:'var(--ink-muted)'}}>{item.email||'No reply email'} · {new Date(item.created_at).toLocaleString()}</div></div><span className="shrink-0 rounded-full px-2 py-1 text-[9px] font-bold" style={{background:item.status==='new'?'var(--accent-light)':'var(--surface-raised)',color:item.status==='new'?'var(--accent)':'var(--ink-muted)'}}>{item.status}</span></div><p className="mt-4 text-sm leading-6 whitespace-pre-wrap" style={{color:'var(--ink)'}}>{item.message}</p><div className="flex gap-2 mt-4">{item.status==='new'&&<button onClick={()=>handleFeedbackStatus(item.id,'read')} className="rounded-lg border px-3 py-2 text-[11px] font-bold" style={{borderColor:'var(--border)'}}>Mark read</button>}{item.status!=='archived'&&<button onClick={()=>handleFeedbackStatus(item.id,'archived')} className="rounded-lg border px-3 py-2 text-[11px] font-bold" style={{borderColor:'var(--border)'}}>Archive</button>}</div></article>)}</div>}
+        </section>
       )}
 
       {activeTab === 'upload' && (

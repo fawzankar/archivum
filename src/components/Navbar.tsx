@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
-import { Search, Sun, Moon, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Layers3, Info, Users, Palette, RotateCcw } from 'lucide-react';
+import { Search, Sun, Moon, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Layers3, Info, Users, Palette, RotateCcw, MessageCircle } from 'lucide-react';
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],
-  ['Subjects','/subjects',Layers3], ['Tips & Tricks','/tips',Lightbulb], ['Contributors','/contributors',Users], ['About','/about',Info]
+  ['Subjects','/subjects',Layers3], ['Tips & Tricks','/tips',Lightbulb], ['Contributors','/contributors',Users], ['Feedback','/feedback',MessageCircle], ['About','/about',Info]
 ] as const;
 
 export default function Navbar() {

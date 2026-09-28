@@ -74,8 +74,20 @@ export async function getResources(options: ResourceFilterOptions = {}) {
   )();
 }
 
-export async function getResourceById(id:number) { return queryOne<Resource>('SELECT * FROM resources WHERE id = ?', [id]); }
-export async function getResourceBySlug(slug:string) { return queryOne<Resource>('SELECT * FROM resources WHERE slug = ?', [slug]); }
+const getResourceByIdCached = (id:number) => unstable_cache(
+  () => queryOne<Resource>('SELECT * FROM resources WHERE id = ?', [id]),
+  ['resource-by-id', String(id)],
+  { revalidate: 30 }
+)();
+
+const getResourceBySlugCached = (slug:string) => unstable_cache(
+  () => queryOne<Resource>('SELECT * FROM resources WHERE slug = ?', [slug]),
+  ['resource-by-slug', slug],
+  { revalidate: 30 }
+)();
+
+export async function getResourceById(id:number) { return getResourceByIdCached(id); }
+export async function getResourceBySlug(slug:string) { return getResourceBySlugCached(slug); }
 
 export async function getRelatedResources(resource:Resource, limit=4) {
   const items = await query<Resource>(`SELECT * FROM resources WHERE status='approved' AND id != ? AND class_level = ? AND (subject = ? OR resource_type = ? OR chapter = ?) ORDER BY (CASE WHEN subject = ? THEN 3 ELSE 0 END + CASE WHEN chapter = ? THEN 2 ELSE 0 END + CASE WHEN resource_type = ? THEN 1 ELSE 0 END) DESC, downloads DESC LIMIT ?`, [resource.id,resource.class_level,resource.subject,resource.resource_type,resource.chapter,resource.subject,resource.chapter,resource.resource_type,limit]);
