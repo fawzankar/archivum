@@ -111,12 +111,12 @@ export async function POST(request: Request) {
     } catch (photoError) {
       await releaseStorageReservation(storageKey);
       await deleteStoredFile(storageKey).catch(() => {});
-      await Promise.all(photoKeys.map(async key => { await releaseStorageReservation(key).catch(() => {}); await deleteStoredFile(key).catch(() => {}); }));
+      await Promise.all(photoKeys.map(async (key: string) => { await releaseStorageReservation(key).catch(() => {}); await deleteStoredFile(key).catch(() => {}); }));
       return NextResponse.json({ error: photoError instanceof Error ? photoError.message : 'Supporting photo verification failed.' }, { status: 400 });
     }
 
     const usedBytes = await getStorageUsageBytes();
-    const cleanupPhotos = async () => { await Promise.all(photoKeys.map(async key => { await releaseStorageReservation(key).catch(() => {}); await deleteStoredFile(key).catch(() => {}); })); };
+    const cleanupPhotos = async () => { await Promise.all(photoKeys.map(async (key: string) => { await releaseStorageReservation(key).catch(() => {}); await deleteStoredFile(key).catch(() => {}); })); };
     if (usedBytes + remoteSize + verifiedPhotoBytes > MAX_STORAGE_BYTES) {
       await releaseStorageReservation(storageKey);
       await deleteStoredFile(storageKey).catch(() => {});
