@@ -2,17 +2,11 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { Resource } from '@/lib/resources';
-import {
-  X, ExternalLink, Download, FileText, ChevronLeft, ChevronRight,
-  ZoomIn, ZoomOut, RotateCcw, Maximize2, Loader2, AlertTriangle, RefreshCw
-} from 'lucide-react';
+import { X, ExternalLink, Download, FileText, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw, Maximize2, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
 
-type PdfPage = {
-  getViewport: (options: { scale: number }) => { width: number; height: number };
-  render: (options: { canvasContext: CanvasRenderingContext2D; viewport: unknown; intent?: string }) => { promise: Promise<unknown>; cancel?: () => void };
-};
+type PdfPage = { getViewport: (options: { scale: number }) => { width: number; height: number }; render: (options: { canvasContext: CanvasRenderingContext2D; viewport: unknown; intent?: string }) => { promise: Promise<unknown>; cancel?: () => void } };
 type PdfDocument = { numPages: number; getPage: (pageNumber: number) => Promise<PdfPage>; destroy: () => Promise<void> };
-type PdfJs = { getDocument: (options: { url: string; disableWorker: boolean; disableStream?: boolean; disableAutoFetch?: boolean; rangeChunkSize?: number }) => { promise: Promise<PdfDocument> } };
+type PdfJs = { GlobalWorkerOptions: { workerSrc: string }; getDocument: (options: { url: string; disableAutoFetch?: boolean; disableStream?: boolean; rangeChunkSize?: number }) => { promise: Promise<PdfDocument> } };
 
 interface PdfViewerModalProps { resource: Resource | null; onClose: () => void; }
 
@@ -41,12 +35,16 @@ export default function PdfViewerModal({ resource, onClose }: PdfViewerModalProp
       await documentRef.current?.destroy().catch(() => undefined);
       documentRef.current = null;
       try {
-        const probe = await fetch(fileUrl, { method: 'HEAD', cache: 'no-store' });
-        if (!probe.ok) throw new Error(`Document endpoint returned ${probe.status}`);
-        const module = await import('pdfjs-dist/legacy/build/pdf.mjs');
+        const module = await import('pdfjs-dist/build/pdf.mjs');
         if (cancelled) return;
         const pdfjs = module as unknown as PdfJs;
-        const document = await pdfjs.getDocument({ url: fileUrl, disableWorker: true, disableStream: false, disableAutoFetch: false, rangeChunkSize: 262144 }).promise;
+        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+        const document = await pdfjs.getDocument({
+          url: fileUrl,
+          disableStream: false,
+          disableAutoFetch: false,
+          rangeChunkSize: 262144,
+        }).promise;
         if (cancelled) { await document.destroy().catch(() => undefined); return; }
         documentRef.current = document;
         setPageCount(document.numPages);
@@ -81,8 +79,8 @@ export default function PdfViewerModal({ resource, onClose }: PdfViewerModalProp
       renderTaskRef.current?.cancel?.();
       const pdfPage = await doc.getPage(page); if (cancelled) return;
       const base = pdfPage.getViewport({ scale: 1 });
-      const availableWidth = Math.max(280, stage.clientWidth - 56);
-      const fitScale = Math.min(1.65, availableWidth / base.width);
+      const availableWidth = Math.max(260, stage.clientWidth - 28);
+      const fitScale = Math.min(1.8, availableWidth / base.width);
       const scale = Math.max(.55, fitScale * zoom);
       const viewport = pdfPage.getViewport({ scale });
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -113,10 +111,10 @@ export default function PdfViewerModal({ resource, onClose }: PdfViewerModalProp
       </header>
       <div className="pdf-reader-stage" ref={stageRef}>
         {isImage ? <div className="pdf-reader-image-wrap"><img src={fileUrl} alt={resource.title} onLoad={()=>setLoading(false)} onError={()=>{setLoading(false);setFailed(true)}}/></div> : <div className="pdf-reader-canvas-wrap"><canvas ref={canvasRef}/></div>}
-        {loading&&!failed&&<div className="pdf-reader-loading"><div className="pdf-reader-loading-card"><Loader2 className="animate-spin"/><strong>Preparing the reader</strong><span>Opening the document…</span></div></div>}
-        {failed&&<div className="pdf-reader-error"><div className="pdf-reader-error-card"><div className="pdf-reader-error-icon"><AlertTriangle/></div><h3>This document could not be opened.</h3><p>Try the reader again or use the original file. The document itself has not been modified.</p><div className="flex flex-wrap justify-center gap-2 mt-5"><button className="pdf-reader-primary" type="button" onClick={()=>setRetry(v=>v+1)}><RefreshCw/> Try again</button><button className="pdf-reader-secondary" type="button" onClick={openOriginal}><ExternalLink/> Open file</button><a className="pdf-reader-secondary" href={fileUrl} download={resource.file_name || resource.title}><Download/> Download</a></div></div></div>}
+        {loading&&!failed&&<div className="pdf-reader-loading"><div className="pdf-reader-loading-card"><Loader2 className="animate-spin"/><strong>Opening document</strong><span>Preparing the first page…</span></div></div>}
+        {failed&&<div className="pdf-reader-error"><div className="pdf-reader-error-card"><div className="pdf-reader-error-icon"><AlertTriangle/></div><h3>This document could not be rendered.</h3><p>The file is still available. Try again or open the original document.</p><div className="flex flex-wrap justify-center gap-2 mt-5"><button className="pdf-reader-primary" type="button" onClick={()=>setRetry(v=>v+1)}><RefreshCw/> Try again</button><button className="pdf-reader-secondary" type="button" onClick={openOriginal}><ExternalLink/> Open file</button><a className="pdf-reader-secondary" href={fileUrl} download={resource.file_name || resource.title}><Download/> Download</a></div></div></div>}
       </div>
-      <footer className="pdf-reader-footer"><span>{rendered ? 'Ready' : 'Reader'}</span><span>{resource.file_name || 'document.pdf'}</span><button type="button" onClick={()=>stageRef.current?.requestFullscreen?.()} aria-label="Fullscreen"><Maximize2/></button></footer>
+      <footer className="pdf-reader-footer"><span>{rendered ? `Page ${page} of ${pageCount}` : 'Reader'}</span><span>{resource.file_name || 'document.pdf'}</span><button type="button" onClick={()=>stageRef.current?.requestFullscreen?.()} aria-label="Fullscreen"><Maximize2/></button></footer>
     </section>
   </div>;
 }
