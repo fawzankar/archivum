@@ -107,7 +107,7 @@ export default function PaperFinderClient({
   return (
     <div className="space-y-8">
       
-      {/* Filter Control Console (Ivory card with clean borders) */}
+      
       <div
         className="rounded-2xl border p-5 sm:p-6 space-y-4 shadow-sm"
         style={{
@@ -142,10 +142,10 @@ export default function PaperFinderClient({
           </div>
         )}
 
-        {/* Dropdowns row */}
+        
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           
-          {/* Class Filter */}
+          
           <div>
             <label className="block text-[11px] font-medium mb-1" style={{ color: 'var(--ink-muted)' }}>
               Class
@@ -164,7 +164,7 @@ export default function PaperFinderClient({
             </select>
           </div>
 
-          {/* Subject Filter */}
+          
           <div>
             <label className="block text-[11px] font-medium mb-1" style={{ color: 'var(--ink-muted)' }}>
               Subject
@@ -182,7 +182,7 @@ export default function PaperFinderClient({
             </select>
           </div>
 
-          {/* Paper Type Filter */}
+          
           <div>
             <label className="block text-[11px] font-medium mb-1" style={{ color: 'var(--ink-muted)' }}>
               Paper Type
@@ -200,7 +200,7 @@ export default function PaperFinderClient({
             </select>
           </div>
 
-          {/* Year Filter */}
+          
           <div>
             <label className="block text-[11px] font-medium mb-1" style={{ color: 'var(--ink-muted)' }}>
               Year
@@ -218,7 +218,7 @@ export default function PaperFinderClient({
             </select>
           </div>
 
-          {/* School Filter */}
+          
           <div>
             <label className="block text-[11px] font-medium mb-1" style={{ color: 'var(--ink-muted)' }}>
               School / Board
@@ -239,14 +239,14 @@ export default function PaperFinderClient({
         </div>
       </div>
 
-      {/* Results Header */}
+      
       <div className="flex items-center justify-between text-xs" style={{ color: 'var(--ink-muted)' }}>
         <span>
           Showing <strong className="font-semibold" style={{ color: 'var(--ink)' }}>{filteredPapers.length}</strong> examination papers
         </span>
       </div>
 
-      {/* Paper Cards Grid */}
+      
       {filteredPapers.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPapers.map((paper) => (
@@ -277,7 +277,7 @@ export default function PaperFinderClient({
         </div>
       )}
 
-      {/* PDF Modal */}
+      
       <PdfViewerModal resource={activePdf} onClose={() => setActivePdf(null)} />
     </div>
   );

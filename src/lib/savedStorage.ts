@@ -33,8 +33,6 @@ export function toggleSaveResource(resource: Resource): boolean {
     updated = [resource.id, ...ids];
   }
   localStorage.setItem(SAVED_KEY, JSON.stringify(updated));
-
-  // Also save complete resource metadata dictionary for quick offline/local retrieval
   try {
     const metaRaw = localStorage.getItem('sjs_saved_meta') || '{}';
     const meta = JSON.parse(metaRaw);

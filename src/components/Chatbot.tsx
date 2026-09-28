@@ -54,8 +54,6 @@ export default function Chatbot() {
 
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
-
-    // Rule-based processing
     setTimeout(() => {
       const botResponse = generateBotResponse(userText);
       setMessages((prev) => [...prev, botResponse]);
@@ -156,8 +154,6 @@ export default function Chatbot() {
         text: 'No student accounts required! You can browse, search, download, rate, and save resources freely.',
       };
     }
-
-    // Fallback response
     return {
       id: Date.now().toString(),
       sender: 'bot',
@@ -173,7 +169,7 @@ export default function Chatbot() {
 
   return (
     <>
-      {/* Floating Launcher Button */}
+      
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="ARCHIVUM Guide Chatbot"
@@ -183,7 +179,7 @@ export default function Chatbot() {
         <MessageSquare className="w-5 h-5" />
       </button>
 
-      {/* Chat Dialog Window */}
+      
       {isOpen && (
         <div
           className="fixed bottom-24 right-4 md:bottom-20 md:right-6 z-50 w-[92vw] max-w-sm sm:max-w-md h-[500px] max-h-[75vh] rounded-3xl border shadow-2xl flex flex-col overflow-hidden animate-fade"
@@ -192,7 +188,7 @@ export default function Chatbot() {
             borderColor: 'var(--border)',
           }}
         >
-          {/* Top Bar */}
+          
           <div
             className="p-4 border-b flex items-center justify-between"
             style={{
@@ -219,7 +215,7 @@ export default function Chatbot() {
             </button>
           </div>
 
-          {/* Messages Area */}
+          
           <div className="flex-1 p-4 overflow-y-auto space-y-4" style={{ backgroundColor: 'var(--surface)' }}>
             {messages.map((msg) => (
               <div
@@ -236,7 +232,7 @@ export default function Chatbot() {
                   {msg.text}
                 </div>
 
-                {/* Option Buttons */}
+                
                 {msg.options && msg.options.length > 0 && (
                   <div className="mt-2.5 flex flex-wrap gap-1.5 max-w-[95%]">
                     {msg.options.map((opt, i) => (
@@ -267,7 +263,7 @@ export default function Chatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Quick Shortcuts Bar */}
+          
           <div className="px-3 py-2 bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex gap-1.5 overflow-x-auto text-xs no-scrollbar">
             <button
               onClick={() => handleSend('How do I find notes?')}
@@ -295,7 +291,7 @@ export default function Chatbot() {
             </button>
           </div>
 
-          {/* Input Bar */}
+          
           <form
             onSubmit={(e) => {
               e.preventDefault();

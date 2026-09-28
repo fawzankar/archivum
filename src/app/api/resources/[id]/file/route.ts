@@ -13,8 +13,6 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     if (!resource || resource.status !== 'approved') {
       return NextResponse.json({ error: 'Resource not found' }, { status: 404 });
     }
-
-    // Local/public files stay local; the browser can stream them directly.
     if (!resource.file_url.startsWith('r2://') && resource.file_url.startsWith('/')) {
       return NextResponse.redirect(new URL(resource.file_url, request.url), 302);
     }
@@ -41,7 +39,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     const headers = new Headers();
     headers.set('Content-Type', object.ContentType || resource.file_type || 'application/pdf');
-    headers.set('Content-Disposition', `inline; filename="${encodeURIComponent(resource.file_name || 'document.pdf')}"`);
+    const safeName = (resource.file_name || 'document.pdf').replace(/[\"\r\n]/g, '_');
+    headers.set('Content-Disposition', `inline; filename="${safeName}"; filename*=UTF-8''${encodeURIComponent(resource.file_name || 'document.pdf')}`);
     headers.set('Accept-Ranges', 'bytes');
     headers.set('Cache-Control', 'private, max-age=300, stale-while-revalidate=60');
     if (object.ContentLength !== undefined) headers.set('Content-Length', String(object.ContentLength));

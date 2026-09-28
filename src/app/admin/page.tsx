@@ -11,8 +11,6 @@ export default async function AdminPage() {
   if (!session) {
     redirect('/admin/login');
   }
-
-  // Fetch all resources for management table
   const allResources = (await getResources({ status: '', limit: 500 })).items;
 
   return (

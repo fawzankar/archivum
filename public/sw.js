@@ -2,7 +2,7 @@ const VERSION = 'archivum-offline-v8';
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const DATA_CACHE = `${VERSION}-data`;
-const STATIC_ASSETS = ['/manifest.json', '/icon-192.png', '/icon-512.png', '/archivum-icon-192.png', '/archivum-icon-512.png'];
+const STATIC_ASSETS = ['/manifest.json', '/archivum-icon-192.png', '/archivum-icon-512.png'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS)));
@@ -40,17 +40,6 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
-
-  // Cache a successfully opened PDF/file so a previously viewed resource can
-  // still be opened offline. The signed R2 response is stored against the
-  // same-origin file route that the app uses.
-  if (/^\/api\/resources\/[^/]+\/file$/.test(url.pathname)) {
-    event.respondWith(
-      caches.match(request).then((cached) => cached || fetch(request).then((response) => cacheResponse(DATA_CACHE, request, response)))
-    );
-    return;
-  }
-
   if (url.pathname.startsWith('/api/resources') || url.pathname.startsWith('/api/subjects') || url.pathname.startsWith('/api/tips')) {
     event.respondWith(
       caches.match(request).then((cached) => {
@@ -63,9 +52,6 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     fetch(request).then((response) => {
-      // Cache every successfully visited document/RSC request. This makes the
-      // actual pages a usable offline shell instead of relying on a bare `/`
-      // fallback that may belong to another class.
       if (request.mode === 'navigate' || request.headers.get('RSC') === '1') {
         return cacheResponse(PAGE_CACHE, request, response);
       }
