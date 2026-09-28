@@ -18,13 +18,13 @@ const libreBaskerville = Libre_Baskerville({ subsets: ['latin'], weight: ['400',
 export const viewport: Viewport = { themeColor: '#111318', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
 
 export const metadata: Metadata = {
-  title: 'ARCHIVUM — Sister Organisation of QUEST',
+  title: 'ARCHIVUM — The SJS Student Archive',
   description: 'A place for SJS students for all the materials they need — notes, papers, study material and exam tips for Classes 9–12.',
   keywords: 'SJS, ARCHIVUM, JKBOSE, school notes, previous papers, study material, exam tips',
   manifest: '/manifest.json',
   icons: { icon: [{ url: '/archivum-icon.png', sizes: '512x512', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/archivum-icon.png' },
   appleWebApp: { capable: true, title: 'ARCHIVUM', statusBarStyle: 'black-translucent' },
-  openGraph: { title: 'ARCHIVUM — Sister Organisation of QUEST', description: 'A sister organisation of SJS Quest for SJS students: notes, papers, study material and exam tips.', siteName: 'ARCHIVUM', type: 'website' },
+  openGraph: { title: 'ARCHIVUM — The SJS Student Archive', description: 'A sister organisation of SJS Quest for SJS students: notes, papers, study material and exam tips.', siteName: 'ARCHIVUM', type: 'website' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

@@ -28,7 +28,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
      </div>
    </section>
 
-   <section className="archive-section max-w-7xl mx-auto px-4 sm:px-6">
+   <section className="archive-section sister-callout max-w-7xl mx-auto px-4 sm:px-6">
      <div className="rounded-xl border p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
        <div><span className="brand-sister text-[10px] uppercase tracking-[.16em]" style={{color:'var(--accent)'}}>SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span><h2 className="font-display font-bold text-2xl mt-1">Meet our sister organisation: SJS <span className="quest-word">QUEST</span></h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>School stories, magazines, photography and creative work from the SJS community — all in one place.</p></div>
        <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><span className="quest-word">VISIT QUEST</span> <ArrowRight className="w-3.5 h-3.5"/></a>
@@ -43,8 +43,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
        <Link href={`/subjects?class=${activeClass}`} className="hidden sm:inline-flex items-center gap-1 text-xs font-bold" style={{color:'var(--accent)'}}>All subjects <ArrowRight className="w-3.5 h-3.5"/></Link>
      </div>
      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-       {subjectsForClass(activeClass).map(subject => { const detail = SUBJECT_DETAILS[subject]; return <div key={subject} className="group rounded-xl border p-4 sm:p-5 min-h-[175px] flex flex-col justify-between transition-colors duration-200 hover:border-[var(--accent)]" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
-         <div className="w-11 h-11 rounded-lg flex items-center justify-center font-display font-bold text-lg" style={{background:'var(--accent-light)',color:'var(--accent)'}}>{detail?.icon || '•'}</div>
+       {subjectsForClass(activeClass).map(subject => { const detail = SUBJECT_DETAILS[subject]; return <div key={subject} className="group subject-card rounded-xl border p-4 sm:p-5 min-h-[175px] flex flex-col justify-between transition-colors duration-200 hover:border-[var(--accent)]" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
+         <div className="subject-mark w-11 h-11 rounded-lg flex items-center justify-center font-display font-bold text-lg" style={{background:'var(--accent-light)',color:'var(--accent)'}}>{detail?.icon || '•'}</div>
          <div><h3 className="font-display font-bold text-base sm:text-lg">{subject}</h3><p className="text-[10px] mt-1" style={{color:'var(--ink-muted)'}}>{detail?.description}</p></div>
          <div className="grid grid-cols-2 gap-2 mt-4">
            <Link href={`/notes?class=${activeClass}&subject=${encodeURIComponent(subject)}`} className="inline-flex items-center justify-center gap-1.5 rounded-xl py-2 text-[10px] font-bold transition-all hover:-translate-y-0.5" style={{background:'var(--accent-light)',color:'var(--accent)'}}><BookOpen className="w-3 h-3"/> Notes</Link>

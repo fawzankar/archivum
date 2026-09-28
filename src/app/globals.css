@@ -200,3 +200,391 @@ button, input, textarea, select { font-family: inherit; }
   .accent-focus { transition: border-color .18s ease, box-shadow .18s ease, color .18s ease; }
   .accent-focus:hover { box-shadow:0 12px 30px color-mix(in srgb,var(--accent) 18%,transparent); }
 }
+
+
+/* =========================================================
+   ARCHIVUM — VISUAL IDENTITY SYSTEM
+   Editorial archive / institutional study desk
+   ========================================================= */
+
+:root {
+  --archivum-ink: #171816;
+  --archivum-paper: #f7f5ef;
+  --archivum-paper-2: #efede6;
+  --archivum-rule: rgba(23,24,22,.13);
+  --archivum-brass: #9a6a3a;
+  --archivum-brass-dark: #76502d;
+  --archivum-brass-soft: #eee4d7;
+  --archivum-shadow: 0 18px 55px rgba(20,18,14,.08);
+  --archivum-shadow-hover: 0 26px 70px rgba(20,18,14,.14);
+}
+
+:root[data-accent="mono"] {
+  --accent: #9a6a3a;
+  --accent-strong: #76502d;
+  --accent-light: #eee4d7;
+  --accent-contrast: #fffdf8;
+}
+
+.dark {
+  --archivum-paper: #0d0e0d;
+  --archivum-paper-2: #151613;
+  --archivum-rule: rgba(247,245,239,.13);
+  --archivum-brass: #d5a875;
+  --archivum-brass-dark: #b98550;
+  --archivum-brass-soft: #292117;
+  --archivum-shadow: 0 20px 65px rgba(0,0,0,.32);
+  --archivum-shadow-hover: 0 28px 80px rgba(0,0,0,.46);
+}
+
+/* The identity is typographic and architectural rather than decorative. */
+body {
+  letter-spacing: -.005em;
+  background:
+    radial-gradient(circle at 10% 0%, color-mix(in srgb,var(--accent) 4%,transparent), transparent 30rem),
+    var(--ivory);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.font-display {
+  letter-spacing: -.035em;
+}
+
+.archive-surface {
+  border-radius: 18px;
+  box-shadow: 0 1px 0 rgba(255,255,255,.55) inset;
+}
+
+/* Header: quieter, more editorial, less "Quest-branded". */
+header.sticky {
+  border-radius: 18px !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  background: color-mix(in srgb,var(--surface) 88%,transparent) !important;
+  box-shadow: 0 10px 35px color-mix(in srgb,var(--ink) 7%,transparent) !important;
+}
+header.sticky::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity: .55;
+  pointer-events: none;
+}
+.brand-logo {
+  border-radius: 12px !important;
+  background: var(--ink) !important;
+  color: var(--surface) !important;
+  border-color: transparent !important;
+  box-shadow: 0 7px 22px color-mix(in srgb,var(--ink) 13%,transparent) !important;
+}
+.brand-logo .archivum-css-logo {
+  background: currentColor;
+}
+.brand-sister {
+  opacity: .52;
+  letter-spacing: .1em !important;
+  font-weight: 600 !important;
+}
+.quest-word {
+  font-family: inherit !important;
+  letter-spacing: .09em !important;
+  font-weight: 700 !important;
+}
+.header-icon {
+  border-radius: 11px !important;
+  transition: transform .28s cubic-bezier(.16,1,.3,1), background .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.header-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px color-mix(in srgb,var(--accent) 13%,transparent);
+}
+
+/* Hero becomes ARCHIVUM's signature: a dark archive plate, not a generic gradient. */
+.hero-editorial {
+  background:
+    linear-gradient(90deg, transparent 0 6%, color-mix(in srgb,var(--accent) 9%,transparent) 6.05%, transparent 6.1%),
+    var(--archivum-ink) !important;
+  color: #f6f3eb;
+  border-bottom: 0 !important;
+  isolation: isolate;
+}
+.hero-editorial::before {
+  height: 1px !important;
+  background: var(--accent) !important;
+  box-shadow: 0 0 28px color-mix(in srgb,var(--accent) 65%,transparent) !important;
+}
+.hero-editorial::after {
+  content: "ARCHIVE / SJS / 09—12";
+  position: absolute;
+  right: clamp(1rem,4vw,4rem);
+  top: 118px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font: 600 8px/1.1 Arial,sans-serif;
+  letter-spacing: .28em;
+  color: rgba(255,255,255,.38);
+  pointer-events: none;
+}
+.hero-editorial .hero-kicker {
+  color: color-mix(in srgb,var(--accent) 85%,#fff) !important;
+  letter-spacing: .24em;
+}
+.hero-editorial .hero-accent-rule {
+  width: 96px;
+  height: 2px;
+  background: var(--accent);
+  box-shadow: none;
+}
+.hero-editorial h1 {
+  font-size: clamp(3.3rem,7.3vw,7.2rem) !important;
+  line-height: .89 !important;
+  letter-spacing: -.065em !important;
+  color: #f5f2ea !important;
+}
+.hero-editorial h1 span {
+  color: color-mix(in srgb,var(--accent) 88%,#fff) !important;
+  opacity: 1 !important;
+}
+.hero-editorial p {
+  color: rgba(245,242,234,.66) !important;
+  max-width: 38rem;
+}
+.hero-editorial form > div {
+  border-color: rgba(255,255,255,.16) !important;
+  background: rgba(255,255,255,.065) !important;
+  box-shadow: 0 18px 50px rgba(0,0,0,.22) !important;
+  backdrop-filter: blur(12px);
+}
+.hero-editorial form > div:focus-within {
+  border-color: color-mix(in srgb,var(--accent) 70%,#fff) !important;
+  box-shadow: 0 0 0 4px color-mix(in srgb,var(--accent) 13%,transparent), 0 20px 55px rgba(0,0,0,.25) !important;
+}
+.hero-editorial form input {
+  color: #fff !important;
+}
+.hero-editorial form input::placeholder {
+  color: rgba(255,255,255,.42);
+}
+
+/* Signature library panel */
+.hero-editorial .lg\:block > div {
+  border-color: rgba(255,255,255,.13) !important;
+  background: rgba(255,255,255,.055) !important;
+  box-shadow: var(--archivum-shadow-hover);
+  backdrop-filter: blur(16px);
+}
+.hero-editorial .lg\:block .w-12 {
+  border-radius: 14px;
+  background: var(--accent) !important;
+  box-shadow: 0 12px 35px color-mix(in srgb,var(--accent) 28%,transparent);
+}
+
+/* Structural section rhythm. */
+.archive-section {
+  scroll-margin-top: 100px;
+}
+.archive-section > .flex.items-end {
+  position: relative;
+  padding-bottom: 13px;
+}
+.archive-section > .flex.items-end::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1px;
+  background: var(--border);
+}
+.archive-section > .flex.items-end::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 52px;
+  height: 2px;
+  background: var(--accent);
+  z-index: 1;
+}
+
+/* Cards: consistent geometry, depth and intentional hover motion. */
+.archive-section a.group,
+.archive-section > div > div > div.group {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px !important;
+  border-color: var(--border) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,.45) inset;
+  transition: transform .38s cubic-bezier(.16,1,.3,1),
+              box-shadow .38s cubic-bezier(.16,1,.3,1),
+              border-color .25s ease,
+              background .25s ease;
+}
+.archive-section a.group::before,
+.archive-section > div > div > div.group::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width .42s cubic-bezier(.16,1,.3,1);
+}
+.archive-section a.group:hover,
+.archive-section > div > div > div.group:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--archivum-shadow-hover);
+  border-color: color-mix(in srgb,var(--accent) 35%,var(--border)) !important;
+}
+.archive-section a.group:hover::before,
+.archive-section > div > div > div.group:hover::before {
+  width: 100%;
+}
+.archive-section a.group .w-10,
+.archive-section a.group .w-11 {
+  transition: transform .35s cubic-bezier(.16,1,.3,1), border-radius .35s ease;
+}
+.archive-section a.group:hover .w-10,
+.archive-section a.group:hover .w-11 {
+  transform: translateY(-2px) rotate(-2deg);
+  border-radius: 12px;
+}
+
+/* Sister callout: relationship is present, but deliberately secondary. */
+.sister-callout {
+  position: relative;
+  border-radius: 18px !important;
+  background: var(--surface) !important;
+  overflow: hidden;
+}
+.sister-callout::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent);
+}
+.sister-callout .brand-sister {
+  opacity: .65;
+}
+.sister-callout h2 {
+  letter-spacing: -.035em;
+}
+
+/* Subject cards feel like catalog entries rather than SaaS tiles. */
+.subject-card {
+  border-radius: 16px !important;
+  transition: transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease, border-color .25s ease;
+}
+.subject-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--archivum-shadow);
+  border-color: color-mix(in srgb,var(--accent) 35%,var(--border)) !important;
+}
+.subject-card .subject-mark {
+  border-radius: 13px;
+  transition: transform .35s cubic-bezier(.16,1,.3,1);
+}
+.subject-card:hover .subject-mark {
+  transform: scale(1.05) rotate(-3deg);
+}
+
+/* Search / controls */
+input, textarea, select {
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+button:not(:disabled), a {
+  transition-timing-function: cubic-bezier(.16,1,.3,1);
+}
+button:active:not(:disabled), a:active {
+  transform: scale(.985);
+}
+
+/* Section entrance choreography. */
+@keyframes archivumReveal {
+  from { opacity: 0; transform: translateY(22px); clip-path: inset(8% 0 0); }
+  to { opacity: 1; transform: translateY(0); clip-path: inset(0); }
+}
+@keyframes archivumLine {
+  from { transform: scaleX(0); transform-origin: left; opacity: .2; }
+  to { transform: scaleX(1); transform-origin: left; opacity: 1; }
+}
+.hero-editorial > div {
+  animation: archivumReveal .8s cubic-bezier(.16,1,.3,1) both;
+}
+.hero-accent-rule {
+  animation: archivumLine .8s .18s cubic-bezier(.16,1,.3,1) both;
+}
+
+/* Footer becomes a closing colophon. */
+footer {
+  position: relative;
+  background: var(--surface) !important;
+}
+footer::before {
+  content: "";
+  display: block;
+  width: min(92%, 1400px);
+  height: 1px;
+  margin: 0 auto;
+  background: linear-gradient(90deg,transparent,var(--accent),transparent);
+  opacity: .55;
+}
+footer .archivum-css-logo {
+  background: var(--accent);
+}
+footer a {
+  transition: color .2s ease, transform .25s cubic-bezier(.16,1,.3,1);
+}
+footer a:hover {
+  transform: translateX(2px);
+}
+
+/* Mobile navigation should feel like part of the same system. */
+nav.fixed.bottom-0 {
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  background: color-mix(in srgb,var(--surface) 92%,transparent) !important;
+  box-shadow: 0 -14px 40px color-mix(in srgb,var(--ink) 8%,transparent);
+}
+nav.fixed.bottom-0 a > div {
+  transition: transform .28s cubic-bezier(.16,1,.3,1), box-shadow .28s ease;
+}
+nav.fixed.bottom-0 a:hover > div {
+  transform: translateY(-3px);
+}
+
+/* Reduce motion without removing the visual hierarchy. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-editorial > div,
+  .hero-accent-rule,
+  .archive-section a.group,
+  .subject-card {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-editorial::after { display:none; }
+  .hero-editorial {
+    background: var(--archivum-ink) !important;
+  }
+  .hero-editorial h1 {
+    font-size: clamp(3rem, 15vw, 4.7rem) !important;
+  }
+  .archive-section > .flex.items-end {
+    padding-bottom: 10px;
+  }
+}

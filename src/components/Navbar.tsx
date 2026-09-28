@@ -92,7 +92,7 @@ export default function Navbar() {
             </span>
             <span className="block min-w-0">
               <span className="block font-display text-[12px] sm:text-[14px] tracking-[.16em] leading-none whitespace-nowrap">ARCHIVUM</span>
-              <span className="brand-sister block text-[6.5px] sm:text-[7px] uppercase tracking-[.13em] mt-1 whitespace-nowrap">SISTER ORGANISATION OF <span className="quest-word">QUEST</span></span>
+              <span className="brand-sister block text-[6.5px] sm:text-[7px] uppercase tracking-[.13em] mt-1 whitespace-nowrap">SISTER ORGANISATION · <span className="quest-word">QUEST</span></span>
             </span>
           </Link>
 
