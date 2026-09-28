@@ -9,10 +9,10 @@ const iconMap: Record<string, React.ElementType> = {
   Hindi: Languages, Urdu: Languages, Biology: Leaf, Physics: Atom, Chemistry: Beaker,
 };
 
-export default function SubjectPicker({ subject, classLevel, description, compact = false, Icon: CustomIcon }: { subject: string; classLevel: number; description?: string; compact?: boolean; Icon?: React.ElementType }) {
+export default function SubjectPicker({ subject, classLevel, description }: { subject: string; classLevel: number; description?: string }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const Icon = CustomIcon || iconMap[subject] || BookOpen;
+  const Icon = iconMap[subject] || BookOpen;
   const go = (kind: 'notes' | 'papers') => {
     setOpen(false);
     const base = kind === 'notes' ? '/notes' : '/previous-papers';
@@ -20,7 +20,7 @@ export default function SubjectPicker({ subject, classLevel, description, compac
   };
 
   return <>
-    <button type="button" onClick={() => setOpen(true)} className={`subject-tile group ${compact ? 'subject-tile-compact' : ''}`} aria-label={`Open ${subject} resources`}>
+    <button type="button" onClick={() => setOpen(true)} className="subject-tile group" aria-label={`Open ${subject} resources`}>
       <span className="subject-tile-mark"><Icon /></span>
       <span className="subject-tile-copy"><strong>{subject}</strong>{description && <small>{description}</small>}</span>
       <ArrowUpRight className="subject-tile-arrow" />

@@ -1,8 +1,8 @@
 {
   "id": "/?source=pwa",
-  "name": "ARCHIVUM",
+  "name": "ARCHIVUM — Sister Organisation of QUEST",
   "short_name": "ARCHIVUM",
-  "description": "Academic resources, notes and previous papers for students.",
+  "description": "The SJS student archive for notes, previous papers, study material and exam tips.",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",

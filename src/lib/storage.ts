@@ -5,6 +5,9 @@ import path from 'path';
 import { queryOne } from './db';
 
 function getR2SecretAccessKey() {
+  // Cloudflare R2 API-token responses expose a token value; for the S3-compatible
+  // API, Cloudflare defines the Secret Access Key as SHA-256(token value).
+  // Prefer an explicitly supplied S3 secret, but support the token-value form too.
   const tokenValue = process.env.R2_TOKEN_VALUE?.trim();
   if (tokenValue) return crypto.createHash('sha256').update(tokenValue).digest('hex');
   if (process.env.R2_SECRET_ACCESS_KEY) return process.env.R2_SECRET_ACCESS_KEY.trim();
@@ -105,6 +108,7 @@ export async function deleteStoredFile(urlOrKey: string) {
   return false;
 }
 
+/** Legacy/local helper retained for local development and compatibility. */
 export async function storeUpload(file: File, buffer: Buffer, filename: string) {
   if (r2Configured()) {
     throw new Error('Direct browser uploads should use /api/r2-upload.');

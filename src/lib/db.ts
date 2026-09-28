@@ -88,6 +88,8 @@ export async function initDb(): Promise<void> {
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_paper_type ON resources(paper_type)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_year ON resources(year)`, args: [] },
     ], 'write');
+
+    // Safe migration for databases created before contributor/review fields existed.
     await db.execute({ sql: `ALTER TABLE resources ADD COLUMN contributor_name TEXT`, args: [] }).catch(() => {});
     await db.execute({ sql: `ALTER TABLE resources ADD COLUMN storage_key TEXT`, args: [] }).catch(() => {});
     await db.execute({ sql: `ALTER TABLE resources ADD COLUMN photo_keys TEXT`, args: [] }).catch(() => {});
@@ -137,6 +139,10 @@ export async function initDb(): Promise<void> {
     for (const [level,subject,title,body,author] of tips) {
       await db.execute({ sql: `INSERT OR IGNORE INTO tips (class_level,subject,title,body,author,status,created_at) SELECT ?,?,?,?,?, 'approved',? WHERE NOT EXISTS (SELECT 1 FROM tips WHERE class_level=? AND subject=? AND title=?)`, args: [level,subject,title,body,author,now,level,subject,title] });
     }
+
+    // Seeding is intentionally idempotent. Vercel may start several
+    // serverless instances at the same time, so a COUNT-then-INSERT check
+    // can race. seedDatabase uses INSERT OR IGNORE on the unique slug.
     await seedDatabase(db);
   })().catch((error) => {
     initPromise = null;
@@ -209,6 +215,10 @@ async function seedDatabase(db: Client) {
           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'approved',?,?,?,?,?,?,?,?,?,?)`,
     args: ['class-11-physics-units-and-measurement-handwritten-notes-fawzan-kar','Class 11 Physics — Units and Measurement Handwritten Notes','Handwritten notes covering Units and Measurement for Class 11 Physics, contributed to the ARCHIVUM student community.',11,'JKBOSE','Physics','Units and Measurement','Units and Measurement','Notes',null,2026,null,'Fawzan Kar','/uploads/class11_physics_units_and_measurement_handwritten_notes_fawzan_kar.pdf',null,10299099,'application/pdf','class11_physics_units_and_measurement_handwritten_notes_fawzan_kar.pdf','local_units_measurement_fawzan_kar_v1',0,0,0,0,0,'class11,physics,units and measurement,handwritten,notes,jkbose',now,now,now,null],
   });
+
+  // Remove historical placeholder/demo engagement numbers exactly once.
+  // Real views, downloads and ratings are written by the live interaction
+  // endpoints; demo PDFs start at zero and stay zero until someone uses them.
   const metricsMigration = await db.execute({
     sql: `SELECT id FROM app_migrations WHERE id = ? LIMIT 1`,
     args: ['zero_demo_metrics_v1'],
