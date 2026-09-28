@@ -9,6 +9,8 @@ import { subjectsForClass, SUBJECT_DETAILS } from '@/lib/subjects';
 import PersonalGreeting from '@/components/PersonalGreeting';
 import SubjectPicker from '@/components/SubjectPicker';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 export const revalidate = 30;
 
 export default async function HomePage({ searchParams }: { searchParams: Promise<{ class?: string }> }) {
@@ -16,7 +18,12 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const preferred = await getPreferredClass();
   const requestedClass = params.class ? Number(params.class) : undefined;
   const activeClass = [9,10,11,12].includes(requestedClass || 0) ? requestedClass as number : preferred || 10;
-  const [recent] = await Promise.all([getResources({ sortBy: 'newest', class_level: activeClass, limit: 3 })]);
+  let recent: Awaited<ReturnType<typeof getResources>>;
+  try {
+    recent = await getResources({ sortBy: 'newest', class_level: activeClass, limit: 3 });
+  } catch {
+    recent = { items: [], totalCount: 0, totalPages: 1, currentPage: 1 };
+  }
   const subjects = subjectsForClass(activeClass);
 
   return (
