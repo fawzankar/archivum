@@ -1,5 +1,2 @@
 import { redirect } from 'next/navigation';
-
-export default function UploadRedirectPage(){
-  redirect('/feedback');
-}
+export default function UploadPage(){ redirect('/feedback'); }

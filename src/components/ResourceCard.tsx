@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import { isResourceSaved, toggleSaveResource } from '@/lib/savedStorage';
 import { useToast } from './ToastContext';
-import { Bookmark, BookmarkCheck, ArrowUpRight, CheckCircle2, FileText, Star } from 'lucide-react';
+import { Bookmark, BookmarkCheck, ArrowUpRight, FileText, Star } from 'lucide-react';
 
 export default function ResourceCard({ resource, onView, compact = false }: { resource: Resource; onView?: (resource: Resource) => void; compact?: boolean }) {
   const [saved,setSaved]=useState(()=>isResourceSaved(resource.id)); const {showToast}=useToast(); const router=useRouter();
@@ -18,10 +18,9 @@ export default function ResourceCard({ resource, onView, compact = false }: { re
   return <article className={`resource-card ${compact?'compact':''}`} role="link" tabIndex={0} onPointerDown={prime} onClick={openFromCard} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ') && e.target===e.currentTarget){e.preventDefault();router.push(href)}}}>
     <div className="resource-card-top"><span className="resource-type"><FileText/> {resource.resource_type || (resource.paper_type?'Exam paper':'Notes')}</span><button onClick={toggle} aria-label={saved?'Remove from saved':'Save resource'} className={`resource-save ${saved?'saved':''}`}>{saved?<BookmarkCheck/>:<Bookmark/>}</button></div>
     <Link href={href} onClick={onView?e=>{e.preventDefault();onView(resource)}:undefined} className="resource-card-main">
-      <div className="resource-meta">CLASS {resource.class_level}<span>•</span>{resource.subject}{resource.chapter&&<><span>•</span><em>{resource.chapter}</em></>}</div>
+      <div className="resource-meta">Class {resource.class_level}<span>•</span>{resource.subject}{resource.chapter&&<><span>•</span><em>{resource.chapter}</em></>}</div>
       <h3>{resource.title}</h3>
-      <div className="resource-verified"><CheckCircle2/> Reviewed for the archive</div>
     </Link>
-    <div className="resource-card-foot"><div className="resource-stats"><span><Star className={resource.rating_count?'filled':''}/>{resource.rating_count?resource.average_rating.toFixed(1):'—'}</span><span>{resource.downloads?`${count(resource.downloads)} downloads`:'New'}</span></div><span className="resource-open">Open <ArrowUpRight/></span></div>
+    <div className="resource-card-foot"><div className="resource-stats"><span><Star className={resource.rating_count?'filled':''}/>{resource.rating_count?resource.average_rating.toFixed(1):'No rating yet'}</span></div><span className="resource-open">Open <ArrowUpRight/></span></div>
   </article>;
 }

@@ -26,8 +26,8 @@ export default function FirstLaunch() {
 
   const heading = useMemo(() => {
     if (!selectedClass) return 'Choose your class.';
-    if (!name.trim()) return 'Add a name, if you like.';
-    return 'Your desk is ready.';
+    if (!name.trim()) return 'What should we call you?';
+    return 'Ready when you are.';
   }, [selectedClass, name]);
 
   if (!visible) return null;
@@ -41,7 +41,7 @@ export default function FirstLaunch() {
     setVisible(false);
   };
 
-  const canFinish = Boolean(selectedClass);
+  const canFinish = Boolean(selectedClass && name.trim());
 
   return (
     <div className="profile-onboarding" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
@@ -52,13 +52,13 @@ export default function FirstLaunch() {
         </div>
 
         <div className="profile-onboarding-copy">
-          <span className="eyebrow">A quieter archive, made for you</span>
+          
           <h2 id="welcome-title" className="font-display">{heading}</h2>
-          <p>Tell us the basics once. ARCHIVUM will remember them on this device and shape the archive around you.</p>
+          <p>Pick your class and tell us your name. We will use that to keep the archive focused on your study material.</p>
         </div>
 
         <div className="profile-step">
-          <div className="profile-step-label"><GraduationCap /> <span>01 / Class</span></div>
+          <div className="profile-step-label"><GraduationCap /> <span>Your class</span></div>
           <div className="profile-class-grid">
             {classes.map(level => (
               <button key={level} type="button" onClick={() => setSelectedClass(level)} className={selectedClass === level ? 'selected' : ''}>
@@ -71,16 +71,16 @@ export default function FirstLaunch() {
         </div>
 
         <div className="profile-step">
-          <div className="profile-step-label"><UserRound /> <span>02 / Your name</span></div>
+          <div className="profile-step-label"><UserRound /> <span>Your name</span></div>
           <div className="profile-name-field">
             <input value={name} onChange={e => setName(e.target.value.slice(0, 40))} maxLength={40} placeholder="What should we call you?" autoComplete="given-name" />
             <span>{name.length}/40</span>
           </div>
-          <p className="profile-private-note">Optional. It only changes how ARCHIVUM greets you on this device.</p>
+          <p className="profile-private-note">Used only on this device to personalise the app.</p>
         </div>
 
         <button type="button" disabled={!canFinish} onClick={finish} className="profile-continue">
-          {name.trim() ? 'Enter my archive' : 'Enter without a name'} <ArrowRight />
+          Enter ARCHIVUM <ArrowRight />
         </button>
       </div>
     </div>

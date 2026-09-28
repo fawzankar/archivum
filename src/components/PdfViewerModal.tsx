@@ -1,120 +1,15 @@
 'use client';
-
-import React, { useEffect, useRef, useState } from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import { Resource } from '@/lib/resources';
-import { X, ExternalLink, Download, FileText, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, RotateCcw, Maximize2, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
-
-type PdfPage = { getViewport: (options: { scale: number }) => { width: number; height: number }; render: (options: { canvasContext: CanvasRenderingContext2D; viewport: unknown; intent?: string }) => { promise: Promise<unknown>; cancel?: () => void } };
-type PdfDocument = { numPages: number; getPage: (pageNumber: number) => Promise<PdfPage>; destroy: () => Promise<void> };
-type PdfJs = { GlobalWorkerOptions: { workerSrc: string }; getDocument: (options: { url: string; disableAutoFetch?: boolean; disableStream?: boolean; rangeChunkSize?: number }) => { promise: Promise<PdfDocument> } };
-
-interface PdfViewerModalProps { resource: Resource | null; onClose: () => void; }
-
-export default function PdfViewerModal({ resource, onClose }: PdfViewerModalProps) {
-  const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
-  const [page, setPage] = useState(1);
-  const [pageCount, setPageCount] = useState(0);
-  const [zoom, setZoom] = useState(1);
-  const [rendered, setRendered] = useState(false);
-  const [retry, setRetry] = useState(0);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
-  const documentRef = useRef<PdfDocument | null>(null);
-  const renderTaskRef = useRef<{ cancel?: () => void } | null>(null);
-
-  const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
-  const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(resource.file_name || '')));
-
-  useEffect(() => {
-    if (!resource || isImage) return;
-    let cancelled = false;
-    const load = async () => {
-      setLoading(true); setFailed(false); setRendered(false); setPage(1); setPageCount(0); setZoom(1);
-      renderTaskRef.current?.cancel?.();
-      await documentRef.current?.destroy().catch(() => undefined);
-      documentRef.current = null;
-      try {
-        const module = await import('pdfjs-dist/build/pdf.mjs');
-        if (cancelled) return;
-        const pdfjs = module as unknown as PdfJs;
-        pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-        const document = await pdfjs.getDocument({
-          url: fileUrl,
-          disableStream: false,
-          disableAutoFetch: false,
-          rangeChunkSize: 262144,
-        }).promise;
-        if (cancelled) { await document.destroy().catch(() => undefined); return; }
-        documentRef.current = document;
-        setPageCount(document.numPages);
-        setLoading(false);
-      } catch (error) {
-        console.error('[pdf-reader]', error);
-        if (!cancelled) { setLoading(false); setFailed(true); }
-      }
-    };
-    load();
-    return () => { cancelled = true; renderTaskRef.current?.cancel?.(); documentRef.current?.destroy().catch(() => undefined); documentRef.current = null; };
-  }, [resource?.id, fileUrl, isImage, retry]);
-
-  useEffect(() => {
-    if (!resource) return;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-      if (!isImage && event.key === 'ArrowLeft') setPage(v => Math.max(1, v - 1));
-      if (!isImage && event.key === 'ArrowRight') setPage(v => Math.min(pageCount || v + 1, v + 1));
-      if (!isImage && (event.ctrlKey || event.metaKey) && event.key === '+') { event.preventDefault(); setZoom(v => Math.min(2.5, v + .1)); }
-      if (!isImage && (event.ctrlKey || event.metaKey) && event.key === '-') { event.preventDefault(); setZoom(v => Math.max(.6, v - .1)); }
-    };
-    window.addEventListener('keydown', onKey); return () => window.removeEventListener('keydown', onKey);
-  }, [resource, onClose, isImage, pageCount]);
-
-  useEffect(() => {
-    if (isImage || !documentRef.current || !canvasRef.current || !stageRef.current) return;
-    let cancelled = false;
-    const render = async () => {
-      const doc = documentRef.current; const canvas = canvasRef.current; const stage = stageRef.current;
-      if (!doc || !canvas || !stage) return;
-      renderTaskRef.current?.cancel?.();
-      const pdfPage = await doc.getPage(page); if (cancelled) return;
-      const base = pdfPage.getViewport({ scale: 1 });
-      const availableWidth = Math.max(260, stage.clientWidth - 28);
-      const fitScale = Math.min(1.8, availableWidth / base.width);
-      const scale = Math.max(.55, fitScale * zoom);
-      const viewport = pdfPage.getViewport({ scale });
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.ceil(viewport.width * ratio); canvas.height = Math.ceil(viewport.height * ratio);
-      canvas.style.width = `${viewport.width}px`; canvas.style.height = `${viewport.height}px`;
-      const context = canvas.getContext('2d', { alpha: false }); if (!context) throw new Error('Canvas unavailable');
-      context.setTransform(ratio, 0, 0, ratio, 0, 0); context.fillStyle = '#fff'; context.fillRect(0, 0, viewport.width, viewport.height);
-      const task = pdfPage.render({ canvasContext: context, viewport, intent: 'display' }); renderTaskRef.current = task;
-      await task.promise; if (!cancelled) { setRendered(true); setLoading(false); }
-    };
-    render().catch(error => { if (!cancelled && error?.name !== 'RenderingCancelledException') { console.error('[pdf-page]', error); setFailed(true); setLoading(false); } });
-    return () => { cancelled = true; renderTaskRef.current?.cancel?.(); };
-  }, [page, zoom, isImage, pageCount]);
-
-  if (!resource) return null;
-  const changeZoom = (delta: number) => setZoom(v => Math.min(2.5, Math.max(.6, v + delta)));
-  const openOriginal = () => window.open(fileUrl, '_blank', 'noopener,noreferrer');
-
-  return <div className="pdf-reader-shell" role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
-    <div className="pdf-reader-backdrop" onClick={onClose}/>
-    <section className="pdf-reader-window">
-      <header className="pdf-reader-header">
-        <div className="min-w-0 flex items-center gap-3"><div className="pdf-reader-file-icon"><FileText/></div><div className="min-w-0"><strong className="block truncate">{resource.title}</strong><span className="block truncate">Class {resource.class_level} · {resource.subject} · {resource.resource_type || 'Notes'}</span></div></div>
-        <div className="pdf-reader-actions">
-          {!isImage && <><button type="button" onClick={()=>changeZoom(-.1)} aria-label="Zoom out"><ZoomOut/></button><span className="pdf-reader-zoom">{Math.round(zoom*100)}%</span><button type="button" onClick={()=>changeZoom(.1)} aria-label="Zoom in"><ZoomIn/></button><button type="button" onClick={()=>{setPage(1);setZoom(1)}} aria-label="Reset view"><RotateCcw/></button><button type="button" onClick={()=>setPage(v=>Math.max(1,v-1))} disabled={page<=1} aria-label="Previous page"><ChevronLeft/></button><div className="pdf-reader-page"><strong>{page}</strong><span>/ {pageCount||'—'}</span></div><button type="button" onClick={()=>setPage(v=>Math.min(pageCount||v+1,v+1))} disabled={pageCount>0&&page>=pageCount} aria-label="Next page"><ChevronRight/></button></>}
-          <button type="button" onClick={openOriginal} aria-label="Open in new tab"><ExternalLink/></button><a href={fileUrl} download={resource.file_name || resource.title} aria-label="Download"><Download/></a><button type="button" onClick={onClose} aria-label="Close reader"><X/></button>
-        </div>
-      </header>
-      <div className="pdf-reader-stage" ref={stageRef}>
-        {isImage ? <div className="pdf-reader-image-wrap"><img src={fileUrl} alt={resource.title} onLoad={()=>setLoading(false)} onError={()=>{setLoading(false);setFailed(true)}}/></div> : <div className="pdf-reader-canvas-wrap"><canvas ref={canvasRef}/></div>}
-        {loading&&!failed&&<div className="pdf-reader-loading"><div className="pdf-reader-loading-card"><Loader2 className="animate-spin"/><strong>Opening document</strong><span>Preparing the first page…</span></div></div>}
-        {failed&&<div className="pdf-reader-error"><div className="pdf-reader-error-card"><div className="pdf-reader-error-icon"><AlertTriangle/></div><h3>This document could not be rendered.</h3><p>The file is still available. Try again or open the original document.</p><div className="flex flex-wrap justify-center gap-2 mt-5"><button className="pdf-reader-primary" type="button" onClick={()=>setRetry(v=>v+1)}><RefreshCw/> Try again</button><button className="pdf-reader-secondary" type="button" onClick={openOriginal}><ExternalLink/> Open file</button><a className="pdf-reader-secondary" href={fileUrl} download={resource.file_name || resource.title}><Download/> Download</a></div></div></div>}
-      </div>
-      <footer className="pdf-reader-footer"><span>{rendered ? `Page ${page} of ${pageCount}` : 'Reader'}</span><span>{resource.file_name || 'document.pdf'}</span><button type="button" onClick={()=>stageRef.current?.requestFullscreen?.()} aria-label="Fullscreen"><Maximize2/></button></footer>
-    </section>
-  </div>;
+import { X, ExternalLink, Download, FileText, ZoomIn, ZoomOut, RotateCcw, Maximize2, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
+type PDFDocumentProxy = { numPages:number; getPage:(n:number)=>Promise<any>; destroy:()=>Promise<void> };
+interface Props{resource:Resource|null;onClose:()=>void;}
+export default function PdfViewerModal({resource,onClose}:Props){
+ const [loading,setLoading]=useState(true); const [failed,setFailed]=useState(false); const [zoom,setZoom]=useState(1); const [pageCount,setPageCount]=useState(0); const [retry,setRetry]=useState(0); const stageRef=useRef<HTMLDivElement>(null); const docRef=useRef<PDFDocumentProxy|null>(null);
+ const fileUrl=resource?`/api/resources/${resource.id}/file`:''; const isImage=Boolean(resource&&(resource.file_type?.startsWith('image/')||/\.(jpg|jpeg|png|webp)$/i.test(resource.file_name||'')));
+ useEffect(()=>{ if(!resource||isImage)return; let cancelled=false; const run=async()=>{setLoading(true);setFailed(false);setZoom(1);docRef.current?.destroy().catch(()=>{});try{const pdfjs=await import('pdfjs-dist/build/pdf.mjs');pdfjs.GlobalWorkerOptions.workerSrc='/pdf.worker.min.mjs';const doc=await pdfjs.getDocument({url:fileUrl,disableStream:false,disableAutoFetch:false,rangeChunkSize:262144}).promise;if(cancelled){doc.destroy();return;}docRef.current=doc;setPageCount(doc.numPages);setLoading(false);}catch(e){console.error(e);if(!cancelled){setLoading(false);setFailed(true)}}};run();return()=>{cancelled=true;docRef.current?.destroy().catch(()=>{});docRef.current=null}},[resource?.id,fileUrl,isImage,retry]);
+ useEffect(()=>{if(!resource)return;const onKey=(e:KeyboardEvent)=>{if(e.key==='Escape')onClose();if((e.ctrlKey||e.metaKey)&&e.key==='+'){e.preventDefault();setZoom(v=>Math.min(2.2,v+.1))}if((e.ctrlKey||e.metaKey)&&e.key==='-'){e.preventDefault();setZoom(v=>Math.max(.65,v-.1))}};window.addEventListener('keydown',onKey);return()=>window.removeEventListener('keydown',onKey)},[resource,onClose]);
+ useEffect(()=>{if(!docRef.current||isImage||!stageRef.current)return;let cancelled=false;const stage=stageRef.current;const renderAll=async()=>{const doc=docRef.current;if(!doc)return;stage.querySelectorAll('[data-pdf-page]').forEach(n=>n.remove());for(let i=1;i<=doc.numPages;i++){if(cancelled)break;const page=await doc.getPage(i);const base=page.getViewport({scale:1});const width=Math.max(260,stage.clientWidth-28);const scale=Math.max(.5,Math.min(1.9,width/base.width)*zoom);const viewport=page.getViewport({scale});const wrap=document.createElement('div');wrap.dataset.pdfPage='1';wrap.className='pdf-page-wrap';const canvas=document.createElement('canvas');const ratio=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.ceil(viewport.width*ratio);canvas.height=Math.ceil(viewport.height*ratio);canvas.style.width=`${viewport.width}px`;canvas.style.height=`${viewport.height}px`;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw new Error('Canvas unavailable');ctx.setTransform(ratio,0,0,ratio,0,0);ctx.fillStyle='#fff';ctx.fillRect(0,0,viewport.width,viewport.height);wrap.appendChild(canvas);stage.appendChild(wrap);await page.render({canvasContext:ctx,viewport,intent:'display'}).promise;} };renderAll().catch(e=>{if(!cancelled){console.error(e);setFailed(true);setLoading(false)}});return()=>{cancelled=true;stage.querySelectorAll('[data-pdf-page]').forEach(n=>n.remove())}},[pageCount,zoom,isImage]);
+ if(!resource)return null; const openOriginal=()=>window.open(fileUrl,'_blank','noopener,noreferrer');
+ return <div className="pdf-reader-shell" role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}><div className="pdf-reader-backdrop" onClick={onClose}/><section className="pdf-reader-window"><header className="pdf-reader-header"><div className="min-w-0 flex items-center gap-3"><div className="pdf-reader-file-icon"><FileText/></div><div className="min-w-0"><strong className="block truncate">{resource.title}</strong><span className="block truncate">Class {resource.class_level} · {resource.subject} · {resource.resource_type||'Notes'}</span></div></div><div className="pdf-reader-actions">{!isImage&&<><button onClick={()=>setZoom(v=>Math.max(.65,v-.1))}><ZoomOut/></button><span className="pdf-reader-zoom">{Math.round(zoom*100)}%</span><button onClick={()=>setZoom(v=>Math.min(2.2,v+.1))}><ZoomIn/></button><button onClick={()=>setZoom(1)}><RotateCcw/></button><span className="pdf-reader-page">{pageCount} pages</span></>}<button onClick={openOriginal}><ExternalLink/></button><a href={fileUrl} download={resource.file_name||resource.title}><Download/></a><button onClick={onClose}><X/></button></div></header><div className="pdf-reader-stage" ref={stageRef}>{isImage&&<div className="pdf-reader-image-wrap"><img src={fileUrl} alt={resource.title}/></div>}{loading&&!failed&&<div className="pdf-reader-loading"><div className="pdf-reader-loading-card"><Loader2 className="animate-spin"/><strong>Opening document</strong><span>Loading the pages…</span></div></div>}{failed&&<div className="pdf-reader-error"><div className="pdf-reader-error-card"><div className="pdf-reader-error-icon"><AlertTriangle/></div><h3>We could not open this file here.</h3><p>The original file is still available.</p><div className="flex flex-wrap justify-center gap-2 mt-5"><button className="pdf-reader-primary" onClick={()=>setRetry(v=>v+1)}><RefreshCw/> Try again</button><button className="pdf-reader-secondary" onClick={openOriginal}><ExternalLink/> Open file</button><a className="pdf-reader-secondary" href={fileUrl} download={resource.file_name||resource.title}><Download/> Download</a></div></div></div>}</div><footer className="pdf-reader-footer"><span>Continuous reader</span><span>{resource.file_name||'document.pdf'}</span><button onClick={()=>stageRef.current?.requestFullscreen?.()}><Maximize2/></button></footer></section></div>
 }

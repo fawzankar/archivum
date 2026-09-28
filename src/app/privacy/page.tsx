@@ -36,7 +36,7 @@ export default function PrivacyPage() {
 
         <div className="space-y-1.5 pt-2">
           <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">2. Local Device Storage</h3>
-          <p>Saved resources, recently viewed items, and dark/light mode preferences are held exclusively in your local browser storage and never uploaded to our servers.</p>
+          <p>Saved resources and recently viewed items are held exclusively in your local browser storage and never uploaded to our servers.</p>
         </div>
 
         <div className="space-y-1.5 pt-2">

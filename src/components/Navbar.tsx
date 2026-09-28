@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
-import { Search, Sun, Moon, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Layers3, Info, Users, Palette, RotateCcw, MessageCircle } from 'lucide-react';
+import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Layers3, Info, Users, RotateCcw, MessageCircle } from 'lucide-react';
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],
@@ -15,7 +15,7 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { mode, setMode, accent, setAccent } = useTheme();
+  const { accent, setAccent } = useTheme();
   const { studentClass, displayName, resetStudentProfile } = useStudentClass();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -47,7 +47,6 @@ export default function Navbar() {
 
         <div className="header-actions">
           <button className="header-action search-trigger" onClick={() => setSearchOpen(v => !v)} aria-label="Search"><Search /></button>
-          <button className="header-action theme-trigger" onClick={() => setMode(mode === 'dark' ? 'light' : 'dark')} aria-label={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}>{mode === 'dark' ? <Sun /> : <Moon />}</button>
           <button className="header-menu" onClick={() => setDrawerOpen(true)} aria-label="Open menu"><span>MENU</span><Menu /></button>
         </div>
       </div>
@@ -76,18 +75,13 @@ export default function Navbar() {
           </div>
 
           <div className="menu-section menu-appearance">
-            <div className="menu-section-label"><span className="inline-flex items-center gap-2"><Palette /> Appearance</span></div>
-            <div className="appearance-row">
-              <button type="button" className={`appearance-mode ${mode === 'light' ? 'active' : ''}`} onClick={() => setMode('light')}><Sun /> Light</button>
-              <button type="button" className={`appearance-mode ${mode === 'dark' ? 'active' : ''}`} onClick={() => setMode('dark')}><Moon /> Dark</button>
-            </div>
-            <div className="accent-label">Accent</div>
-            <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} accent`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ background: item.color }} /><small>{item.label}</small></button>)}</div>
+            <div className="menu-section-label">Choose a colour</div>
+            <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ background: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
 
           {displayName && <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset my profile</button>}
         </div>
-        <div className="menu-note">Your class, name and appearance preferences stay on this device. Academic files remain moderated before publication.</div>
+        <div className="menu-note">Your class, name and colour choice stay on this device.</div>
       </aside>
     </div>
   </>;

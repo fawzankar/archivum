@@ -1,63 +1,25 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-export type Mode = 'light' | 'dark';
-export type Accent = 'citrus' | 'red' | 'ocean' | 'pink';
-
+export type Accent = 'sapphire' | 'sage' | 'amethyst' | 'ash' | 'frost';
 export const ACCENTS: { id: Accent; label: string; color: string }[] = [
-  { id: 'citrus', label: 'Citrus', color: '#D18A28' },
-  { id: 'red', label: 'Red', color: '#b33a32' },
-  { id: 'ocean', label: 'Ocean', color: '#176b86' },
-  { id: 'pink', label: 'Pink', color: '#bf4f78' },
+  { id: 'sapphire', label: 'Sapphire', color: '#0474C4' },
+  { id: 'sage', label: 'Sage', color: '#345C32' },
+  { id: 'amethyst', label: 'Amethyst', color: '#472F5B' },
+  { id: 'ash', label: 'Sapphire ash', color: '#35627A' },
+  { id: 'frost', label: 'Frosted aura', color: '#5C7E8F' },
 ];
-
-interface ThemeContextType {
-  mode: Mode;
-  accent: Accent;
-  setMode: (mode: Mode) => void;
-  setAccent: (accent: Accent) => void;
-  effectiveTheme: 'light' | 'dark';
-}
-
+interface ThemeContextType { accent: Accent; setAccent: (accent: Accent) => void; }
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<Mode>('light');
-  const [accent, setAccentState] = useState<Accent>('ocean');
-  const [effectiveTheme, setEffectiveTheme] = useState<'light' | 'dark'>('light');
-
+  const [accent, setAccentState] = useState<Accent>('sapphire');
   useEffect(() => {
-    const savedMode = localStorage.getItem('archivum_theme_mode') as Mode | null;
-    const savedAccent = localStorage.getItem('archivum_accent') as Accent | null;
-    if (savedMode === 'light' || savedMode === 'dark') setModeState(savedMode);
-    if (savedAccent && ACCENTS.some(item => item.id === savedAccent)) setAccentState(savedAccent);
+    const saved = localStorage.getItem('archivum_accent') as Accent | null;
+    if (saved && ACCENTS.some(item => item.id === saved)) setAccentState(saved);
+    document.documentElement.classList.remove('dark');
   }, []);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', mode === 'dark');
-    document.documentElement.setAttribute('data-accent', accent);
-    setEffectiveTheme(mode);
-  }, [mode, accent]);
-
-  const setMode = (next: Mode) => {
-    setModeState(next);
-    localStorage.setItem('archivum_theme_mode', next);
-  };
-
-  const setAccent = (next: Accent) => {
-    setAccentState(next);
-    localStorage.setItem('archivum_accent', next);
-  };
-
-  return (
-    <ThemeContext.Provider value={{ mode, accent, setMode, setAccent, effectiveTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  useEffect(() => { document.documentElement.classList.remove('dark'); document.documentElement.setAttribute('data-accent', accent); }, [accent]);
+  const setAccent = (next: Accent) => { setAccentState(next); localStorage.setItem('archivum_accent', next); };
+  return <ThemeContext.Provider value={{ accent, setAccent }}>{children}</ThemeContext.Provider>;
 }
-
-export function useTheme() {
-  const context = useContext(ThemeContext);
-  if (!context) throw new Error('useTheme must be used within ThemeProvider');
-  return context;
-}
+export function useTheme() { const context = useContext(ThemeContext); if (!context) throw new Error('useTheme must be used within ThemeProvider'); return context; }
