@@ -1,12 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { getResources, getRealStats } from '@/lib/resources';
+import { getResources } from '@/lib/resources';
 import { getPreferredClass } from '@/lib/studentClass';
 import ResourceCard from '@/components/ResourceCard';
 import HomeClient from './HomeClient';
-import { ArrowRight, BookOpen, FileText, Lightbulb, Upload, Archive } from 'lucide-react';
+import { ArrowRight, BookOpen, FileText, Lightbulb, Upload } from 'lucide-react';
 import SubjectPicker from '@/components/SubjectPicker';
 import { subjectsForClass, SUBJECT_DETAILS } from '@/lib/subjects';
+import PersonalGreeting from '@/components/PersonalGreeting';
 
 export const revalidate = 30;
 
@@ -16,10 +17,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const requestedClass = params.class ? Number(params.class) : undefined;
   const activeClass = [9,10,11,12].includes(requestedClass || 0) ? requestedClass as number : preferred || 10;
 
-  const [featured, recent, stats] = await Promise.all([
-    getResources({ featured: true, class_level: activeClass, limit: 3 }),
+  const [recent] = await Promise.all([
     getResources({ sortBy: 'newest', class_level: activeClass, limit: 3 }),
-    getRealStats(),
   ]);
 
   const subjects = subjectsForClass(activeClass);
@@ -27,9 +26,10 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return (
     <div className="pb-24">
       <section className="hero-editorial -mt-[68px] pt-[68px] sm:-mt-[76px] sm:pt-[76px]">
-        <div className="archive-shell relative grid lg:grid-cols-[minmax(0,1.15fr)_340px] gap-12 lg:gap-20 items-end py-16 sm:py-20 lg:py-28">
+        <div className="archive-shell relative py-11 sm:py-14 lg:py-18">
           <div className="max-w-3xl animate-rise">
             <div className="hero-kicker">ARCHIVUM / CLASS {activeClass}</div>
+            <PersonalGreeting activeClass={activeClass} />
             <div className="hero-accent-rule mt-4" />
             <h1 className="font-display text-[3.2rem] sm:text-6xl lg:text-[5.7rem] leading-[.98] tracking-[-.055em] mt-6" style={{color:'var(--hero-ink)'}}>
               The study archive<br />
@@ -41,22 +41,12 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
             <div className="mt-8 max-w-2xl"><HomeClient /></div>
           </div>
 
-          <aside className="hidden lg:block border-l pl-8 pb-1" style={{borderColor:'var(--border)'}}>
-            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--ink-faint)'}}>
-              <Archive className="w-3.5 h-3.5" /> Live archive
-            </div>
-            <div className="font-display text-6xl mt-7" style={{color:'var(--hero-ink)'}}>{stats.classCounts[activeClass] || 0}</div>
-            <p className="text-xs mt-1" style={{color:'var(--hero-muted)'}}>resources for Class {activeClass}</p>
-            <div className="mt-8 pt-5 border-t grid grid-cols-2 gap-6" style={{borderColor:'var(--border)'}}>
-              <div><strong className="text-lg">{stats.totalDownloads}</strong><p className="text-[10px] mt-1" style={{color:'var(--hero-muted)'}}>downloads</p></div>
-              <div><strong className="text-lg">{stats.totalViews}</strong><p className="text-[10px] mt-1" style={{color:'var(--hero-muted)'}}>views</p></div>
-            </div>
-          </aside>
+
         </div>
       </section>
 
       <main className="archive-shell">
-        <section className="py-12 sm:py-16 border-b" style={{borderColor:'var(--border)'}}>
+        <section className="py-9 sm:py-11 border-b" style={{borderColor:'var(--border)'}}>
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
             <div>
               <span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>Your study desk</span>
@@ -82,25 +72,17 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
           </div>
         </section>
 
-        <section className="py-12 sm:py-16 border-b" style={{borderColor:'var(--border)'}}>
+        <section className="py-9 sm:py-11 border-b" style={{borderColor:'var(--border)'}}>
           <div className="flex items-end justify-between gap-6">
             <div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>Class {activeClass}</span><h2 className="font-display text-3xl sm:text-4xl mt-2">Browse by subject.</h2><p className="text-sm mt-2 max-w-xl" style={{color:'var(--ink-muted)'}}>A smaller, focused index instead of a wall of categories.</p></div>
-            <Link href={`/subjects?class=${activeClass}`} className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold" style={{color:'var(--accent)'}}>All subjects <ArrowRight className="w-3.5 h-3.5"/></Link>
+
           </div>
-          <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-px border" style={{background:'var(--border)',borderColor:'var(--border)'}}>
+          <div className="mt-7 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px border" style={{background:'var(--border)',borderColor:'var(--border)'}}>
             {subjects.map(subject => <SubjectPicker key={subject} subject={subject} classLevel={activeClass} description={SUBJECT_DETAILS[subject]?.description} />)}
           </div>
         </section>
 
-        <section className="py-12 sm:py-16 border-b" style={{borderColor:'var(--border)'}}>
-          <div className="flex items-end justify-between gap-6 mb-8">
-            <div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>Curated</span><h2 className="font-display text-3xl sm:text-4xl mt-2">Worth opening.</h2></div>
-            <Link href={`/notes?class=${activeClass}`} className="inline-flex items-center gap-1.5 text-xs font-semibold" style={{color:'var(--accent)'}}>View library <ArrowRight className="w-3.5 h-3.5"/></Link>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">{featured.items.map(r => <ResourceCard key={r.id} resource={r}/>)}</div>
-        </section>
-
-        <section className="py-12 sm:py-16">
+        <section className="py-9 sm:py-11">
           <div className="border p-6 sm:p-9" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5">
               <div><span className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>Recently added</span><h2 className="font-display text-3xl mt-2">Fresh into the archive.</h2><p className="text-sm mt-2 max-w-xl" style={{color:'var(--ink-muted)'}}>New material is reviewed before publication. The numbers shown here are real activity, not placeholders.</p></div>

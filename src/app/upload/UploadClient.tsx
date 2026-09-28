@@ -20,7 +20,7 @@ const CLASS_OPTIONS = [9, 10, 11, 12] as const;
 
 export default function UploadClient() {
   const { showToast } = useToast();
-  const { studentClass } = useStudentClass();
+  const { studentClass, displayName } = useStudentClass();
 
   const [classLevel, setClassLevel] = useState<number>(10);
   const [board, setBoard] = useState<string>('JKBOSE');
@@ -41,12 +41,13 @@ export default function UploadClient() {
 
   useEffect(() => {
     if (studentClass) setClassLevel(studentClass);
+    if (displayName && !contributorName) setContributorName(displayName);
     const params = new URLSearchParams(window.location.search);
     const requestedClass = Number(params.get('class'));
     const requestedSubject = params.get('subject') || '';
     if (CLASS_OPTIONS.includes(requestedClass as 9 | 10 | 11 | 12)) setClassLevel(requestedClass as 9 | 10 | 11 | 12);
     if (requestedSubject) setSubject(requestedSubject);
-  }, [studentClass]);
+  }, [studentClass, displayName, contributorName]);
 
   useEffect(() => {
     if (!subjectOptions.includes(subject)) setSubject(subjectOptions[0]);
@@ -242,7 +243,7 @@ export default function UploadClient() {
   if (successSubmitted) {
     return (
       <div
-        className="rounded-3xl border p-8 sm:p-12 text-center space-y-5 max-w-2xl mx-auto shadow-sm"
+        className="community-upload-success border p-8 sm:p-12 text-center space-y-5 max-w-2xl mx-auto"
         style={{
           backgroundColor: 'var(--surface)',
           borderColor: 'var(--border)',
@@ -290,7 +291,7 @@ export default function UploadClient() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-3xl border p-6 sm:p-10 space-y-8 shadow-sm"
+      className="community-upload-form border p-5 sm:p-8 space-y-7"
       style={{
         backgroundColor: 'var(--surface)',
         borderColor: 'var(--border)',

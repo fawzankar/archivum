@@ -1,12 +1,31 @@
-# ARCHIVUM visual redesign
+# ARCHIVUM — Personal Product Pass
 
-This pass reframes ARCHIVUM as a restrained editorial academic product rather than a template-style dashboard.
+This pass focuses on making ARCHIVUM feel like a designed academic product rather than a generic template.
 
-- Reworked the global visual language around a tighter grid, fewer decorative effects, sharper hierarchy, and consistent spacing.
-- Rebuilt the homepage hero and archive sections with an editorial / Swiss-inspired layout.
-- Reworked navigation and mobile navigation to reduce pill-heavy UI and improve information density.
-- Rebuilt resource cards around typography, metadata hierarchy, and predictable actions.
-- Reworked the footer into clearer information groups.
-- Kept the existing routes, resource data, class selection, saved-resource behavior, themes, and core functionality intact.
-- Added `content-visibility` to long archive sections and kept animation restrained to reduce rendering work.
-- Preserved the supplied ARCHIVUM logo assets.
+## Product / UX
+- First-run onboarding asks for Class 9–12 and an optional display name.
+- Home hero greets the student by their chosen name.
+- Desktop primary links are removed from the header; navigation lives in the MENU drawer.
+- Mobile bottom navigation now uses Home / Notes / Upload / Papers / Saved.
+- Mobile theme switching is available from the header and the menu.
+- Four accent systems are available: Mono, Red, Ocean, Pink.
+- Accent and theme choices persist locally.
+- Browse-by-subject tiles open an intentional Notes vs PYQs chooser.
+- Removed the Live Archive stats panel, redundant All Subjects control, phantom subject tile, and Curated / Worth opening section.
+- Notes resource cards now open the full resource page instead of an inline PDF modal.
+- Resource detail pages now present board, subject, resource type, chapter/topic, exam/year, source, file information, views, downloads and rating in a complete academic record.
+- Upload page now has a community/contribution visual identity.
+- Tips contribution form has a more restrained editorial treatment.
+
+## Visual system
+- Inter / Geist / Space Grotesk are not used.
+- Body uses Avenir Next / Avenir / Segoe UI system typography.
+- Display type uses Newsreader.
+- Purple/indigo AI-template accents are not used.
+- Header logo is no longer presented as a black circular button; the official ARCHIVUM mark is rendered as a clean transparent asset.
+- Section rhythm is tighter and large decorative gaps have been reduced.
+- Mobile navigation has a more tactile active-state animation.
+
+## Verification
+- TypeScript/TSX syntax parsing: 76 files parsed with no syntax diagnostics.
+- A full `npm run build` could not be executed in this environment because dependency installation timed out twice; no production-build result is claimed here.

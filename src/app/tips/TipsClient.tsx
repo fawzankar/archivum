@@ -63,7 +63,7 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
      </article>)}
    </div>
 
-   <section className="rounded-xl border p-6 sm:p-9 overflow-hidden relative" style={{background:'var(--surface)',color:'var(--ink)',borderColor:'var(--border)'}}>
+   <section className="tips-compose p-6 sm:p-9 overflow-hidden relative" style={{background:'var(--surface)',color:'var(--ink)',borderColor:'var(--border)'}}>
      <div className="relative max-w-3xl">
        <span className="text-[10px] font-semibold uppercase tracking-[.18em]" style={{color:'var(--accent)'}}>COMMUNITY TIPS</span>
        <h2 className="font-display font-bold text-2xl sm:text-3xl mt-2">Post a genuine exam trick.</h2>
@@ -74,9 +74,9 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
            <select value={subject==='All'?subjectsForClass(classLevel)[0]:subject} onChange={e=>setSubject(e.target.value)} className="rounded-md px-3.5 py-3 text-xs outline-none border" style={{background:'var(--surface)',color:'var(--ink)'}}>{subjectsForClass(classLevel).map(s=><option key={s} value={s}>{s}</option>)}</select>
            <input value={author} onChange={e=>setAuthor(e.target.value)} maxLength={80} placeholder="Your name" required className="rounded-md px-3.5 py-3 text-xs outline-none border" style={{background:'var(--surface)',color:'var(--ink)'}}/>
          </div>
-         <input value={title} onChange={e=>setTitle(e.target.value)} maxLength={120} placeholder="Tip title" required className="w-full rounded-2xl px-3.5 py-3 text-xs outline-none" style={{background:'var(--surface)',color:'var(--ink)'}}/>
-         <textarea value={body} onChange={e=>setBody(e.target.value)} maxLength={600} minLength={15} rows={4} placeholder="Write one clear, useful tip…" required className="w-full rounded-2xl px-3.5 py-3 text-xs outline-none resize-none" style={{background:'var(--surface)',color:'var(--ink)'}}/>
-         <div className="flex flex-col sm:flex-row gap-3 sm:items-center"><button disabled={sending} className="inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-xs font-semibold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><Send className="w-3.5 h-3.5"/>{sending?'Submitting…':'Submit tip'}</button><span className="text-[10px] flex items-center gap-1"><ShieldCheck className="w-3 h-3"/> Your post is reviewed before publication</span></div>
+         <input value={title} onChange={e=>setTitle(e.target.value)} maxLength={120} placeholder="Tip title" required className="tips-field" style={{background:'var(--surface)',color:'var(--ink)'}}/>
+         <textarea value={body} onChange={e=>setBody(e.target.value)} maxLength={600} minLength={15} rows={4} placeholder="Write one clear, useful tip…" required className="tips-field resize-none" style={{background:'var(--surface)',color:'var(--ink)'}}/>
+         <div className="flex flex-col sm:flex-row gap-3 sm:items-center"><button disabled={sending} className="tips-submit" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><Send className="w-3.5 h-3.5"/>{sending?'Submitting…':'Submit tip'}</button><span className="text-[10px] flex items-center gap-1"><ShieldCheck className="w-3 h-3"/> Your post is reviewed before publication</span></div>
          {status&&<p className="text-xs mt-2 opacity-90">{status}</p>}
        </form>
      </div>

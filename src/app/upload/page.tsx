@@ -1,5 +1,6 @@
 import React from 'react';
 import UploadClient from './UploadClient';
+import { UsersRound, ShieldCheck, Sparkles } from 'lucide-react';
 
 export const metadata = {
   title: 'Upload Resource — ARCHIVUM',
@@ -8,20 +9,16 @@ export const metadata = {
 
 export default function UploadPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-      {/* Editorial Header */}
-      <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
-        <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
-          CONTRIBUTE TO THE ARCHIVE
-        </span>
-        <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-          Upload to ARCHIVUM
-        </h1>
-        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-xl leading-relaxed">
-          Help fellow students find the notes and examination papers they need. Submissions are reviewed by our team before publishing.
-        </p>
-      </div>
-
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 py-7 sm:py-10 space-y-6">
+      <header className="community-intro">
+        <div>
+          <span className="community-intro-badge"><UsersRound /> Community archive</span>
+          <h1 className="font-display">Put something useful back.</h1>
+          <p>Upload notes, question papers, formulas or study material that another SJS student could genuinely use. Every contribution goes through moderation before it enters the archive.</p>
+          <div className="flex flex-wrap gap-4 mt-4 text-[9px] font-semibold" style={{color:'var(--ink-faint)'}}><span className="inline-flex items-center gap-1.5"><ShieldCheck className="w-3.5 h-3.5" style={{color:'var(--accent)'}} /> Reviewed before publishing</span><span className="inline-flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5" style={{color:'var(--accent)'}} /> Built for student sharing</span></div>
+        </div>
+        <div className="community-identity-card"><div className="avatar"><UsersRound className="w-4 h-4" /></div><strong>Contributor identity</strong><small>Your name is attached to the submission and shown only after approval.</small></div>
+      </header>
       <UploadClient />
     </div>
   );

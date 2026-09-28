@@ -3,7 +3,6 @@
 import React, { useMemo, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
-import PdfViewerModal from '@/components/PdfViewerModal';
 import { BookOpen, FolderOpen, ArrowRight, Layers3 } from 'lucide-react';
 import { CLASS_SUBJECTS, resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
 
@@ -19,7 +18,6 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
   const [selectedClass, setSelectedClass] = useState<number>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [selectedChapter, setSelectedChapter] = useState<string>('');
-  const [activePdf, setActivePdf] = useState<Resource | null>(null);
 
   const classNotes = useMemo(() => allNotes.filter((n) => n.class_level === selectedClass), [allNotes, selectedClass]);
   const availableSubjects = subjectsForClass(selectedClass);
@@ -98,7 +96,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
 
       {filteredNotes.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {filteredNotes.map((r, index) => <div key={r.id} className="animate-fade" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}><ResourceCard resource={r} onView={setActivePdf} /></div>)}
+          {filteredNotes.map((r, index) => <div key={r.id} className="animate-fade" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}><ResourceCard resource={r} /></div>)}
         </div>
       ) : (
         <div className="text-center py-16 rounded-3xl border space-y-3" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
@@ -108,7 +106,6 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
           <a href={`/upload?class=${selectedClass}${activeSubject ? `&subject=${encodeURIComponent(activeSubject)}` : ''}`} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}>Upload a resource <ArrowRight className="w-3.5 h-3.5" /></a>
         </div>
       )}
-      <PdfViewerModal resource={activePdf} onClose={() => setActivePdf(null)} />
     </div>
   );
 }
