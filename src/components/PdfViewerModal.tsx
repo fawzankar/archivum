@@ -20,6 +20,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [retry, setRetry] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageMotion, setPageMotion] = useState<'next' | 'prev'>('next');
   const stageRef = useRef<HTMLDivElement>(null);
   const docRef = useRef<PDFDocumentProxy | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
@@ -223,23 +224,34 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           </div>
         </header>
 
-        <div className={`pdf-reader-stage ${isMobile && !isImage ? 'mobile-page-mode' : ''}`} ref={stageRef}
+        <div className={`pdf-reader-stage ${isMobile && !isImage ? 'mobile-page-mode' : ''} page-motion-${pageMotion}`} ref={stageRef}
+          onClick={event => {
+            if (!isMobile || isImage || pageCount < 2) return;
+            const rect = event.currentTarget.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            if (x > rect.width * 0.58) { setPageMotion('next'); setCurrentPage(page => Math.min(pageCount, page + 1)); }
+            else if (x < rect.width * 0.42) { setPageMotion('prev'); setCurrentPage(page => Math.max(1, page - 1)); }
+          }}
           onTouchStart={event => { if (isMobile) touchStartX.current = event.changedTouches[0]?.clientX ?? null; }}
           onTouchEnd={event => {
             if (!isMobile || isImage || touchStartX.current == null) return;
             const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
             const delta = endX - touchStartX.current;
-            if (Math.abs(delta) > 45) setCurrentPage(page => delta < 0 ? Math.min(pageCount, page + 1) : Math.max(1, page - 1));
+            if (Math.abs(delta) > 45) if (delta < 0) { setPageMotion('next'); setCurrentPage(page => Math.min(pageCount, page + 1)); } else { setPageMotion('prev'); setCurrentPage(page => Math.max(1, page - 1)); }
             touchStartX.current = null;
           }}>
           {isImage && <div className="pdf-reader-image-wrap"><img src={fileUrl} alt={resource.title} /></div>}
           {!isImage && loading && !failed && <div className="pdf-reader-loading"><div className="pdf-reader-loading-card"><Loader2 className="animate-spin"/><strong>Opening {resource.resource_type || 'document'}</strong><span>Getting the first page ready…</span></div></div>}
           {!isImage && failed && <div className="pdf-reader-error"><div className="pdf-reader-error-card"><div className="pdf-reader-error-icon"><AlertTriangle /></div><h3>This document could not be rendered here.</h3><p>You can retry the reader or open the original file.</p><div className="pdf-reader-error-actions"><button type="button" className="pdf-reader-primary" onClick={() => setRetry(value => value + 1)}><RefreshCw/> Try again</button><button type="button" className="pdf-reader-secondary" onClick={openOriginal}><ExternalLink/> Open file</button><a className="pdf-reader-secondary" href={fileUrl} download={resource.file_name || resource.title}><Download/> Download</a></div></div></div>}
         </div>
-        {!isImage && isMobile && pageCount > 0 && <div className="pdf-mobile-controls">
-          <button type="button" onClick={() => setCurrentPage(page => Math.max(1, page - 1))} disabled={currentPage <= 1} aria-label="Previous page"><ChevronLeft /></button>
-          <button type="button" onClick={() => setCurrentPage(page => Math.min(pageCount, page + 1))} disabled={currentPage >= pageCount} aria-label="Next page"><ChevronRight /></button>
-        </div>}
+        {!isImage && isMobile && pageCount > 0 && <>
+          <button type="button" className="pdf-mobile-side pdf-mobile-side-prev" onClick={(event) => { event.stopPropagation(); setPageMotion('prev'); setCurrentPage(page => Math.max(1, page - 1)); }} disabled={currentPage <= 1} aria-label="Previous page"><ChevronLeft /></button>
+          <button type="button" className="pdf-mobile-side pdf-mobile-side-next" onClick={(event) => { event.stopPropagation(); setPageMotion('next'); setCurrentPage(page => Math.min(pageCount, page + 1)); }} disabled={currentPage >= pageCount} aria-label="Next page"><ChevronRight /></button>
+          <div className="pdf-mobile-controls">
+            <button type="button" onClick={() => { setPageMotion('prev'); setCurrentPage(page => Math.max(1, page - 1)); }} disabled={currentPage <= 1} aria-label="Previous page"><ChevronLeft /></button>
+            <button type="button" onClick={() => { setPageMotion('next'); setCurrentPage(page => Math.min(pageCount, page + 1)); }} disabled={currentPage >= pageCount} aria-label="Next page"><ChevronRight /></button>
+          </div>
+        </>}
         {!isImage && isMobile && pageCount > 0 && <div className="pdf-mobile-counter">{currentPage} / {pageCount}</div>}
 
         <footer className="pdf-reader-footer"><span>{isMobile ? 'Use the arrows to change pages' : 'Scroll to read'}</span><span>{resource.file_name || 'document.pdf'}</span><button type="button" onClick={() => stageRef.current?.requestFullscreen?.()} aria-label="Fullscreen"><Maximize2 /></button></footer>

@@ -3,7 +3,7 @@ import SavedClient from './SavedClient';
 import PageHead from '@/components/PageHead';
 
 export const metadata = {
-  title: 'My Saved Resources — ARCHIVUM',
+  title: 'My Saved Resources | ARCHIVUM',
   description: 'View your device-saved notes, board papers, and study resources.',
 };
 

@@ -67,7 +67,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   const formatFileSize = (bytes: number) => { if (!bytes) return 'PDF'; const mb=bytes/(1024*1024); return mb>=1?`${mb.toFixed(1)} MB`:`${Math.round(bytes/1024)} KB`; };
   const details: [string,string][] = [
     ['Board', resource.board || 'JKBOSE'], ['Type', resource.resource_type || 'Notes'], ['Subject', resource.subject],
-    ['Chapter / topic', resource.chapter || resource.topic || 'General syllabus'], ['Exam / year', resource.year ? `${resource.paper_type ? `${resource.paper_type} · ` : ''}${resource.year}` : '—'],
+    ['Chapter and topic', resource.chapter || resource.topic || 'General syllabus'], ['Exam and year', resource.year ? `${resource.paper_type ? `${resource.paper_type} | ` : ''}${resource.year}` : '—'],
     ['Source', resource.school_name || resource.contributor_name || 'ARCHIVUM contributor'],
   ];
 

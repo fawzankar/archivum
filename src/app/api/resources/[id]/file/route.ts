@@ -1,6 +1,8 @@
 import { GetObjectCommand, HeadObjectCommand } from '@aws-sdk/client-s3';
 import { NextResponse } from 'next/server';
-import { readFile, stat } from 'fs/promises';
+import { stat } from 'fs/promises';
+import { createReadStream } from 'fs';
+import { Readable } from 'stream';
 import path from 'path';
 import { getResourceById } from '@/lib/resources';
 import { getR2Client, r2KeyFromUrl } from '@/lib/storage';
@@ -90,14 +92,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     if (localPath) {
       const info = await stat(localPath);
       const range = parseRange(request.headers.get('range'), info.size);
-      const bytes = await readFile(localPath);
-      const body = range ? bytes.subarray(range.start, range.end + 1) : bytes;
-      const headers = headersFor(resource, body.byteLength);
+      const start = range?.start ?? 0;
+      const end = range?.end ?? info.size - 1;
+      const stream = createReadStream(localPath, { start, end });
+      const headers = headersFor(resource, end - start + 1);
       if (range) {
         headers.set('Content-Range', `bytes ${range.start}-${range.end}/${info.size}`);
-        return new NextResponse(responseBody(body), { status: 206, headers });
+        return new NextResponse(Readable.toWeb(stream) as ReadableStream, { status: 206, headers });
       }
-      return new NextResponse(responseBody(body), { status: 200, headers });
+      return new NextResponse(Readable.toWeb(stream) as ReadableStream, { status: 200, headers });
     }
 
     const key = resource.storage_key || r2KeyFromUrl(resource.file_url);

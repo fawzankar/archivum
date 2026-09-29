@@ -29,13 +29,14 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         </div>
         <div className="home-hero-copy">
           <PersonalGreeting activeClass={activeClass} />
+          <p className="home-hero-intro">Your Class {activeClass} notes, previous year papers and study material, organised so you can find what you need without digging through old chats.</p>
           <div className="hm-search"><HomeClient /></div>
         </div>
       </header>
 
       <section className="hm-jump" aria-label="Start here">
         <Link href={`/notes?class=${activeClass}`} className="hm-jump-card hm-sun">
-          <div className="hm-jump-icon"><Art name="notes" /></div><div><h2>Class {activeClass} notes</h2><p>Chapter-wise study material, kept in one place.</p><span className="hm-pill">Open notes</span></div>
+          <div className="hm-jump-icon"><Art name="notes" /></div><div><h2>Class {activeClass} notes</h2><p>Chapter based study material, kept in one place.</p><span className="hm-pill">Open notes</span></div>
         </Link>
         <Link href={`/previous-papers?class=${activeClass}`} className="hm-jump-card hm-peri">
           <div className="hm-jump-icon"><Art name="papers" /></div><div><h2>Previous papers</h2><p>Practise with real question papers.</p><span className="hm-pill">Find papers</span></div>

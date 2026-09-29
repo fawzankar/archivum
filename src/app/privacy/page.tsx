@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Privacy Policy — ARCHIVUM',
+  title: 'Privacy Policy | ARCHIVUM',
   description: 'Zero data tracking privacy policy of ARCHIVUM.',
 };
 

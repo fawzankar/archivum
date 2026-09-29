@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Content Guidelines — ARCHIVUM',
+  title: 'Content Guidelines | ARCHIVUM',
   description: 'Submission guidelines for academic materials on ARCHIVUM.',
 };
 
@@ -42,11 +42,11 @@ export default function GuidelinesPage() {
           </li>
           <li className="flex items-start gap-2.5">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: 'var(--sage)' }} />
-            <span><strong>Legibility:</strong> Scans and PDFs must be clear, readable, upright, and without significant cut-offs or blurriness.</span>
+            <span><strong>Legibility:</strong> Scans and PDFs must be clear, readable, upright, and without significant cutoffs or blurriness.</span>
           </li>
           <li className="flex items-start gap-2.5">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: 'var(--sage)' }} />
-            <span><strong>School Identification:</strong> For school examinations (pre-boards, unit tests), please provide the full school name and exam year.</span>
+            <span><strong>School Identification:</strong> For school examinations (pre boards, unit tests), please provide the full school name and exam year.</span>
           </li>
           <li className="flex items-start gap-2.5">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: 'var(--sage)' }} />

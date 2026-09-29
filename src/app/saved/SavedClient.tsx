@@ -62,7 +62,7 @@ export default function SavedClient() {
             </div>
             <Link
               href="/notes"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold text-white bg-zinc-900 hover:bg-zinc-800 transition-all cursor-pointer"
+              className="saved-explore-button inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer"
             >
               <span>Explore Notes</span>
               <ArrowRight className="w-3.5 h-3.5" />

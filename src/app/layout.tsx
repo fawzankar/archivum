@@ -15,12 +15,12 @@ import SplashScreen from '@/components/SplashScreen';
 
 export const viewport: Viewport = { themeColor: '#e4ecff', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
 export const metadata: Metadata = {
-  title: 'ARCHIVUM — Academic Archive',
+  title: 'ARCHIVUM | Academic Archive',
   description: 'Academic notes, previous papers, study material and exam resources for SJS students in Classes 9–12.',
   manifest: '/manifest.json',
   icons: { icon: [{ url: '/archivum-icon.png', sizes: '512x512', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/archivum-icon.png' },
   appleWebApp: { capable: true, title: 'ARCHIVUM', statusBarStyle: 'black-translucent' },
-  openGraph: { title: 'ARCHIVUM — Academic Archive', description: 'A sister organisation of SJS Quest for SJS students.', siteName: 'ARCHIVUM', type: 'website' },
+  openGraph: { title: 'ARCHIVUM | Academic Archive', description: 'A sister organisation of SJS Quest for SJS students.', siteName: 'ARCHIVUM', type: 'website' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

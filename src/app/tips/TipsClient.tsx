@@ -28,7 +28,7 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
    try{
      const r=await fetch('/api/tips',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({class_level:classLevel,subject:subject==='All'?subjectsForClass(classLevel)[0]:subject,title,body,author})});
      const j=await r.json(); if(!r.ok) throw new Error(j.error);
-     setTitle('');setBody('');setAuthor('');setStatus('Submitted — a moderator will review it before publishing.');
+     setTitle('');setBody('');setAuthor('');setStatus('Submitted | a moderator will review it before publishing.');
    }catch(e){setStatus(e instanceof Error?e.message:'Could not submit tip.')}finally{setSending(false)}
  };
 
@@ -36,7 +36,7 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
    <section className="rounded-xl border overflow-hidden premium-shadow" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
      <div className="p-6 sm:p-8" style={{background:'var(--surface)'}}>
        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-         <div><span className="text-[10px] font-bold uppercase tracking-[.2em]" style={{color:'var(--accent)'}}>PERSONALISED EXAM PLAYBOOK</span><h2 className="font-display font-bold text-2xl sm:text-3xl mt-2">Practical advice for Class {classLevel}.</h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>Browse genuine study tips submitted by SJS students. Community posts are class- and subject-tagged, reviewed by ARCHIVUM, and published here after approval.</p></div>
+         <div><span className="text-[10px] font-bold uppercase tracking-[.2em]" style={{color:'var(--accent)'}}>PERSONALISED EXAM PLAYBOOK</span><h2 className="font-display font-bold text-2xl sm:text-3xl mt-2">Practical advice for Class {classLevel}.</h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>Browse genuine study tips submitted by SJS students. Community posts are tagged by class and subject, reviewed by ARCHIVUM, and published here after approval.</p></div>
          <button onClick={()=>loadTips(classLevel,subject)} className="shrink-0 inline-flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-xs font-semibold transition-colors" style={{borderColor:'var(--border)',background:'var(--surface)'}}><RefreshCw className="w-3.5 h-3.5"/> New tips</button>
        </div>
      </div>
@@ -52,13 +52,13 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
    </section>
 
    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
-     {shuffled.length===0 ? <div className="md:col-span-2 lg:col-span-3 rounded-xl border p-8 text-center" style={{background:'var(--surface)',borderColor:'var(--border)'}}><Lightbulb className="w-7 h-7 mx-auto" style={{color:'var(--accent)'}}/><h3 className="font-display font-bold text-lg mt-3">No published tips yet</h3><p className="text-xs mt-2 max-w-md mx-auto" style={{color:'var(--ink-muted)'}}>Be the first to submit a useful class-specific tip. Approved community posts will appear here.</p></div> : shuffled.slice(0,9).map((tip,i)=><article key={tip.id} className="group rounded-xl border p-5 sm:p-6 min-h-[210px] relative overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-xl animate-fade" style={{background:'var(--surface)',borderColor:'var(--border)',animationDelay:`${i*45}ms`}}>
+     {shuffled.length===0 ? <div className="md:col-span-2 lg:col-span-3 rounded-xl border p-8 text-center" style={{background:'var(--surface)',borderColor:'var(--border)'}}><Lightbulb className="w-7 h-7 mx-auto" style={{color:'var(--accent)'}}/><h3 className="font-display font-bold text-lg mt-3">No published tips yet</h3><p className="text-xs mt-2 max-w-md mx-auto" style={{color:'var(--ink-muted)'}}>Be the first to submit a useful tip for a specific class. Approved community posts will appear here.</p></div> : shuffled.slice(0,9).map((tip,i)=><article key={tip.id} className="group rounded-xl border p-5 sm:p-6 min-h-[210px] relative overflow-hidden transition-all duration-500 hover:-translate-y-1 hover:shadow-xl animate-fade" style={{background:'var(--surface)',borderColor:'var(--border)',animationDelay:`${i*45}ms`}}>
        <div className="absolute left-0 top-0 w-1 h-full" style={{background:'var(--accent)'}}/>
        <div className="relative h-full flex flex-col">
          <div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[.16em]" style={{color:'var(--accent)'}}>{tip.subject==='General'?'EXAM TIP':tip.subject}</span><span className="w-8 h-8 rounded-md flex items-center justify-center" style={{background:'var(--accent-light)',color:'var(--accent)'}}><Lightbulb className="w-4 h-4"/></span></div>
          <h3 className="font-display font-bold text-lg mt-6 leading-snug">{tip.title}</h3>
          <p className="text-sm leading-relaxed mt-2" style={{color:'var(--ink-muted)'}}>{tip.body}</p>
-         <div className="mt-auto pt-5 flex items-center justify-between gap-3"><div className="min-w-0"><span className="block text-[10px] font-medium truncate" style={{color:'var(--ink-faint)'}}>— {tip.author||'SJS student'}</span><span className="mt-1 flex items-center gap-1 text-[9px] font-medium" style={{color:'var(--ink-faint)'}}><Clock3 className="w-3 h-3"/>{formatDate(tip.created_at)}</span></div><span title="Published after moderation" className="shrink-0 inline-flex items-center gap-1 text-[9px] font-medium" style={{color:'var(--accent)'}}><ShieldCheck className="w-4 h-4"/> Published</span></div>
+         <div className="mt-auto pt-5 flex items-center justify-between gap-3"><div className="min-w-0"><span className="block text-[10px] font-medium truncate" style={{color:'var(--ink-faint)'}}>{tip.author||'SJS student'}</span><span className="mt-1 flex items-center gap-1 text-[9px] font-medium" style={{color:'var(--ink-faint)'}}><Clock3 className="w-3 h-3"/>{formatDate(tip.created_at)}</span></div><span title="Published after moderation" className="shrink-0 inline-flex items-center gap-1 text-[9px] font-medium" style={{color:'var(--accent)'}}><ShieldCheck className="w-4 h-4"/> Published</span></div>
        </div>
      </article>)}
    </div>

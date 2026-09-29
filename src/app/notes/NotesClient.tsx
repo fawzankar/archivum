@@ -19,21 +19,28 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [notes, setNotes] = useState<Resource[]>(allNotes);
   const [loading, setLoading] = useState(false);
-  const loadedClasses = useRef(new Set<number>([initialClass]));
+  const loadedClasses = useRef(new Set<number>());
 
   useEffect(() => {
-    const hasClass = notes.some((n) => n.class_level === selectedClass);
-    if (hasClass || loadedClasses.current.has(selectedClass)) return;
+    if (loadedClasses.current.has(selectedClass)) return;
     loadedClasses.current.add(selectedClass);
     let cancelled = false;
+    const controller = new AbortController();
     setLoading(true);
-    fetch(`/api/resources?class=${selectedClass}&type=Notes&limit=40`, { cache: 'force-cache' })
+    fetch(`/api/resources?class=${selectedClass}&type=Notes&limit=24`, { cache: 'no-store', signal: controller.signal })
       .then((r) => r.ok ? r.json() : Promise.reject(new Error('Could not load notes')))
-      .then((json) => { if (!cancelled) setNotes((current) => [...current, ...(json.items || [])]); })
+      .then((json) => {
+        if (!cancelled) setNotes((current) => {
+          const incoming = Array.isArray(json.items) ? json.items : [];
+          const merged = [...current, ...incoming];
+          const seen = new Set<number>();
+          return merged.filter((item) => { if (seen.has(item.id)) return false; seen.add(item.id); return true; });
+        });
+      })
       .catch(() => {})
       .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [selectedClass, initialClass, notes]);
+    return () => { cancelled = true; controller.abort(); };
+  }, [selectedClass]);
 
   const classNotes = useMemo(() => {
     const seen = new Set<string>();
@@ -103,7 +110,9 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
         <span className="hidden sm:block text-[11px]" style={{ color: 'var(--ink-muted)' }}>Class {selectedClass}</span>
       </div>
 
-      {filteredNotes.length > 0 ? (
+      {loading && filteredNotes.length === 0 ? (
+        <div className="notes-centered-loading" role="status"><span className="notes-loading-dot" /><strong>Opening notes</strong><small>Preparing your class library</small></div>
+      ) : filteredNotes.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
           {filteredNotes.map((r, index) => <div key={r.id} className="animate-fade" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}><ResourceCard resource={r} /></div>)}
         </div>

@@ -252,7 +252,7 @@ export default function SearchClient({
             >
               <option value="">All Paper Types</option>
               <option value="Board">Board Paper</option>
-              <option value="Pre-board">Pre-board</option>
+              <option value="Pre board">Pre board</option>
               <option value="Unit Test">Unit Test</option>
               <option value="Annual/Final">Annual / Final</option>
             </select>
@@ -299,7 +299,7 @@ export default function SearchClient({
             No resources match your search
           </h3>
           <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>
-            Try searching for a general term like "Science", "Math", "Class 10", or "Pre-board".
+            Try searching for a general term like "Science", "Math", "Class 10", or "Pre board".
           </p>
           <button
             onClick={resetAll}

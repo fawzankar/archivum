@@ -29,7 +29,7 @@ export default function ReviewsSection() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Could not submit review');
       setName(''); setReview(''); setRating(5);
-      setStatus('Thanks — your review is waiting for moderation.');
+      setStatus('Thanks | your review is waiting for moderation.');
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Could not submit review.');
     } finally { setLoading(false); }

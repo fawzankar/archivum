@@ -22,7 +22,7 @@ export default function AboutPage() {
         <span className="ab-kicker">OUR STORY</span>
         <h2>It started with exam preparation.</h2>
       </div>
-      <p>When our founder, Fawzan Kar, was studying for exams, he needed previous-year questions, MCQs and other practice material. The problem was that these resources were not properly stored in one place, so finding the right paper or set of questions could take far longer than studying from it.</p>
+      <p>When our founder, Fawzan Kar, was studying for exams, he needed previous year questions, MCQs and other practice material. The problem was that these resources were not properly stored in one place, so finding the right paper or set of questions could take far longer than studying from it.</p>
       <p>He also noticed that useful material was often passed around informally and then became difficult for the next batch to recover. ARCHIVUM grew from that experience: a practical archive designed so students can spend less time hunting for resources and more time using them.</p>
     </section>
 
