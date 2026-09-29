@@ -1641,3 +1641,194 @@ main:has(.contributors-intro){
   .notes-class-tabs{padding:1px 15px 18px!important}
   .notes-class-tab{min-height:40px!important;padding:0 15px!important}
 }
+
+/* ===== V13: subject artwork + restored Home subjects + hero motion ===== */
+
+/* Home: subject shelf shown only on the Home page. */
+.hm-subjects-home{
+  padding:8px 0 4px;
+}
+.hm-subjects-home-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 16px;
+}
+.hm-subjects-home-head h2{
+  margin:0;
+  font-family:"Bricolage Grotesque","DM Sans",sans-serif;
+  font-size:clamp(25px,3vw,32px);
+  line-height:1;
+  letter-spacing:-.03em;
+  color:var(--navy);
+}
+.hm-subjects-home-head span{
+  color:var(--navy);
+  font-size:12px;
+  font-weight:800;
+}
+.hm-subjects-home-grid{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:14px;
+}
+.hm-subject-home-card{
+  position:relative;
+  min-height:225px;
+  padding:18px 18px 20px;
+  border-radius:18px;
+  overflow:hidden;
+  color:var(--navy);
+  text-decoration:none;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  border:0;
+  box-shadow:none;
+  transition:transform .18s ease,filter .18s ease,box-shadow .18s ease;
+}
+.hm-subject-home-card:hover{
+  transform:translateY(-3px);
+  filter:saturate(1.04);
+  box-shadow:0 14px 28px rgba(27,33,102,.10);
+}
+.hm-subject-home-card:active{transform:translateY(-1px)}
+.hm-subject-home-card:nth-child(6n+1),
+.hm-subject-home-card:nth-child(6n+5){background:#ffc75f}
+.hm-subject-home-card:nth-child(6n+2),
+.hm-subject-home-card:nth-child(6n+6){background:#8d9bff}
+.hm-subject-home-card:nth-child(6n+3){background:#ffbdde}
+.hm-subject-home-card:nth-child(6n+4){background:#7bd7ae}
+.hm-subject-home-art{
+  width:112px;
+  height:112px;
+  align-self:flex-end;
+  display:grid;
+  place-items:center;
+}
+.hm-subject-home-art .art{width:100%;height:100%}
+.hm-subject-home-card strong{
+  font-family:"Bricolage Grotesque","DM Sans",sans-serif;
+  font-size:27px;
+  line-height:1;
+  letter-spacing:-.025em;
+  font-weight:800;
+}
+
+/* Notes library: no eyebrow/kicker; use the same subject artwork + typography as Home. */
+.notes-library-label{display:none!important}
+.notes-library-header{align-items:center!important}
+.notes-library-class-badge{
+  flex:none;
+  padding:9px 13px;
+  border-radius:999px;
+  background:var(--accent-light);
+  color:var(--accent);
+  font-family:"Bricolage Grotesque","DM Sans",sans-serif;
+  font-size:11px;
+  font-weight:800;
+}
+.notes-subject-grid{
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:14px!important;
+  padding:34px 36px 30px!important;
+}
+.notes-subject-card{
+  position:relative;
+  min-height:190px!important;
+  padding:16px 18px 19px!important;
+  justify-content:space-between!important;
+  border:0!important;
+  border-radius:18px!important;
+  box-shadow:none!important;
+  overflow:hidden;
+  transition:transform .18s ease,filter .18s ease,box-shadow .18s ease!important;
+}
+.notes-subject-card::before{display:none!important}
+.notes-subject-card::after{display:none!important}
+.notes-subject-card:hover{
+  transform:translateY(-3px)!important;
+  border-color:transparent!important;
+  box-shadow:0 14px 28px rgba(27,33,102,.10)!important;
+}
+.notes-subject-card:nth-child(6n+1),.notes-subject-card:nth-child(6n+5){background:#ffc75f!important;color:#1b2166!important}
+.notes-subject-card:nth-child(6n+2),.notes-subject-card:nth-child(6n+6){background:#8d9bff!important;color:#1b2166!important}
+.notes-subject-card:nth-child(6n+3){background:#ffbdde!important;color:#1b2166!important}
+.notes-subject-card:nth-child(6n+4){background:#7bd7ae!important;color:#1b2166!important}
+.notes-subject-card.active{background:var(--navy)!important;color:#fff!important;box-shadow:0 14px 30px rgba(27,33,102,.16)!important}
+.notes-subject-card.active small{color:rgba(255,255,255,.78)!important}
+.notes-subject-art{
+  display:grid;
+  place-items:center;
+  align-self:flex-end;
+  width:92px;
+  height:92px;
+}
+.notes-subject-art .art{width:100%;height:100%}
+.notes-subject-card span:not(.notes-subject-art){
+  font-family:"Bricolage Grotesque","DM Sans",sans-serif!important;
+  font-size:24px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  letter-spacing:-.025em!important;
+}
+.notes-subject-card small{font-size:11px!important;font-weight:600}
+
+/* Restore the requested animated greeting hand and hero glow. */
+.hm-wave{
+  display:inline-block!important;
+  transform-origin:70% 70%!important;
+  animation:waveHelloV13 2.8s ease-in-out infinite!important;
+  will-change:transform;
+}
+@keyframes waveHelloV13{
+  0%,52%,100%{transform:rotate(0deg)}
+  58%{transform:rotate(15deg)}
+  64%{transform:rotate(-10deg)}
+  70%{transform:rotate(14deg)}
+  76%{transform:rotate(-7deg)}
+  82%{transform:rotate(0deg)}
+}
+.home-hero-panel .hero-zebra-layer{
+  animation:none!important;
+  clip-path:none!important;
+  transform:none!important;
+}
+.home-hero-panel .hero-zebra-glow{
+  display:block!important;
+  animation:heroGlowV13 6.5s ease-in-out infinite alternate!important;
+  will-change:transform,opacity,filter;
+}
+@keyframes heroGlowV13{
+  0%{opacity:.28;transform:scale(.88);filter:blur(1px)}
+  50%{opacity:.58;transform:scale(1.02);filter:blur(0)}
+  100%{opacity:.88;transform:translate(-10px,7px) scale(1.10);filter:blur(1px)}
+}
+
+@media(max-width:1100px){
+  .hm-subjects-home-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .notes-subject-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  .hm-subjects-home{padding-top:2px}
+  .hm-subjects-home-head{margin-bottom:12px}
+  .hm-subjects-home-head h2{font-size:25px}
+  .hm-subjects-home-head span{font-size:10px}
+  .hm-subjects-home-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .hm-subject-home-card{min-height:155px;padding:12px;border-radius:15px}
+  .hm-subject-home-art{width:72px;height:72px}
+  .hm-subject-home-card strong{font-size:19px}
+  .notes-library-header{min-height:142px!important;padding:25px 20px 22px!important}
+  .notes-library-heading{font-size:28px!important}
+  .notes-library-description{font-size:12px!important}
+  .notes-library-class-badge{font-size:10px;padding:7px 10px}
+  .notes-subject-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;padding:16px!important}
+  .notes-subject-card{min-height:155px!important;padding:12px!important;border-radius:15px!important}
+  .notes-subject-art{width:70px;height:70px}
+  .notes-subject-card span:not(.notes-subject-art){font-size:19px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hm-wave,.home-hero-panel .hero-zebra-glow{animation:none!important}
+}

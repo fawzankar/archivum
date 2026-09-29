@@ -4,7 +4,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
-import { BookOpen, ArrowRight, Layers3 } from 'lucide-react';
+import { BookOpen, ArrowRight } from 'lucide-react';
+import Art from '@/components/Art';
 import { resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
 
 interface NotesClientProps {
@@ -112,11 +113,10 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
       <section className="notes-library-panel" aria-label="Notes library filters">
         <div className="notes-library-header">
           <div>
-            <span className="notes-library-label">CLASS {selectedClass} · NOTES LIBRARY</span>
-            <h2 className="notes-library-heading">Choose a subject</h2>
-            <p className="notes-library-description">Your class profile controls the subject list, so you only see what applies to you.</p>
+            <h2 className="notes-library-heading">Your subjects</h2>
+            <p className="notes-library-description">Choose a subject to quickly find the notes you need.</p>
           </div>
-          <Layers3 className="notes-library-icon" aria-hidden="true" />
+          <span className="notes-library-class-badge">Class {selectedClass}</span>
         </div>
 
         <div className="notes-subject-grid" aria-label="Choose subject">
@@ -125,6 +125,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
             onClick={() => setSelectedSubject('')}
             className={`notes-subject-card ${!activeSubject ? 'active' : ''}`}
           >
+            <span className="notes-subject-art"><Art name="papers" /></span>
             <span>All</span>
             <small>{classNotes.length} {classNotes.length === 1 ? 'resource' : 'resources'}</small>
           </button>
@@ -138,6 +139,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
                 onClick={() => setSelectedSubject(subject)}
                 className={`notes-subject-card ${active ? 'active' : ''}`}
               >
+                <span className="notes-subject-art"><Art name={subject} /></span>
                 <span>{subject}</span>
                 <small>{count} {count === 1 ? 'resource' : 'resources'}</small>
               </button>

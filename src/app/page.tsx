@@ -38,6 +38,28 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         </Link>
       </section>
 
+      <section className="hm-subjects-home" aria-labelledby="hm-subjects-title">
+        <div className="hm-subjects-home-head">
+          <h2 id="hm-subjects-title">Your subjects</h2>
+          <span>{activeClass <= 10 ? '6 subjects' : '5 subjects'}</span>
+        </div>
+        <div className="hm-subjects-home-grid">
+          {(activeClass <= 10
+            ? ['Maths', 'Science', 'SST', 'English', 'Hindi', 'Urdu']
+            : ['Maths', 'Biology', 'Physics', 'Chemistry', 'English']
+          ).map((subject, index) => (
+            <Link
+              key={subject}
+              href={`/notes?class=${activeClass}&subject=${encodeURIComponent(subject)}`}
+              className={`hm-subject-home-card subject-home-${index % 6}`}
+            >
+              <div className="hm-subject-home-art"><Art name={subject} /></div>
+              <strong>{subject}</strong>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <section aria-labelledby="hm-recent">
         <div className="hm-head"><h2 id="hm-recent">Recently added</h2><Link href={`/search?class=${activeClass}`}>See everything</Link></div>
         {recent.length
