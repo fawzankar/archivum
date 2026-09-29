@@ -27,7 +27,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       <div className="archive-shell home-stage-grid">
         <div className="home-stage-copy">
           <div className="paper-kicker"><span>ARCHIVUM</span><i/> CLASS {activeClass}</div>
-          <div className="home-greeting"><PersonalGreeting activeClass={activeClass} /></div>
+          <div className="home-greeting"><PersonalGreeting /></div>
           <h1>Everything you need to <em>study well.</em></h1>
           <p className="home-lede">Notes, papers, tips and saved material for Class {activeClass}. One quiet place for the things you actually use.</p>
           <HomeClient />
