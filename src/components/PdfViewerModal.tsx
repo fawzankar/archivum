@@ -152,7 +152,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
         const pdfjs = await import('pdfjs-dist/build/pdf.mjs');
         pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
         if (cancelled) return;
-        const documentProxy = await pdfjs.getDocument({ url: fileUrl, disableAutoFetch: false, disableStream: false, useWorkerFetch: true }).promise as unknown as PDFDocumentProxy;
+        const documentProxy = await pdfjs.getDocument({ url: fileUrl, disableAutoFetch: false, disableStream: false }).promise as unknown as PDFDocumentProxy;
         if (cancelled) {
           await documentProxy.destroy().catch(() => {});
           return;
