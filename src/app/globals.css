@@ -1223,8 +1223,8 @@ main:has(.contributors-intro){
 /* ===== Performance + simple Android PDF reader ===== */
 /* The home zebra is intentionally static: no movement, drawing or glow animation. */
 .hero-zebra-layer{animation:none!important;clip-path:none!important;transform:none!important}
-.hero-zebra-glow{display:none!important}
-.hm-wave{animation:none!important;transform:none!important}
+.hero-zebra-glow{display:block!important}
+.hm-wave{animation:hmWave 1.8s ease-in-out infinite!important;transform-origin:70% 80%;display:inline-block}
 
 /* Remove the old custom page-navigation reader behavior. */
 .pdf-native-shell{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:rgba(5,11,16,.72);padding:12px}
@@ -1293,20 +1293,19 @@ main:has(.contributors-intro){
 @media(prefers-reduced-motion:reduce){.pdf-native-loading svg{animation:none}}
 
 /* ===== V10: fast, static notes library ===== */
-.home-hero-panel .hero-zebra-layer,
-.home-hero-panel .hero-zebra-glow,
-.home-hero-panel .hero-ambient,
-.home-hero-panel .hero-tiger,
-.home-hero-panel .tiger-print,
-.home-hero-panel .hero-ambient-ring,
-.home-hero-panel .hero-ambient-line,
-.home-hero-panel .hero-ambient-dot,
-.home-hero-panel .hero-ambient-sheet{
+.home-hero-panel .hero-zebra-layer{
   animation:none!important;
   transition:none!important;
 }
-.home-hero-panel .hero-zebra-glow{display:none!important}
-.hm-wave{animation:none!important}
+.home-hero-panel .hero-zebra-glow{
+  display:block!important;
+  animation:heroGlow 2.8s ease-in-out infinite!important;
+}
+.home-hero-panel .hm-wave{
+  animation:hmWave 1.8s ease-in-out infinite!important;
+  transform-origin:70% 80%;
+  display:inline-block;
+}
 
 /* Match the roomy reference proportions without making the library feel oversized. */
 .notes-page-shell{max-width:1600px!important;width:100%!important;margin-inline:auto!important;padding-top:24px!important;padding-bottom:120px!important}
@@ -1839,3 +1838,89 @@ main:has(.contributors-intro){
 @keyframes waveHelloV14{0%,58%,100%{transform:rotate(0deg)}8%,24%{transform:rotate(16deg)}16%,34%{transform:rotate(-10deg)}42%{transform:rotate(9deg)}}
 @keyframes heroGlowV14{0%,100%{opacity:.25;transform:scale(.96)}50%{opacity:.7;transform:scale(1.04)}}
 @media(prefers-reduced-motion:reduce){.home-hero-panel .hero-zebra-glow,.hm-wave{animation:none!important}}
+
+
+/* ===== V15: fast internal PDF reader + responsive hero motion ===== */
+@keyframes hmWave{
+  0%,100%{transform:rotate(0deg)}
+  20%{transform:rotate(14deg)}
+  40%{transform:rotate(-7deg)}
+  60%{transform:rotate(12deg)}
+  80%{transform:rotate(-3deg)}
+}
+@keyframes heroGlow{
+  0%,100%{opacity:.42;transform:scale(.98)}
+  50%{opacity:.9;transform:scale(1.04)}
+}
+
+/* The PDF is rendered by PDF.js inside Archivum; never hand it off to Android's external PDF viewer. */
+.pdf-reader-shell{
+  position:fixed;inset:0;z-index:2147483000;background:#20252a;
+  display:flex;align-items:stretch;justify-content:center;
+}
+.pdf-reader-window{
+  width:100%;height:100dvh;background:#e9eaec;
+  display:grid;grid-template-rows:56px minmax(0,1fr);overflow:hidden;
+}
+.pdf-reader-header{
+  min-width:0;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:6px 10px;background:var(--surface);border-bottom:1px solid var(--border);
+  color:var(--ink);z-index:2;
+}
+.pdf-reader-title{display:flex;align-items:center;gap:9px;min-width:0}
+.pdf-reader-title strong{display:block;max-width:min(62vw,800px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.pdf-reader-title span{display:block;margin-top:2px;color:var(--ink-muted);font-size:10px}
+.pdf-reader-file-icon{width:34px;height:34px;display:grid;place-items:center;flex:none;border-radius:9px;background:var(--accent-light);color:var(--accent)}
+.pdf-reader-file-icon svg{width:17px;height:17px}
+.pdf-reader-actions{display:flex;align-items:center;gap:2px;flex:none}
+.pdf-reader-actions button,.pdf-reader-actions a{
+  width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:8px;
+  background:transparent;color:var(--ink-muted);text-decoration:none;font-size:20px;font-weight:700;
+}
+.pdf-reader-actions button:hover,.pdf-reader-actions a:hover{background:var(--surface-raised);color:var(--accent)}
+.pdf-reader-actions svg{width:17px;height:17px}
+.pdf-reader-stage{min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.pdf-reader-pages{min-height:100%;padding:20px 14px 60px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.pdf-js-page{
+  position:relative;width:min(100%,960px);min-height:160px;display:flex;justify-content:center;
+  background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.12);overflow:hidden;
+}
+.pdf-js-page canvas{display:block;max-width:100%;height:auto}
+.pdf-js-page-placeholder{
+  position:absolute;inset:0;min-height:160px;display:grid;place-items:center;
+  color:#8a8f95;font-size:11px;background:#fff;
+}
+.pdf-js-page canvas:not(.is-rendered){visibility:hidden}
+.pdf-reader-loading,.pdf-reader-error{
+  min-height:100%;display:grid;place-content:center;justify-items:center;gap:8px;
+  padding:30px;text-align:center;color:var(--ink);background:var(--surface);
+}
+.pdf-reader-loading svg{width:24px;height:24px;color:var(--accent);animation:pdfSpin .8s linear infinite}
+.pdf-reader-loading span,.pdf-reader-error span{font-size:12px;color:var(--ink-muted)}
+.pdf-reader-error svg{width:28px;height:28px;color:var(--accent)}
+.pdf-reader-error button{
+  display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 13px;
+  border:1px solid var(--border);border-radius:9px;background:var(--accent);
+  color:var(--accent-contrast);font-size:12px;font-weight:800;
+}
+.pdf-reader-image{min-height:100%;display:flex;justify-content:center;align-items:flex-start;padding:18px;background:#e9eaec;overflow:auto}
+.pdf-reader-image img{display:block;max-width:min(100%,960px);width:auto;height:auto;background:#fff;box-shadow:0 2px 12px rgba(0,0,0,.12)}
+
+@media(max-width:700px){
+  .pdf-reader-window{grid-template-rows:52px minmax(0,1fr)}
+  .pdf-reader-header{padding:5px 6px}
+  .pdf-reader-title strong{max-width:44vw;font-size:11px}
+  .pdf-reader-title span{font-size:8px}
+  .pdf-reader-file-icon{width:30px;height:30px}
+  .pdf-reader-actions button,.pdf-reader-actions a{width:31px;height:31px}
+  .pdf-reader-pages{padding:8px 0 36px;gap:8px;align-items:stretch}
+  .pdf-js-page{width:100%;min-height:120px;box-shadow:0 1px 5px rgba(0,0,0,.1)}
+  .pdf-js-page-placeholder{min-height:120px}
+  .pdf-reader-image{padding:0;background:#fff}
+  .pdf-reader-image img{width:100%;max-width:none;box-shadow:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .home-hero-panel .hm-wave,.home-hero-panel .hero-zebra-glow{animation:none!important}
+  .pdf-reader-loading svg{animation:none}
+}

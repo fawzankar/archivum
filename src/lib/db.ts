@@ -138,11 +138,31 @@ export async function initDb(): Promise<void> {
       [12,'English','Plan long answers first','Spend a short moment identifying the argument, examples and conclusion before writing a long literature or writing answer.','ARCHIVUM'],
       [12,'Chemistry','Separate formulas from exceptions','Maintain one page for standard formulas and another for exceptions, special cases and common traps.','ARCHIVUM'],
     );
-    for (const [level,subject,title,body,author] of tips) {
-      await db.execute({ sql: `INSERT OR IGNORE INTO tips (class_level,subject,title,body,author,status,created_at) SELECT ?,?,?,?,?, 'approved',? WHERE NOT EXISTS (SELECT 1 FROM tips WHERE class_level=? AND subject=? AND title=?)`, args: [level,subject,title,body,author,now,level,subject,title] });
+    const tipsMigration = await db.execute({
+      sql: `SELECT id FROM app_migrations WHERE id = ? LIMIT 1`,
+      args: ['tips_seed_v2'],
+    });
+    if (!tipsMigration.rows.length) {
+      for (const [level,subject,title,body,author] of tips) {
+        await db.execute({ sql: `INSERT OR IGNORE INTO tips (class_level,subject,title,body,author,status,created_at) SELECT ?,?,?,?,?, 'approved',? WHERE NOT EXISTS (SELECT 1 FROM tips WHERE class_level=? AND subject=? AND title=?)`, args: [level,subject,title,body,author,now,level,subject,title] });
+      }
+      await db.execute({
+        sql: `INSERT OR IGNORE INTO app_migrations (id, applied_at) VALUES (?, ?)`,
+        args: ['tips_seed_v2', now],
+      });
     }
 
-    await seedDatabase(db);
+    const seedMigration = await db.execute({
+      sql: `SELECT id FROM app_migrations WHERE id = ? LIMIT 1`,
+      args: ['base_seed_v3'],
+    });
+    if (!seedMigration.rows.length) {
+      await seedDatabase(db);
+      await db.execute({
+        sql: `INSERT OR IGNORE INTO app_migrations (id, applied_at) VALUES (?, ?)`,
+        args: ['base_seed_v3', now],
+      });
+    }
   })().catch((error) => {
     initPromise = null;
     throw error;

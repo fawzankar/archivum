@@ -34,6 +34,22 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
   const loadedClasses = useRef(new Set<number>([initialClass]));
 
   useEffect(() => {
+    const controller = new AbortController();
+    const classes = CLASS_CONFIG.filter(level => level !== selectedClass);
+    Promise.allSettled(classes.map(async level => {
+      if (classCache.has(level)) return;
+      const response = await fetch(`/api/resources?class=${level}&type=Notes&limit=40`, {
+        cache: 'force-cache',
+        signal: controller.signal,
+      });
+      if (!response.ok) return;
+      const json = await response.json();
+      classCache.set(level, Array.isArray(json.items) ? mergeUnique(json.items) : []);
+    }));
+    return () => controller.abort();
+  }, [selectedClass]);
+
+  useEffect(() => {
     if (loadedClasses.current.has(selectedClass)) return;
 
     const cached = classCache.get(selectedClass);
