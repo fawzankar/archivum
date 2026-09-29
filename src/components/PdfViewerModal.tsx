@@ -33,7 +33,8 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     return () => window.removeEventListener('resize', update);
   }, []);
   const renderedSet = useRef<Set<number>>(new Set());
-  const touchStartX = useRef<number | null>(null);\n  const lastTapAt = useRef(0);
+  const touchStartX = useRef<number | null>(null);
+  const lastTapAt = useRef(0);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(resource.file_name || '')));
