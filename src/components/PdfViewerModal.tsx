@@ -125,9 +125,8 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           rangeChunkSize: 512 * 1024,
           disableAutoFetch: false,
           disableStream: false,
-          isEvalSupported: true,
         });
-        task.onProgress = ({ loaded, total }: { loaded: number; total: number }) => {
+        (task as any).onProgress = ({ loaded, total }: { loaded: number; total: number }) => {
           if (total > 0) setLoadProgress(Math.max(1, Math.min(99, Math.round((loaded / total) * 100))));
         };
 
