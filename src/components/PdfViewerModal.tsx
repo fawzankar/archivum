@@ -227,7 +227,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
 
         <div className={`pdf-reader-stage ${isMobile && !isImage ? 'mobile-page-mode' : ''} page-motion-${pageMotion}`} ref={stageRef}
           onClick={event => {
-            if (!isMobile || isImage) return;
+            if (!isMobile || isImage || (event.target as HTMLElement).closest('button')) return;
             const now = Date.now();
             if (now - lastTapAt.current < 320) {
               setZoom(value => value > 1.05 ? 1 : 1.35);
@@ -256,10 +256,6 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
         {!isImage && isMobile && pageCount > 0 && <>
           <button type="button" className="pdf-mobile-side pdf-mobile-side-prev" onClick={(event) => { event.stopPropagation(); setPageMotion('prev'); setCurrentPage(page => Math.max(1, page - 1)); }} disabled={currentPage <= 1} aria-label="Previous page"><ChevronLeft /></button>
           <button type="button" className="pdf-mobile-side pdf-mobile-side-next" onClick={(event) => { event.stopPropagation(); setPageMotion('next'); setCurrentPage(page => Math.min(pageCount, page + 1)); }} disabled={currentPage >= pageCount} aria-label="Next page"><ChevronRight /></button>
-          <div className="pdf-mobile-controls">
-            <button type="button" onClick={() => { setPageMotion('prev'); setCurrentPage(page => Math.max(1, page - 1)); }} disabled={currentPage <= 1} aria-label="Previous page"><ChevronLeft /></button>
-            <button type="button" onClick={() => { setPageMotion('next'); setCurrentPage(page => Math.min(pageCount, page + 1)); }} disabled={currentPage >= pageCount} aria-label="Next page"><ChevronRight /></button>
-          </div>
         </>}
         {!isImage && isMobile && pageCount > 0 && <div className="pdf-mobile-counter">{currentPage} / {pageCount}</div>}
 

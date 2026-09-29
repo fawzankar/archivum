@@ -26,7 +26,7 @@ export default function SplashScreen() {
     <div className="boot-splash" aria-label="Loading ARCHIVUM" role="status">
       <div className="boot-splash-mark"><span className="archivum-css-logo" /></div>
       <div className="boot-splash-name">ARCHIVUM</div>
-      <p className="boot-splash-credit">This App is Developed by <a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">Fawzan Kar</a></p>
+      <p className="boot-splash-credit">This App is Developed By Fawzan Kar</p>
       <div className="boot-splash-line"><span /></div>
     </div>
   );

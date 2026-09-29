@@ -21,12 +21,10 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return <div className="hm">
     <div className="hm-shell">
       <header className="hm-top home-hero-panel">
-        <div className="hero-tiger" aria-hidden="true">
-          <span className="tiger-print tiger-print-a" /><span className="tiger-print tiger-print-b" /><span className="tiger-print tiger-print-c" /><span className="tiger-print tiger-print-d" />
-        </div>
+        <div className="hero-zebra" aria-hidden="true"><span className="hero-zebra-layer" /><span className="hero-zebra-glow" /></div>
         <div className="home-hero-copy">
           <PersonalGreeting activeClass={activeClass} />
-          <p className="home-hero-intro">Your Class {activeClass} notes, previous year papers and study material, organised so you can find what you need without digging through old chats.</p>
+          <p className="home-hero-intro">Your Class {activeClass} notes, previous year papers and study material, all organised in one place so you can easily find exactly what you need.</p>
           <div className="hm-search"><HomeClient /></div>
         </div>
       </header>
