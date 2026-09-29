@@ -1924,3 +1924,27 @@ main:has(.contributors-intro){
   .home-hero-panel .hm-wave,.home-hero-panel .hero-zebra-glow{animation:none!important}
   .pdf-reader-loading svg{animation:none}
 }
+
+/* V16: clearer Android separation between Notes Library and Your Subjects */
+@media (max-width: 700px){
+  .home-quick-links + .home-subjects-section,
+  .home-jump-grid + .home-subjects-section,
+  .notes-library-section + .home-subjects-section,
+  .home-library-section + .home-subjects-section{
+    margin-top: 34px !important;
+  }
+
+  /* Common layout fallback when the sections are wrapped in a parent. */
+  .home-subjects-section{
+    scroll-margin-top: 20px;
+  }
+}
+
+@media (max-width: 700px){
+  .notes-library-section,
+  .home-subjects-section,
+  .notes-grid,
+  .resource-grid{
+    -webkit-tap-highlight-color: transparent;
+  }
+}
