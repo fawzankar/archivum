@@ -1166,3 +1166,74 @@ main:has(.contributors-intro){
   .ab-split{grid-template-columns:1fr}
   .ab-block{min-height:250px;padding:24px!important}
 }
+
+/* ===== V8 theme-aware zebra hero ===== */
+.home-hero-panel{
+  background:var(--surface)!important;
+}
+.home-hero-panel::before{
+  background:var(--surface)!important;
+}
+.hero-zebra{
+  inset:-24%!important;
+  opacity:.22!important;
+  transform:scale(1.08);
+}
+.hero-zebra-layer,
+.hero-zebra::before,
+.hero-zebra::after{
+  position:absolute;
+  inset:-12%;
+  content:"";
+  background:linear-gradient(118deg,var(--accent-strong) 0%,var(--accent) 44%,var(--sun) 100%);
+  -webkit-mask-image:url('/zebra-pattern.png');
+  mask-image:url('/zebra-pattern.png');
+  -webkit-mask-mode:luminance;
+  mask-mode:luminance;
+  -webkit-mask-repeat:repeat;
+  mask-repeat:repeat;
+  -webkit-mask-size:760px 500px;
+  mask-size:760px 500px;
+  -webkit-mask-position:0 0;
+  mask-position:0 0;
+  transform:translate3d(0,0,0) rotate(-2deg);
+  animation:zebraThemePan 34s linear infinite;
+}
+.hero-zebra::before{
+  opacity:.62;
+  transform:translate3d(-380px,-250px,0) rotate(2deg) scale(1.08);
+  animation:zebraThemePanReverse 42s linear infinite;
+}
+.hero-zebra::after{
+  opacity:.28;
+  background:linear-gradient(118deg,var(--sun) 0%,var(--accent) 50%,var(--accent-strong) 100%);
+  transform:translate3d(190px,125px,0) rotate(-1deg) scale(1.12);
+  animation:zebraThemePan 50s linear infinite reverse;
+}
+.hero-zebra-glow{display:none!important}
+@keyframes zebraThemePan{
+  from{transform:translate3d(0,0,0) rotate(-2deg)}
+  to{transform:translate3d(760px,500px,0) rotate(-2deg)}
+}
+@keyframes zebraThemePanReverse{
+  from{transform:translate3d(-380px,-250px,0) rotate(2deg) scale(1.08)}
+  to{transform:translate3d(380px,250px,0) rotate(2deg) scale(1.08)}
+}
+@media(max-width:700px){
+  .hero-zebra{inset:-28%!important;opacity:.2!important;transform:scale(1.12)}
+  .hero-zebra-layer,.hero-zebra::before,.hero-zebra::after{
+    -webkit-mask-size:520px 342px;
+    mask-size:520px 342px;
+  }
+  @keyframes zebraThemePan{
+    from{transform:translate3d(0,0,0) rotate(-2deg)}
+    to{transform:translate3d(520px,342px,0) rotate(-2deg)}
+  }
+  @keyframes zebraThemePanReverse{
+    from{transform:translate3d(-260px,-171px,0) rotate(2deg) scale(1.08)}
+    to{transform:translate3d(260px,171px,0) rotate(2deg) scale(1.08)}
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-zebra-layer,.hero-zebra::before,.hero-zebra::after{animation:none!important}
+}
