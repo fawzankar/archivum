@@ -14,7 +14,7 @@ import DeferredClientWidgets from '@/components/DeferredClientWidgets';
 import NavigationProgress from '@/components/NavigationProgress';
 import SplashScreen from '@/components/SplashScreen';
 
-export const viewport: Viewport = { themeColor: '#e4ecff', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
+export const viewport: Viewport = { themeColor: '#0474C4', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
 export const metadata: Metadata = {
   title: 'ARCHIVUM — Academic Archive',
   description: 'Academic notes, previous papers, study material and exam resources for SJS students in Classes 9–12.',

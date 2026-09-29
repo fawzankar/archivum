@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
-import Art from './Art';
 import { ArrowUpRight, BookOpen, Calculator, FlaskConical, Globe2, Languages, Leaf, Atom, Beaker, X, FileText } from 'lucide-react';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -14,6 +13,7 @@ const iconMap: Record<string, React.ElementType> = {
 export default function SubjectPicker({ subject, classLevel, description, compact = false }: { subject: string; classLevel: number; description?: string; compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const Icon = iconMap[subject] || BookOpen;
 
   useEffect(() => {
     if (!open) return;
@@ -34,7 +34,8 @@ export default function SubjectPicker({ subject, classLevel, description, compac
     <div className="subject-modal-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
       <div className="subject-modal" role="dialog" aria-modal="true" aria-labelledby={`subject-${classLevel}-${subject}`} onMouseDown={e => e.stopPropagation()}>
         <button type="button" className="subject-modal-close" onClick={() => setOpen(false)} aria-label="Close"><X /></button>
-        <div className="subject-modal-art"><Art name={subject} /></div>
+        <div className="subject-modal-kicker">CLASS {classLevel} / SUBJECT</div>
+        <div className="subject-modal-icon"><Icon /></div>
         <h3 id={`subject-${classLevel}-${subject}`}>{subject}</h3>
         <p>Choose what you want to study.</p>
         <div className="subject-choice-grid">
@@ -52,9 +53,9 @@ export default function SubjectPicker({ subject, classLevel, description, compac
 
   return <>
     <button type="button" onClick={() => setOpen(true)} className={`subject-tile group ${compact ? 'subject-tile-compact' : ''}`} aria-label={`Open ${subject} resources`}>
+      <span className="subject-tile-mark"><Icon /></span>
       <span className="subject-tile-copy"><strong>{subject}</strong>{description && <small>{description}</small>}</span>
-      <Art name={subject} className="subject-tile-art" />
-      <ArrowUpRight className="subject-tile-arrow" aria-hidden="true" />
+      <ArrowUpRight className="subject-tile-arrow" />
     </button>
     {modal}
   </>;
