@@ -256,8 +256,8 @@ main img{border-radius:10px}
 
 
 /* ===== Layer 3: accent themes (each one repaints the whole app) ===== */
-:root,:root[data-accent="indigo"]{--navy:#1b2166;--ink:#1b2166;--ink-muted:#474d8a;--ink-faint:#6b72a8;--sun:#ffc75f;--peri:#8d9bff;--blush:#ffbdde;--mint:#7fe0b0;--ivory:#e4ecff;--ivory-deep:#d3defb;--border:#c7d2f2;--border-light:#d9e1f8;--surface-raised:#eef2ff;--accent:#1b2166;--accent-strong:#121750;--accent-light:#e6e9ff}
-:root[data-accent="forest"]{--navy:#0f4d2e;--ink:#0d3d25;--ink-muted:#3d6b52;--ink-faint:#5f8874;--sun:#f5d76e;--peri:#7fd1a0;--blush:#f7b7a3;--mint:#b8e986;--ivory:#e3f3e6;--ivory-deep:#cfe8d5;--border:#bcdcc6;--border-light:#d2e8d9;--surface-raised:#eef8f0;--accent:#0f4d2e;--accent-strong:#093820;--accent-light:#dff2e5}
+:root,:root[data-accent="indigo"]{--zebra-a:#2f6fed;--zebra-b:#6fa8ff;--navy:#1b2166;--ink:#1b2166;--ink-muted:#474d8a;--ink-faint:#6b72a8;--sun:#ffc75f;--peri:#8d9bff;--blush:#ffbdde;--mint:#7fe0b0;--ivory:#e4ecff;--ivory-deep:#d3defb;--border:#c7d2f2;--border-light:#d9e1f8;--surface-raised:#eef2ff;--accent:#1b2166;--accent-strong:#121750;--accent-light:#e6e9ff}
+:root[data-accent="forest"]{--zebra-a:#8fcf9a;--zebra-b:#cfe8c5;--navy:#0f4d2e;--ink:#0d3d25;--ink-muted:#3d6b52;--ink-faint:#5f8874;--sun:#f5d76e;--peri:#7fd1a0;--blush:#f7b7a3;--mint:#b8e986;--ivory:#e3f3e6;--ivory-deep:#cfe8d5;--border:#bcdcc6;--border-light:#d2e8d9;--surface-raised:#eef8f0;--accent:#0f4d2e;--accent-strong:#093820;--accent-light:#dff2e5}
 :root[data-accent="ocean"]{--navy:#06364d;--ink:#052c3f;--ink-muted:#3a6479;--ink-faint:#5f8598;--sun:#ffd166;--peri:#5fd0e6;--blush:#ffb8a3;--mint:#9be7c4;--ivory:#dff4f8;--ivory-deep:#c8e8ef;--border:#b6dce6;--border-light:#cce8ef;--surface-raised:#eaf8fb;--accent:#06506b;--accent-strong:#06364d;--accent-light:#d6f0f6}
 body,html{background:var(--ivory)}
 h1,h2,h3,.font-display,.brand-lockup strong{font-family:"Bricolage Grotesque","DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -1167,7 +1167,7 @@ main:has(.contributors-intro){
   .ab-block{min-height:250px;padding:24px!important}
 }
 
-/* ===== V8.1 single zebra hero: theme-aware, drawn continuously ===== */
+/* ===== Static single zebra hero: theme-aware ===== */
 .home-hero-panel{
   background:var(--surface)!important;
 }
@@ -1185,7 +1185,7 @@ main:has(.contributors-intro){
 .hero-zebra-layer{
   position:absolute;
   inset:-1px;
-  background:linear-gradient(112deg,var(--accent-strong) 0%,var(--accent) 48%,var(--sun) 100%);
+  background:linear-gradient(112deg,var(--zebra-a,var(--accent-strong)) 0%,var(--zebra-b,var(--accent)) 48%,var(--sun) 100%);
   -webkit-mask-image:url('/zebra-pattern.png');
   mask-image:url('/zebra-pattern.png');
   -webkit-mask-mode:luminance;
@@ -1196,17 +1196,8 @@ main:has(.contributors-intro){
   mask-size:100% 100%;
   -webkit-mask-position:center;
   mask-position:center;
-  clip-path:inset(0 100% 0 0);
-  animation:zebraDraw 12s cubic-bezier(.65,0,.2,1) infinite;
 }
 .hero-zebra-glow{display:none!important}
-@keyframes zebraDraw{
-  0%{clip-path:inset(0 100% 0 0)}
-  8%{clip-path:inset(0 92% 0 0)}
-  48%{clip-path:inset(0 0 0 0)}
-  72%{clip-path:inset(0 0 0 0)}
-  100%{clip-path:inset(0 100% 0 0)}
-}
 @media(max-width:700px){
   .hero-zebra{inset:0!important;opacity:.2!important}
   .hero-zebra-layer{
@@ -1214,7 +1205,3 @@ main:has(.contributors-intro){
     mask-size:100% 100%;
   }
 }
-@media(prefers-reduced-motion:reduce){
-  .hero-zebra-layer{animation:none!important;clip-path:inset(0)!important}
-}
-
