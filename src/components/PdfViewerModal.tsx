@@ -94,6 +94,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [pdf, setPdf] = useState<any>(null);
   const [pageCount, setPageCount] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0);
   const [failed, setFailed] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [scale, setScale] = useState(1);
@@ -107,6 +108,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
 
     let cancelled = false;
     setLoading(true);
+    setLoadProgress(0);
     setFailed(false);
     setPdf(null);
     setPageCount(0);
@@ -118,10 +120,16 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
 
         const task = pdfjs.getDocument({
           url: fileUrl,
-          rangeChunkSize: 1024 * 1024,
+          // Smaller chunks feel much faster on mobile networks while retaining
+          // HTTP range loading for large handwritten PDFs.
+          rangeChunkSize: 512 * 1024,
           disableAutoFetch: false,
           disableStream: false,
+          isEvalSupported: true,
         });
+        task.onProgress = ({ loaded, total }: { loaded: number; total: number }) => {
+          if (total > 0) setLoadProgress(Math.max(1, Math.min(99, Math.round((loaded / total) * 100))));
+        };
 
         const document = await task.promise;
         if (cancelled) {
@@ -130,6 +138,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
         }
         setPdf(document);
         setPageCount(document.numPages);
+        setLoadProgress(100);
         setLoading(false);
       } catch (error) {
         console.error('[pdf-reader]', error);
@@ -219,9 +228,12 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
             </div>
           ) : loading ? (
             <div className="pdf-reader-loading">
-              <Loader2 />
-              <strong>Opening note…</strong>
-              <span>The first page appears as soon as it is ready.</span>
+              <div className="pdf-load-progress" aria-label={`Loading ${loadProgress}%`}>
+                <div className="pdf-load-progress-bar" style={{ width: `${Math.max(4, loadProgress)}%` }} />
+              </div>
+              <div className="pdf-load-spinner"><Loader2 /></div>
+              <strong>{loadProgress > 0 ? `Opening note · ${loadProgress}%` : 'Opening note…'}</strong>
+              <span>Preparing the first pages inside Archivum.</span>
             </div>
           ) : (
             <div className="pdf-reader-pages">
