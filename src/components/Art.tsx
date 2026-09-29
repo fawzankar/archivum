@@ -24,21 +24,19 @@ const art: Record<string, React.ReactNode> = {
     <path d="M40 104h40M60 98v6" stroke={N} strokeWidth="5" strokeLinecap="round"/>
   </>,
   English: <>
-    <path d="M12 30c18-8 34-6 48 4v66c-14-10-30-12-48-4Z" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M108 30c-18-8-34-6-48 4v66c14-10 30-12 48-4Z" fill={K} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M22 48c8-2 16-1 26 3M22 62c8-2 16-1 26 3" stroke={N} strokeWidth="3" strokeLinecap="round"/>
-    <path d="M84 8l14 14-30 34-10 2 2-10Z" fill={Y} stroke={N} strokeWidth="3.5" strokeLinejoin="round"/>
+    <rect x="16" y="14" width="88" height="92" rx="14" fill={W} stroke={N} strokeWidth="4"/>
+    <text x="60" y="83" textAnchor="middle" fontFamily="Georgia, serif" fontSize="62" fontWeight="700" fill={N}>A</text>
+    <path d="M30 94h60" stroke={Y} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Hindi: <>
-    <rect x="20" y="14" width="80" height="92" rx="10" fill={Y} stroke={N} strokeWidth="4"/>
-    <path d="M34 42h52" stroke={N} strokeWidth="5" strokeLinecap="round"/>
-    <path d="M44 42v34c0 8 8 10 14 6M62 42v40M76 42v22c0 8 6 10 10 8" stroke={N} strokeWidth="5" strokeLinecap="round" fill="none"/>
-    <circle cx="90" cy="92" r="16" fill={P} stroke={N} strokeWidth="3.5"/>
+    <rect x="16" y="14" width="88" height="92" rx="14" fill={Y} stroke={N} strokeWidth="4"/>
+    <text x="60" y="82" textAnchor="middle" fontFamily="Noto Sans Devanagari, sans-serif" fontSize="58" fontWeight="700" fill={N}>अ</text>
+    <path d="M30 96h60" stroke={P} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Urdu: <>
-    <path d="M60 10c10 22 26 32 26 54a26 26 0 0 1-52 0c0-22 16-32 26-54Z" fill={P} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M60 38v40" stroke={N} strokeWidth="4" strokeLinecap="round"/><circle cx="60" cy="84" r="5" fill={N}/>
-    <path d="M16 108h88" stroke={N} strokeWidth="5" strokeLinecap="round"/><path d="M28 108c6-10 14-12 22-8M72 100c8-4 16-2 22 8" stroke={N} strokeWidth="4" fill="none" strokeLinecap="round"/>
+    <rect x="16" y="14" width="88" height="92" rx="14" fill={P} stroke={N} strokeWidth="4"/>
+    <text x="60" y="81" textAnchor="middle" direction="rtl" fontFamily="Noto Nastaliq Urdu, Noto Naskh Arabic, serif" fontSize="52" fontWeight="700" fill={N}>ا</text>
+    <path d="M30 96h60" stroke={W} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Biology: <>
     <path d="M60 106C24 100 14 62 26 30c34 4 52 26 34 76Z" fill={G} stroke={N} strokeWidth="4" strokeLinejoin="round"/>

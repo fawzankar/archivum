@@ -23,9 +23,19 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
   return <div className="hm">
     <div className="hm-shell">
-      <header className="hm-top">
-        <PersonalGreeting activeClass={activeClass} />
-        <div className="hm-search"><HomeClient /></div>
+      <header className="hm-top home-hero-panel">
+        <div className="home-hero-copy">
+          <span className="home-hero-kicker">ARCHIVUM · CLASS {activeClass}</span>
+          <PersonalGreeting activeClass={activeClass} />
+          <p className="home-hero-intro">Find notes, previous-year papers and practice material without digging through old chats.</p>
+          <div className="hm-search"><HomeClient /></div>
+        </div>
+        <div className="home-hero-illustration" aria-hidden="true">
+          <div className="home-hero-orbit home-hero-orbit-a" />
+          <div className="home-hero-orbit home-hero-orbit-b" />
+          <Art name="notes" className="home-hero-art" />
+          <span className="home-hero-sticker">STUDY<br/>ARCHIVE</span>
+        </div>
       </header>
 
       <section className="hm-jump" aria-label="Start here">

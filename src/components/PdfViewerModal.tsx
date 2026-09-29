@@ -3,7 +3,11 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import { X, ExternalLink, Download, FileText, ZoomIn, ZoomOut, RotateCcw, Maximize2, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
 
-type PDFPageProxy = { getViewport: (options: { scale: number }) => { width: number; height: number }; render: (options: { canvasContext: CanvasRenderingContext2D; viewport: { width: number; height: number }; intent?: string }) => { promise: Promise<unknown>; cancel?: () => void } };
+type Viewport = { width: number; height: number };
+type PDFPageProxy = {
+  getViewport: (options: { scale: number }) => Viewport;
+  render: (options: { canvasContext: CanvasRenderingContext2D; viewport: Viewport; intent?: string }) => { promise: Promise<unknown>; cancel?: () => void };
+};
 type PDFDocumentProxy = { numPages: number; getPage: (n: number) => Promise<PDFPageProxy>; destroy: () => Promise<void> };
 interface Props { resource: Resource | null; onClose: () => void; }
 
@@ -16,10 +20,88 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [retry, setRetry] = useState(0);
   const stageRef = useRef<HTMLDivElement>(null);
   const docRef = useRef<PDFDocumentProxy | null>(null);
+  const observerRef = useRef<IntersectionObserver | null>(null);
   const renderToken = useRef(0);
+  const renderedSet = useRef<Set<number>>(new Set());
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(resource.file_name || '')));
+
+  const renderPage = async (documentProxy: PDFDocumentProxy, pageNumber: number, token: number) => {
+    const stage = stageRef.current;
+    if (!stage || token !== renderToken.current || renderedSet.current.has(pageNumber)) return;
+    const wrapper = stage.querySelector(`[data-pdf-page="${pageNumber}"]`) as HTMLElement | null;
+    if (!wrapper) return;
+    try {
+      const page = await documentProxy.getPage(pageNumber);
+      if (token !== renderToken.current) return;
+      const availableWidth = Math.max(260, stage.clientWidth - 20);
+      const baseViewport = page.getViewport({ scale: 1 });
+      const scale = Math.max(0.55, Math.min(2.2, (availableWidth / baseViewport.width) * zoom));
+      const viewport = page.getViewport({ scale });
+      const canvas = document.createElement('canvas');
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.ceil(viewport.width * ratio);
+      canvas.height = Math.ceil(viewport.height * ratio);
+      canvas.style.width = `${viewport.width}px`;
+      canvas.style.height = `${viewport.height}px`;
+      const context = canvas.getContext('2d', { alpha: false });
+      if (!context) throw new Error('Canvas unavailable');
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      context.fillStyle = '#ffffff';
+      context.fillRect(0, 0, viewport.width, viewport.height);
+      wrapper.style.width = `${viewport.width}px`;
+      wrapper.style.minHeight = `${viewport.height}px`;
+      wrapper.replaceChildren(canvas);
+      await page.render({ canvasContext: context, viewport, intent: 'display' }).promise;
+      if (token !== renderToken.current) return;
+      renderedSet.current.add(pageNumber);
+      setRenderedPages(renderedSet.current.size);
+    } catch (error) {
+      if (token === renderToken.current) console.error('[ARCHIVUM PDF page]', error);
+    }
+  };
+
+  const prepareStage = async (documentProxy: PDFDocumentProxy, token: number) => {
+    const stage = stageRef.current;
+    if (!stage || token !== renderToken.current) return;
+    observerRef.current?.disconnect();
+    renderedSet.current = new Set();
+    setRenderedPages(0);
+    stage.querySelectorAll('[data-pdf-page]').forEach(node => node.remove());
+
+    const firstPage = await documentProxy.getPage(1);
+    if (token !== renderToken.current) return;
+    const base = firstPage.getViewport({ scale: 1 });
+    const availableWidth = Math.max(260, stage.clientWidth - 20);
+    const initialScale = Math.max(0.55, Math.min(2.2, availableWidth / base.width));
+    const pageHeight = base.height * initialScale;
+
+    for (let pageNumber = 1; pageNumber <= documentProxy.numPages; pageNumber += 1) {
+      const wrapper = document.createElement('div');
+      wrapper.dataset.pdfPage = String(pageNumber);
+      wrapper.className = 'pdf-page-wrap pdf-page-placeholder';
+      wrapper.setAttribute('aria-label', `Page ${pageNumber}`);
+      wrapper.style.width = `${Math.min(availableWidth, base.width * initialScale)}px`;
+      wrapper.style.minHeight = `${pageHeight}px`;
+      wrapper.innerHTML = `<span>Page ${pageNumber}</span>`;
+      stage.appendChild(wrapper);
+    }
+
+    const wrappers = Array.from(stage.querySelectorAll<HTMLElement>('[data-pdf-page]'));
+    observerRef.current = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const pageNumber = Number((entry.target as HTMLElement).dataset.pdfPage);
+          void renderPage(documentProxy, pageNumber, token);
+        }
+      });
+    }, { root: stage, rootMargin: '700px 0px', threshold: 0.01 });
+    wrappers.forEach(wrapper => observerRef.current?.observe(wrapper));
+
+    // Paint the first page immediately so the reader feels instant on mobile.
+    void renderPage(documentProxy, 1, token);
+  };
 
   useEffect(() => {
     if (!resource || isImage) return;
@@ -32,8 +114,10 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       setPageCount(0);
       setRenderedPages(0);
       setZoom(1);
+      renderedSet.current = new Set();
       renderToken.current += 1;
       const token = renderToken.current;
+      observerRef.current?.disconnect();
       if (docRef.current) {
         await docRef.current.destroy().catch(() => {});
         docRef.current = null;
@@ -53,7 +137,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
         docRef.current = documentProxy;
         setPageCount(documentProxy.numPages);
         setLoading(false);
-        requestAnimationFrame(() => renderPages(documentProxy, token));
+        requestAnimationFrame(() => { void prepareStage(documentProxy, token); });
       } catch (error) {
         if (cancelled || (error instanceof DOMException && error.name === 'AbortError')) return;
         console.error('[ARCHIVUM PDF reader]', error);
@@ -62,11 +146,12 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       }
     };
 
-    load();
+    void load();
     return () => {
       cancelled = true;
       controller.abort();
       renderToken.current += 1;
+      observerRef.current?.disconnect();
       docRef.current?.destroy().catch(() => {});
       docRef.current = null;
       stageRef.current?.querySelectorAll('[data-pdf-page]').forEach(node => node.remove());
@@ -74,49 +159,13 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resource?.id, fileUrl, isImage, retry]);
 
-  const renderPages = async (documentProxy: PDFDocumentProxy, token: number) => {
-    const stage = stageRef.current;
-    if (!stage || token !== renderToken.current) return;
-    stage.querySelectorAll('[data-pdf-page]').forEach(node => node.remove());
-    const availableWidth = Math.max(280, stage.clientWidth - 32);
-    let completed = 0;
-    for (let pageNumber = 1; pageNumber <= documentProxy.numPages; pageNumber += 1) {
-      if (token !== renderToken.current) return;
-      const page = await documentProxy.getPage(pageNumber);
-      const baseViewport = page.getViewport({ scale: 1 });
-      const scale = Math.max(0.55, Math.min(2.2, (availableWidth / baseViewport.width) * zoom));
-      const viewport = page.getViewport({ scale });
-      const wrapper = document.createElement('div');
-      wrapper.dataset.pdfPage = 'true';
-      wrapper.className = 'pdf-page-wrap';
-      wrapper.setAttribute('aria-label', `Page ${pageNumber}`);
-      const canvas = document.createElement('canvas');
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.ceil(viewport.width * ratio);
-      canvas.height = Math.ceil(viewport.height * ratio);
-      canvas.style.width = `${viewport.width}px`;
-      canvas.style.height = `${viewport.height}px`;
-      const context = canvas.getContext('2d', { alpha: false });
-      if (!context) throw new Error('Canvas unavailable');
-      context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      context.fillStyle = '#ffffff';
-      context.fillRect(0, 0, viewport.width, viewport.height);
-      wrapper.appendChild(canvas);
-      stage.appendChild(wrapper);
-      await page.render({ canvasContext: context, viewport, intent: 'display' }).promise;
-      completed += 1;
-      setRenderedPages(completed);
-    }
-  };
-
   useEffect(() => {
     if (!docRef.current || isImage || loading || failed) return;
+    const documentProxy = docRef.current;
     const token = renderToken.current + 1;
     renderToken.current = token;
-    renderPages(docRef.current, token).catch(error => {
-      console.error('[ARCHIVUM PDF render]', error);
-      setFailed(true);
-    });
+    // Rebuild placeholders on zoom instead of synchronously rendering every page.
+    void prepareStage(documentProxy, token);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [zoom]);
 
@@ -153,7 +202,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
 
         <div className="pdf-reader-stage" ref={stageRef}>
           {isImage && <div className="pdf-reader-image-wrap"><img src={fileUrl} alt={resource.title} /></div>}
-          {!isImage && loading && !failed && <div className="pdf-reader-loading"><div className="pdf-reader-loading-card"><Loader2 className="animate-spin"/><strong>Opening {resource.resource_type || 'document'}</strong><span>Getting the pages ready…</span></div></div>}
+          {!isImage && loading && !failed && <div className="pdf-reader-loading"><div className="pdf-reader-loading-card"><Loader2 className="animate-spin"/><strong>Opening {resource.resource_type || 'document'}</strong><span>Getting the first page ready…</span></div></div>}
           {!isImage && failed && <div className="pdf-reader-error"><div className="pdf-reader-error-card"><div className="pdf-reader-error-icon"><AlertTriangle /></div><h3>This document could not be rendered here.</h3><p>You can retry the reader or open the original file.</p><div className="pdf-reader-error-actions"><button type="button" className="pdf-reader-primary" onClick={() => setRetry(value => value + 1)}><RefreshCw/> Try again</button><button type="button" className="pdf-reader-secondary" onClick={openOriginal}><ExternalLink/> Open file</button><a className="pdf-reader-secondary" href={fileUrl} download={resource.file_name || resource.title}><Download/> Download</a></div></div></div>}
         </div>
 

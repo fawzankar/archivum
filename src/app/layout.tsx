@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');const t=localStorage.getItem('archivum_theme');if(['indigo','forest','tangerine','berry','ocean'].includes(a||''))document.documentElement.setAttribute('data-accent',a);}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
+  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');const t=localStorage.getItem('archivum_theme');const migrated=a==='tangerine'?'ink-wash':a;if(['indigo','forest','ink-wash','berry','ocean'].includes(migrated||''))document.documentElement.setAttribute('data-accent',migrated);}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
     <ThemeProvider><StudentClassProvider><ToastProvider>
       <PwaRegister /><SplashScreen /><NavigationProgress /><ClassTransitionOverlay /><FirstLaunch />
       <Suspense fallback={null}><Navbar /></Suspense>

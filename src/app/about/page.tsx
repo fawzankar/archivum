@@ -4,20 +4,32 @@ import Art from '@/components/Art';
 
 export default function AboutPage() {
   return <main className="ab">
-    <PageHead title="Built from a problem Fawzan Kar faced himself." art="notes" tone="sun">
-      ARCHIVUM is a student-built place for SJS students to keep, find and share useful academic material.
+    <PageHead title="A home for the academic archive." art="notes" tone="sun">
+      ARCHIVUM is a student-built academic archive for SJS students to keep, find and share notes, previous-year papers, MCQs and other useful study material.
     </PageHead>
 
     <section className="ab-story">
-      <p>Fawzan Kar, who founded ARCHIVUM, knew how hard it was to find previous-year papers and quick notes in one reliable place. A single paper could take ages to track down, and useful notes were scattered everywhere.</p>
-      <p>His juniors kept asking him for papers too. When he got some himself, he read through them and moved on, so they were never stored for the next batch.</p>
-      <p>ARCHIVUM is the fix: a simple archive that keeps these documents safe and easy to find for fellow Josephites.</p>
+      <div className="ab-story-heading">
+        <span className="ab-kicker">ABOUT ARCHIVUM</span>
+        <h2>Built to make useful study material easier to find.</h2>
+      </div>
+      <p>ARCHIVUM exists to solve a simple problem: important academic material should not disappear into chats, folders and old devices. The aim is to give students one organised place where they can discover, read and save resources for their classes.</p>
+      <p>ARCHIVUM is currently managed by the members of the Quest Club, who help keep the archive useful for the students who rely on it.</p>
+    </section>
+
+    <section className="ab-story ab-our-story">
+      <div className="ab-story-heading">
+        <span className="ab-kicker">OUR STORY</span>
+        <h2>It started with exam preparation.</h2>
+      </div>
+      <p>When our founder, Fawzan Kar, was studying for exams, he needed previous-year questions, MCQs and other practice material. The problem was that these resources were not properly stored in one place, so finding the right paper or set of questions could take far longer than studying from it.</p>
+      <p>He also noticed that useful material was often passed around informally and then became difficult for the next batch to recover. ARCHIVUM grew from that experience: a practical archive designed so students can spend less time hunting for resources and more time using them.</p>
     </section>
 
     <section className="ab-split">
       <div className="ab-block ab-peri">
         <h2>ARCHIVUM × QUEST</h2>
-        <p>ARCHIVUM is a sister organisation of SJS Quest, the St. Joseph’s school quest community.</p>
+        <p>ARCHIVUM is connected with SJS Quest, the St. Joseph’s school quest community, and is currently looked after by Quest Club members.</p>
         <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hm-pill">Visit SJS Quest</a>
         <Art name="SST" className="ab-art" />
       </div>

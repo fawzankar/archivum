@@ -3,8 +3,8 @@
 import React, { useMemo, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
-import { BookOpen, FolderOpen, ArrowRight, Layers3 } from 'lucide-react';
-import { CLASS_SUBJECTS, resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
+import { BookOpen, ArrowRight, Layers3 } from 'lucide-react';
+import { resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
 
 interface NotesClientProps {
   allNotes: Resource[];
@@ -17,7 +17,6 @@ const CLASS_CONFIG = [9, 10, 11, 12] as const;
 export default function NotesClient({ allNotes, initialClass, initialSubject }: NotesClientProps) {
   const [selectedClass, setSelectedClass] = useState<number>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
-  const [selectedChapter, setSelectedChapter] = useState<string>('');
 
   const classNotes = useMemo(() => allNotes.filter((n) => n.class_level === selectedClass), [allNotes, selectedClass]);
   const availableSubjects = subjectsForClass(selectedClass);
@@ -28,16 +27,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
     return classNotes.filter((n) => resourceSubjectMatches(n.subject, activeSubject));
   }, [classNotes, activeSubject]);
 
-  const availableChapters = useMemo(() => {
-    const set = new Set<string>();
-    subjectNotes.forEach((n) => { if (n.chapter) set.add(n.chapter); });
-    return Array.from(set);
-  }, [subjectNotes]);
-
-  const filteredNotes = useMemo(() => {
-    if (!selectedChapter) return subjectNotes;
-    return subjectNotes.filter((n) => n.chapter?.toLowerCase() === selectedChapter.toLowerCase());
-  }, [subjectNotes, selectedChapter]);
+  const filteredNotes = subjectNotes;
 
   return (
     <div className="space-y-7 sm:space-y-9">
@@ -55,7 +45,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
 
         <div className="p-4 sm:p-6 border-t" style={{ borderColor: 'var(--border-light)' }}>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-            <button onClick={() => { setSelectedSubject(''); setSelectedChapter(''); }} className="rounded-2xl border p-3.5 text-left transition-all duration-300 hover:-translate-y-0.5" style={{ borderColor: !activeSubject ? 'var(--accent)' : 'var(--border)', background: !activeSubject ? 'var(--accent-light)' : 'var(--surface-raised)', color: !activeSubject ? 'var(--accent)' : 'var(--ink)' }}>
+            <button onClick={() => { setSelectedSubject(''); }} className="rounded-2xl border p-3.5 text-left transition-all duration-300 hover:-translate-y-0.5" style={{ borderColor: !activeSubject ? 'var(--accent)' : 'var(--border)', background: !activeSubject ? 'var(--accent-light)' : 'var(--surface-raised)', color: !activeSubject ? 'var(--accent)' : 'var(--ink)' }}>
               <span className="block text-lg font-display font-bold">All</span>
               <span className="text-[10px] font-semibold" style={{ color: 'var(--ink-muted)' }}>{classNotes.length} resources</span>
             </button>
@@ -63,7 +53,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
               const active = activeSubject === subject;
               const count = classNotes.filter(n => resourceSubjectMatches(n.subject, subject)).length;
               return (
-                <button key={subject} onClick={() => { setSelectedSubject(subject); setSelectedChapter(''); }} className="rounded-2xl border p-3.5 text-left transition-all duration-300 hover:-translate-y-0.5 active:scale-[.98]" style={{ borderColor: active ? 'var(--accent)' : 'var(--border)', background: active ? 'var(--accent)' : 'var(--surface-raised)', color: active ? 'var(--accent-contrast)' : 'var(--ink)' }}>
+                <button key={subject} onClick={() => { setSelectedSubject(subject); }} className="rounded-2xl border p-3.5 text-left transition-all duration-300 hover:-translate-y-0.5 active:scale-[.98]" style={{ borderColor: active ? 'var(--accent)' : 'var(--border)', background: active ? 'var(--accent)' : 'var(--surface-raised)', color: active ? 'var(--accent-contrast)' : 'var(--ink)' }}>
                   <span className="block text-base sm:text-lg font-display font-bold">{subject}</span>
                   <span className="text-[10px] font-semibold opacity-70">{count} {count === 1 ? 'resource' : 'resources'}</span>
                 </button>
@@ -75,19 +65,12 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
         <div className="px-4 pb-4 sm:px-6 sm:pb-6">
           <div className="flex gap-2 overflow-x-auto no-scrollbar">
             {CLASS_CONFIG.map(level => (
-              <button key={level} onClick={() => { setSelectedClass(level); setSelectedSubject(''); setSelectedChapter(''); }} className="shrink-0 px-4 py-2 rounded-full text-[11px] font-bold border transition-all" style={{ borderColor: selectedClass === level ? 'var(--accent)' : 'var(--border)', background: selectedClass === level ? 'var(--accent-light)' : 'var(--surface)', color: selectedClass === level ? 'var(--accent)' : 'var(--ink-muted)' }}>Class {level}</button>
+              <button key={level} onClick={() => { setSelectedClass(level); setSelectedSubject(''); }} className="shrink-0 px-4 py-2 rounded-full text-[11px] font-bold border transition-all" style={{ borderColor: selectedClass === level ? 'var(--accent)' : 'var(--border)', background: selectedClass === level ? 'var(--accent-light)' : 'var(--surface)', color: selectedClass === level ? 'var(--accent)' : 'var(--ink-muted)' }}>Class {level}</button>
             ))}
           </div>
         </div>
       </section>
 
-      {availableChapters.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 p-3.5 rounded-2xl border animate-fade" style={{ background: 'var(--surface-raised)', borderColor: 'var(--border)' }}>
-          <span className="text-xs font-semibold mr-1 flex items-center gap-1.5" style={{ color: 'var(--ink-muted)' }}><FolderOpen className="w-3.5 h-3.5" style={{ color: 'var(--accent)' }} /> Chapter</span>
-          <button onClick={() => setSelectedChapter('')} className="px-3 py-1.5 rounded-lg text-[11px] font-bold" style={{ background: !selectedChapter ? 'var(--accent)' : 'transparent', color: !selectedChapter ? 'var(--accent-contrast)' : 'var(--ink-muted)' }}>All</button>
-          {availableChapters.map(ch => <button key={ch} onClick={() => setSelectedChapter(ch)} className="px-3 py-1.5 rounded-lg text-[11px] font-semibold" style={{ background: selectedChapter === ch ? 'var(--accent-light)' : 'transparent', color: selectedChapter === ch ? 'var(--accent)' : 'var(--ink-muted)' }}>{ch}</button>)}
-        </div>
-      )}
 
       <div className="flex items-end justify-between gap-4">
         <div><p className="text-[10px] uppercase tracking-[.18em] font-bold" style={{ color: 'var(--accent)' }}>ARCHIVE RESULTS</p><h3 className="font-display font-bold text-xl mt-1">{activeSubject || 'All subjects'} <span className="text-sm font-medium" style={{ color: 'var(--ink-faint)' }}>· {filteredNotes.length}</span></h3></div>
