@@ -120,7 +120,7 @@ export default function SearchClient({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search notes, board papers, school exam papers, topics, chapters..."
+            placeholder=""
             className="w-full py-4 px-3.5 text-sm bg-transparent outline-none font-normal"
             style={{ color: 'var(--ink)' }}
           />

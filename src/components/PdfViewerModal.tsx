@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import { Resource } from '@/lib/resources';
-import { X, ExternalLink, Download, FileText, ZoomIn, ZoomOut, RotateCcw, Maximize2, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
+import { X, ExternalLink, Download, FileText, ZoomIn, ZoomOut, RotateCcw, Maximize2, Loader2, AlertTriangle, RefreshCw, ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Viewport = { width: number; height: number };
 type PDFPageProxy = {
@@ -18,11 +18,21 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [pageCount, setPageCount] = useState(0);
   const [renderedPages, setRenderedPages] = useState(0);
   const [retry, setRetry] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
   const stageRef = useRef<HTMLDivElement>(null);
   const docRef = useRef<PDFDocumentProxy | null>(null);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const renderToken = useRef(0);
+
+  useEffect(() => {
+    const update = () => setIsMobile(window.matchMedia('(max-width: 700px)').matches);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
   const renderedSet = useRef<Set<number>>(new Set());
+  const touchStartX = useRef<number | null>(null);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(resource.file_name || '')));
@@ -35,9 +45,11 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     try {
       const page = await documentProxy.getPage(pageNumber);
       if (token !== renderToken.current) return;
-      const availableWidth = Math.max(260, stage.clientWidth - 20);
       const baseViewport = page.getViewport({ scale: 1 });
-      const scale = Math.max(0.55, Math.min(2.2, (availableWidth / baseViewport.width) * zoom));
+      const frameWidth = Math.max(220, wrapper.clientWidth || stage.clientWidth - 18);
+      const frameHeight = Math.max(320, wrapper.clientHeight || frameWidth * 1.414);
+      const fitScale = Math.min((frameWidth - 8) / baseViewport.width, (frameHeight - 8) / baseViewport.height);
+      const scale = Math.max(0.45, Math.min(2.2, fitScale * zoom));
       const viewport = page.getViewport({ scale });
       const canvas = document.createElement('canvas');
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -45,13 +57,13 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       canvas.height = Math.ceil(viewport.height * ratio);
       canvas.style.width = `${viewport.width}px`;
       canvas.style.height = `${viewport.height}px`;
+      canvas.style.maxWidth = '100%';
+      canvas.style.maxHeight = '100%';
       const context = canvas.getContext('2d', { alpha: false });
       if (!context) throw new Error('Canvas unavailable');
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       context.fillStyle = '#ffffff';
       context.fillRect(0, 0, viewport.width, viewport.height);
-      wrapper.style.width = `${viewport.width}px`;
-      wrapper.style.minHeight = `${viewport.height}px`;
       wrapper.replaceChildren(canvas);
       await page.render({ canvasContext: context, viewport, intent: 'display' }).promise;
       if (token !== renderToken.current) return;
@@ -70,24 +82,32 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     setRenderedPages(0);
     stage.querySelectorAll('[data-pdf-page]').forEach(node => node.remove());
 
-    const firstPage = await documentProxy.getPage(1);
     if (token !== renderToken.current) return;
-    const base = firstPage.getViewport({ scale: 1 });
-    const availableWidth = Math.max(260, stage.clientWidth - 20);
-    const initialScale = Math.max(0.55, Math.min(2.2, availableWidth / base.width));
-    const pageHeight = base.height * initialScale;
+    const availableWidth = Math.max(220, Math.min(stage.clientWidth - 18, 980));
+    const frameWidth = isMobile ? Math.min(availableWidth, window.innerWidth - 18) : availableWidth;
+    const frameHeight = isMobile ? Math.max(320, stage.clientHeight - 16) : Math.max(420, frameWidth * 1.414);
 
-    for (let pageNumber = 1; pageNumber <= documentProxy.numPages; pageNumber += 1) {
+    const addPage = (pageNumber: number) => {
       const wrapper = document.createElement('div');
       wrapper.dataset.pdfPage = String(pageNumber);
-      wrapper.className = 'pdf-page-wrap pdf-page-placeholder';
+      wrapper.className = isMobile ? 'pdf-mobile-page pdf-page-placeholder' : 'pdf-page-wrap pdf-page-placeholder';
       wrapper.setAttribute('aria-label', `Page ${pageNumber}`);
-      wrapper.style.width = `${Math.min(availableWidth, base.width * initialScale)}px`;
-      wrapper.style.minHeight = `${pageHeight}px`;
+      wrapper.style.width = `${frameWidth}px`;
+      wrapper.style.height = `${frameHeight}px`;
+      wrapper.style.minHeight = '0';
       wrapper.innerHTML = `<span>Page ${pageNumber}</span>`;
       stage.appendChild(wrapper);
+    };
+
+    if (isMobile) {
+      const safePage = Math.min(Math.max(currentPage, 1), documentProxy.numPages);
+      if (safePage !== currentPage) setCurrentPage(safePage);
+      addPage(safePage);
+      void renderPage(documentProxy, safePage, token);
+      return;
     }
 
+    for (let pageNumber = 1; pageNumber <= documentProxy.numPages; pageNumber += 1) addPage(pageNumber);
     const wrappers = Array.from(stage.querySelectorAll<HTMLElement>('[data-pdf-page]'));
     observerRef.current = new IntersectionObserver(entries => {
       entries.forEach(entry => {
@@ -96,12 +116,17 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           void renderPage(documentProxy, pageNumber, token);
         }
       });
-    }, { root: stage, rootMargin: '700px 0px', threshold: 0.01 });
+    }, { root: stage, rootMargin: '900px 0px', threshold: 0.01 });
     wrappers.forEach(wrapper => observerRef.current?.observe(wrapper));
-
-    // Paint the first page immediately so the reader feels instant on mobile.
     void renderPage(documentProxy, 1, token);
   };
+
+  useEffect(() => {
+    if (!resource) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = previousOverflow; };
+  }, [resource]);
 
   useEffect(() => {
     if (!resource || isImage) return;
@@ -114,6 +139,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       setPageCount(0);
       setRenderedPages(0);
       setZoom(1);
+      setCurrentPage(1);
       renderedSet.current = new Set();
       renderToken.current += 1;
       const token = renderToken.current;
@@ -167,7 +193,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     // Rebuild placeholders on zoom instead of synchronously rendering every page.
     void prepareStage(documentProxy, token);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom]);
+  }, [zoom, isMobile, currentPage]);
 
   useEffect(() => {
     if (!resource) return;
@@ -200,13 +226,26 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           </div>
         </header>
 
-        <div className="pdf-reader-stage" ref={stageRef}>
+        <div className={`pdf-reader-stage ${isMobile && !isImage ? 'mobile-page-mode' : ''}`} ref={stageRef}
+          onTouchStart={event => { if (isMobile) touchStartX.current = event.changedTouches[0]?.clientX ?? null; }}
+          onTouchEnd={event => {
+            if (!isMobile || isImage || touchStartX.current == null) return;
+            const endX = event.changedTouches[0]?.clientX ?? touchStartX.current;
+            const delta = endX - touchStartX.current;
+            if (Math.abs(delta) > 45) setCurrentPage(page => delta < 0 ? Math.min(pageCount, page + 1) : Math.max(1, page - 1));
+            touchStartX.current = null;
+          }}>
           {isImage && <div className="pdf-reader-image-wrap"><img src={fileUrl} alt={resource.title} /></div>}
           {!isImage && loading && !failed && <div className="pdf-reader-loading"><div className="pdf-reader-loading-card"><Loader2 className="animate-spin"/><strong>Opening {resource.resource_type || 'document'}</strong><span>Getting the first page ready…</span></div></div>}
           {!isImage && failed && <div className="pdf-reader-error"><div className="pdf-reader-error-card"><div className="pdf-reader-error-icon"><AlertTriangle /></div><h3>This document could not be rendered here.</h3><p>You can retry the reader or open the original file.</p><div className="pdf-reader-error-actions"><button type="button" className="pdf-reader-primary" onClick={() => setRetry(value => value + 1)}><RefreshCw/> Try again</button><button type="button" className="pdf-reader-secondary" onClick={openOriginal}><ExternalLink/> Open file</button><a className="pdf-reader-secondary" href={fileUrl} download={resource.file_name || resource.title}><Download/> Download</a></div></div></div>}
         </div>
+        {!isImage && isMobile && pageCount > 0 && <div className="pdf-mobile-controls">
+          <button type="button" onClick={() => setCurrentPage(page => Math.max(1, page - 1))} disabled={currentPage <= 1} aria-label="Previous page"><ChevronLeft /></button>
+          <button type="button" onClick={() => setCurrentPage(page => Math.min(pageCount, page + 1))} disabled={currentPage >= pageCount} aria-label="Next page"><ChevronRight /></button>
+        </div>}
+        {!isImage && isMobile && pageCount > 0 && <div className="pdf-mobile-counter">{currentPage} / {pageCount}</div>}
 
-        <footer className="pdf-reader-footer"><span>Scroll to read</span><span>{resource.file_name || 'document.pdf'}</span><button type="button" onClick={() => stageRef.current?.requestFullscreen?.()} aria-label="Fullscreen"><Maximize2 /></button></footer>
+        <footer className="pdf-reader-footer"><span>{isMobile ? 'Use the arrows to change pages' : 'Scroll to read'}</span><span>{resource.file_name || 'document.pdf'}</span><button type="button" onClick={() => stageRef.current?.requestFullscreen?.()} aria-label="Fullscreen"><Maximize2 /></button></footer>
       </section>
     </div>
   );

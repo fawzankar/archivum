@@ -1,12 +1,12 @@
 'use client';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
-export type Accent = 'indigo' | 'forest' | 'ink-wash' | 'berry' | 'ocean';
+export type Accent = 'indigo' | 'forest' | 'golden-taupe' | 'cherry-blossom' | 'ocean';
 export const ACCENTS: { id: Accent; label: string; color: string }[] = [
   { id: 'indigo', label: 'Indigo', color: '#1b2166' },
   { id: 'forest', label: 'Forest', color: '#0f4d2e' },
-  { id: 'ink-wash', label: 'Ink Wash', color: '#6D8196' },
-  { id: 'berry', label: 'Berry', color: '#7a1258' },
+  { id: 'golden-taupe', label: 'Golden Taupe', color: '#D4AF37' },
+  { id: 'cherry-blossom', label: 'Cherry Blossom', color: '#FFB7C5' },
   { id: 'ocean', label: 'Ocean', color: '#06506b' },
 ];
 type ThemeMode = 'light';
@@ -16,10 +16,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [accent, setAccentState] = useState<Accent>('indigo');
   useEffect(() => {
     const saved = localStorage.getItem('archivum_accent');
-    const migrated = saved === 'tangerine' ? 'ink-wash' : saved;
+    const migrated = saved === 'tangerine' || saved === 'ink-wash' ? 'golden-taupe' : saved === 'berry' ? 'cherry-blossom' : saved;
     if (migrated && ACCENTS.some(item => item.id === migrated)) {
       setAccentState(migrated as Accent);
-      if (saved === 'tangerine') localStorage.setItem('archivum_accent', 'ink-wash');
+      if (saved === 'tangerine' || saved === 'ink-wash') localStorage.setItem('archivum_accent', 'golden-taupe');
+      if (saved === 'berry') localStorage.setItem('archivum_accent', 'cherry-blossom');
     }
     document.documentElement.classList.remove('dark');
   }, []);

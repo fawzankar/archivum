@@ -461,7 +461,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search title, subject, school..."
+                placeholder=""
                 className="w-full text-xs py-2 pl-9 pr-3 rounded-xl border bg-transparent font-medium outline-none"
                 style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}
               />

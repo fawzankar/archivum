@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
-import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Layers3, Info, Users, RotateCcw, MessageCircle, Sun, Moon } from 'lucide-react';
+import SearchBar from './SearchBar';
+import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink } from 'lucide-react';
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],
@@ -20,7 +21,6 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const searchRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const f = () => setScrolled(window.scrollY > 16);
@@ -32,7 +32,6 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [drawerOpen]);
   useEffect(() => { setDrawerOpen(false); setSearchOpen(false); }, [pathname]);
-  useEffect(() => { if (searchOpen) requestAnimationFrame(() => searchRef.current?.focus()); }, [searchOpen]);
 
   const withClass = (href: string) => studentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${studentClass}` : href;
   const active = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
@@ -51,9 +50,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {searchOpen && <form className="header-search" onSubmit={e => { e.preventDefault(); const q = searchRef.current?.value.trim() || ''; router.push(q ? `/search?q=${encodeURIComponent(q)}` : '/search'); setSearchOpen(false); }}>
-        <div className="archive-shell"><div className="header-search-field"><Search /><input ref={searchRef} autoComplete="off" placeholder="Search notes, papers, subjects…" /><kbd>⌘ K</kbd><button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search"><X /></button></div></div>
-      </form>}
+      {searchOpen && <div className="header-search">
+        <div className="archive-shell"><div className="header-search-field"><SearchBar className="header-search-bar" onSearch={() => setSearchOpen(false)} /><button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search"><X /></button></div></div>
+      </div>}
     </header>
 
     <div className={`menu-layer ${drawerOpen ? 'open' : ''}`}>
@@ -81,6 +80,10 @@ export default function Navbar() {
 
           {displayName && <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset my profile</button>}
         </div>
+
+          <div className="menu-quest-cta">
+            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span><strong>Visit SJS Quest</strong><small>Explore the Quest community</small></span><ExternalLink /></a>
+          </div>
         <div className="menu-note">Your class, name and colour choice stay on this device.</div>
       </aside>
     </div>

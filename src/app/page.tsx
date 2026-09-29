@@ -6,7 +6,6 @@ import ResourceCard from '@/components/ResourceCard';
 import HomeClient from './HomeClient';
 import SubjectPicker from '@/components/SubjectPicker';
 import PersonalGreeting from '@/components/PersonalGreeting';
-import Art from '@/components/Art';
 import { subjectsForClass, SUBJECT_DETAILS } from '@/lib/subjects';
 
 export const runtime = 'nodejs';
@@ -25,27 +24,18 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     <div className="hm-shell">
       <header className="hm-top home-hero-panel">
         <div className="home-hero-copy">
-          <span className="home-hero-kicker">ARCHIVUM · CLASS {activeClass}</span>
           <PersonalGreeting activeClass={activeClass} />
-          <p className="home-hero-intro">Find notes, previous-year papers and practice material without digging through old chats.</p>
+          <p className="home-hero-intro">Your Class {activeClass} notes, previous-year papers and study material — organised so you can find what you need without digging through old chats.</p>
           <div className="hm-search"><HomeClient /></div>
-        </div>
-        <div className="home-hero-illustration" aria-hidden="true">
-          <div className="home-hero-orbit home-hero-orbit-a" />
-          <div className="home-hero-orbit home-hero-orbit-b" />
-          <Art name="notes" className="home-hero-art" />
-          <span className="home-hero-sticker">STUDY<br/>ARCHIVE</span>
         </div>
       </header>
 
       <section className="hm-jump" aria-label="Start here">
         <Link href={`/notes?class=${activeClass}`} className="hm-jump-card hm-sun">
           <div><h2>Class {activeClass} notes</h2><p>Chapter-wise study material, kept in one place.</p><span className="hm-pill">Open notes</span></div>
-          <Art name="notes" className="hm-jump-art" />
         </Link>
         <Link href={`/previous-papers?class=${activeClass}`} className="hm-jump-card hm-peri">
           <div><h2>Previous papers</h2><p>Practise with real question papers.</p><span className="hm-pill">Find papers</span></div>
-          <Art name="papers" className="hm-jump-art" />
         </Link>
       </section>
 
@@ -60,7 +50,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
         <div className="hm-head"><h2 id="hm-recent">Recently added</h2><Link href={`/search?class=${activeClass}`}>See everything</Link></div>
         {recent.length
           ? <div className="hm-recent">{recent.map(r => <ResourceCard key={r.id} resource={r} />)}</div>
-          : <div className="hm-empty"><Art name="default" /><p>Nothing here yet. New material shows up as soon as it’s approved.</p></div>}
+          : <div className="hm-empty"><p>Nothing here yet. New material shows up as soon as it’s approved.</p></div>}
       </section>
     </div>
   </div>;
