@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
-import { BookOpen, ArrowRight, Layers3 } from 'lucide-react';
+import { ArrowRight, BookOpen } from 'lucide-react';
 import { resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
 
 interface NotesClientProps {
@@ -13,6 +13,13 @@ interface NotesClientProps {
 }
 
 const CLASS_CONFIG = [9, 10, 11, 12] as const;
+const notesCache = new Map<number, Resource[]>();
+
+function mergeUnique(current: Resource[], incoming: Resource[]) {
+  const map = new Map<number, Resource>();
+  for (const item of [...current, ...incoming]) map.set(item.id, item);
+  return [...map.values()];
+}
 
 export default function NotesClient({ allNotes, initialClass, initialSubject }: NotesClientProps) {
   const [selectedClass, setSelectedClass] = useState<number>(initialClass);
@@ -24,104 +31,99 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
   useEffect(() => {
     if (loadedClasses.current.has(selectedClass)) return;
     loadedClasses.current.add(selectedClass);
-    let cancelled = false;
+
+    const cached = notesCache.get(selectedClass);
+    if (cached) {
+      setNotes(current => mergeUnique(current, cached));
+      return;
+    }
+
     const controller = new AbortController();
     setLoading(true);
-    fetch(`/api/resources?class=${selectedClass}&type=Notes&limit=24`, { cache: 'no-store', signal: controller.signal })
-      .then((r) => r.ok ? r.json() : Promise.reject(new Error('Could not load notes')))
+    fetch(`/api/resources?class=${selectedClass}&type=Notes&limit=50`, { cache: 'force-cache', signal: controller.signal })
+      .then((response) => response.ok ? response.json() : Promise.reject(new Error('Could not load notes')))
       .then((json) => {
-        if (!cancelled) setNotes((current) => {
-          const incoming = Array.isArray(json.items) ? json.items : [];
-          const merged = [...current, ...incoming];
-          const seen = new Set<number>();
-          return merged.filter((item) => { if (seen.has(item.id)) return false; seen.add(item.id); return true; });
-        });
+        const incoming = Array.isArray(json.items) ? json.items as Resource[] : [];
+        notesCache.set(selectedClass, incoming);
+        setNotes(current => mergeUnique(current, incoming));
       })
       .catch(() => {})
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; controller.abort(); };
+      .finally(() => setLoading(false));
+
+    return () => controller.abort();
   }, [selectedClass]);
 
   const classNotes = useMemo(() => {
     const seen = new Set<string>();
-    return notes.filter((n) => n.class_level === selectedClass).filter((n) => {
+    return notes.filter(n => n.class_level === selectedClass).filter(n => {
       const key = `${n.class_level}|${n.subject}|${n.title.trim().toLowerCase()}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
     });
   }, [notes, selectedClass]);
+
   const availableSubjects = subjectsForClass(selectedClass);
   const activeSubject = selectedSubject && availableSubjects.includes(selectedSubject) ? selectedSubject : '';
-
-  const subjectNotes = useMemo(() => {
-    if (!activeSubject) return classNotes;
-    return classNotes.filter((n) => resourceSubjectMatches(n.subject, activeSubject));
-  }, [classNotes, activeSubject]);
-
-  const filteredNotes = subjectNotes;
+  const subjectCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const subject of availableSubjects) counts.set(subject, classNotes.filter(n => resourceSubjectMatches(n.subject, subject)).length);
+    return counts;
+  }, [availableSubjects, classNotes]);
+  const filteredNotes = useMemo(
+    () => activeSubject ? classNotes.filter(n => resourceSubjectMatches(n.subject, activeSubject)) : classNotes,
+    [classNotes, activeSubject],
+  );
 
   return (
-    <div className="space-y-7 sm:space-y-9">
-      <section className="rounded-[2rem] border overflow-hidden premium-shadow" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-        <div className="p-5 sm:p-7" style={{ background: 'linear-gradient(135deg, var(--accent-light), var(--surface))' }}>
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-[.22em]" style={{ color: 'var(--accent)' }}>CLASS {selectedClass} · NOTES LIBRARY</span>
-              <h2 className="font-display font-bold text-2xl sm:text-3xl mt-2">Choose a subject</h2>
-              <p className="text-xs sm:text-sm mt-1.5" style={{ color: 'var(--ink-muted)' }}>Your class profile controls the subject list, so you only see what applies to you.</p>
-            </div>
-            <Layers3 className="w-6 h-6 shrink-0" style={{ color: 'var(--accent)' }} />
-          </div>
-        </div>
-
-        <div className="p-4 sm:p-6 border-t" style={{ borderColor: 'var(--border-light)' }}>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
-            <button onClick={() => { setSelectedSubject(''); }} className="rounded-2xl border p-3.5 text-left transition-all duration-300 hover:-translate-y-0.5" style={{ borderColor: !activeSubject ? 'var(--accent)' : 'var(--border)', background: !activeSubject ? 'var(--accent-light)' : 'var(--surface-raised)', color: !activeSubject ? 'var(--accent)' : 'var(--ink)' }}>
-              <span className="block text-lg font-display font-bold">All</span>
-              <span className="text-[10px] font-semibold" style={{ color: 'var(--ink-muted)' }}>{classNotes.length} resources</span>
-            </button>
-            {availableSubjects.map((subject) => {
-              const active = activeSubject === subject;
-              const count = classNotes.filter(n => resourceSubjectMatches(n.subject, subject)).length;
-              return (
-                <button key={subject} onClick={() => { setSelectedSubject(subject); }} className="rounded-2xl border p-3.5 text-left transition-all duration-300 hover:-translate-y-0.5 active:scale-[.98]" style={{ borderColor: active ? 'var(--accent)' : 'var(--border)', background: active ? 'var(--accent)' : 'var(--surface-raised)', color: active ? 'var(--accent-contrast)' : 'var(--ink)' }}>
-                  <span className="block text-base sm:text-lg font-display font-bold">{subject}</span>
-                  <span className="text-[10px] font-semibold opacity-70">{count} {count === 1 ? 'resource' : 'resources'}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="px-4 pb-4 sm:px-6 sm:pb-6">
-          <div className="flex gap-2 overflow-x-auto no-scrollbar">
+    <div className="space-y-6 sm:space-y-7">
+      <section className="notes-library-panel">
+        <div className="notes-library-toolbar">
+          <div className="notes-library-label">Class {selectedClass} · Notes</div>
+          <h2 className="notes-library-heading">Browse your notes</h2>
+          <div className="notes-class-row" aria-label="Choose class">
             {CLASS_CONFIG.map(level => (
-              <button key={level} onClick={() => { setSelectedClass(level); setSelectedSubject(''); }} className="shrink-0 px-4 py-2 rounded-full text-[11px] font-bold border transition-all" style={{ borderColor: selectedClass === level ? 'var(--accent)' : 'var(--border)', background: selectedClass === level ? 'var(--accent-light)' : 'var(--surface)', color: selectedClass === level ? 'var(--accent)' : 'var(--ink-muted)' }}>Class {level}</button>
+              <button
+                key={level}
+                type="button"
+                onClick={() => { setSelectedClass(level); setSelectedSubject(''); }}
+                className={`notes-filter-button ${selectedClass === level ? 'active' : ''}`}
+              >Class {level}</button>
             ))}
           </div>
         </div>
+        <div className="notes-subject-row" aria-label="Choose subject">
+          <button type="button" onClick={() => setSelectedSubject('')} className={`notes-subject-button ${!activeSubject ? 'active' : ''}`}>
+            All <span>({classNotes.length})</span>
+          </button>
+          {availableSubjects.map(subject => (
+            <button key={subject} type="button" onClick={() => setSelectedSubject(subject)} className={`notes-subject-button ${activeSubject === subject ? 'active' : ''}`}>
+              {subject} <span>({subjectCounts.get(subject) || 0})</span>
+            </button>
+          ))}
+        </div>
       </section>
 
-
-      <div className="flex items-end justify-between gap-4">
-        {loading && <div className="notes-loading-indicator" role="status"><span className="notes-loading-dot" /> Loading Class {selectedClass} notes…</div>}
-        <div><p className="text-[10px] uppercase tracking-[.18em] font-bold" style={{ color: 'var(--accent)' }}>ARCHIVE RESULTS</p><h3 className="font-display font-bold text-xl mt-1">{activeSubject || 'All subjects'} <span className="text-sm font-medium" style={{ color: 'var(--ink-faint)' }}>· {filteredNotes.length}</span></h3></div>
-        <span className="hidden sm:block text-[11px]" style={{ color: 'var(--ink-muted)' }}>Class {selectedClass}</span>
+      <div className="notes-result-head">
+        <div>
+          <p>Archive results</p>
+          <h3>{activeSubject || 'All subjects'}</h3>
+        </div>
+        <span className="notes-count">{filteredNotes.length} {filteredNotes.length === 1 ? 'resource' : 'resources'}</span>
       </div>
 
       {loading && filteredNotes.length === 0 ? (
         <div className="notes-centered-loading" role="status"><span className="notes-loading-dot" /><strong>Opening notes</strong><small>Preparing your class library</small></div>
       ) : filteredNotes.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {filteredNotes.map((r, index) => <div key={r.id} className="animate-fade" style={{ animationDelay: `${Math.min(index, 8) * 35}ms` }}><ResourceCard resource={r} /></div>)}
+          {filteredNotes.map(resource => <ResourceCard key={resource.id} resource={resource} />)}
         </div>
       ) : (
         <div className="text-center py-16 rounded-3xl border space-y-3" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
           <BookOpen className="w-10 h-10 mx-auto" style={{ color: 'var(--ink-faint)' }} />
-          <h3 className="font-display font-bold text-lg">No notes yet for {activeSubject || 'this class'}</h3>
-          <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>The subject is available in ARCHIVUM. Check back when new material is added to the archive.</p>
-          <a href={`/about`} className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}>About ARCHIVUM <ArrowRight className="w-3.5 h-3.5" /></a>
+          <h3 className="font-display font-bold text-lg">No notes yet for {activeSubject || `Class ${selectedClass}`}</h3>
+          <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>New material appears here as soon as it is approved.</p>
+          <a href="/about" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}>About ARCHIVUM <ArrowRight className="w-3.5 h-3.5" /></a>
         </div>
       )}
     </div>

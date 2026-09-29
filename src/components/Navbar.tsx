@@ -32,6 +32,10 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [drawerOpen]);
   useEffect(() => { setDrawerOpen(false); setSearchOpen(false); }, [pathname]);
+  useEffect(() => {
+    // Warm the main routes so switching sections feels immediate after the first visit.
+    for (const [, href] of links) router.prefetch(href);
+  }, [router]);
 
   const withClass = (href: string) => studentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${studentClass}` : href;
   const active = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);

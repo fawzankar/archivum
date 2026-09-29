@@ -256,8 +256,8 @@ main img{border-radius:10px}
 
 
 /* ===== Layer 3: accent themes (each one repaints the whole app) ===== */
-:root,:root[data-accent="indigo"]{--zebra-a:#2f6fed;--zebra-b:#6fa8ff;--navy:#1b2166;--ink:#1b2166;--ink-muted:#474d8a;--ink-faint:#6b72a8;--sun:#ffc75f;--peri:#8d9bff;--blush:#ffbdde;--mint:#7fe0b0;--ivory:#e4ecff;--ivory-deep:#d3defb;--border:#c7d2f2;--border-light:#d9e1f8;--surface-raised:#eef2ff;--accent:#1b2166;--accent-strong:#121750;--accent-light:#e6e9ff}
-:root[data-accent="forest"]{--zebra-a:#8fcf9a;--zebra-b:#cfe8c5;--navy:#0f4d2e;--ink:#0d3d25;--ink-muted:#3d6b52;--ink-faint:#5f8874;--sun:#f5d76e;--peri:#7fd1a0;--blush:#f7b7a3;--mint:#b8e986;--ivory:#e3f3e6;--ivory-deep:#cfe8d5;--border:#bcdcc6;--border-light:#d2e8d9;--surface-raised:#eef8f0;--accent:#0f4d2e;--accent-strong:#093820;--accent-light:#dff2e5}
+:root,:root[data-accent="indigo"]{--navy:#1b2166;--ink:#1b2166;--ink-muted:#474d8a;--ink-faint:#6b72a8;--sun:#ffc75f;--peri:#8d9bff;--blush:#ffbdde;--mint:#7fe0b0;--ivory:#e4ecff;--ivory-deep:#d3defb;--border:#c7d2f2;--border-light:#d9e1f8;--surface-raised:#eef2ff;--accent:#1b2166;--accent-strong:#121750;--accent-light:#e6e9ff}
+:root[data-accent="forest"]{--navy:#0f4d2e;--ink:#0d3d25;--ink-muted:#3d6b52;--ink-faint:#5f8874;--sun:#f5d76e;--peri:#7fd1a0;--blush:#f7b7a3;--mint:#b8e986;--ivory:#e3f3e6;--ivory-deep:#cfe8d5;--border:#bcdcc6;--border-light:#d2e8d9;--surface-raised:#eef8f0;--accent:#0f4d2e;--accent-strong:#093820;--accent-light:#dff2e5}
 :root[data-accent="ocean"]{--navy:#06364d;--ink:#052c3f;--ink-muted:#3a6479;--ink-faint:#5f8598;--sun:#ffd166;--peri:#5fd0e6;--blush:#ffb8a3;--mint:#9be7c4;--ivory:#dff4f8;--ivory-deep:#c8e8ef;--border:#b6dce6;--border-light:#cce8ef;--surface-raised:#eaf8fb;--accent:#06506b;--accent-strong:#06364d;--accent-light:#d6f0f6}
 body,html{background:var(--ivory)}
 h1,h2,h3,.font-display,.brand-lockup strong{font-family:"Bricolage Grotesque","DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
@@ -1167,7 +1167,7 @@ main:has(.contributors-intro){
   .ab-block{min-height:250px;padding:24px!important}
 }
 
-/* ===== Static single zebra hero: theme-aware ===== */
+/* ===== V8.1 single zebra hero: theme-aware, drawn continuously ===== */
 .home-hero-panel{
   background:var(--surface)!important;
 }
@@ -1185,7 +1185,7 @@ main:has(.contributors-intro){
 .hero-zebra-layer{
   position:absolute;
   inset:-1px;
-  background:linear-gradient(112deg,var(--zebra-a,var(--accent-strong)) 0%,var(--zebra-b,var(--accent)) 48%,var(--sun) 100%);
+  background:linear-gradient(112deg,var(--accent-strong) 0%,var(--accent) 48%,var(--sun) 100%);
   -webkit-mask-image:url('/zebra-pattern.png');
   mask-image:url('/zebra-pattern.png');
   -webkit-mask-mode:luminance;
@@ -1196,8 +1196,17 @@ main:has(.contributors-intro){
   mask-size:100% 100%;
   -webkit-mask-position:center;
   mask-position:center;
+  clip-path:inset(0 100% 0 0);
+  animation:zebraDraw 12s cubic-bezier(.65,0,.2,1) infinite;
 }
 .hero-zebra-glow{display:none!important}
+@keyframes zebraDraw{
+  0%{clip-path:inset(0 100% 0 0)}
+  8%{clip-path:inset(0 92% 0 0)}
+  48%{clip-path:inset(0 0 0 0)}
+  72%{clip-path:inset(0 0 0 0)}
+  100%{clip-path:inset(0 100% 0 0)}
+}
 @media(max-width:700px){
   .hero-zebra{inset:0!important;opacity:.2!important}
   .hero-zebra-layer{
@@ -1205,3 +1214,80 @@ main:has(.contributors-intro){
     mask-size:100% 100%;
   }
 }
+@media(prefers-reduced-motion:reduce){
+  .hero-zebra-layer{animation:none!important;clip-path:inset(0)!important}
+}
+
+
+
+/* ===== Performance + simple Android PDF reader ===== */
+/* The home zebra is intentionally static: no movement, drawing or glow animation. */
+.hero-zebra-layer{animation:none!important;clip-path:none!important;transform:none!important}
+.hero-zebra-glow{display:none!important}
+.hm-wave{animation:none!important;transform:none!important}
+
+/* Remove the old custom page-navigation reader behavior. */
+.pdf-native-shell{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;background:rgba(5,11,16,.72);padding:12px}
+.pdf-native-backdrop{position:absolute;inset:0;border:0;background:transparent}
+.pdf-native-window{position:relative;z-index:1;width:min(1500px,calc(100vw - 24px));height:min(96dvh,1100px);display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden;background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:0 24px 90px rgba(0,0,0,.32)}
+.pdf-native-header{min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 10px;background:var(--surface);border-bottom:1px solid var(--border);color:var(--ink)}
+.pdf-native-title{display:flex;align-items:center;gap:9px;min-width:0}
+.pdf-native-title strong{display:block;max-width:min(58vw,720px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.pdf-native-title span{display:block;margin-top:2px;color:var(--ink-muted);font-size:10px}
+.pdf-native-file-icon{width:34px;height:34px;display:grid;place-items:center;flex:none;border-radius:9px;background:var(--accent-light);color:var(--accent)}
+.pdf-native-file-icon svg{width:17px;height:17px}
+.pdf-native-actions{display:flex;align-items:center;gap:2px;flex:none}
+.pdf-native-actions button,.pdf-native-actions a{width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:var(--ink-muted);text-decoration:none}
+.pdf-native-actions button:hover,.pdf-native-actions a:hover{background:var(--surface-raised);color:var(--accent)}
+.pdf-native-actions svg{width:17px;height:17px}
+.pdf-native-stage{position:relative;min-width:0;min-height:0;overflow:hidden;background:#52575b}
+.pdf-native-frame{display:block;width:100%;height:100%;border:0;background:#fff}
+.pdf-native-image{width:100%;height:100%;overflow:auto;display:flex;align-items:flex-start;justify-content:center;padding:14px;background:#52575b}
+.pdf-native-image img{display:block;max-width:100%;width:auto;height:auto;object-fit:contain;background:#fff}
+.pdf-native-loading{position:absolute;inset:0;z-index:2;display:grid;place-content:center;justify-items:center;gap:8px;background:var(--surface)}
+.pdf-native-loading svg{width:24px;height:24px;color:var(--accent);animation:pdfSpin .8s linear infinite}
+.pdf-native-loading span{font-size:12px;color:var(--ink-muted)}
+.pdf-native-error{position:absolute;inset:0;z-index:3;display:grid;place-content:center;justify-items:center;gap:8px;padding:24px;background:var(--surface);text-align:center;color:var(--ink)}
+.pdf-native-error>svg{width:28px;height:28px;color:var(--accent)}
+.pdf-native-error span{font-size:12px;color:var(--ink-muted)}
+.pdf-native-error>div{display:flex;gap:8px;margin-top:8px}
+.pdf-native-error button{display:inline-flex;align-items:center;gap:6px;min-height:38px;padding:0 12px;border:1px solid var(--border);border-radius:9px;background:var(--surface-raised);color:var(--ink);font-size:12px;font-weight:700}
+.pdf-native-error button:first-child{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast)}
+.pdf-native-error button svg{width:14px;height:14px}
+@keyframes pdfSpin{to{transform:rotate(360deg)}}
+
+/* Compact notes library: filter first, resources immediately below. */
+.notes-library-panel{border:1px solid var(--border);border-radius:24px;background:var(--surface);overflow:hidden;box-shadow:0 12px 34px var(--app-shadow)}
+.notes-library-toolbar{padding:18px 20px;border-bottom:1px solid var(--border-light);background:var(--surface)}
+.notes-library-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+.notes-library-heading{margin:3px 0 0;font-family:"Bricolage Grotesque","DM Sans",sans-serif;font-size:24px;font-weight:700;color:var(--ink)}
+.notes-class-row,.notes-subject-row{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none}
+.notes-class-row::-webkit-scrollbar,.notes-subject-row::-webkit-scrollbar{display:none}
+.notes-class-row{margin-top:14px}
+.notes-filter-button{flex:none;min-height:36px;padding:0 13px;border:1px solid var(--border);border-radius:999px;background:var(--surface-raised);color:var(--ink-muted);font-size:11px;font-weight:800}
+.notes-filter-button.active{border-color:var(--accent);background:var(--accent);color:var(--accent-contrast)}
+.notes-subject-row{padding:13px 20px}
+.notes-subject-button{flex:none;padding:8px 12px;border:1px solid var(--border);border-radius:999px;background:transparent;color:var(--ink-muted);font-size:11px;font-weight:700}
+.notes-subject-button.active{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
+.notes-result-head{display:flex;align-items:end;justify-content:space-between;gap:12px}
+.notes-result-head h3{margin:0;font-family:"Bricolage Grotesque","DM Sans",sans-serif;font-size:20px;font-weight:700;color:var(--ink)}
+.notes-result-head p{margin:3px 0 0;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:var(--accent)}
+.notes-count{font-size:11px;color:var(--ink-faint)}
+
+@media(max-width:700px){
+  .pdf-native-shell{padding:0}
+  .pdf-native-window{width:100vw;height:100dvh;border:0;border-radius:0}
+  .pdf-native-header{min-height:54px;padding:6px 7px}
+  .pdf-native-title strong{max-width:48vw;font-size:12px}
+  .pdf-native-title span{font-size:9px}
+  .pdf-native-file-icon{width:31px;height:31px}
+  .pdf-native-actions button,.pdf-native-actions a{width:32px;height:32px}
+  .pdf-native-stage{background:#fff}
+  .pdf-native-frame{width:100%;height:100%;}
+  .pdf-native-image{padding:0;background:#fff;justify-content:flex-start}
+  .pdf-native-image img{max-width:none;width:100%;height:auto}
+  .notes-library-toolbar{padding:16px}
+  .notes-subject-row{padding:11px 16px}
+}
+
+@media(prefers-reduced-motion:reduce){.pdf-native-loading svg{animation:none}}

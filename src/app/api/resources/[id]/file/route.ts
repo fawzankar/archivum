@@ -117,12 +117,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     }));
     if (!object.Body) return NextResponse.json({ error: 'The document is unavailable.' }, { status: 404 });
 
-    const bytes = await object.Body.transformToByteArray();
-    const headers = headersFor(resource, bytes.byteLength);
+    const headers = headersFor(resource, Number(object.ContentLength || resource.file_size || 0));
     if (object.ETag) headers.set('ETag', object.ETag);
     if (object.ContentRange) headers.set('Content-Range', object.ContentRange);
     const partial = Boolean(object.ContentRange);
-    return new NextResponse(responseBody(bytes), { status: partial ? 206 : 200, headers });
+    const body = (object.Body as any).transformToWebStream();
+    return new NextResponse(body, { status: partial ? 206 : 200, headers });
   } catch (error) {
     console.error('[resource-file:GET]', error);
     return NextResponse.json({ error: 'Unable to open this document.' }, { status: 500 });
