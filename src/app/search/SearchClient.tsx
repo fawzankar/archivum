@@ -155,7 +155,7 @@ export default function SearchClient({
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
           
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar">
-            <span className="text-[11px] font-semibold text-zinc-400 mr-1">Class:</span>
+            <span className="text-[11px] font-semibold text-zinc-400 mr-1 uppercase tracking-wider">Class:</span>
             {[
               { val: undefined, label: 'All' },
               { val: 9, label: 'Class 9' },

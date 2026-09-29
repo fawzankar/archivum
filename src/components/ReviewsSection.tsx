@@ -39,7 +39,7 @@ export default function ReviewsSection() {
     <section className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
       <div className="flex items-end justify-between gap-4">
         <div>
-          <span className="text-[10px] font-bold" style={{ color:'var(--accent)' }}>Student feedback</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color:'var(--accent)' }}>STUDENT FEEDBACK</span>
           <h2 className="font-display font-bold text-2xl sm:text-3xl" style={{ color:'var(--ink)' }}>Real reviews, from real users.</h2>
           <p className="text-xs mt-1 max-w-xl" style={{ color:'var(--ink-muted)' }}>Reviews shown here are submitted through ARCHIVUM and approved before publication.</p>
         </div>

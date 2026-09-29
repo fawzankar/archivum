@@ -203,7 +203,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 text-[10px] font-bold" style={{ color: 'var(--sage)' }}>
+          <div className="inline-flex items-center gap-2 text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
             <Shield className="w-3.5 h-3.5" />
             <span>ARCHIVUM CONTROL CENTRE</span>
           </div>
@@ -230,7 +230,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           className="p-5 rounded-3xl flex flex-col justify-between"
           style={{ backgroundColor: 'var(--accent-light)' }}
         >
-          <span className="text-[11px] font-bold text-sky-950">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-sky-950">
             Approved Resources
           </span>
           <div className="font-display font-bold text-3xl text-sky-950 mt-2">
@@ -242,7 +242,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           className="p-5 rounded-3xl flex flex-col justify-between"
           style={{ backgroundColor: 'var(--card-peach-bg)' }}
         >
-          <span className="text-[11px] font-bold text-rose-950">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-rose-950">
             Pending Moderation
           </span>
           <div className="font-display font-bold text-3xl text-rose-950 mt-2">
@@ -254,7 +254,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           className="p-5 rounded-3xl flex flex-col justify-between"
           style={{ backgroundColor: 'var(--card-lavender-bg)' }}
         >
-          <span className="text-[11px] font-bold ">
+          <span className="text-[11px] font-bold uppercase tracking-wider ">
             Total Downloads
           </span>
           <div className="font-display font-bold text-3xl  mt-2">
@@ -266,7 +266,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           className="p-5 rounded-3xl flex flex-col justify-between"
           style={{ backgroundColor: 'var(--card-sky-bg)' }}
         >
-          <span className="text-[11px] font-bold ">
+          <span className="text-[11px] font-bold uppercase tracking-wider ">
             Total Views
           </span>
           <div className="font-display font-bold text-3xl  mt-2">
@@ -278,7 +278,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           style={{ backgroundColor: 'var(--surface-raised)', border: '1px solid var(--border)' }}
         >
         <div className="flex items-center justify-between gap-2">
-          <span className="text-[11px] font-bold">Storage</span>
+          <span className="text-[11px] font-bold uppercase tracking-wider">Storage</span>
           <HardDrive className="w-4 h-4" style={{ color: 'var(--accent)' }} />
         </div>
         <div className="font-display font-bold text-2xl mt-2">
@@ -407,7 +407,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
             >
               <div className="space-y-1.5 flex-1">
                 <div className="flex items-center gap-2 text-xs font-semibold">
-                  <span className="px-2 py-0.5 rounded-md text-[10px] border text-zinc-600 dark:text-zinc-400" style={{ borderColor: 'var(--border)' }}>
+                  <span className="px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wider border text-zinc-600 dark:text-zinc-400" style={{ borderColor: 'var(--border)' }}>
                     Class {r.class_level}
                   </span>
                   <span className="text-zinc-600 dark:text-zinc-400 font-medium">
@@ -501,7 +501,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead
-                  className="font-semibold text-zinc-400 text-[10px] border-b"
+                  className="font-semibold text-zinc-400 uppercase text-[10px] tracking-wider border-b"
                   style={{ borderColor: 'var(--border-light)', backgroundColor: 'var(--surface-raised)' }}
                 >
                   <tr>
@@ -526,7 +526,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
 
                       <td className="py-3.5 px-4">
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                             item.status === 'approved'
                               ? 'bg-emerald-100 text-emerald-800'
                               : item.status === 'pending'
@@ -590,13 +590,13 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       {activeTab === 'tips' && (
         <div className="space-y-4">
           <div>
-            <span className="text-[10px] font-bold" style={{ color:'var(--accent)' }}>Exam playbook</span>
+            <span className="text-[10px] font-bold uppercase tracking-[.18em]" style={{ color:'var(--accent)' }}>EXAM PLAYBOOK</span>
             <h2 className="font-display font-bold text-2xl" style={{ color:'var(--ink)' }}>Tip moderation</h2>
             <p className="text-xs" style={{ color:'var(--ink-muted)' }}>Approve practical, class-specific study tips before they enter the public archive.</p>
           </div>
           {pendingTips.length === 0 ? <div className="rounded-2xl border border-dashed p-8 text-center text-xs" style={{borderColor:'var(--border)',color:'var(--ink-muted)'}}>No pending tips.</div> : pendingTips.map((item) => (
             <div key={item.id} className="rounded-2xl border p-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
-              <div className="flex items-start justify-between gap-4"><div><span className="text-[10px] font-bold" style={{color:'var(--accent)'}}>Class {item.class_level}</span><h3 className="font-display font-bold text-lg mt-1">{item.title}</h3></div><Lightbulb className="w-5 h-5" style={{color:'var(--accent)'}}/></div>
+              <div className="flex items-start justify-between gap-4"><div><span className="text-[10px] font-bold uppercase tracking-wider" style={{color:'var(--accent)'}}>Class {item.class_level}</span><h3 className="font-display font-bold text-lg mt-1">{item.title}</h3></div><Lightbulb className="w-5 h-5" style={{color:'var(--accent)'}}/></div>
               <p className="text-sm leading-relaxed mt-3" style={{color:'var(--ink-muted)'}}>{item.body}</p>
               <p className="text-[10px] mt-3" style={{color:'var(--ink-faint)'}}>Submitted by {item.author || 'SJS student'}</p>
               <div className="flex gap-2 mt-4"><button onClick={()=>handleTipAction(item.id,'approved')} className="px-3 py-2 rounded-xl text-xs font-bold" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>Publish</button><button onClick={()=>handleTipAction(item.id,'rejected')} className="px-3 py-2 rounded-xl border text-xs font-bold" style={{borderColor:'var(--border)',color:'var(--ink)'}}>Reject</button></div>

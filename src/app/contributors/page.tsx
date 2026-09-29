@@ -1,5 +1,6 @@
 import { query } from '@/lib/db';
 import { Users, Upload, Trophy } from 'lucide-react';
+import PageHead from '@/components/PageHead';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,12 +22,7 @@ export default async function ContributorsPage() {
 
   return (
     <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-12">
-      <section className="rounded-[1.5rem] border p-5 sm:p-10" style={{background:'var(--hero-gradient)',borderColor:'var(--border)'}}>
-        <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}><Users className="w-7 h-7"/></div>
-        <p className="mt-5 text-xs font-semibold" style={{color:'var(--accent-on-hero)'}}>ARCHIVUM CONTRIBUTORS</p>
-        <h1 className="font-display font-bold text-3xl sm:text-5xl mt-2 leading-tight" style={{color:'var(--hero-ink)'}}>People building the archive.</h1>
-        <p className="max-w-2xl mt-3 text-sm leading-6" style={{color:'var(--hero-muted)'}}>A live list based on approved material actually uploaded to ARCHIVUM. No inflated contributor numbers.</p>
-      </section>
+      <PageHead title="People building the archive." art="default" tone="mint">A live list based on approved material actually uploaded to ARCHIVUM. No inflated contributor numbers.</PageHead>
 
       <section className="mt-5 grid gap-2.5">
         {contributors.length === 0 ? (

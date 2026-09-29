@@ -162,7 +162,7 @@ export default function Chatbot() {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="ARCHIVUM Guide Chatbot"
         className="fixed bottom-[96px] right-4 md:bottom-6 md:right-6 z-40 w-12 h-12 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
-        style={{ backgroundColor: 'var(--accent)', boxShadow: '0 5px 14px rgba(24,36,42,.08)' }}
+        style={{ backgroundColor: 'var(--accent)', boxShadow: '0 12px 32px var(--accent-glow)' }}
       >
         <MessageSquare className="w-5 h-5" />
       </button>

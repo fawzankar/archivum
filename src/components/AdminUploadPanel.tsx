@@ -148,7 +148,7 @@ export default function AdminUploadPanel() {
   return (
     <form onSubmit={submit} className="community-upload-form border rounded-3xl p-5 sm:p-8 space-y-8" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
       <section className="grid lg:grid-cols-[1fr_1.3fr] gap-6">
-        <div><span className="text-[10px] font-bold" style={{color:'var(--accent)'}}>01 · Resource details</span><h2 className="font-display text-2xl mt-1">Where does this belong?</h2><p className="text-xs leading-6 mt-2" style={{color:'var(--ink-muted)'}}>Give the archive enough context that another student can find it quickly.</p></div>
+        <div><span className="text-[10px] uppercase tracking-[.16em] font-bold" style={{color:'var(--accent)'}}>01 · Resource details</span><h2 className="font-display text-2xl mt-1">Where does this belong?</h2><p className="text-xs leading-6 mt-2" style={{color:'var(--ink-muted)'}}>Give the archive enough context that another student can find it quickly.</p></div>
         <div className="grid sm:grid-cols-2 gap-3">
           <label className="field-label">Class<select value={classLevel} onChange={e=>{setClassLevel(Number(e.target.value));setSubject(subjectsForClass(Number(e.target.value))[0]);}}>{CLASS_OPTIONS.map(x=><option key={x} value={x}>Class {x}</option>)}</select></label>
           <label className="field-label">Board<input value={board} onChange={e=>setBoard(e.target.value)} /></label>
@@ -158,7 +158,7 @@ export default function AdminUploadPanel() {
       </section>
 
       <section className="grid lg:grid-cols-[1fr_1.3fr] gap-6 pt-7 border-t" style={{borderColor:'var(--border-light)'}}>
-        <div><span className="text-[10px] font-bold" style={{color:'var(--accent)'}}>02 · Metadata</span><h2 className="font-display text-2xl mt-1">Add the archive metadata.</h2></div>
+        <div><span className="text-[10px] uppercase tracking-[.16em] font-bold" style={{color:'var(--accent)'}}>02 · Metadata</span><h2 className="font-display text-2xl mt-1">Add the archive metadata.</h2></div>
         <div className="space-y-3">
           <label className="field-label">Your name<input value={contributorName} onChange={e=>setContributorName(e.target.value)} placeholder="Fawzan Kar" maxLength={80} /><small><UserRound /> This name appears with the approved contribution.</small></label>
           <label className="field-label">Title<input value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. Units and Measurement — Handwritten Notes" maxLength={200} /></label>
@@ -169,7 +169,7 @@ export default function AdminUploadPanel() {
       </section>
 
       <section className="pt-7 border-t" style={{borderColor:'var(--border-light)'}}>
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3"><div><span className="text-[10px] font-bold" style={{color:'var(--accent)'}}>03 · Main file</span><h2 className="font-display text-2xl mt-1">Main resource</h2></div><span className="text-[10px]" style={{color:'var(--ink-faint)'}}>PDF / JPG / PNG · 50 MB max</span></div>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3"><div><span className="text-[10px] uppercase tracking-[.16em] font-bold" style={{color:'var(--accent)'}}>03 · Main file</span><h2 className="font-display text-2xl mt-1">Main resource</h2></div><span className="text-[10px]" style={{color:'var(--ink-faint)'}}>PDF / JPG / PNG · 50 MB max</span></div>
         <button type="button" onClick={()=>fileRef.current?.click()} className="upload-dropzone w-full mt-4 text-left flex flex-col sm:flex-row sm:items-center gap-4 hover:-translate-y-0.5 transition-transform">
           <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png" className="hidden" onChange={e=>selectMainFile(e.target.files?.[0])} />
           <span className="w-14 h-14 rounded-2xl grid place-items-center" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>{file?<Check className="w-6 h-6"/>:<FileText className="w-6 h-6"/>}</span>
@@ -179,7 +179,7 @@ export default function AdminUploadPanel() {
       </section>
 
       <section className="pt-7 border-t" style={{borderColor:'var(--border-light)'}}>
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3"><div><span className="text-[10px] font-bold" style={{color:'var(--accent)'}}>04 · Supporting images</span><h2 className="font-display text-2xl mt-1">Add up to 6 photos.</h2><p className="text-xs mt-1" style={{color:'var(--ink-muted)'}}>Show handwriting, diagrams, a contents page or the best parts of the material.</p></div><span className="text-[10px] font-bold" style={{color:'var(--ink-faint)'}}>{photos.length}/{MAX_PHOTOS}</span></div>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3"><div><span className="text-[10px] uppercase tracking-[.16em] font-bold" style={{color:'var(--accent)'}}>04 · Supporting images</span><h2 className="font-display text-2xl mt-1">Add up to 6 photos.</h2><p className="text-xs mt-1" style={{color:'var(--ink-muted)'}}>Show handwriting, diagrams, a contents page or the best parts of the material.</p></div><span className="text-[10px] font-bold" style={{color:'var(--ink-faint)'}}>{photos.length}/{MAX_PHOTOS}</span></div>
         <input ref={photoRef} type="file" accept="image/jpeg,image/png" multiple className="hidden" onChange={e=>{addPhotos(e.target.files);e.currentTarget.value='';}} />
         <div className="mt-4 grid sm:grid-cols-[1fr_auto] gap-4 items-start">
           <div className="upload-photo-grid">

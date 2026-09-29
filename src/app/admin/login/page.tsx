@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
         </div>
 
         <div className="space-y-1">
-          <span className="text-[10px] font-bold" style={{ color: 'var(--sage)' }}>
+          <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
             ADMIN ACCESS
           </span>
           <h1 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-100">

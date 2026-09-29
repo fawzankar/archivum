@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import PageHead from '@/components/PageHead';
 import { ArrowRight, GraduationCap } from 'lucide-react';
 import SubjectPicker from '@/components/SubjectPicker';
 import { CLASS_SUBJECTS, SUBJECT_DETAILS } from '@/lib/subjects';
@@ -13,13 +14,7 @@ export default async function SubjectsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-9 sm:py-14 space-y-10">
-      <section className="rounded-[2.25rem] border overflow-hidden premium-shadow" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-        <div className="p-7 sm:p-10" style={{ background: 'var(--paper-2)' }}>
-          <span className="text-[10px] font-bold" style={{ color: 'var(--accent)' }}>ARCHIVUM subjects</span>
-          <h1 className="font-display font-bold text-4xl sm:text-5xl mt-2">Find your subject.</h1>
-          <p className="max-w-2xl text-sm sm:text-base mt-3 leading-relaxed" style={{ color: 'var(--ink-muted)' }}>Every class has its own clean subject set. Pick one to jump straight into its notes and resources.</p>
-        </div>
-      </section>
+      <PageHead title="Find your subject." art="Science" tone="peri">Every class has its own subject set. Pick one to jump straight into its notes and papers.</PageHead>
 
       <div className="space-y-8">
         {levels.map(level => (

@@ -1,5 +1,6 @@
 import React from 'react';
 import { getPreferredClass } from '@/lib/studentClass';
+import PageHead from '@/components/PageHead';
 import { getResources } from '@/lib/resources';
 import PaperFinderClient from './PaperFinderClient';
 
@@ -22,17 +23,9 @@ export default async function PreviousPapersPage({
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-      <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
-        <span className="text-[10px] font-bold" style={{ color: 'var(--sage)' }}>
-          ARCHIVE & EXAMINATIONS
-        </span>
-        <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-          Previous Papers
-        </h1>
-        <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-xl leading-relaxed">
+      <PageHead title="Previous Papers" art="papers" tone="peri">
           JKBOSE board examinations, school pre-boards, unit tests, and terminal test papers across Classes 9 to 12.
-        </p>
-      </div>
+        </PageHead>
 
       <PaperFinderClient
         allPapers={result.items}
