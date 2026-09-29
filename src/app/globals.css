@@ -1647,7 +1647,7 @@ main:has(.contributors-intro){
 /* Home: subject shelf shown only on the Home page. */
 .hm-subjects-home{
   padding:8px 0 4px;
-}
+;margin-top:18px}
 .hm-subjects-home-head{
   display:flex;
   align-items:center;
@@ -1832,3 +1832,10 @@ main:has(.contributors-intro){
 @media(prefers-reduced-motion:reduce){
   .hm-wave,.home-hero-panel .hero-zebra-glow{animation:none!important}
 }
+
+/* V14: final home hero animation restore. Zebra stays static; glow and hand animate. */
+.home-hero-panel .hero-zebra-glow{display:block!important;animation:heroGlowV14 3.6s ease-in-out infinite!important}
+.hm-wave{display:inline-block!important;transform-origin:70% 70%;animation:waveHelloV14 2.8s ease-in-out infinite!important}
+@keyframes waveHelloV14{0%,58%,100%{transform:rotate(0deg)}8%,24%{transform:rotate(16deg)}16%,34%{transform:rotate(-10deg)}42%{transform:rotate(9deg)}}
+@keyframes heroGlowV14{0%,100%{opacity:.25;transform:scale(.96)}50%{opacity:.7;transform:scale(1.04)}}
+@media(prefers-reduced-motion:reduce){.home-hero-panel .hero-zebra-glow,.hm-wave{animation:none!important}}

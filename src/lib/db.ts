@@ -190,7 +190,6 @@ async function seedDatabase(db: Client) {
     [10,'Urdu','Class 10 Urdu — ARCHIVUM Starter Notes','Literature, grammar and writing revision starter pack.','class10-urdu-archivum-starter-notes.pdf','urdu'],
     [11,'Maths','Class 11 Maths — ARCHIVUM Starter Notes','Core formulas and practice starter pack for Class 11 Maths.','class11-maths-archivum-starter-notes.pdf','maths'],
     [11,'Biology','Class 11 Biology — ARCHIVUM Starter Notes','Core diagrams and concepts starter pack for Class 11 Biology.','class11-biology-archivum-starter-notes.pdf','biology'],
-    [11,'Physics','Class 11 Physics — ARCHIVUM Starter Notes','Concepts, derivations and numericals starter pack for Class 11 Physics.','class11-physics-archivum-starter-notes.pdf','physics'],
     [11,'Chemistry','Class 11 Chemistry — ARCHIVUM Starter Notes','Reactions, concepts and numericals starter pack for Class 11 Chemistry.','class11-chemistry-archivum-starter-notes.pdf','chemistry'],
     [11,'English','Class 11 English — ARCHIVUM Starter Notes','Literature, language and writing revision starter pack.','class11-english-archivum-starter-notes.pdf','english'],
     [12,'Maths','Class 12 Maths — ARCHIVUM Starter Notes','Core formulas and board-style practice starter pack for Class 12 Maths.','class12-maths-archivum-starter-notes.pdf','maths'],
@@ -209,11 +208,67 @@ async function seedDatabase(db: Client) {
   }
 
 
-  await db.execute({
-    sql: `INSERT OR IGNORE INTO resources (slug,title,description,class_level,board,subject,chapter,topic,resource_type,paper_type,year,school_name,contributor_name,file_url,storage_key,file_size,file_type,file_name,file_hash,status,featured,views,downloads,average_rating,rating_count,tags,created_at,updated_at,approved_at,photo_keys)
-          VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'approved',?,?,?,?,?,?,?,?,?,?)`,
-    args: ['class-11-physics-units-and-measurement-handwritten-notes-fawzan-kar','Class 11 Physics — Units and Measurement Handwritten Notes','Handwritten notes covering Units and Measurement for Class 11 Physics, contributed to the ARCHIVUM student community.',11,'JKBOSE','Physics','Units and Measurement','Units and Measurement','Notes',null,2026,null,'Fawzan Kar','/uploads/class11_physics_units_and_measurement_handwritten_notes_fawzan_kar.pdf',null,10299099,'application/pdf','class11_physics_units_and_measurement_handwritten_notes_fawzan_kar.pdf','local_units_measurement_fawzan_kar_v1',0,0,0,0,0,'class11,physics,units and measurement,handwritten,notes,jkbose',now,now,now,null],
+  const physicsMigration = await db.execute({
+    sql: `SELECT id FROM app_migrations WHERE id = ? LIMIT 1`,
+    args: ['class11_physics_hadiya_hilal_v1'],
   });
+  if (!physicsMigration.rows.length) {
+    await db.execute({
+      sql: `DELETE FROM resources WHERE class_level = 11 AND LOWER(subject) = 'physics'`,
+      args: [],
+    });
+    const physicsChapters = [
+      ['units-and-measurements','Units & Measurements','01_units_measurements'],
+      ['mathematical-tools','Mathematical Tools','02_mathematical_tools'],
+      ['vectors','Vectors','03_vectors'],
+      ['laws-of-motion','Laws of Motion','04_laws_of_motion'],
+      ['work-energy-and-power','Work, Energy & Power','05_work_energy_power'],
+      ['system-of-particles-and-rotational-motion','System of Particles & Rotational Motion','06_system_of_particles_rotational_motion'],
+      ['collisions','Collisions','07_collisions'],
+      ['gravitation','Gravitation','08_gravitation'],
+      ['mechanical-properties-of-solids','Mechanical Properties of Solids','09_mechanical_properties_of_solids'],
+      ['oscillations-and-waves','Oscillations & Waves','10_oscillations_waves'],
+    ] as const;
+    const fileMap: Record<string,string> = {
+      '01_units_measurements':'class11_physics_hadiya_01_units_measurements.pdf',
+      '02_mathematical_tools':'class11_physics_hadiya_02_mathematical_tools.pdf',
+      '03_vectors':'class11_physics_hadiya_03_vectors.pdf',
+      '04_laws_of_motion':'class11_physics_hadiya_04_laws_of_motion.pdf',
+      '05_work_energy_power':'class11_physics_hadiya_05_work_energy_power.pdf',
+      '06_system_of_particles_rotational_motion':'class11_physics_hadiya_06_system_of_particles_rotational_motion.pdf',
+      '07_collisions':'class11_physics_hadiya_07_collisions.pdf',
+      '08_gravitation':'class11_physics_hadiya_08_gravitation.pdf',
+      '09_mechanical_properties_of_solids':'class11_physics_hadiya_09_mechanical_properties_of_solids.pdf',
+      '10_oscillations_waves':'class11_physics_hadiya_10_oscillations_waves.pdf',
+    };
+    const fileSizes: Record<string,number> = {
+      '01_units_measurements':24549377,
+      '02_mathematical_tools':17670360,
+      '03_vectors':27193317,
+      '04_laws_of_motion':10130430,
+      '05_work_energy_power':6649240,
+      '06_system_of_particles_rotational_motion':40268963,
+      '07_collisions':4254690,
+      '08_gravitation':2451761,
+      '09_mechanical_properties_of_solids':18781897,
+      '10_oscillations_waves':16709057,
+    };
+    for (const [slugPart, chapter, fileKey] of physicsChapters) {
+      const slug = `class-11-physics-${slugPart}-handwritten-notes-hadiya-hilal`;
+      const fileName = fileMap[fileKey];
+      const title = `Class 11 Physics — ${chapter} Handwritten Notes`;
+      await db.execute({
+        sql: `INSERT INTO resources (slug,title,description,class_level,board,subject,chapter,topic,resource_type,paper_type,year,school_name,contributor_name,file_url,storage_key,file_size,file_type,file_name,file_hash,status,featured,views,downloads,average_rating,rating_count,tags,created_at,updated_at,approved_at,photo_keys)
+              VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'approved',?,?,?,?,?,?,?,?,?,?)`,
+        args: [slug,title,`Handwritten Class 11 Physics chapter notes for ${chapter}, contributed by Hadiya Hilal.`,11,'JKBOSE','Physics',chapter,'Chapter Notes','Notes',null,2026,null,'Hadiya Hilal',`/uploads/${fileName}`,null,fileSizes[fileKey],'application/pdf',fileName,`hadiya_hilal_physics_${fileKey}`,0,0,0,0,0,'class11,physics,handwritten,notes,jkbose,hadiya hilal',now,now,now,null],
+      });
+    }
+    await db.execute({
+      sql: `INSERT OR IGNORE INTO app_migrations (id, applied_at) VALUES (?, ?)`,
+      args: ['class11_physics_hadiya_hilal_v1', now],
+    });
+  }
+
 
   const metricsMigration = await db.execute({
     sql: `SELECT id FROM app_migrations WHERE id = ? LIMIT 1`,
