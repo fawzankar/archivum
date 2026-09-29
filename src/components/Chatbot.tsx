@@ -67,7 +67,7 @@ export default function Chatbot() {
       return {
         id: Date.now().toString(),
         sender: 'bot',
-        text: 'You can explore all structured Class 9–12 chapter notes in our dedicated Notes Library!',
+        text: 'You can explore all structured Class 9 to 12 chapter notes in our dedicated Notes Library!',
         options: [
           { label: 'Go to Notes Library 📚', link: '/notes', action: () => setIsOpen(false) },
           { label: 'Class 10 Science Notes', link: '/search?class=10&subject=Science&type=Notes', action: () => setIsOpen(false) },

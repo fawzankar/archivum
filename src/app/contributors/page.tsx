@@ -24,7 +24,7 @@ export default async function ContributorsPage() {
     <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-12">
       <PageHead title="People building the archive." art="default" tone="mint">A live list based on approved material actually uploaded to ARCHIVUM. No inflated contributor numbers.</PageHead>
 
-      <section className="contributors-intro">
+      <section className="contributors-intro contributors-thankyou">
         <div className="contributors-intro-icon"><Heart /></div>
         <div><h2>Thank you to the people behind the archive.</h2><p>Every useful note, paper and study resource shared here helps keep ARCHIVUM alive. Our contributors give their time, material and helping nature to make studying a little easier for everyone who comes after them.</p><p>If you have material you think belongs in the archive, reach out to the Quest team and we’ll help you get it to the right place.</p></div>
       </section>

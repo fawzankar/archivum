@@ -68,23 +68,18 @@ export default function Navbar() {
           <div className="menu-section-label">Explore</div>
           <div className="menu-links">{links.map(([label,href,Icon]) => <Link key={href} href={withClass(href)} onClick={() => setDrawerOpen(false)} className={active(href) ? 'active' : ''}><Icon /><span>{label}</span><ChevronRight /></Link>)}</div>
 
-          <div className="menu-section">
-            <div className="menu-section-label">Your class</div>
-            <div className="class-grid">{[9,10,11,12].map(level => <Link key={level} href={`/?class=${level}`} onClick={() => setDrawerOpen(false)} className={studentClass === level ? 'active' : ''}>Class {level}</Link>)}</div>
-          </div>
-
           <div className="menu-section menu-appearance">
             <div className="menu-section-label">Colour theme</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ background: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
 
-          {displayName && <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset my profile</button>}
+          <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset my profile</button>
         </div>
 
           <div className="menu-quest-cta">
             <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><ExternalLink /><span>Visit SJS Quest</span></a>
           </div>
-        <div className="menu-note">Developed by Fawzan Kar</div>
+        <div className="menu-note">This App is Developed by <a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">Fawzan Kar</a></div>
       </aside>
     </div>
   </>;

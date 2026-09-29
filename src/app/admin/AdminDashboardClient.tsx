@@ -545,7 +545,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-1 font-semibold text-zinc-700 dark:text-zinc-300">
                           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-                          <span>{item.average_rating ? item.average_rating.toFixed(1) : '—'}</span>
+                          <span>{item.average_rating ? item.average_rating.toFixed(1) : ''}</span>
                         </div>
                       </td>
 

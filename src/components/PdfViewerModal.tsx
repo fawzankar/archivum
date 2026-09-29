@@ -33,7 +33,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     return () => window.removeEventListener('resize', update);
   }, []);
   const renderedSet = useRef<Set<number>>(new Set());
-  const touchStartX = useRef<number | null>(null);
+  const touchStartX = useRef<number | null>(null);\n  const lastTapAt = useRef(0);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp)$/i.test(resource.file_name || '')));
@@ -226,7 +226,15 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
 
         <div className={`pdf-reader-stage ${isMobile && !isImage ? 'mobile-page-mode' : ''} page-motion-${pageMotion}`} ref={stageRef}
           onClick={event => {
-            if (!isMobile || isImage || pageCount < 2) return;
+            if (!isMobile || isImage) return;
+            const now = Date.now();
+            if (now - lastTapAt.current < 320) {
+              setZoom(value => value > 1.05 ? 1 : 1.35);
+              lastTapAt.current = 0;
+              return;
+            }
+            lastTapAt.current = now;
+            if (pageCount < 2) return;
             const rect = event.currentTarget.getBoundingClientRect();
             const x = event.clientX - rect.left;
             if (x > rect.width * 0.58) { setPageMotion('next'); setCurrentPage(page => Math.min(pageCount, page + 1)); }

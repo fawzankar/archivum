@@ -16,7 +16,7 @@ import SplashScreen from '@/components/SplashScreen';
 export const viewport: Viewport = { themeColor: '#e4ecff', width: 'device-width', initialScale: 1, maximumScale: 5, viewportFit: 'cover' };
 export const metadata: Metadata = {
   title: 'ARCHIVUM | Academic Archive',
-  description: 'Academic notes, previous papers, study material and exam resources for SJS students in Classes 9–12.',
+  description: 'Academic notes, previous papers, study material and exam resources for SJS students in Classes 9 to 12.',
   manifest: '/manifest.json',
   icons: { icon: [{ url: '/archivum-icon.png', sizes: '512x512', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/archivum-icon.png' },
   appleWebApp: { capable: true, title: 'ARCHIVUM', statusBarStyle: 'black-translucent' },
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');const t=localStorage.getItem('archivum_theme');const migrated=a==='tangerine'||a==='ink-wash'||a==='golden-taupe'?'smoky-olive':a==='berry'||a==='cherry-blossom'?'soft-pink':a;if(['indigo','forest','smoky-olive','soft-pink','ocean'].includes(migrated||''))document.documentElement.setAttribute('data-accent',migrated);}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
+  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{if(location.pathname==='/'&&sessionStorage.getItem('archivum_home_splash_seen')!=='1')document.documentElement.classList.add('archivum-booting');}catch(e){}`}} /><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');const t=localStorage.getItem('archivum_theme');const migrated=a==='tangerine'||a==='ink-wash'||a==='golden-taupe'?'smoky-olive':a==='berry'||a==='cherry-blossom'?'soft-pink':a;if(['indigo','forest','smoky-olive','soft-pink','ocean'].includes(migrated||''))document.documentElement.setAttribute('data-accent',migrated);}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
     <ThemeProvider><StudentClassProvider><ToastProvider>
       <SplashScreen />
       <PwaRegister /><NavigationProgress /><ClassTransitionOverlay /><FirstLaunch />

@@ -16,7 +16,7 @@ export default function ResourceCard({ resource, onView, compact = false }: { re
   const href=`/resource/${resource.slug||resource.id}`; const count=(n:number)=>n>=1000?`${(n/1000).toFixed(1)}K`:String(n);
   const isPaper=Boolean(resource.paper_type) || resource.resource_type === 'Previous Year Paper'; const tone=[...(resource.subject||'')].reduce((a,c)=>a+c.charCodeAt(0),0)%4; const prime=()=>router.prefetch(href); const artName=isPaper?'papers':(resource.subject||'notes').trim();
   const openFromCard=(e:React.MouseEvent<HTMLElement>)=>{ const target=e.target as HTMLElement; if(target.closest('button,a')) return; router.push(href); };
-  return <article className={`resource-card rc ${compact?'compact':''}`} role="link" tabIndex={0} onPointerDown={prime} onClick={openFromCard} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ') && e.target===e.currentTarget){e.preventDefault();router.push(href)}}}>
+  return <article className={`resource-card rc ${compact?'compact':''}`} role="link" tabIndex={0} onPointerDown={prime} onMouseEnter={prime} onClick={openFromCard} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ') && e.target===e.currentTarget){e.preventDefault();router.push(href)}}}>
     <div className={`rc-top rc-c${tone}`}><Art name={artName} className="rc-art"/><span className="rc-kind">{isPaper?'Exam paper':(resource.resource_type||'Notes')}</span><button onClick={toggle} aria-label={saved?'Remove from saved':'Save resource'} className={`resource-save rc-save ${saved?'saved':''}`}>{saved?<BookmarkCheck/>:<Bookmark/>}</button></div>
     <Link href={href} onClick={onView?e=>{e.preventDefault();onView(resource)}:undefined} className="rc-body">
       <h3>{resource.title}</h3>

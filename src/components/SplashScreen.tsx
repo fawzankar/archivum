@@ -9,15 +9,15 @@ export default function SplashScreen() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (pathname !== '/') return;
+    if (pathname !== '/') { document.documentElement.classList.remove('archivum-booting'); return; }
     try {
-      if (sessionStorage.getItem(SPLASH_KEY) === '1') return;
+      if (sessionStorage.getItem(SPLASH_KEY) === '1') { document.documentElement.classList.remove('archivum-booting'); return; }
       sessionStorage.setItem(SPLASH_KEY, '1');
     } catch {
       // If storage is unavailable, still give a normal first-load splash.
     }
     setShow(true);
-    const timer = window.setTimeout(() => setShow(false), 3000);
+    const timer = window.setTimeout(() => { setShow(false); document.documentElement.classList.remove('archivum-booting'); }, 3000);
     return () => window.clearTimeout(timer);
   }, [pathname]);
 
@@ -26,7 +26,7 @@ export default function SplashScreen() {
     <div className="boot-splash" aria-label="Loading ARCHIVUM" role="status">
       <div className="boot-splash-mark"><span className="archivum-css-logo" /></div>
       <div className="boot-splash-name">ARCHIVUM</div>
-      <p className="boot-splash-credit">This App is Developed by Fawzan Kar</p>
+      <p className="boot-splash-credit">This App is Developed by <a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">Fawzan Kar</a></p>
       <div className="boot-splash-line"><span /></div>
     </div>
   );

@@ -21,11 +21,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return <div className="hm">
     <div className="hm-shell">
       <header className="hm-top home-hero-panel">
-        <div className="hero-ambient" aria-hidden="true">
-          <span className="hero-ambient-ring ring-a" /><span className="hero-ambient-ring ring-b" />
-          <span className="hero-ambient-line line-a" /><span className="hero-ambient-line line-b" />
-          <span className="hero-ambient-dot dot-a" /><span className="hero-ambient-dot dot-b" /><span className="hero-ambient-dot dot-c" />
-          <span className="hero-ambient-sheet"><i/><i/><i/></span>
+        <div className="hero-tiger" aria-hidden="true">
+          <span className="tiger-print tiger-print-a" /><span className="tiger-print tiger-print-b" /><span className="tiger-print tiger-print-c" /><span className="tiger-print tiger-print-d" />
         </div>
         <div className="home-hero-copy">
           <PersonalGreeting activeClass={activeClass} />
