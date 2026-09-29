@@ -26,7 +26,7 @@ export default function ContactPage() {
       const r = await fetch('/api/feedback', { method: 'POST', body: fd });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || 'Could not send your message.');
-      setSent(true); setMessage(''); setFiles([]);
+      setSent(true); setMessage('');
     } catch (err) { setError(err instanceof Error ? err.message : 'Could not send your message.'); }
     finally { setSending(false); }
   };
