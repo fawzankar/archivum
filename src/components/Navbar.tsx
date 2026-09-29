@@ -46,7 +46,7 @@ export default function Navbar() {
 
         <div className="header-actions">
           <button className="header-action search-trigger" onClick={() => setSearchOpen(v => !v)} aria-label="Search"><Search /></button>
-          <button className="header-menu" onClick={() => setDrawerOpen(true)} aria-label="Open menu"><Menu /><span>Menu</span></button>
+          <button className="header-menu" onClick={() => setDrawerOpen(true)} aria-label="Open menu"><Menu /></button>
         </div>
       </div>
 
@@ -84,7 +84,7 @@ export default function Navbar() {
           <div className="menu-quest-cta">
             <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span><strong>Visit SJS Quest</strong><small>Explore the Quest community</small></span><ExternalLink /></a>
           </div>
-        <div className="menu-note">Your class, name and colour choice stay on this device.</div>
+        <div className="menu-note">Developed by Fawzan Kar</div>
       </aside>
     </div>
   </>;

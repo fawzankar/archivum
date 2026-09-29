@@ -17,7 +17,7 @@ export default function SplashScreen() {
       // If storage is unavailable, still give a normal first-load splash.
     }
     setShow(true);
-    const timer = window.setTimeout(() => setShow(false), 4000);
+    const timer = window.setTimeout(() => setShow(false), 3000);
     return () => window.clearTimeout(timer);
   }, [pathname]);
 

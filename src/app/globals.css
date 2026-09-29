@@ -460,50 +460,6 @@ body{font-family:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-seri
   .pdf-reader-footer{min-height:34px}
 }
 
-/* ===== Requested visual refresh: Golden Taupe + Cherry Blossom ===== */
-:root[data-accent="golden-taupe"]{
-  --navy:#D4AF37;
-  --ink:#4B3B12;
-  --ink-muted:#6E633F;
-  --ink-faint:#958A63;
-  --sun:#FDFBD4;
-  --peri:#BDB76B;
-  --blush:#CE8946;
-  --mint:#E9E4B7;
-  --ivory:#FBFAF2;
-  --ivory-deep:#F2EFD8;
-  --border:#DDD6AE;
-  --border-light:#ECE8CC;
-  --surface:#FFFFFF;
-  --surface-raised:#F6F3DF;
-  --accent:#D4AF37;
-  --accent-strong:#A98418;
-  --accent-light:#F5EEC8;
-  --accent-contrast:#241D08;
-}
-:root[data-accent="cherry-blossom"]{
-  --navy:#FFB7C5;
-  --ink:#4A2D34;
-  --ink-muted:#765962;
-  --ink-faint:#A07E86;
-  --sun:#FFFFFF;
-  --peri:#D5F3D8;
-  --blush:#F2C7C7;
-  --mint:#FFE0E7;
-  --ivory:#FFF9FA;
-  --ivory-deep:#FBECEF;
-  --border:#F1D3D9;
-  --border-light:#F7E5E9;
-  --surface:#FFFFFF;
-  --surface-raised:#FFF2F5;
-  --accent:#FFB7C5;
-  --accent-strong:#E9899D;
-  --accent-light:#FFE7EC;
-  --accent-contrast:#4A2D34;
-}
-:root[data-accent="golden-taupe"] .mobile-nav-link.active{background:#FDFBD4;color:#4B3B12}
-:root[data-accent="cherry-blossom"] .mobile-nav-link.active{background:#D5F3D8;color:#4A2D34}
-
 /* Menu hover must never lose its contrast on desktop. */
 .header-menu:hover,
 .header-menu:focus-visible,
@@ -597,4 +553,98 @@ body{font-family:"DM Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-seri
   .pdf-reader-image-wrap{width:100%;height:100%;display:grid;place-items:center;overflow:hidden}
   .pdf-reader-image-wrap img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain}
   .pdf-reader-stage{overflow:hidden!important}
+}
+
+
+/* ===== ARCHIVUM final visual/performance pass ===== */
+:root[data-accent="smoky-olive"]{
+  --navy:#11120D; --ink:#11120D; --ink-muted:#565449; --ink-faint:#7b786c;
+  --sun:#D8CFBC; --peri:#565449; --blush:#D8CFBC; --mint:#ece7dc;
+  --ivory:#FFFBF4; --ivory-deep:#F2EEE5; --border:#D8CFBC; --border-light:#E9E3D7;
+  --surface:#FFFBF4; --surface-raised:#F4EFE6; --accent:#565449; --accent-strong:#11120D;
+  --accent-light:#E8E2D6; --accent-contrast:#FFFBF4; --app-shadow:rgba(17,18,13,.13);
+}
+:root[data-accent="soft-pink"]{
+  --navy:#9B3160; --ink:#5B2941; --ink-muted:#8A5369; --ink-faint:#B07A90;
+  --sun:#FBB3BB; --peri:#D46C8C; --blush:#FBB3BB; --mint:#FCE1E5;
+  --ivory:#FFF7F8; --ivory-deep:#FBE8EC; --border:#E9B3C2; --border-light:#F4D6DE;
+  --surface:#FFFDFD; --surface-raised:#FFF0F3; --accent:#9B3160; --accent-strong:#7D214B;
+  --accent-light:#FCE1E7; --accent-contrast:#FFF7F8; --app-shadow:rgba(155,49,96,.12);
+}
+
+/* Header: larger mark, calm typography, icon-only menu. */
+.brand-logo{width:48px;height:48px}
+.brand-lockup strong{font-size:21px;font-weight:500;letter-spacing:.055em}
+.brand-lockup small{font-size:9px}
+.header-menu{min-width:44px!important;width:44px;height:44px;padding:0!important;border-radius:50%;justify-content:center}
+.header-menu span{display:none!important}
+.header-menu svg{width:20px;height:20px}
+.menu-top .brand-logo{width:50px;height:50px}
+.menu-top .brand-lockup strong{font-weight:500}
+.menu-note{text-align:center;padding:12px 20px 18px;color:var(--ink-muted);font-size:11px;font-weight:600;letter-spacing:.02em;border-top:1px solid var(--border-light)}
+
+/* No global footer: layout no longer renders it. */
+.site-footer{display:none!important}
+
+/* Hero: rectangular, no gradient, with a hand-drawn archive illustration sitting behind the copy. */
+.home-hero-panel{position:relative!important;min-height:390px!important;display:block!important;padding:54px 52px!important;border-radius:18px!important;background:var(--surface)!important;box-shadow:0 18px 48px var(--app-shadow)!important;border-color:var(--border)!important}
+.home-hero-panel:after{content:"";display:block!important;position:absolute;right:8%;top:10%;width:250px;height:250px;border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);border-radius:50%;pointer-events:none}
+.home-hero-drawing{position:absolute;right:4%;top:8%;width:min(390px,39%);height:84%;opacity:.23;transform:rotate(3deg);pointer-events:none;z-index:1}
+.home-hero-drawing .archive-illustration{width:100%;height:100%;position:relative;filter:grayscale(.2)}
+.home-hero-copy{position:relative;z-index:3;max-width:820px!important}
+.hm-hello h1{font-size:clamp(44px,6vw,76px)!important;white-space:nowrap!important;font-weight:500!important}
+.hm-hello h1 strong{font-weight:500!important}
+.home-hero-intro{max-width:690px!important;font-size:17px!important}
+.hm-search{max-width:760px!important}
+.hm-search .clean-search{background:var(--surface-raised)!important;border:1px solid var(--border)!important;border-radius:12px!important}
+
+/* Bring back clear visual icons for the two entry cards. */
+.hm-jump-card{position:relative;display:flex!important;gap:16px;align-items:flex-start}
+.hm-jump-icon{width:48px;height:48px;display:grid;place-items:center;flex:none;border-radius:14px;background:rgba(255,255,255,.34);border:1px solid color-mix(in srgb,var(--ink) 12%,transparent);font-size:26px;font-weight:500;color:var(--ink)}
+.hm-jump-card>div:nth-child(2){min-width:0}
+
+/* Notes: fast, centered feedback and compact cards. */
+.notes-loading-indicator{display:inline-flex;align-items:center;gap:7px;color:var(--ink-muted);font-size:11px;font-weight:600}
+.notes-loading-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:notesPulse 1s ease-in-out infinite}
+@keyframes notesPulse{50%{opacity:.25;transform:scale(.72)}}
+
+/* Tips compose form: predictable fields on every viewport. */
+.tips-compose{border:1px solid var(--border)!important;border-radius:22px!important;box-shadow:0 18px 45px var(--app-shadow)}
+.tips-compose form{max-width:900px}
+.tips-compose select,.tips-compose input,.tips-compose textarea,.tips-field{width:100%;min-height:50px;border:1px solid var(--border)!important;border-radius:13px!important;padding:13px 15px!important;background:var(--surface)!important;color:var(--ink)!important;box-shadow:none!important}
+.tips-compose textarea{min-height:130px}
+.tips-compose select:focus,.tips-compose input:focus,.tips-compose textarea:focus{outline:2px solid color-mix(in srgb,var(--accent) 25%,transparent);outline-offset:1px;border-color:var(--accent)!important}
+.tips-submit{min-height:48px;padding:0 18px;border:0;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:700}
+
+/* Contact cards are links in their entirety. */
+.contact-reach-card{position:relative;grid-template-columns:auto 1fr!important;min-height:126px;padding:20px!important;border-radius:18px!important;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.contact-reach-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 16px 34px var(--app-shadow)}
+.contact-reach-card>a{display:none}
+.contact-reach-card>div{min-width:0}
+.contact-reach-link{display:block;margin-top:8px;color:var(--accent-strong);font-size:11px;font-weight:700;overflow-wrap:anywhere}
+
+/* Mobile: no page-level horizontal scrolling and stable reader geometry. */
+html,body{max-width:100%;overflow-x:hidden}
+@media(max-width:700px){
+  .archive-shell{width:calc(100% - 28px)}
+  .site-header-inner{height:68px}
+  .brand-logo{width:44px;height:44px}
+  .brand-lockup strong{font-size:18px}
+  .home-hero-panel{min-height:390px!important;padding:28px 20px!important;border-radius:16px!important}
+  .home-hero-drawing{right:-12%;top:30%;width:78%;height:62%;opacity:.15}
+  .hm-hello h1{font-size:clamp(32px,10vw,52px)!important;white-space:nowrap!important}
+  .home-hero-intro{font-size:14px!important;max-width:100%!important}
+  .hm-search{max-width:100%!important}
+  .hm-jump-card{min-height:160px!important}
+  .hm-jump-icon{width:42px;height:42px;font-size:22px}
+  .pdf-reader-shell{padding:0!important}
+  .pdf-reader-window{width:100vw!important;height:100dvh!important;border:0!important;border-radius:0!important}
+  .pdf-reader-header{min-height:62px!important;padding:8px 10px!important}
+  .pdf-reader-stage.mobile-page-mode{height:auto!important;min-height:0!important;overflow:hidden!important;padding:8px!important}
+  .pdf-mobile-page{width:calc(100vw - 24px)!important;height:calc(100dvh - 160px)!important;max-height:calc(100dvh - 160px)!important;margin:auto!important;overflow:hidden!important}
+  .pdf-mobile-page canvas{max-width:100%!important;max-height:100%!important}
+  .pdf-reader-footer{display:none!important}
+  .pdf-mobile-controls{bottom:54px!important}
+  .pdf-mobile-counter{bottom:58px!important}
+  .tips-compose{padding:22px!important}
 }

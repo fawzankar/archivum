@@ -4,7 +4,6 @@ import { ThemeProvider } from '@/components/ThemeContext';
 import { ToastProvider } from '@/components/ToastContext';
 import { StudentClassProvider } from '@/components/StudentClassContext';
 import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import MobileNav from '@/components/MobileNav';
 import PwaRegister from '@/components/PwaRegister';
 import FirstLaunch from '@/components/FirstLaunch';
@@ -25,12 +24,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');const t=localStorage.getItem('archivum_theme');const migrated=a==='tangerine'||a==='ink-wash'?'golden-taupe':a==='berry'?'cherry-blossom':a;if(['indigo','forest','golden-taupe','cherry-blossom','ocean'].includes(migrated||''))document.documentElement.setAttribute('data-accent',migrated);}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
+  return <html lang="en" suppressHydrationWarning><head><script dangerouslySetInnerHTML={{__html:`try{const a=localStorage.getItem('archivum_accent');const t=localStorage.getItem('archivum_theme');const migrated=a==='tangerine'||a==='ink-wash'||a==='golden-taupe'?'smoky-olive':a==='berry'||a==='cherry-blossom'?'soft-pink':a;if(['indigo','forest','smoky-olive','soft-pink','ocean'].includes(migrated||''))document.documentElement.setAttribute('data-accent',migrated);}catch(e){}`}} /></head><body className="min-h-screen flex flex-col antialiased" style={{ backgroundColor:'var(--ivory)', color:'var(--ink)' }}>
     <ThemeProvider><StudentClassProvider><ToastProvider>
       <PwaRegister /><SplashScreen /><NavigationProgress /><ClassTransitionOverlay /><FirstLaunch />
       <Suspense fallback={null}><Navbar /></Suspense>
       <main className="flex-1">{children}</main>
-      <Footer /><MobileNav /><DeferredClientWidgets />
+      <MobileNav /><DeferredClientWidgets />
     </ToastProvider></StudentClassProvider></ThemeProvider>
   </body></html>;
 }

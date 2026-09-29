@@ -1,4 +1,5 @@
 import React from 'react';
+import { BookOpen, FileText } from 'lucide-react';
 import Link from 'next/link';
 import { getResources } from '@/lib/resources';
 import { getPreferredClass } from '@/lib/studentClass';
@@ -6,6 +7,7 @@ import ResourceCard from '@/components/ResourceCard';
 import HomeClient from './HomeClient';
 import SubjectPicker from '@/components/SubjectPicker';
 import PersonalGreeting from '@/components/PersonalGreeting';
+import ArchiveIllustration from '@/components/ArchiveIllustration';
 import { subjectsForClass, SUBJECT_DETAILS } from '@/lib/subjects';
 
 export const runtime = 'nodejs';
@@ -23,6 +25,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return <div className="hm">
     <div className="hm-shell">
       <header className="hm-top home-hero-panel">
+        <div className="home-hero-drawing"><ArchiveIllustration /></div>
         <div className="home-hero-copy">
           <PersonalGreeting activeClass={activeClass} />
           <p className="home-hero-intro">Your Class {activeClass} notes, previous-year papers and study material — organised so you can find what you need without digging through old chats.</p>
@@ -32,10 +35,10 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
 
       <section className="hm-jump" aria-label="Start here">
         <Link href={`/notes?class=${activeClass}`} className="hm-jump-card hm-sun">
-          <div><h2>Class {activeClass} notes</h2><p>Chapter-wise study material, kept in one place.</p><span className="hm-pill">Open notes</span></div>
+          <div className="hm-jump-icon"><BookOpen aria-hidden="true" /></div><div><h2>Class {activeClass} notes</h2><p>Chapter-wise study material, kept in one place.</p><span className="hm-pill">Open notes</span></div>
         </Link>
         <Link href={`/previous-papers?class=${activeClass}`} className="hm-jump-card hm-peri">
-          <div><h2>Previous papers</h2><p>Practise with real question papers.</p><span className="hm-pill">Find papers</span></div>
+          <div className="hm-jump-icon"><FileText aria-hidden="true" /></div><div><h2>Previous papers</h2><p>Practise with real question papers.</p><span className="hm-pill">Find papers</span></div>
         </Link>
       </section>
 

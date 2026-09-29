@@ -52,6 +52,14 @@ export default function SearchClient({
   const [loading, setLoading] = useState(false);
   const [activePdf, setActivePdf] = useState<Resource | null>(null);
 
+  useEffect(() => {
+    const urlQuery = searchParams.get('q') || '';
+    if (urlQuery !== query) {
+      setQuery(urlQuery);
+      setPage(1);
+    }
+  }, [searchParams, query]);
+
   const fetchResults = useCallback(async () => {
     setLoading(true);
     try {
@@ -83,7 +91,12 @@ export default function SearchClient({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setPage(1);
+    const nextPage = 1;
+    setPage(nextPage);
+    const params = new URLSearchParams(searchParams.toString());
+    if (query.trim()) params.set('q', query.trim()); else params.delete('q');
+    params.delete('page');
+    router.replace(`/search${params.toString() ? `?${params.toString()}` : ''}`);
     fetchResults();
   };
 

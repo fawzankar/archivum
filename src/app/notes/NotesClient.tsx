@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
 import { BookOpen, ArrowRight, Layers3 } from 'lucide-react';
@@ -17,8 +17,33 @@ const CLASS_CONFIG = [9, 10, 11, 12] as const;
 export default function NotesClient({ allNotes, initialClass, initialSubject }: NotesClientProps) {
   const [selectedClass, setSelectedClass] = useState<number>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
+  const [notes, setNotes] = useState<Resource[]>(allNotes);
+  const [loading, setLoading] = useState(false);
+  const loadedClasses = useRef(new Set<number>([initialClass]));
 
-  const classNotes = useMemo(() => allNotes.filter((n) => n.class_level === selectedClass), [allNotes, selectedClass]);
+  useEffect(() => {
+    const hasClass = notes.some((n) => n.class_level === selectedClass);
+    if (hasClass || loadedClasses.current.has(selectedClass)) return;
+    loadedClasses.current.add(selectedClass);
+    let cancelled = false;
+    setLoading(true);
+    fetch(`/api/resources?class=${selectedClass}&type=Notes&limit=40`, { cache: 'force-cache' })
+      .then((r) => r.ok ? r.json() : Promise.reject(new Error('Could not load notes')))
+      .then((json) => { if (!cancelled) setNotes((current) => [...current, ...(json.items || [])]); })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [selectedClass, initialClass, notes]);
+
+  const classNotes = useMemo(() => {
+    const seen = new Set<string>();
+    return notes.filter((n) => n.class_level === selectedClass).filter((n) => {
+      const key = `${n.class_level}|${n.subject}|${n.title.trim().toLowerCase()}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }, [notes, selectedClass]);
   const availableSubjects = subjectsForClass(selectedClass);
   const activeSubject = selectedSubject && availableSubjects.includes(selectedSubject) ? selectedSubject : '';
 
@@ -73,6 +98,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
 
 
       <div className="flex items-end justify-between gap-4">
+        {loading && <div className="notes-loading-indicator" role="status"><span className="notes-loading-dot" /> Loading Class {selectedClass} notes…</div>}
         <div><p className="text-[10px] uppercase tracking-[.18em] font-bold" style={{ color: 'var(--accent)' }}>ARCHIVE RESULTS</p><h3 className="font-display font-bold text-xl mt-1">{activeSubject || 'All subjects'} <span className="text-sm font-medium" style={{ color: 'var(--ink-faint)' }}>· {filteredNotes.length}</span></h3></div>
         <span className="hidden sm:block text-[11px]" style={{ color: 'var(--ink-muted)' }}>Class {selectedClass}</span>
       </div>
