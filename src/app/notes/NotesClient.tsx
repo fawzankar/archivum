@@ -42,7 +42,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
   return (
     <div className="space-y-7 sm:space-y-9">
       <section className="rounded-[2rem] border overflow-hidden premium-shadow" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
-        <div className="p-5 sm:p-7" style={{ background: 'linear-gradient(135deg, var(--accent-light), var(--surface))' }}>
+        <div className="p-5 sm:p-7" style={{ background: 'var(--paper-2)' }}>
           <div className="flex items-start justify-between gap-4">
             <div>
               <span className="text-[10px] font-bold uppercase tracking-[.22em]" style={{ color: 'var(--accent)' }}>CLASS {selectedClass} · NOTES LIBRARY</span>

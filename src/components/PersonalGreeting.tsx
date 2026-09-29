@@ -1,8 +1,7 @@
 'use client';
 import React from 'react';
-import { useStudentClass } from './StudentClassContext';
-export default function PersonalGreeting({ activeClass }: { activeClass: number }) {
-  const { displayName } = useStudentClass();
-  const name = displayName.trim() || 'there';
-  return <div className="personal-greeting"><span>HELLO, {name.toUpperCase()}</span><b>CLASS {activeClass}</b></div>;
+import {useStudentClass} from './StudentClassContext';
+export default function PersonalGreeting(){
+  const {displayName}=useStudentClass();
+  return <span className="home-greeting-line">Good to see you{displayName.trim()?`, ${displayName.trim()}`:''}.</span>;
 }
