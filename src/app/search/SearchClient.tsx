@@ -97,7 +97,6 @@ export default function SearchClient({
     if (query.trim()) params.set('q', query.trim()); else params.delete('q');
     params.delete('page');
     router.replace(`/search${params.toString() ? `?${params.toString()}` : ''}`);
-    fetchResults();
   };
 
   const resetAll = () => {

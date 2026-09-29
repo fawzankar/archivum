@@ -43,7 +43,6 @@ export default function AboutPage() {
 
     <nav className="ab-links" aria-label="Next">
       <Link href="/contributors" className="ab-link">Meet contributors</Link>
-      <Link href="/subjects" className="ab-link ab-link-solid">Browse subjects</Link>
     </nav>
   </main>;
 }

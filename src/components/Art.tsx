@@ -75,5 +75,14 @@ const art: Record<string, React.ReactNode> = {
 };
 
 export default function Art({ name, className = '' }: { name: string; className?: string }) {
-  return <svg className={`art ${className}`} viewBox="0 0 120 120" role="img" aria-hidden="true" focusable="false">{art[name] || art.default}</svg>;
+  const raw = (name || '').trim();
+  const aliases: Record<string,string> = {
+    maths:'Maths', mathematics:'Maths', math:'Maths',
+    science:'Science', sst:'SST', socialscience:'SST', 'social science':'SST',
+    english:'English', hindi:'Hindi', urdu:'Urdu', biology:'Biology', physics:'Physics', chemistry:'Chemistry',
+    notes:'notes', paper:'papers', papers:'papers', 'previous year paper':'papers', 'previous papers':'papers'
+  };
+  const key = aliases[raw.toLowerCase()] || raw;
+  return <svg className={`art ${className}`} viewBox="0 0 120 120" role="img" aria-hidden="true" focusable="false">{art[key] || art.default}</svg>;
 }
+

@@ -82,7 +82,7 @@ export default function Navbar() {
         </div>
 
           <div className="menu-quest-cta">
-            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span><strong>Visit SJS Quest</strong><small>Explore the Quest community</small></span><ExternalLink /></a>
+            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><ExternalLink /><span>Visit SJS Quest</span></a>
           </div>
         <div className="menu-note">Developed by Fawzan Kar</div>
       </aside>

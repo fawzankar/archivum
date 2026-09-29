@@ -149,13 +149,10 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
         docRef.current = null;
       }
       try {
-        const response = await fetch(fileUrl, { signal: controller.signal, cache: 'force-cache' });
-        if (!response.ok) throw new Error(`PDF request failed: ${response.status}`);
-        const buffer = await response.arrayBuffer();
-        if (cancelled) return;
         const pdfjs = await import('pdfjs-dist/build/pdf.mjs');
         pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-        const documentProxy = await pdfjs.getDocument({ data: new Uint8Array(buffer) }).promise as unknown as PDFDocumentProxy;
+        if (cancelled) return;
+        const documentProxy = await pdfjs.getDocument({ url: fileUrl, disableAutoFetch: false, disableStream: false, useWorkerFetch: true }).promise as unknown as PDFDocumentProxy;
         if (cancelled) {
           await documentProxy.destroy().catch(() => {});
           return;
