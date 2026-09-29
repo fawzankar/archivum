@@ -1410,3 +1410,234 @@ main:has(.contributors-intro){
   transform-origin:70% 70%;
   animation:waveHello 2.8s ease-in-out infinite!important;
 }
+
+
+/* ===== V12: polished Notes Library + animated Home hero ===== */
+
+/* Notes library: a premium, airy filter section with consistent card sizing. */
+.notes-library-panel{
+  overflow:hidden;
+  border:1px solid var(--border)!important;
+  background:var(--surface)!important;
+  box-shadow:0 18px 55px rgba(27,33,102,.07)!important;
+}
+.notes-library-header{
+  min-height:190px!important;
+  padding:42px 46px 34px!important;
+  background:linear-gradient(135deg,var(--surface-raised) 0%,var(--surface) 72%)!important;
+  border-bottom:1px solid var(--border-light)!important;
+  position:relative;
+}
+.notes-library-header::after{
+  content:"";
+  position:absolute;
+  width:190px;height:190px;
+  right:-55px;top:-85px;
+  border-radius:50%;
+  background:var(--accent-light);
+  opacity:.55;
+  pointer-events:none;
+}
+.notes-library-header>div,.notes-library-icon{position:relative;z-index:1}
+.notes-library-label{
+  display:inline-flex!important;
+  align-items:center;
+  min-height:27px;
+  padding:0 10px;
+  border-radius:999px;
+  background:var(--accent-light);
+  color:var(--accent);
+  font-size:10px!important;
+  letter-spacing:.14em!important;
+  font-weight:800!important;
+}
+.notes-library-heading{
+  margin:13px 0 0!important;
+  font-family:"Bricolage Grotesque","DM Sans",sans-serif!important;
+  font-size:clamp(30px,3vw,42px)!important;
+  line-height:1.05!important;
+  letter-spacing:-.025em!important;
+}
+.notes-library-description{
+  margin:9px 0 0!important;
+  max-width:680px;
+  font-size:15px!important;
+  color:var(--ink-muted)!important;
+}
+.notes-library-icon{
+  width:39px!important;height:39px!important;
+  padding:9px;
+  border-radius:13px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  box-shadow:0 7px 20px rgba(27,33,102,.07);
+}
+
+/* Subject cards: large, balanced, colorful, but still lightweight. */
+.notes-subject-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  padding:26px 30px 22px!important;
+  background:var(--surface)!important;
+}
+.notes-subject-card{
+  position:relative;
+  min-height:112px!important;
+  padding:20px 20px 17px!important;
+  border:1px solid var(--border)!important;
+  border-radius:20px!important;
+  background:var(--surface-raised)!important;
+  overflow:hidden;
+  justify-content:flex-end!important;
+  gap:6px!important;
+  box-shadow:0 7px 20px rgba(27,33,102,.045)!important;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease!important;
+}
+.notes-subject-card::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;right:0;
+  height:4px;
+  background:var(--subject-card-accent,var(--accent));
+  opacity:.9;
+}
+.notes-subject-card::after{
+  content:"";
+  position:absolute;
+  width:74px;height:74px;
+  right:-25px;top:-27px;
+  border-radius:50%;
+  background:var(--subject-card-accent,var(--accent));
+  opacity:.07;
+}
+.notes-subject-card:hover{
+  transform:translateY(-3px)!important;
+  border-color:var(--subject-card-accent,var(--accent))!important;
+  box-shadow:0 15px 30px rgba(27,33,102,.10)!important;
+}
+.notes-subject-card:active{transform:translateY(-1px)!important}
+.notes-subject-card span{
+  position:relative;z-index:1;
+  font-size:21px!important;
+  font-weight:800!important;
+  letter-spacing:-.02em;
+}
+.notes-subject-card small{
+  position:relative;z-index:1;
+  font-size:11px!important;
+  color:var(--ink-muted)!important;
+}
+.notes-subject-card:nth-child(1){--subject-card-accent:var(--accent)}
+.notes-subject-card:nth-child(2){--subject-card-accent:#5d75e8}
+.notes-subject-card:nth-child(3){--subject-card-accent:#31a56d}
+.notes-subject-card:nth-child(4){--subject-card-accent:#e49a35}
+.notes-subject-card:nth-child(5){--subject-card-accent:#d65b82}
+.notes-subject-card:nth-child(6){--subject-card-accent:#8a67c7}
+.notes-subject-card:nth-child(7){--subject-card-accent:#2c9db0}
+.notes-subject-card.active{
+  background:var(--accent)!important;
+  color:var(--accent-contrast)!important;
+  border-color:var(--accent)!important;
+  box-shadow:0 14px 30px color-mix(in srgb,var(--accent) 24%,transparent)!important;
+}
+.notes-subject-card.active small{color:color-mix(in srgb,var(--accent-contrast) 78%,transparent)!important}
+.notes-subject-card.active::after{opacity:.14}
+.notes-subject-card.active::before{background:var(--accent-contrast);opacity:.55}
+
+/* Class switcher: polished segmented controls with enough breathing room. */
+.notes-class-tabs{
+  align-items:center;
+  gap:9px!important;
+  padding:4px 30px 27px!important;
+  background:var(--surface)!important;
+}
+.notes-class-tab{
+  min-height:43px!important;
+  padding:0 19px!important;
+  border-radius:999px!important;
+  border:1px solid var(--border)!important;
+  background:var(--surface)!important;
+  color:var(--ink-muted)!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  letter-spacing:.01em;
+  transition:transform .16s ease,background .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease!important;
+}
+.notes-class-tab:hover{
+  transform:translateY(-1px);
+  border-color:var(--accent)!important;
+  color:var(--accent)!important;
+  box-shadow:0 7px 16px rgba(27,33,102,.08);
+}
+.notes-class-tab.active{
+  background:var(--accent)!important;
+  border-color:var(--accent)!important;
+  color:var(--accent-contrast)!important;
+  box-shadow:0 9px 20px color-mix(in srgb,var(--accent) 22%,transparent);
+}
+
+/* Home hero: keep zebra static, restore animated glow + waving hand. */
+.home-hero-panel .hero-zebra-layer{
+  animation:none!important;
+  transform:none!important;
+  clip-path:none!important;
+}
+.home-hero-panel .hero-zebra-glow{
+  display:block!important;
+  animation:zebraGlow 7s ease-in-out infinite alternate!important;
+  transform-origin:center;
+  will-change:transform,opacity,filter;
+}
+.hm-wave{
+  display:inline-block!important;
+  transform-origin:70% 70%!important;
+  animation:waveHello 2.8s ease-in-out infinite!important;
+  will-change:transform;
+}
+@keyframes zebraGlow{
+  0%{transform:translate3d(0,0,0) scale(.88);opacity:.35;filter:blur(1px)}
+  50%{opacity:.72}
+  100%{transform:translate3d(-18px,14px,0) scale(1.12);opacity:1;filter:blur(0)}
+}
+@keyframes waveHello{
+  0%,55%,100%{transform:rotate(0deg)}
+  62%{transform:rotate(14deg)}
+  69%{transform:rotate(-9deg)}
+  76%{transform:rotate(12deg)}
+}
+
+/* Keep motion accessible. */
+@media(prefers-reduced-motion:reduce){
+  .notes-subject-card,.notes-class-tab{transition:none!important}
+  .notes-subject-card:hover,.notes-class-tab:hover{transform:none!important}
+  .home-hero-panel .hero-zebra-glow,.hm-wave{animation:none!important}
+}
+
+/* Tablet/mobile: retain the same visual hierarchy without tiny cards. */
+@media(max-width:1100px){
+  .notes-subject-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  .notes-library-header{
+    min-height:158px!important;
+    padding:27px 21px 24px!important;
+  }
+  .notes-library-header::after{width:125px;height:125px;right:-45px;top:-60px}
+  .notes-library-heading{font-size:29px!important}
+  .notes-library-description{font-size:13px!important;max-width:38ch}
+  .notes-library-icon{width:32px!important;height:32px!important;padding:7px}
+  .notes-subject-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:10px!important;
+    padding:17px 15px 16px!important;
+  }
+  .notes-subject-card{
+    min-height:88px!important;
+    padding:15px!important;
+    border-radius:16px!important;
+  }
+  .notes-subject-card span{font-size:17px!important}
+  .notes-subject-card small{font-size:10px!important}
+  .notes-class-tabs{padding:1px 15px 18px!important}
+  .notes-class-tab{min-height:40px!important;padding:0 15px!important}
+}
