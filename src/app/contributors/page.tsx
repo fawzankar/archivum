@@ -1,5 +1,5 @@
 import { query } from '@/lib/db';
-import { Users, Upload, Trophy, Instagram, Mail, Heart } from 'lucide-react';
+import { Users, Upload, Trophy, Camera, Mail, Heart } from 'lucide-react';
 import PageHead from '@/components/PageHead';
 
 export const dynamic = 'force-dynamic';
@@ -29,7 +29,7 @@ export default async function ContributorsPage() {
         <div><h2>Thank you to the people behind the archive.</h2><p>Every useful note, paper and study resource shared here helps keep ARCHIVUM alive. Our contributors give their time, material and helping nature to make studying a little easier for everyone who comes after them.</p><p>If you have material you think belongs in the archive, reach out to the Quest team and we’ll help you get it to the right place.</p></div>
       </section>
       <section className="contributors-contact-grid">
-        <a href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><Instagram /><span><strong>Instagram</strong><small>@quest_sjs</small></span></a>
+        <a href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><Camera /><span><strong>Instagram</strong><small>@quest_sjs</small></span></a>
         <a href="mailto:sjsquest26@gmail.com"><Mail /><span><strong>Email</strong><small>sjsquest26@gmail.com</small></span></a>
       </section>
 

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Send, CheckCircle2, Instagram, Mail } from 'lucide-react';
+import { Send, CheckCircle2, Camera, Mail } from 'lucide-react';
 import { useStudentClass } from '@/components/StudentClassContext';
 import PageHead from '@/components/PageHead';
 
@@ -34,7 +34,7 @@ export default function ContactPage() {
   return <main className="ct">
     <PageHead title="Contact us" art="notes" tone="blush">Tell us what’s wrong, what’s missing, or what you’d like to see.</PageHead>
     <section className="contact-reach">
-      <div className="contact-reach-card"><span className="contact-reach-icon"><Instagram /></span><div><strong>Quest on Instagram</strong><p>Reach the Quest team for material, ideas or updates.</p></div><a href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer">@quest_sjs</a></div>
+      <div className="contact-reach-card"><span className="contact-reach-icon"><Camera /></span><div><strong>Quest on Instagram</strong><p>Reach the Quest team for material, ideas or updates.</p></div><a href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer">@quest_sjs</a></div>
       <div className="contact-reach-card"><span className="contact-reach-icon"><Mail /></span><div><strong>Email the Quest team</strong><p>Send us useful notes, papers or anything worth archiving.</p></div><a href="mailto:sjsquest26@gmail.com">sjsquest26@gmail.com</a></div>
     </section>
     {sent
