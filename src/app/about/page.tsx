@@ -9,8 +9,8 @@ export default function AboutPage() {
           <div className="w-14 h-14 rounded-lg flex items-center justify-center" style={{background:'var(--accent)',color:'var(--accent-contrast)'}}>
             <Archive className="w-7 h-7"/>
           </div>
-          <p className="mt-8 text-[10px] uppercase tracking-[.25em] font-bold" style={{color:'var(--accent-on-hero)'}}>ABOUT ARCHIVUM</p>
-          <p className="text-[10px] uppercase tracking-[.2em] font-medium mt-6" style={{color:'var(--hero-muted)'}}>FOUNDER OF ARCHIVUM · FAWZAN KAR</p>
+          <p className="mt-8 text-[10px] font-bold" style={{color:'var(--accent-on-hero)'}}>About ARCHIVUM</p>
+          <p className="text-[10px] font-medium mt-6" style={{color:'var(--hero-muted)'}}>Founder of ARCHIVUM · Fawzan Kar</p>
           <h1 className="font-display text-4xl sm:text-6xl font-bold mt-2" style={{color:'var(--hero-ink)'}}>Built from a problem Fawzan Kar faced himself.</h1>
           <p className="mt-5 max-w-2xl text-sm sm:text-base leading-7" style={{color:'var(--hero-muted)'}}>ARCHIVUM is a student-built place for SJS students to preserve, discover and share useful academic material.</p>
         </div>
@@ -35,7 +35,7 @@ export default function AboutPage() {
               ['Contribute','Help the next student by sharing useful work.','Share'],
             ].map(([title,body,icon]) => (
               <div key={title} className="rounded-xl border p-5" style={{background:'var(--surface-raised)',borderColor:'var(--border)'}}>
-                <div className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>{icon}</div>
+                <div className="text-[10px] font-bold" style={{color:'var(--accent)'}}>{icon}</div>
                 <h2 className="font-display font-bold text-lg mt-3">{title}</h2>
                 <p className="text-xs leading-5 mt-2" style={{color:'var(--ink-muted)'}}>{body}</p>
               </div>
@@ -44,7 +44,7 @@ export default function AboutPage() {
 
 
           <div className="rounded-xl border p-6 sm:p-8" style={{background:'var(--surface-raised)',borderColor:'var(--border)'}}>
-            <p className="text-[10px] uppercase tracking-[.18em] font-bold" style={{color:'var(--accent)'}}>SISTER ORGANISATION</p>
+            <p className="text-[10px] font-bold" style={{color:'var(--accent)'}}>Sister organisation</p>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5 mt-2">
               <div>
                 <h2 className="font-display font-bold text-2xl">ARCHIVUM × <span className="quest-word">QUEST</span></h2>

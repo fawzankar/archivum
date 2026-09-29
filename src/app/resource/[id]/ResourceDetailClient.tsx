@@ -98,7 +98,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
             <button onClick={handleShare} className="resource-detail-icon" aria-label="Share resource"><Share2 /></button>
             <button onClick={handleSaveToggle} className={`resource-detail-icon ${saved?'is-saved':''}`} aria-label={saved?'Remove from saved':'Save resource'}>{saved?<BookmarkCheck />:<Bookmark />}</button>
           </div>
-          <div className="flex items-center gap-2 text-[9px] uppercase tracking-[.16em] font-bold" style={{color:'var(--accent)'}}><span>Class {resource.class_level}</span><span>·</span><span>{resource.subject}</span><span>·</span><span>{resource.resource_type || 'Notes'}</span></div>
+          <div className="flex items-center gap-2 text-[9px] font-bold" style={{color:'var(--accent)'}}><span>Class {resource.class_level}</span><span>·</span><span>{resource.subject}</span><span>·</span><span>{resource.resource_type || 'Notes'}</span></div>
           <div className="mt-6 w-12 h-12 grid place-items-center border" style={{background:'var(--surface)',borderColor:'var(--border)',color:'var(--accent)'}}><FileText className="w-6 h-6" /></div>
           <h1 className="font-display mt-5 max-w-3xl text-3xl sm:text-5xl leading-[.98]" style={{color:'var(--ink)'}}>{resource.title}</h1>
           
@@ -119,7 +119,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
 
           <section>
             <div className="flex items-end justify-between gap-4"><div><span className="detail-kicker">Academic record</span><h2 className="font-display text-2xl mt-1">Everything attached to this file.</h2></div><ExternalLink className="hidden sm:block w-5 h-5" style={{color:'var(--ink-faint)'}} /></div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-px border mt-4" style={{borderColor:'var(--border)',background:'var(--border)'}}>{details.map(([label,value]) => <div key={label} className="p-4 sm:p-5" style={{background:'var(--surface)'}}><span className="block text-[9px] uppercase tracking-[.14em] font-bold" style={{color:'var(--ink-faint)'}}>{label}</span><span className="block mt-1.5 text-xs sm:text-sm font-semibold leading-snug" style={{color:'var(--ink)'}}>{value}</span></div>)}</div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-px border mt-4" style={{borderColor:'var(--border)',background:'var(--border)'}}>{details.map(([label,value]) => <div key={label} className="p-4 sm:p-5" style={{background:'var(--surface)'}}><span className="block text-[9px] font-bold" style={{color:'var(--ink-faint)'}}>{label}</span><span className="block mt-1.5 text-xs sm:text-sm font-semibold leading-snug" style={{color:'var(--ink)'}}>{value}</span></div>)}</div>
           </section>
 
           <section className="grid sm:grid-cols-3 gap-px border" style={{borderColor:'var(--border)',background:'var(--border)'}}>

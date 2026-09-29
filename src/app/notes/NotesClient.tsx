@@ -45,7 +45,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
         <div className="p-5 sm:p-7" style={{ background: 'var(--paper-2)' }}>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-[.22em]" style={{ color: 'var(--accent)' }}>CLASS {selectedClass} · NOTES LIBRARY</span>
+              <span className="text-[10px] font-bold" style={{ color: 'var(--accent)' }}>CLASS {selectedClass} · NOTES LIBRARY</span>
               <h2 className="font-display font-bold text-2xl sm:text-3xl mt-2">Choose a subject</h2>
               <p className="text-xs sm:text-sm mt-1.5" style={{ color: 'var(--ink-muted)' }}>Your class profile controls the subject list, so you only see what applies to you.</p>
             </div>
@@ -90,7 +90,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
       )}
 
       <div className="flex items-end justify-between gap-4">
-        <div><p className="text-[10px] uppercase tracking-[.18em] font-bold" style={{ color: 'var(--accent)' }}>ARCHIVE RESULTS</p><h3 className="font-display font-bold text-xl mt-1">{activeSubject || 'All subjects'} <span className="text-sm font-medium" style={{ color: 'var(--ink-faint)' }}>· {filteredNotes.length}</span></h3></div>
+        <div><p className="text-[10px] font-bold" style={{ color: 'var(--accent)' }}>Archive results</p><h3 className="font-display font-bold text-xl mt-1">{activeSubject || 'All subjects'} <span className="text-sm font-medium" style={{ color: 'var(--ink-faint)' }}>· {filteredNotes.length}</span></h3></div>
         <span className="hidden sm:block text-[11px]" style={{ color: 'var(--ink-muted)' }}>Class {selectedClass}</span>
       </div>
 

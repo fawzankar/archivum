@@ -10,7 +10,7 @@ export default function SavedPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
-        <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
+        <span className="text-[10px] font-bold" style={{ color: 'var(--sage)' }}>
           OFFLINE CACHE & BOOKMARKS
         </span>
         <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
