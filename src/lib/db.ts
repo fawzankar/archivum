@@ -87,6 +87,8 @@ export async function initDb(): Promise<void> {
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status ON resources(status)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_featured ON resources(featured)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_paper_type ON resources(paper_type)`, args: [] },
+      { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_class_type_created ON resources(status,class_level,resource_type,created_at DESC)`, args: [] },
+      { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_class_subject ON resources(status,class_level,subject)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_year ON resources(year)`, args: [] },
     ], 'write');
 

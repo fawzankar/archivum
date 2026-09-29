@@ -1,6 +1,7 @@
 import React from 'react';
 import { getPreferredClass } from '@/lib/studentClass';
 import PageHead from '@/components/PageHead';
+import { getResources } from '@/lib/resources';
 import NotesClient from './NotesClient';
 
 export const revalidate = 30;
@@ -13,6 +14,7 @@ export default async function NotesPage({
   const params = await searchParams;
   const initialClass = params.class ? parseInt(params.class, 10) : (await getPreferredClass()) || 10;
   const initialSubject = params.subject || '';
+  const initialNotes = (await getResources({ class_level: initialClass, resource_type: 'Notes', limit: 40 })).items;
 
   return (
     <div className="notes-page-shell max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
@@ -21,7 +23,7 @@ export default async function NotesPage({
         </PageHead>
 
       <NotesClient
-        allNotes={[]}
+        allNotes={initialNotes}
         initialClass={initialClass}
         initialSubject={initialSubject}
       />
