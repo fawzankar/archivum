@@ -25,7 +25,6 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
     <div className="hm-shell">
       <header className="hm-top">
         <PersonalGreeting activeClass={activeClass} />
-        <h1>Let’s study together.</h1>
         <div className="hm-search"><HomeClient /></div>
       </header>
 
@@ -41,8 +40,8 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
       </section>
 
       <section aria-labelledby="hm-subjects">
-        <div className="hm-head"><h2 id="hm-subjects">Your subjects</h2><span>{subjects.length} this year</span></div>
-        <div className="hm-bento">
+        <div className="hm-head"><h2 id="hm-subjects">Your subjects</h2><span>{subjects.length} subjects</span></div>
+        <div className="hm-grid">
           {subjects.map(s => <SubjectPicker key={s} subject={s} classLevel={activeClass} description={SUBJECT_DETAILS[s]?.description} compact />)}
         </div>
       </section>

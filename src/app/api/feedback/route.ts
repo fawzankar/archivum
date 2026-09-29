@@ -15,7 +15,7 @@ export async function POST(request:Request){
   const classLevel=Number(form.get('classLevel'));
   const section=String(form.get('section')||'').trim().slice(0,20);
   const message=String(form.get('message')||'').trim().slice(0,3000);
-  if(!name||!email||![9,10,11,12].includes(classLevel)||!section||message.length<5) return NextResponse.json({error:'Please fill in your name, email, class, section and message.'},{status:400});
+  if(!name||!email||![9,10,11,12].includes(classLevel)||message.length<5) return NextResponse.json({error:'Please add your email, choose your class and write a message.'},{status:400});
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({error:'Please enter a valid email address.'},{status:400});
   const entries=form.getAll('attachments').filter((entry): entry is File => entry instanceof File).slice(0,6);
   for(const file of entries) if(file.size>MAX||!TYPES.has(file.type)) return NextResponse.json({error:'Each attachment must be a PDF or image under 10 MB.'},{status:400});

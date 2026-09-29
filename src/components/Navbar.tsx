@@ -9,7 +9,7 @@ import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Lay
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],
-  ['Subjects','/subjects',Layers3], ['Tips & Tricks','/tips',Lightbulb], ['Contributors','/contributors',Users], ['Feedback','/feedback',MessageCircle], ['About','/about',Info]
+  ['Tips & Tricks','/tips',Lightbulb], ['Contributors','/contributors',Users], ['Contact us','/contact',MessageCircle], ['About','/about',Info]
 ] as const;
 
 export default function Navbar() {
@@ -42,7 +42,7 @@ export default function Navbar() {
       <div className="archive-shell site-header-inner">
         <Link href="/" className="brand-lockup" aria-label="ARCHIVUM home">
           <span className="brand-logo"><span className="archivum-css-logo" /></span>
-          <span><strong>ARCHIVUM</strong><small>Study archive for SJS</small></span>
+          <span><strong>ARCHIVUM</strong><small>A Sister Organization Of Quest</small></span>
         </Link>
 
         <div className="header-actions">
@@ -60,7 +60,7 @@ export default function Navbar() {
       <button className="menu-scrim" onClick={() => setDrawerOpen(false)} aria-label="Close menu" />
       <aside className="menu-drawer">
         <div className="menu-top">
-          <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>Study archive</small></span></div>
+          <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>A Sister Organization Of Quest</small></span></div>
           <button className="header-action" onClick={() => setDrawerOpen(false)} aria-label="Close menu"><X /></button>
         </div>
 
@@ -75,12 +75,7 @@ export default function Navbar() {
           </div>
 
           <div className="menu-section menu-appearance">
-            <div className="menu-section-label">Appearance</div>
-            <div className="appearance-toggle">
-              <button type="button" className={mode === 'light' ? 'active' : ''} onClick={() => setMode('light')}><Sun /> Light</button>
-              <button type="button" className={mode === 'dark' ? 'active' : ''} onClick={() => setMode('dark')}><Moon /> Dark</button>
-            </div>
-            <div className="menu-section-label theme-label">Choose a colour</div>
+            <div className="menu-section-label">Colour theme</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ background: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
 

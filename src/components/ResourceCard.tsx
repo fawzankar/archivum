@@ -6,21 +6,22 @@ import { useRouter } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import { isResourceSaved, toggleSaveResource } from '@/lib/savedStorage';
 import { useToast } from './ToastContext';
-import { Bookmark, BookmarkCheck, ArrowUpRight, FileText, Star } from 'lucide-react';
+import Art from './Art';
+import { Bookmark, BookmarkCheck, ArrowUpRight, Star } from 'lucide-react';
 
 export default function ResourceCard({ resource, onView, compact = false }: { resource: Resource; onView?: (resource: Resource) => void; compact?: boolean }) {
   const [saved,setSaved]=useState(()=>isResourceSaved(resource.id)); const {showToast}=useToast(); const router=useRouter();
   useEffect(()=>{const sync=()=>setSaved(isResourceSaved(resource.id));window.addEventListener('sjs_saved_updated',sync);return()=>window.removeEventListener('sjs_saved_updated',sync)},[resource.id]);
   const toggle=(e:React.MouseEvent)=>{e.preventDefault();e.stopPropagation();const next=toggleSaveResource(resource);setSaved(next);showToast(next?'Saved to library':'Removed from saved',next?'success':'info')};
   const href=`/resource/${resource.slug||resource.id}`; const count=(n:number)=>n>=1000?`${(n/1000).toFixed(1)}K`:String(n);
-  const prime=()=>router.prefetch(href);
+  const isPaper=Boolean(resource.paper_type); const tone=[...(resource.subject||'')].reduce((a,c)=>a+c.charCodeAt(0),0)%4; const prime=()=>router.prefetch(href);
   const openFromCard=(e:React.MouseEvent<HTMLElement>)=>{ const target=e.target as HTMLElement; if(target.closest('button,a')) return; router.push(href); };
-  return <article className={`resource-card ${compact?'compact':''}`} role="link" tabIndex={0} onPointerDown={prime} onClick={openFromCard} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ') && e.target===e.currentTarget){e.preventDefault();router.push(href)}}}>
-    <div className="resource-card-top"><span className="resource-type"><FileText/> {resource.resource_type || (resource.paper_type?'Exam paper':'Notes')}</span><button onClick={toggle} aria-label={saved?'Remove from saved':'Save resource'} className={`resource-save ${saved?'saved':''}`}>{saved?<BookmarkCheck/>:<Bookmark/>}</button></div>
-    <Link href={href} onClick={onView?e=>{e.preventDefault();onView(resource)}:undefined} className="resource-card-main">
-      <div className="resource-meta">Class {resource.class_level}<span>•</span>{resource.subject}{resource.chapter&&<><span>•</span><em>{resource.chapter}</em></>}</div>
+  return <article className={`resource-card rc ${compact?'compact':''}`} role="link" tabIndex={0} onPointerDown={prime} onClick={openFromCard} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ') && e.target===e.currentTarget){e.preventDefault();router.push(href)}}}>
+    <div className={`rc-top rc-c${tone}`}><Art name={isPaper?'papers':(resource.subject||'notes')} className="rc-art"/><span className="rc-kind">{isPaper?'Exam paper':(resource.resource_type||'Notes')}</span><button onClick={toggle} aria-label={saved?'Remove from saved':'Save resource'} className={`resource-save rc-save ${saved?'saved':''}`}>{saved?<BookmarkCheck/>:<Bookmark/>}</button></div>
+    <Link href={href} onClick={onView?e=>{e.preventDefault();onView(resource)}:undefined} className="rc-body">
       <h3>{resource.title}</h3>
+      <div className="rc-chips"><span>Class {resource.class_level}</span><span>{resource.subject}</span>{resource.chapter&&<span>{resource.chapter}</span>}</div>
     </Link>
-    <div className="resource-card-foot"><div className="resource-stats"><span><Star className={resource.rating_count?'filled':''}/>{resource.rating_count?resource.average_rating.toFixed(1):'No rating yet'}</span></div><span className="resource-open">Open <ArrowUpRight/></span></div>
+    <div className="rc-foot"><span className="rc-rate"><Star className={resource.rating_count?'filled':''}/>{resource.rating_count?resource.average_rating.toFixed(1):'Not rated yet'}</span><span className="rc-open">Open <ArrowUpRight/></span></div>
   </article>;
 }

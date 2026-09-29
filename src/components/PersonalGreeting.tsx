@@ -4,5 +4,5 @@ import { useStudentClass } from './StudentClassContext';
 export default function PersonalGreeting({ activeClass }: { activeClass: number }) {
   const { displayName } = useStudentClass();
   const name = displayName.trim() || 'there';
-  return <p className="hm-hello">Hello, <strong>{name}</strong> · Class {activeClass}</p>;
+  return <div className="hm-hello"><h1>Hello,<br /><strong>{name}</strong></h1><p>Class {activeClass} notes and papers, all in one place.</p></div>;
 }
