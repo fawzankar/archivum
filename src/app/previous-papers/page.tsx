@@ -4,7 +4,7 @@ import PageHead from '@/components/PageHead';
 import { getResources } from '@/lib/resources';
 import PaperFinderClient from './PaperFinderClient';
 
-export const revalidate = 0;
+export const revalidate = 300;
 
 export default async function PreviousPapersPage({
   searchParams,
@@ -19,7 +19,7 @@ export default async function PreviousPapersPage({
 }) {
   const params = await searchParams;
   const selectedClass = params.class ? parseInt(params.class, 10) : await getPreferredClass();
-  const result = await getResources({ resource_type: 'Previous Year Paper', class_level: selectedClass, limit: 100 });
+  const result = await getResources({ resource_type: 'Previous Year Paper', limit: 200, withCount: false });
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">

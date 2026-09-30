@@ -7,15 +7,16 @@ const art: Record<string, React.ReactNode> = {
   Maths: <>
     <circle cx="60" cy="60" r="43" fill={W} stroke={N} strokeWidth="4"/>
     <text x="60" y="79" textAnchor="middle" fontFamily="Georgia, serif" fontSize="68" fontWeight="700" fontStyle="italic" fill={N}>π</text>
-    <path d="M28 93h64" stroke={Y} strokeWidth="7" strokeLinecap="round"/>
+    <path d="M28 93h64" stroke={S} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Science: <>
-    <path d="M46 14h28v30l26 48a10 10 0 0 1-9 15H29a10 10 0 0 1-9-15l26-48Z" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M32 78h56l12 22a6 6 0 0 1-5 9H25a6 6 0 0 1-5-9Z" fill={G}/>
-    <circle cx="56" cy="92" r="5" fill={W}/><circle cx="76" cy="86" r="3.5" fill={W}/>
-    <rect x="42" y="10" width="36" height="8" rx="4" fill={Y} stroke={N} strokeWidth="3"/>
+    <path d="M46 13h28v31l22 43a12 12 0 0 1-11 17H35a12 12 0 0 1-11-17l22-43Z" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
+    <path d="M30 76c9-4 18 2 27-1 10-4 18-4 31 1l8 15a8 8 0 0 1-8 13H32a8 8 0 0 1-8-13Z" fill={G}/>
+    <path d="M35 78c8-3 15 2 23 0 9-3 17-4 25 0" fill="none" stroke={S} strokeWidth="3.5" strokeLinecap="round"/>
+    <circle cx="53" cy="91" r="4" fill={W}/><circle cx="74" cy="87" r="3" fill={W}/>
+    <rect x="42" y="9" width="36" height="8" rx="4" fill={Y} stroke={N} strokeWidth="3"/>
   </>,
-  SST: <>
+  SST:  SST: <>
     <circle cx="60" cy="58" r="42" fill={S} stroke={N} strokeWidth="4"/>
     <path d="M34 37c9-5 18-1 20 7 2 9-7 13-10 20-4 8-13 6-17-2-4-9-2-19 7-25ZM73 64c10-5 21 1 21 10 0 9-9 16-18 14-8-2-12-14-3-24Z" fill={G}/>
     <path d="M31 58c11-4 20-3 30 2 10 5 18 5 29 0" fill="none" stroke={N} strokeWidth="3" strokeLinecap="round"/>

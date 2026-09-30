@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
 import PdfViewerModal from '@/components/PdfViewerModal';
@@ -36,9 +35,6 @@ export default function PaperFinderClient({
   initialYear,
   initialSchool,
 }: PaperFinderProps) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
   const [selectedClass, setSelectedClass] = useState<number | undefined>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [selectedPaperType, setSelectedPaperType] = useState<string>(initialPaperType || '');
@@ -55,11 +51,11 @@ export default function PaperFinderClient({
     if (selectedSchool) params.set('school', selectedSchool);
 
     const newQuery = params.toString();
-    const currentQuery = searchParams.toString();
-    if (newQuery !== currentQuery) {
-      router.replace(`/previous-papers${newQuery ? `?${newQuery}` : ''}`, { scroll: false });
+    const nextUrl = `/previous-papers${newQuery ? `?${newQuery}` : ''}`;
+    if (window.location.pathname + window.location.search !== nextUrl) {
+      window.history.replaceState(null, '', nextUrl);
     }
-  }, [selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool, router, searchParams]);
+  }, [selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool]);
 
   const availableSubjects = useMemo(() => {
     return selectedClass ? subjectsForClass(selectedClass) : Array.from(new Set(allPapers.map(p => p.subject).filter(Boolean))).sort();

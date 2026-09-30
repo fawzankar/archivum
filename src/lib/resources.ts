@@ -14,7 +14,7 @@ export interface Resource {
 export interface ResourceFilterOptions {
   class_level?: number; subject?: string; resource_type?: string; paper_type?: string; year?: number;
   school_name?: string; chapter?: string; topic?: string; search?: string; status?: string; featured?: boolean;
-  sortBy?: 'relevance'|'newest'|'downloads'|'rating'; page?: number; limit?: number;
+  sortBy?: 'relevance'|'newest'|'downloads'|'rating'; page?: number; limit?: number; withCount?: boolean;
 }
 
 export function generateSlug(title: string): string {
@@ -27,9 +27,9 @@ export function sanitizeFilename(filename: string) { return filename.replace(/[^
 async function getResourcesUncached(options: ResourceFilterOptions = {}) {
   await initDb();
   const { class_level, subject, resource_type, paper_type, year, school_name, chapter, topic, search, status='approved', featured,
-    sortBy='newest', page=1, limit=20 } = options;
+    sortBy='newest', page=1, limit=20, withCount=true } = options;
   const safePage = Number.isFinite(page) && page! > 0 ? Math.floor(page!) : 1;
-  const safeLimit = Number.isFinite(limit) && limit! > 0 ? Math.min(Math.floor(limit!), 50) : 20;
+  const safeLimit = Number.isFinite(limit) && limit! > 0 ? Math.min(Math.floor(limit!), 200) : 20;
   const where: string[] = []; const params: (string|number)[] = [];
   if (status) { where.push('status = ?'); params.push(status); }
   if (class_level) { where.push('class_level = ?'); params.push(class_level); }
@@ -49,11 +49,15 @@ async function getResourcesUncached(options: ResourceFilterOptions = {}) {
   const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
   const orderSql = sortBy === 'downloads' ? 'ORDER BY downloads DESC, created_at DESC' : sortBy === 'rating' ? 'ORDER BY average_rating DESC, rating_count DESC, created_at DESC' : sortBy === 'relevance' && search ? 'ORDER BY featured DESC, views DESC, downloads DESC' : 'ORDER BY created_at DESC';
   const offset = (safePage - 1) * safeLimit;
-  const [totalRow, items] = await Promise.all([
-    queryOne<{count:number}>(`SELECT COUNT(*) AS count FROM resources ${whereSql}`, params),
-    query<Resource>(`SELECT * FROM resources ${whereSql} ${orderSql} LIMIT ? OFFSET ?`, [...params, safeLimit, offset]),
-  ]);
-  const totalCount = Number(totalRow?.count ?? 0);
+  const items = await query<Resource>(
+    `SELECT * FROM resources ${whereSql} ${orderSql} LIMIT ? OFFSET ?`,
+    [...params, safeLimit, offset],
+  );
+  if (!withCount) {
+    return { items, totalCount: items.length, totalPages: 1, currentPage: safePage };
+  }
+  const totalRow = await queryOne<{count:number}>(`SELECT COUNT(*) AS count FROM resources ${whereSql}`, params);
+  const totalCount = Number(totalRow?.count ?? items.length);
   return { items, totalCount, totalPages: Math.ceil(totalCount / safeLimit) || 1, currentPage: safePage };
 }
 
@@ -70,20 +74,20 @@ export async function getResources(options: ResourceFilterOptions = {}) {
   return unstable_cache(
     () => getResourcesUncached(normalized),
     ['resources', key],
-    { revalidate: 30 }
+    { revalidate: 300 }
   )();
 }
 
 const getResourceByIdCached = (id:number) => unstable_cache(
   () => queryOne<Resource>('SELECT * FROM resources WHERE id = ?', [id]),
   ['resource-by-id', String(id)],
-  { revalidate: 30 }
+  { revalidate: 300 }
 )();
 
 const getResourceBySlugCached = (slug:string) => unstable_cache(
   () => queryOne<Resource>('SELECT * FROM resources WHERE slug = ?', [slug]),
   ['resource-by-slug', slug],
-  { revalidate: 30 }
+  { revalidate: 300 }
 )();
 
 export async function getResourceById(id:number) { return getResourceByIdCached(id); }
@@ -153,7 +157,7 @@ async function getRealStatsUncached() {
 export const getRealStats = unstable_cache(
   getRealStatsUncached,
   ['real-stats'],
-  { revalidate: 30 }
+  { revalidate: 300 }
 );
 
 

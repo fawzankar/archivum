@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
@@ -29,62 +29,23 @@ function mergeUnique(items: Resource[]) {
 export default function NotesClient({ allNotes, initialClass, initialSubject }: NotesClientProps) {
   const [selectedClass, setSelectedClass] = useState<number>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
-  const [notes, setNotes] = useState<Resource[]>(() => mergeUnique(allNotes));
-  const [loading, setLoading] = useState(false);
-  const loadedClasses = useRef(new Set<number>([initialClass]));
+  const [notes, setNotes] = useState<Resource[]>(() => {
+    if (typeof window === 'undefined') return mergeUnique(allNotes);
+    try {
+      const cached = sessionStorage.getItem('archivum_notes_bundle_v23');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length) return mergeUnique(parsed as Resource[]);
+      }
+    } catch {}
+    return mergeUnique(allNotes);
+  });
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const classes = CLASS_CONFIG.filter(level => level !== selectedClass);
-    Promise.allSettled(classes.map(async level => {
-      if (classCache.has(level)) return;
-      const response = await fetch(`/api/resources?class=${level}&type=Notes&limit=40`, {
-        cache: 'force-cache',
-        signal: controller.signal,
-      });
-      if (!response.ok) return;
-      const json = await response.json();
-      classCache.set(level, Array.isArray(json.items) ? mergeUnique(json.items) : []);
-    }));
-    return () => controller.abort();
-  }, [selectedClass]);
-
-  useEffect(() => {
-    if (loadedClasses.current.has(selectedClass)) return;
-
-    const cached = classCache.get(selectedClass);
-    if (cached) {
-      loadedClasses.current.add(selectedClass);
-      setNotes((current) => mergeUnique([...current, ...cached]));
-      return;
-    }
-
-    loadedClasses.current.add(selectedClass);
-    let cancelled = false;
-    const controller = new AbortController();
-    setLoading(true);
-
-    fetch(`/api/resources?class=${selectedClass}&type=Notes&limit=40`, {
-      cache: 'force-cache',
-      signal: controller.signal,
-    })
-      .then((response) => response.ok ? response.json() : Promise.reject(new Error('Could not load notes')))
-      .then((json) => {
-        if (cancelled) return;
-        const incoming = Array.isArray(json.items) ? mergeUnique(json.items) : [];
-        classCache.set(selectedClass, incoming);
-        setNotes((current) => mergeUnique([...current, ...incoming]));
-      })
-      .catch(() => {})
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-      controller.abort();
-    };
-  }, [selectedClass]);
+  React.useEffect(() => {
+    try {
+      sessionStorage.setItem('archivum_notes_bundle_v23', JSON.stringify(allNotes));
+    } catch {}
+  }, [allNotes]);
 
   const classNotes = useMemo(() => {
     const seen = new Set<string>();
@@ -183,16 +144,12 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
           <h3>{activeSubject || 'All subjects'} <span>· {filteredNotes.length}</span></h3>
         </div>
         <span className="notes-result-class">Class {selectedClass}</span>
-        {loading && <span className="notes-fast-loading" role="status">Loading…</span>}
+        
       </div>
 
       {filteredNotes.length > 0 ? (
         <div className="notes-resource-grid">
           {filteredNotes.map((resource) => <ResourceCard key={resource.id} resource={resource} />)}
-        </div>
-      ) : loading ? (
-        <div className="notes-centered-loading" role="status">
-          <strong>Loading notes…</strong>
         </div>
       ) : (
         <div className="text-center py-16 rounded-3xl border space-y-3" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
