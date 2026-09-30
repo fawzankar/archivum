@@ -32,12 +32,7 @@ export default function PrefetchRoutes() {
           const batch = resources.slice(i, i + batchSize);
           for (const route of batch) router.prefetch(route);
           await new Promise<void>((resolve) => {
-            if ('requestIdleCallback' in window) {
-              (window as Window & { requestIdleCallback?: (cb: () => void) => number })
-                .requestIdleCallback?.(() => resolve());
-            } else {
-              window.setTimeout(resolve, 0);
-            }
+            window.setTimeout(resolve, 0);
           });
         }
       } catch {
