@@ -2512,6 +2512,7 @@ small,
 .art .ai-slosh{transform-origin:50% 100%;animation:aiSlosh 2.6s ease-in-out infinite}
 .art .ai-wave{animation:aiWave 1.6s ease-in-out infinite}
 .art .ai-bubble{opacity:0;animation:aiBubble 3.2s ease-in infinite}
+.art .ai-globe{animation:aiGlobe 14s linear infinite}
 .art .ai-dash{animation:aiDash 1.4s linear infinite}
 .art .ai-bounce{animation:aiBounce 1.6s ease-in-out infinite}
 .art .ai-shadow{animation:aiShadow 1.6s ease-in-out infinite}
@@ -2531,6 +2532,7 @@ small,
 @keyframes aiSlosh{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
 @keyframes aiWave{0%,100%{transform:translateX(-2px)}50%{transform:translateX(2px)}}
 @keyframes aiBubble{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}80%{opacity:.9}100%{transform:translateY(var(--rise,-40px)) scale(1);opacity:0}}
+@keyframes aiGlobe{to{transform:translateX(-84px)}}
 @keyframes aiDash{to{stroke-dashoffset:-16}}
 @keyframes aiBounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}70%{transform:translateY(0)}85%{transform:translateY(-2px)}}
 @keyframes aiShadow{0%,100%{transform:scaleX(1);opacity:.28}40%{transform:scaleX(.6);opacity:.14}70%{transform:scaleX(1);opacity:.28}}
@@ -2553,13 +2555,9 @@ small,
 }
 .boot-splash.bs,.boot-splash.bs *{font-family:"Lato",Arial,sans-serif;font-weight:400!important}
 .boot-splash.bs.is-leaving{animation:bootOut .45s ease forwards}
-.bs-logo{
-  width:64px;height:64px;border-radius:50%;display:grid;place-items:center;
-  background:var(--ink);color:var(--ivory);
-  animation:bsFade .7s ease both;
-}
-.bs-logo .archivum-css-logo{width:52%;height:52%}
-.bs-name{margin:26px 0 0;padding-left:.32em;font-size:22px;letter-spacing:.32em;color:var(--ink);animation:bsFade .7s ease .15s both}
+.bs-logo{width:88px;height:88px;animation:bsFade .7s ease both}
+.bs-logo .art{width:100%;height:100%}
+.bs-name{margin:22px 0 0;padding-left:.32em;font-size:22px;letter-spacing:.32em;color:var(--ink);animation:bsFade .7s ease .15s both}
 .bs-progress{width:120px;height:1px;margin-top:34px;overflow:hidden;background:color-mix(in srgb,var(--ink) 16%,transparent);animation:bsFade .6s ease .3s both}
 .bs-progress span{display:block;height:100%;background:var(--ink);transition:width .05s linear}
 .bs-credit{position:absolute;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom,0px));margin:0;text-align:center;font-size:12px;letter-spacing:.02em;color:var(--ink-muted);animation:bsFade .7s ease .4s both}

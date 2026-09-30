@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Art from './Art';
 
 const SPLASH_MS = 4000; // splash length on every fresh open of the home page
 const LEAVE_MS = 450; // fade-out at the end of the splash
@@ -29,7 +30,7 @@ export default function SplashScreen() {
   if (!show) return null;
   return (
     <div className={`boot-splash bs${leaving ? ' is-leaving' : ''}`} aria-label="Loading ARCHIVUM" role="status">
-      <div className="bs-logo"><span className="archivum-css-logo" /></div>
+      <div className="bs-logo"><Art name="SST" /></div>
       <div className="bs-name">ARCHIVUM</div>
       <div className="bs-progress" aria-label={`Loading ${progress}%`}><span style={{ width: `${progress}%` }} /></div>
       <p className="bs-credit">This App is Developed By Fawzan Kar</p>

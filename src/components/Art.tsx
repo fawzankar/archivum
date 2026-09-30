@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 /* Flat academic illustrations - every one of them is gently animated (see the "Animated subject icons"
    block at the end of globals.css). Animated parts carry an `ai-*` class; SMIL is used only where an
@@ -18,6 +18,29 @@ const HINDI_PATH = 'M68.7 37.2 65.7 29.5H91.1V37.2H85.9V83L76.1 78.6V57.4Q75.1 5
 
 const SPARK = 'M0-6 1.6-1.6 6 0 1.6 1.6 0 6-1.6 1.6-6 0-1.6-1.6Z';
 const ORBIT = 'M11 60a49 19 0 1 0 98 0a49 19 0 1 0-98 0Z';
+
+/* World globe: continents scroll sideways behind a circular clip (the land tile repeats every 84 units, so
+   the loop is seamless). Latitude lines stay still, exactly like a real globe turning on its axis.
+   Needs its own clip id, so it is a component rather than a static fragment. */
+const LAND = 'M26 40c6-8 16-10 24-5 5 3 4 9-1 12-4 3-3 8-8 10-6 3-14-1-16-8-1-3-1-6 1-9ZM60 62c8-4 18-2 22 5 3 6-2 12-6 16-5 4-12 2-15-3-3-5-4-14-1-18ZM74 36c8-6 18-6 24 0 3 3-1 8-6 9-6 1-10-1-14-3-3-2-4-4-4-6ZM40 76c3-2 7-1 8 2s-2 6-5 5-4-5-3-7Z';
+function Globe() {
+  const id = `globe${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
+  return <>
+    <defs><clipPath id={id}><circle cx="60" cy="56" r="42"/></clipPath></defs>
+    <circle cx="60" cy="56" r="42" fill={S}/>
+    <g clipPath={`url(#${id})`}>
+      <g className="ai-globe">
+        <path d={LAND} fill={G}/>
+        <path d={LAND} fill={G} transform="translate(84 0)"/>
+      </g>
+      <path d="M14 38h92M14 56h92M14 74h92" stroke={W} strokeWidth="1.6" opacity=".5"/>
+      <path d="M64 12a42 42 0 0 1 0 88 34 42 0 0 0 0-88Z" fill={N} opacity=".13"/>
+    </g>
+    <path d="M32 30a34 34 0 0 0-5 20" fill="none" stroke={W} strokeWidth="4" strokeLinecap="round" opacity=".75"/>
+    <circle cx="60" cy="56" r="42" fill="none" stroke={N} strokeWidth="4"/>
+    <path d="M42 106h36" stroke={N} strokeWidth="5" strokeLinecap="round"/>
+  </>;
+}
 
 const art: Record<string, React.ReactNode> = {
   Maths: <>
@@ -50,22 +73,8 @@ const art: Record<string, React.ReactNode> = {
     </g>
   </>,
 
-  /* NEW - a folded map with a bouncing location pin and a moving route */
-  SST: <>
-    <path d="M12 36 42 26V86L12 96Z" fill="#8fd6f8"/>
-    <path d="M42 26 78 38V98L42 86Z" fill={Y}/>
-    <path d="M78 38 108 28V88L78 98Z" fill="#8fdcb0"/>
-    <path d="M17 60c6-6 11 5 19-2" fill="none" stroke={W} strokeWidth="3.5" strokeLinecap="round"/>
-    <path d="M86 80c6-8 12-3 17-9" fill="none" stroke={W} strokeWidth="3.5" strokeLinecap="round"/>
-    <path d="M12 36 42 26 78 38 108 28V88L78 98 42 86 12 96Z" fill="none" stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M42 26V86M78 38V98" stroke={N} strokeWidth="3"/>
-    <path className="ai-dash" d="M20 86C34 74 46 92 58 80S82 90 100 66" fill="none" stroke={N} strokeWidth="3" strokeLinecap="round" strokeDasharray="1 7"/>
-    <ellipse className="ai-shadow" cx="60" cy="76" rx="9" ry="3" fill={N} opacity=".28"/>
-    <g className="ai-bounce">
-      <path d="M60 72C50 59 47 53 47 44a13 13 0 0 1 26 0c0 9-3 15-13 28Z" fill={PIN} stroke={N} strokeWidth="3.5" strokeLinejoin="round"/>
-      <circle cx="60" cy="44" r="5.5" fill={W} stroke={N} strokeWidth="2.5"/>
-    </g>
-  </>,
+  /* NEW - a spinning world globe */
+  SST: <Globe />,
 
   English: <>
     <rect x="16" y="14" width="88" height="92" rx="14" fill={W} stroke={N} strokeWidth="4"/>
@@ -163,7 +172,7 @@ const art: Record<string, React.ReactNode> = {
 /* [centreX, centreY, scale] of each artwork's real painted bounds, so all icons sit dead-centre
    and share a consistent visual size (max 100 units). */
 const FIT: Record<string, [number, number, number]> = {
-  Maths: [60, 58, 0.97], Science: [60, 56.3, 1], SST: [60, 62, 1], English: [60, 60, 1],
+  Maths: [60, 58, 0.97], Science: [60, 56.3, 1], SST: [60, 60.2, 1], English: [60, 60, 1],
   Hindi: [60, 60, 0.92], Urdu: [60, 60, 0.92], Biology: [60, 60, 0.97], Physics: [60.3, 60, 0.98],
   Chemistry: [60, 57.8, 0.96], notes: [67.9, 60, 1], papers: [60.4, 55.4, 0.95], default: [60, 58, 1],
 };
