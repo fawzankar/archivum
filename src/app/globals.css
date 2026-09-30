@@ -2036,7 +2036,7 @@ main:has(.contributors-intro){
 }
 .pdf-load-spinner svg{width:19px;height:19px;animation:pdfSpin .75s linear infinite}
 
-/* V21: distinctive typography; no Lato / Lato / Lato / Lato. */
+/* V21: distinctive typography; no Inter / Geist / Space Grotesk / Instrument Serif. */
 body,button,input,textarea,select{font-family:"Lato",Arial,sans-serif}
 .font-display,.home-greeting-title,.home-subjects-home-head h2,.resource-modern-rating h2,.resource-related h2{font-family:"Lato",Arial,sans-serif}
 
@@ -2493,236 +2493,192 @@ small,
   transform: none !important;
 }
 
-/* ===== V39: subject artwork + class selector + premium splash ===== */
 
-/* Subject artwork sits inside a consistent circular stage on large screens. */
-.hm-subject-home-art,
-.notes-subject-art{
-  border-radius:50%;
-  background:rgba(255,255,255,.18);
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);
-  padding:7px;
-}
-.hm-subject-home-art .art,
-.notes-subject-art .art{
-  width:100%!important;
-  height:100%!important;
-  display:block;
-}
+/* =====================================================================
+   V39 - Animated subject icons
+   Every illustration in Art.tsx is alive. Parts carry an `ai-*` class.
+   ===================================================================== */
+.art [class^="ai-"]{transform-box:fill-box;transform-origin:50% 50%}
+.art .ai-pop{animation:aiPop 2.8s ease-in-out infinite}
+.art .ai-float{animation:aiFloat 3.4s ease-in-out infinite}
+.art .ai-hop{animation:aiHop 2.8s ease-in-out infinite}
+.art .ai-orbit{animation:aiSpin 9s linear infinite}
+.art .ai-stretch{animation:aiStretch 2.4s ease-in-out infinite}
+.art .ai-twinkle{animation:aiTwinkle 2.2s ease-in-out infinite}
+.art .ai-sway-l{transform-origin:100% 100%;animation:aiSway 3s ease-in-out infinite}
+.art .ai-sway-r{transform-origin:0% 100%;animation:aiSway 3s ease-in-out -.9s infinite reverse}
+.art .ai-sway-b{transform-origin:50% 100%;animation:aiSway 3.4s ease-in-out infinite}
+.art .ai-grow{transform-origin:50% 100%;animation:aiGrow 3.6s ease-in-out infinite}
+.art .ai-slosh{transform-origin:50% 100%;animation:aiSlosh 2.6s ease-in-out infinite}
+.art .ai-wave{animation:aiWave 1.6s ease-in-out infinite}
+.art .ai-bubble{opacity:0;animation:aiBubble 3.2s ease-in infinite}
+.art .ai-dash{animation:aiDash 1.4s linear infinite}
+.art .ai-bounce{animation:aiBounce 1.6s ease-in-out infinite}
+.art .ai-shadow{animation:aiShadow 1.6s ease-in-out infinite}
+.art .ai-line{transform-origin:0% 50%;animation:aiLine 3s ease-in-out infinite}
+.art .ai-write{animation:aiWrite 3s ease-in-out infinite}
+.art .ai-sheet{animation:aiSheet 3.6s ease-in-out infinite}
+.art .ai-stack{animation:aiStack 2.4s ease-in-out infinite}
 
-/* Keep the icon itself from touching the circle edge. */
-.hm-subject-home-art .art{transform:scale(.92)}
-.notes-subject-art .art{transform:scale(.90)}
+@keyframes aiPop{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+@keyframes aiFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes aiHop{0%,55%,100%{transform:translateY(0)}68%{transform:translateY(-5px)}82%{transform:translateY(0)}}
+@keyframes aiSpin{to{transform:rotate(360deg)}}
+@keyframes aiStretch{0%,100%{transform:scaleX(.55)}50%{transform:scaleX(1)}}
+@keyframes aiTwinkle{0%,100%{transform:scale(.35) rotate(0);opacity:.35}50%{transform:scale(1) rotate(45deg);opacity:1}}
+@keyframes aiSway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes aiGrow{0%,100%{transform:scaleY(.94)}50%{transform:scaleY(1)}}
+@keyframes aiSlosh{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
+@keyframes aiWave{0%,100%{transform:translateX(-2px)}50%{transform:translateX(2px)}}
+@keyframes aiBubble{0%{transform:translateY(0) scale(.6);opacity:0}15%{opacity:1}80%{opacity:.9}100%{transform:translateY(var(--rise,-40px)) scale(1);opacity:0}}
+@keyframes aiDash{to{stroke-dashoffset:-16}}
+@keyframes aiBounce{0%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}70%{transform:translateY(0)}85%{transform:translateY(-2px)}}
+@keyframes aiShadow{0%,100%{transform:scaleX(1);opacity:.28}40%{transform:scaleX(.6);opacity:.14}70%{transform:scaleX(1);opacity:.28}}
+@keyframes aiLine{0%{transform:scaleX(.1);opacity:.6}35%,85%{transform:scaleX(1);opacity:1}100%{transform:scaleX(.1);opacity:.6}}
+@keyframes aiWrite{0%,100%{transform:translate(0,0)}33%{transform:translate(-6px,4px) rotate(-3deg)}66%{transform:translate(-3px,9px) rotate(2deg)}}
+@keyframes aiSheet{0%,100%{transform:rotate(0)}50%{transform:rotate(3.5deg)}}
+@keyframes aiStack{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 
-/* Class selector: clearer, more premium controls without oversized bold microcopy. */
-.notes-class-tabs{
-  gap:10px!important;
-  padding:4px 36px 30px!important;
-  align-items:center;
-}
-.notes-class-tab{
-  min-width:108px!important;
-  min-height:46px!important;
-  padding:0 18px!important;
-  border-radius:999px!important;
-  background:var(--surface)!important;
-  border:1px solid var(--border)!important;
-  color:var(--ink-muted)!important;
-  font-family:"Lato",Arial,sans-serif!important;
-  font-size:12px!important;
-  font-weight:600!important;
-  letter-spacing:.01em!important;
-  box-shadow:0 4px 12px rgba(27,33,102,.04)!important;
-  transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease!important;
-}
-.notes-class-tab:hover{
-  transform:translateY(-1px)!important;
-  border-color:var(--accent)!important;
-  box-shadow:0 8px 18px rgba(27,33,102,.08)!important;
-}
-.notes-class-tab.active{
-  background:var(--accent)!important;
-  border-color:var(--accent)!important;
-  color:var(--accent-contrast)!important;
-  box-shadow:0 8px 20px var(--accent-glow)!important;
+@media (prefers-reduced-motion:reduce){
+  .art [class^="ai-"]{animation:none!important}
 }
 
-/* Premium splash: layered brand mark, progress track and cleaner hierarchy. */
-.boot-splash{
+
+/* =====================================================================
+   V39 - Splash screen redesign
+   ===================================================================== */
+.boot-splash.bs{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  overflow:hidden;color:var(--ink);
   background:
-    radial-gradient(circle at 50% 35%, color-mix(in srgb,var(--accent-light) 72%,transparent), transparent 34%),
-    var(--ivory)!important;
-  gap:11px!important;
-  overflow:hidden;
+    radial-gradient(900px 560px at 50% -8%,var(--accent-light),transparent 62%),
+    radial-gradient(700px 520px at 50% 112%,color-mix(in srgb,var(--sun) 34%,transparent),transparent 60%),
+    var(--ivory);
 }
-.boot-splash::before{
-  content:"";
-  position:absolute;
-  width:340px;
-  height:340px;
-  border-radius:50%;
-  border:1px solid color-mix(in srgb,var(--accent) 18%,transparent);
-  box-shadow:0 0 90px color-mix(in srgb,var(--accent) 12%,transparent);
-  animation:splashOrbit 4s ease-in-out infinite alternate;
-  pointer-events:none;
+.boot-splash.bs.is-leaving{animation:bootOut .38s ease forwards}
+.bs-dots{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(color-mix(in srgb,var(--ink) 16%,transparent) 1.1px,transparent 1.3px) 0 0/24px 24px;
+  -webkit-mask:radial-gradient(closest-side at 50% 44%,#000 0,transparent 92%);
+  mask:radial-gradient(closest-side at 50% 44%,#000 0,transparent 92%);
+  opacity:.55;
 }
-.boot-splash-mark{
-  position:relative;
-  width:76px!important;
-  height:76px!important;
-  border-radius:24px!important;
-  background:var(--navy)!important;
-  box-shadow:0 20px 55px color-mix(in srgb,var(--navy) 24%,transparent)!important;
-  animation:splashMark 1.2s ease-out both;
+.bs-blob{position:absolute;border-radius:50%;filter:blur(58px);opacity:.5;pointer-events:none}
+.bs-blob-a{width:46vmax;height:46vmax;left:-14vmax;top:-16vmax;background:var(--peri);animation:bsDrift 9s ease-in-out infinite alternate}
+.bs-blob-b{width:40vmax;height:40vmax;right:-12vmax;bottom:-14vmax;background:var(--sun);animation:bsDrift 11s ease-in-out -3s infinite alternate-reverse}
+@keyframes bsDrift{from{transform:translate(0,0) scale(1)}to{transform:translate(4vmax,3vmax) scale(1.12)}}
+
+.bs-stage{position:relative;width:min(292px,78vw);aspect-ratio:1;display:grid;place-items:center;flex:none}
+.bs-ring{position:absolute;inset:0;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--ink) 26%,transparent);animation:bsSpin 28s linear infinite}
+.bs-ring-inner{inset:19%;border-style:solid;border-color:color-mix(in srgb,var(--accent) 16%,transparent);animation:none}
+.bs-ripple{position:absolute;left:50%;top:50%;width:92px;height:92px;margin:-46px;border-radius:50%;border:2px solid var(--accent);opacity:0;animation:bsRipple 2.4s ease-out infinite}
+.bs-ripple-2{animation-delay:1.2s}
+@keyframes bsRipple{0%{transform:scale(.9);opacity:.45}100%{transform:scale(2.3);opacity:0}}
+@keyframes bsSpin{to{transform:rotate(360deg)}}
+@keyframes bsSpinRev{to{transform:rotate(-360deg)}}
+
+.bs-logo{
+  position:relative;z-index:2;width:96px;height:96px;border-radius:30px;display:grid;place-items:center;
+  background:linear-gradient(145deg,var(--navy),var(--accent-strong,var(--navy)));color:#fff;
+  box-shadow:0 22px 50px color-mix(in srgb,var(--navy) 38%,transparent),inset 0 1px 0 rgba(255,255,255,.22);
+  animation:bsLogoIn .8s cubic-bezier(.2,1.3,.4,1) both,bsFloat 3.4s ease-in-out .8s infinite;
 }
-.boot-splash-mark .archivum-css-logo{
-  width:35px!important;
-  height:35px!important;
+.bs-logo .archivum-css-logo{width:54%;height:54%}
+@keyframes bsLogoIn{from{transform:scale(.4) rotate(-14deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes bsFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+
+.bs-orbit{position:absolute;inset:0;animation:bsSpin 16s linear infinite}
+.bs-sat{
+  position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px;
+  transform:rotate(var(--a)) translateY(calc(min(292px,78vw) / -2)) rotate(calc(var(--a) * -1));
 }
-.boot-splash-name{
-  position:relative;
-  font-size:24px!important;
-  font-weight:700!important;
-  letter-spacing:.11em!important;
-  animation:splashText .7s ease-out .08s both;
+.bs-sat-in{
+  width:100%;height:100%;border-radius:50%;display:grid;place-items:center;padding:9px;
+  background:var(--surface);border:1.5px solid var(--border);
+  box-shadow:0 10px 24px var(--app-shadow,rgba(20,30,60,.16));
+  animation:bsSpinRev 16s linear infinite,bsSatIn .6s cubic-bezier(.2,1.2,.4,1) both;
+  animation-delay:0s,var(--d,0s);
 }
-.boot-splash-credit{
-  position:relative;
-  font-size:11px!important;
-  font-weight:400!important;
-  animation:splashText .7s ease-out .16s both;
-}
-.boot-splash-progress{
-  position:relative;
-  width:min(300px,72vw)!important;
-  height:7px!important;
-  margin-top:5px;
-  background:color-mix(in srgb,var(--border) 70%,transparent)!important;
-  box-shadow:inset 0 1px 3px rgba(27,33,102,.10),0 5px 20px color-mix(in srgb,var(--accent) 12%,transparent)!important;
-}
-.boot-splash-progress span{
-  background:linear-gradient(90deg,var(--accent),var(--navy))!important;
-}
-.boot-splash-percent{
-  font-weight:500!important;
-}
-@keyframes splashMark{
-  from{opacity:0;transform:translateY(10px) scale(.88)}
-  to{opacity:1;transform:none}
-}
-@keyframes splashText{
-  from{opacity:0;transform:translateY(7px)}
-  to{opacity:1;transform:none}
-}
-@keyframes splashOrbit{
-  from{transform:scale(.86);opacity:.45}
-  to{transform:scale(1.05);opacity:.9}
+.bs-sat-in .art{width:100%;height:100%}
+@keyframes bsSatIn{from{opacity:0;scale:.3}to{opacity:1;scale:1}}
+
+.bs-name{display:flex;margin-top:30px;font-family:"Lato",Arial,sans-serif;font-weight:900;font-size:clamp(28px,8vw,36px);letter-spacing:.24em;padding-left:.24em;color:var(--ink)}
+.bs-name span{display:inline-block;animation:bsLetter .55s cubic-bezier(.2,1,.3,1) both;animation-delay:calc(.35s + var(--i) * .05s)}
+@keyframes bsLetter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.bs-tag{margin:10px 0 0;font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-muted);animation:bsFade .6s ease .9s both}
+@keyframes bsFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+.bs-progress{width:min(230px,62vw);height:5px;margin-top:30px;border-radius:999px;overflow:hidden;background:color-mix(in srgb,var(--ink) 12%,transparent);animation:bsFade .5s ease .5s both}
+.bs-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--peri),var(--sun));transition:width .05s linear}
+.bs-percent{margin-top:9px;font-size:10px;font-weight:800;letter-spacing:.12em;color:var(--ink-muted);font-variant-numeric:tabular-nums;animation:bsFade .5s ease .5s both}
+.bs-credit{position:absolute;left:0;right:0;bottom:calc(22px + env(safe-area-inset-bottom,0px));margin:0;text-align:center;font-size:11px;font-weight:600;color:var(--ink-faint);animation:bsFade .6s ease 1s both}
+
+@media (prefers-reduced-motion:reduce){
+  .bs-ring,.bs-orbit,.bs-sat-in,.bs-ripple,.bs-blob,.bs-logo{animation:none!important}
+  .bs-sat-in{opacity:1}
 }
 
-@media(max-width:700px){
-  .hm-subject-home-art{
-    width:78px!important;
-    height:78px!important;
-    padding:5px!important;
-  }
-  .notes-subject-art{
-    width:74px!important;
-    height:74px!important;
-    padding:5px!important;
-    margin-bottom:22px!important;
-  }
-  .notes-class-tabs{
-    padding:2px 16px 18px!important;
-    gap:7px!important;
-  }
-  .notes-class-tab{
-    min-width:88px!important;
-    min-height:40px!important;
-    padding:0 13px!important;
-    font-size:11px!important;
-  }
-  .boot-splash::before{
-    width:260px;
-    height:260px;
-  }
-}
 
-/* ===== V40: remove artificial icon circles + lighter microcopy ===== */
-.hm-subject-home-art,
-.notes-subject-art{
-  background:transparent!important;
-  box-shadow:none!important;
-  border-radius:0!important;
-  padding:0!important;
+/* =====================================================================
+   V39 - Class picker redesign (first launch + Notes library)
+   ===================================================================== */
+.cls-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.cls-card{
+  --tint:var(--sun);
+  position:relative;overflow:hidden;isolation:isolate;text-align:left;cursor:pointer;
+  display:flex;flex-direction:column;align-items:flex-start;gap:0;min-height:150px;padding:15px 15px 13px;
+  border:1.5px solid var(--border);border-radius:22px;color:var(--ink);
+  background:linear-gradient(160deg,color-mix(in srgb,var(--tint) 30%,var(--surface)),var(--surface) 78%);
+  transition:transform .22s cubic-bezier(.2,1,.3,1),box-shadow .22s ease,border-color .18s ease;
 }
-.hm-subject-home-art .art,
-.notes-subject-art .art{
-  transform:none!important;
+.cls-card::before{
+  content:"";position:absolute;z-index:-1;right:-34px;top:-34px;width:118px;height:118px;border-radius:50%;
+  background:color-mix(in srgb,var(--tint) 46%,transparent);transition:transform .35s cubic-bezier(.2,1,.3,1);
 }
+.cls-t9{--tint:var(--sun)}.cls-t10{--tint:var(--peri)}.cls-t11{--tint:var(--blush)}.cls-t12{--tint:var(--mint)}
+.cls-card:hover{transform:translateY(-3px);box-shadow:0 14px 30px var(--app-shadow,rgba(20,30,60,.14));border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
+.cls-card:hover::before{transform:scale(1.25)}
+.cls-card:active{transform:translateY(0) scale(.985)}
+.cls-card.selected{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light),0 16px 34px var(--app-shadow,rgba(20,30,60,.16));transform:translateY(-2px)}
+.cls-card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.cls-label{font-size:10px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-muted)}
+.cls-num{display:block;margin-top:1px;font-family:"Lato",Arial,sans-serif;font-size:50px;line-height:1;font-weight:900;letter-spacing:-.04em;color:var(--ink)}
+.cls-stage{margin-top:4px;font-size:11px;font-weight:700;color:var(--ink-muted)}
+.cls-subjects{display:flex;align-items:center;margin-top:auto;padding-top:12px}
+.cls-sub{width:30px;height:30px;padding:4px;margin-right:-8px;border-radius:50%;background:var(--surface);border:1.5px solid var(--border);display:grid;place-items:center;box-shadow:0 2px 6px rgba(20,30,60,.1);transition:transform .25s cubic-bezier(.2,1.3,.4,1)}
+.cls-sub .art{width:100%;height:100%}
+.cls-card:hover .cls-sub,.cls-card.selected .cls-sub{transform:translateY(-3px)}
+.cls-card:hover .cls-sub:nth-child(2),.cls-card.selected .cls-sub:nth-child(2){transition-delay:.04s}
+.cls-card:hover .cls-sub:nth-child(3),.cls-card.selected .cls-sub:nth-child(3){transition-delay:.08s}
+.cls-more{margin-left:14px;font-size:10px;font-weight:800;color:var(--ink-muted)}
+.cls-check{
+  position:absolute;right:11px;top:11px;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  background:var(--accent);color:var(--accent-contrast,#fff);transform:scale(0);opacity:0;
+  transition:transform .3s cubic-bezier(.2,1.6,.4,1),opacity .15s ease;
+}
+.cls-check svg{width:15px;height:15px;stroke-width:3.2}
+.cls-card.selected .cls-check{transform:scale(1);opacity:1}
 
-/* Subject artwork should read as an illustration above its label, not as a badge. */
-.hm-subject-home-card,
-.notes-subject-card{
-  justify-content:flex-start!important;
-  gap:10px!important;
+/* Notes library: segmented class switcher */
+.notes-seg{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:0 36px 28px;padding:5px;
+  border-radius:20px;background:var(--surface-raised);border:1px solid var(--border);
 }
-.hm-subject-home-art{
-  order:0;
-  align-self:center!important;
-  margin-top:2px;
+.notes-seg-btn{
+  position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+  min-height:58px;border:0;border-radius:15px;background:transparent;color:var(--ink-muted);cursor:pointer;
+  transition:background .2s ease,color .2s ease,box-shadow .25s ease,transform .2s cubic-bezier(.2,1,.3,1);
 }
-.hm-subject-home-card strong{
-  order:1;
-  margin-top:auto;
-}
-.notes-subject-art{
-  order:0;
-  align-self:center!important;
-}
-.notes-subject-card span:not(.notes-subject-art){
-  order:1;
-  margin-top:auto;
-}
-.notes-subject-card small{
-  order:2;
-}
-
-/* Resource/notes detail: keep the subject artwork clear of decorative circles and move it
-   visually above the hero content instead of burying it behind the text. */
-.resource-modern-art{
-  top:24px!important;
-  bottom:auto!important;
-  right:34px!important;
-  opacity:.95!important;
-}
-.notes-page-shell>.ph .ph-art{
-  position:relative!important;
-  z-index:3!important;
-  align-self:flex-start!important;
-  margin-top:-10px!important;
-  transform:translateY(-8px) rotate(5deg)!important;
-}
-
-/* Microcopy should stay regular-weight across the interface. */
-small,
-.notes-class-tab,
-.notes-library-class-badge,
-.notes-result-head p,
-.notes-subject-card small,
-.resource-modern-kicker,
-.resource-modern-stats span,
-.resource-section-heading,
-.rc-kind,
-.rc-chips span,
-[class*="text-xs"],
-[class*="text-[10px]"],
-[class*="text-[11px]"],
-[class*="text-[12px]"]{
-  font-weight:400!important;
-}
-.notes-subject-card span:not(.notes-subject-art){
-  font-weight:700!important;
-}
-.resource-modern-actions button{
-  font-weight:600!important;
+.notes-seg-btn small{font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;opacity:.8}
+.notes-seg-btn b{font-family:"Lato",Arial,sans-serif;font-size:23px;line-height:1;font-weight:900;letter-spacing:-.02em}
+.notes-seg-btn:hover{background:color-mix(in srgb,var(--surface) 70%,transparent);color:var(--ink)}
+.notes-seg-btn.active{background:var(--accent);color:var(--accent-contrast,#fff);box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 34%,transparent);transform:translateY(-1px)}
+.notes-seg-btn.active small{opacity:.85}
+.notes-seg-btn:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+@media(max-width:640px){
+  .notes-seg{margin:0 16px 18px;padding:4px;border-radius:17px}
+  .notes-seg-btn{min-height:52px;border-radius:13px}
+  .notes-seg-btn b{font-size:20px}
+  .cls-card{min-height:142px;border-radius:20px}
+  .cls-num{font-size:44px}
 }

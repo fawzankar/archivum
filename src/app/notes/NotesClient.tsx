@@ -112,15 +112,18 @@ export function NotesView({ bundle, initialClass, initialSubject }: { bundle: Li
           })}
         </div>
 
-        <div className="notes-class-tabs" aria-label="Choose class">
+        <div className="notes-seg" role="tablist" aria-label="Choose class">
           {CLASS_CONFIG.map((level) => (
             <button
               key={level}
               type="button"
+              role="tab"
+              aria-selected={selectedClass === level}
               onClick={() => chooseClass(level)}
-              className={`notes-class-tab ${selectedClass === level ? 'active' : ''}`}
+              className={`notes-seg-btn ${selectedClass === level ? 'active' : ''}`}
             >
-              Class {level}
+              <small>Class</small>
+              <b>{level}</b>
             </button>
           ))}
         </div>
