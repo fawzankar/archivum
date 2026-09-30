@@ -8,6 +8,9 @@ function Icon({ children, className }: { children: React.ReactNode; className: s
 
 export default function HeroDoodles() {
   return <div className="hero-doodles" aria-hidden="true">
+    <Icon className="hero-doodle-formula">
+      <svg viewBox="0 0 100 64" fill="none"><path d="M8 15h32M8 49h32" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/><path d="M16 39 27 18l10 21" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/><path d="m57 14 12 12-12 12M72 38h18" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/><circle cx="86" cy="14" r="3" fill="currentColor"/></svg>
+    </Icon>
     <Icon className="hero-doodle-star">
       <svg viewBox="0 0 64 64" fill="none"><path d="M32 6l5.8 18.2L56 30l-18.2 5.8L32 54l-5.8-18.2L8 30l18.2-5.8L32 6Z" stroke="currentColor" strokeWidth="4" strokeLinejoin="round"/></svg>
     </Icon>
