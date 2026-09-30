@@ -104,7 +104,23 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
 
           {photoUrls.length > 0 && <section className="resource-modern-section"><div className="resource-section-heading"><span>COMMUNITY PREVIEW</span><ImageIcon /></div><h2>Shared alongside the document.</h2><div className="resource-photo-grid">{photoUrls.map((url,i)=><a key={url} href={url} target="_blank" rel="noopener noreferrer"><img src={url} alt={`Supporting page ${i+1}`} loading="lazy" /></a>)}</div></section>}
 
-          <section className="resource-modern-rating"><div><span>COMMUNITY SIGNAL</span><h2>Was this useful?</h2><p>One rating helps other students decide whether to open it.</p></div><div className="resource-stars">{[1,2,3,4,5].map(star => <button key={star} onClick={() => handleRating(star)} aria-label={`Rate ${star} stars`}><Star style={{color:(userRating>=star || avgRating>=star)?'var(--accent)':'var(--border)',fill:(userRating>=star || avgRating>=star)?'var(--accent)':'transparent'}} /></button>)}</div></section>
+          <section className="resource-modern-rating">
+  <div>
+    <span>YOUR RATING</span><h2>Was this useful?</h2>
+    <p>Choose your own rating. Community ratings never fill your stars.</p>
+    {ratingCount > 0 && <div className="community-rating-summary"><strong>{avgRating.toFixed(1)} / 5</strong><span>from {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}</span></div>}
+  </div>
+  <div className="resource-rating-control">
+    <div className="resource-stars">{[1,2,3,4,5].map(star => {
+      const selected = userRating >= star;
+      return <button key={star} onClick={() => handleRating(star)} aria-label={`Rate ${star} stars`} disabled={ratingSubmitted || ratingSaving}>
+        <Star className={selected ? 'is-selected' : ''}/>
+      </button>;
+    })}</div>
+    {ratingSaving && <span className="rating-saving">Saving…</span>}
+    {ratingSubmitted && <span className="rating-saved">Thanks — your rating is saved.</span>}
+  </div>
+</section>
         </div>
       </article>
 

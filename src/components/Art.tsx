@@ -5,11 +5,9 @@ const N = '#1b2166', W = '#ffffff', Y = '#ffc75f', P = '#8d9bff', K = '#ffbdde',
 
 const art: Record<string, React.ReactNode> = {
   Maths: <>
-    <path d="M18 98 L62 22 L106 98 Z" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M62 44 L88 90 H36 Z" fill={Y}/>
-    <circle cx="62" cy="34" r="5" fill={N}/>
-    <rect x="12" y="102" width="98" height="10" rx="3" fill={S} stroke={N} strokeWidth="3"/>
-    <path d="M28 102v6M44 102v6M60 102v6M76 102v6M92 102v6" stroke={N} strokeWidth="2.5"/>
+    <circle cx="60" cy="60" r="43" fill={W} stroke={N} strokeWidth="4"/>
+    <text x="60" y="79" textAnchor="middle" fontFamily="Georgia, serif" fontSize="68" fontWeight="700" fontStyle="italic" fill={N}>π</text>
+    <path d="M28 93h64" stroke={Y} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Science: <>
     <path d="M46 14h28v30l26 48a10 10 0 0 1-9 15H29a10 10 0 0 1-9-15l26-48Z" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
@@ -18,10 +16,11 @@ const art: Record<string, React.ReactNode> = {
     <rect x="42" y="10" width="36" height="8" rx="4" fill={Y} stroke={N} strokeWidth="3"/>
   </>,
   SST: <>
-    <circle cx="60" cy="56" r="42" fill={S} stroke={N} strokeWidth="4"/>
-    <path d="M34 36c10-4 18 2 16 12s-12 10-14 20-12 8-14-4c-1-10 2-24 12-28ZM70 66c10-6 24 0 22 12s-10 16-20 12-8-18-2-24Z" fill={G}/>
-    <path d="M60 14v84" stroke={N} strokeWidth="3" strokeDasharray="2 6" strokeLinecap="round"/>
-    <path d="M40 104h40M60 98v6" stroke={N} strokeWidth="5" strokeLinecap="round"/>
+    <circle cx="60" cy="58" r="42" fill={S} stroke={N} strokeWidth="4"/>
+    <path d="M34 37c9-5 18-1 20 7 2 9-7 13-10 20-4 8-13 6-17-2-4-9-2-19 7-25ZM73 64c10-5 21 1 21 10 0 9-9 16-18 14-8-2-12-14-3-24Z" fill={G}/>
+    <path d="M31 58c11-4 20-3 30 2 10 5 18 5 29 0" fill="none" stroke={N} strokeWidth="3" strokeLinecap="round"/>
+    <path d="M60 16c-6 13-7 27-6 42 1 16 1 31-6 45M60 16c6 13 7 27 6 42-1 16-1 31 6 45" fill="none" stroke={N} strokeWidth="2.5" strokeDasharray="4 4"/>
+    <path d="M42 103h36" stroke={N} strokeWidth="5" strokeLinecap="round"/>
   </>,
   English: <>
     <rect x="16" y="14" width="88" height="92" rx="14" fill={W} stroke={N} strokeWidth="4"/>
@@ -39,9 +38,11 @@ const art: Record<string, React.ReactNode> = {
     <path d="M30 96h60" stroke={W} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Biology: <>
-    <path d="M60 106C24 100 14 62 26 30c34 4 52 26 34 76Z" fill={G} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M60 106C64 76 46 52 30 38" stroke={N} strokeWidth="3.5" fill="none" strokeLinecap="round"/>
-    <circle cx="92" cy="40" r="20" fill={K} stroke={N} strokeWidth="4"/><circle cx="92" cy="40" r="7" fill={N}/>
+    <path d="M35 18C92 30 92 90 35 102" fill="none" stroke={N} strokeWidth="5" strokeLinecap="round"/>
+    <path d="M85 18C28 30 28 90 85 102" fill="none" stroke={N} strokeWidth="5" strokeLinecap="round"/>
+    <path d="M44 27h32M37 41h46M36 56h48M38 72h44M45 88h30" stroke={G} strokeWidth="6" strokeLinecap="round"/>
+    <circle cx="35" cy="18" r="6" fill={S} stroke={N} strokeWidth="3"/><circle cx="85" cy="18" r="6" fill={K} stroke={N} strokeWidth="3"/>
+    <circle cx="35" cy="102" r="6" fill={K} stroke={N} strokeWidth="3"/><circle cx="85" cy="102" r="6" fill={S} stroke={N} strokeWidth="3"/>
   </>,
   Physics: <>
     <ellipse cx="60" cy="60" rx="50" ry="20" fill="none" stroke={N} strokeWidth="4"/>
@@ -51,9 +52,11 @@ const art: Record<string, React.ReactNode> = {
     <circle cx="106" cy="52" r="6" fill={K} stroke={N} strokeWidth="3"/><circle cx="30" cy="36" r="6" fill={S} stroke={N} strokeWidth="3"/>
   </>,
   Chemistry: <>
-    <path d="M22 18h60v14L74 34v52a20 20 0 0 1-20 20h-4a20 20 0 0 1-20-20V34l-8-2Z" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M30 62h44v24a20 20 0 0 1-20 20h-4a20 20 0 0 1-20-20Z" fill={P}/>
-    <circle cx="96" cy="30" r="8" fill={K} stroke={N} strokeWidth="3"/><circle cx="104" cy="52" r="5" fill={Y} stroke={N} strokeWidth="3"/>
+    <path d="M45 12h30v25l13 49a14 14 0 0 1-14 18H46a14 14 0 0 1-14-18l13-49Z" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
+    <path d="M36 64h48l6 22a13 13 0 0 1-13 16H43a13 13 0 0 1-13-16Z" fill={P} className="chem-liquid"/>
+    <path d="M39 72c8-5 14 5 21 0s13-5 21 0" fill="none" stroke={S} strokeWidth="3" strokeLinecap="round" className="chem-liquid-line"/>
+    <rect x="41" y="8" width="38" height="8" rx="4" fill={Y} stroke={N} strokeWidth="3"/>
+    <circle cx="92" cy="34" r="7" fill={K} stroke={N} strokeWidth="3"/><circle cx="101" cy="52" r="4" fill={Y} stroke={N} strokeWidth="2.5"/>
   </>,
   notes: <>
     <rect x="22" y="12" width="70" height="96" rx="8" fill={W} stroke={N} strokeWidth="4"/>

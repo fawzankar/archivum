@@ -105,7 +105,7 @@ export default function PaperFinderClient({
   );
 
   return (
-    <div className="space-y-8">
+    <div className="library-finder pyq-finder space-y-8">
       
       <div
         className="rounded-2xl border p-5 sm:p-6 space-y-4 shadow-sm"

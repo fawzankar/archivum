@@ -116,9 +116,9 @@ export default function SearchClient({
   );
 
   return (
-    <div className="space-y-6">
+    <div className="library-finder search-library-finder space-y-6">
       
-      <form onSubmit={handleSearchSubmit} className="relative w-full">
+      <form onSubmit={handleSearchSubmit} className="search-library-bar relative w-full">
         <div
           className="relative flex items-center w-full rounded-2xl border transition-all duration-200 focus-within:shadow-lg"
           style={{
