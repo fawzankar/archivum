@@ -1,6 +1,32 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap");
 @import "tailwindcss";
+/* Disable text/image selection across Archivum */
+*,
+*::before,
+*::after {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
 
+img,
+svg {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
+}
+
+/* Keep form controls usable */
+input,
+textarea,
+select,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
 :root {
   --ivory:#e4ecff; --ivory-deep:#d7e2fb; --ink:#1b2166; --ink-muted:#4a5088; --ink-faint:#6f76a8;
   --border:#cdd7f3; --border-light:#dde5f8; --surface:#fff; --surface-raised:#eef2ff;
