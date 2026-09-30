@@ -2886,95 +2886,150 @@ small,
 }
 @media(prefers-reduced-motion:reduce){.hm-hello .hm-wave,.bs-logo-image,.bs-name,.bs-tagline,.bs-rule,.bs-credit{animation:none!important}}
 
-
-/* =====================================================================
-   V22 - floating chrome + layered navigation + animated hero pattern
-   ===================================================================== */
+/* ===== V46: permanent original-style header + illustrated hero + Notes class switcher ===== */
+/* Keep the original full-width Archivum header treatment, but keep it permanently visible. */
 .site-header{
   position:sticky!important;
-  top:14px!important;
+  top:0!important;
   z-index:900!important;
-  width:min(calc(100% - 28px),1240px)!important;
-  margin:14px auto 0!important;
+  width:100%!important;
   min-height:72px!important;
-  border:1px solid color-mix(in srgb,#fff 12%,var(--navy))!important;
-  border-radius:22px!important;
-  overflow:visible!important;
-  box-shadow:0 18px 46px color-mix(in srgb,var(--navy) 22%,transparent)!important;
+  background:var(--navy)!important;
+  color:#fff!important;
+  border:0!important;
+  box-shadow:0 5px 18px color-mix(in srgb,var(--navy) 20%,transparent)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
 }
-.site-header-inner{height:72px!important;padding-inline:18px!important}
-.site-header.is-scrolled{box-shadow:0 22px 55px color-mix(in srgb,var(--navy) 30%,transparent)!important}
-.header-search{border-radius:0 0 22px 22px!important;overflow:hidden!important}
-.menu-layer{z-index:1200!important}
-.menu-drawer{z-index:1202!important}
-.menu-scrim{z-index:1201!important}
+.site-header.is-scrolled{
+  background:var(--navy)!important;
+  box-shadow:0 7px 22px color-mix(in srgb,var(--navy) 24%,transparent)!important;
+}
+.site-header-inner{height:72px!important}
+.brand-lockup{color:#fff!important;gap:11px!important}
+.brand-logo{
+  width:50px!important;height:50px!important;border-radius:50%!important;
+  background:var(--sun)!important;color:var(--navy)!important;border:1px solid var(--sun)!important;
+}
+.brand-logo .archivum-css-logo{width:72%!important;height:72%!important}
+.brand-lockup strong{font-size:21px!important;font-weight:800!important;letter-spacing:.055em!important;color:#fff!important}
+.brand-lockup small{margin-top:4px!important;font-size:10px!important;color:rgba(255,255,255,.78)!important}
+.header-actions{gap:9px!important}
+.header-action,.header-action:hover{
+  width:42px!important;height:42px!important;border-radius:12px!important;
+  color:#fff!important;background:rgba(255,255,255,.11)!important;border:0!important;
+}
+.header-action svg{width:20px!important;height:20px!important}
+.header-menu{
+  min-width:46px!important;width:46px!important;height:46px!important;padding:0!important;
+  border:0!important;border-radius:50%!important;justify-content:center!important;
+  background:var(--sun)!important;color:var(--navy)!important;
+}
+.header-menu span{display:none!important}
+.header-menu svg{width:21px!important;height:21px!important}
+.header-menu:hover{background:var(--sun)!important;color:var(--navy)!important;transform:none!important}
+.header-search{background:var(--navy)!important;border:0!important}
+.header-search-field{background:#fff!important}
+
+/* Menu/search overlays sit above the permanent header. */
+.menu-layer{z-index:2000!important}
+.menu-drawer{z-index:2002!important}
+.menu-scrim{z-index:2001!important}
+.header-search{position:relative!important;z-index:901!important}
 .mobile-nav{z-index:1000!important}
-.header-action,.header-menu{position:relative;z-index:901!important}
 
-/* Make the open/close state unmistakable: the same header control becomes X. */
-.header-menu svg{transition:transform .2s ease,opacity .2s ease!important}
-.menu-layer.open + *{}
-
-/* Animated archive-paper pattern: subtle enough to sit behind the content. */
+/* The hero gets an illustrated, moving archive-paper scene instead of a blank wash. */
 .home-hero-panel{
+  min-height:430px!important;
   background:
-    radial-gradient(circle at 86% 18%,color-mix(in srgb,var(--accent) 15%,transparent) 0 8%,transparent 34%),
-    radial-gradient(circle at 12% 88%,color-mix(in srgb,var(--sun) 16%,transparent) 0 9%,transparent 34%),
-    linear-gradient(135deg,var(--surface) 0%,color-mix(in srgb,var(--surface) 92%,var(--accent-light)) 52%,color-mix(in srgb,var(--surface) 94%,var(--sun)) 100%)!important;
+    radial-gradient(circle at 84% 18%,color-mix(in srgb,var(--sun) 28%,transparent) 0 8%,transparent 27%),
+    radial-gradient(circle at 13% 84%,color-mix(in srgb,var(--accent) 18%,transparent) 0 9%,transparent 31%),
+    linear-gradient(135deg,#f8fbff 0%,color-mix(in srgb,var(--accent-light) 68%,#fff) 48%,#fff7df 100%)!important;
 }
-.home-hero-panel::before{
-  content:""!important;
-  position:absolute!important;
-  inset:-18%!important;
-  z-index:1!important;
-  pointer-events:none!important;
-  opacity:.42!important;
-  background-image:
-    repeating-linear-gradient(118deg,transparent 0 30px,color-mix(in srgb,var(--accent) 7%,transparent) 31px,color-mix(in srgb,var(--accent) 7%,transparent) 32px,transparent 33px 72px),
-    radial-gradient(circle,color-mix(in srgb,var(--accent) 9%,transparent) 1px,transparent 1.8px);
-  background-size:100% 100%,24px 24px;
-  transform:rotate(-3deg) translate3d(0,0,0);
-  animation:archivumHeroPatternV22 18s linear infinite;
+.hero-zebra{display:block!important;inset:0!important;opacity:1!important}
+.hero-zebra-layer{
+  opacity:.10!important;
+  background:linear-gradient(120deg,var(--accent-strong),var(--accent),var(--sun))!important;
+  -webkit-mask-size:430px 290px!important;mask-size:430px 290px!important;
+  -webkit-mask-repeat:repeat!important;mask-repeat:repeat!important;
+  animation:heroPaperPattern 22s linear infinite!important;
 }
-.home-hero-panel::after{
-  content:""!important;
-  position:absolute!important;
-  z-index:1!important;
-  right:-90px!important;
-  top:-115px!important;
-  width:330px!important;
-  height:330px!important;
-  border-radius:50%!important;
-  border:1px solid color-mix(in srgb,var(--accent) 13%,transparent)!important;
-  background:
-    radial-gradient(circle at 40% 45%,color-mix(in srgb,var(--accent-light) 55%,transparent),transparent 60%),
-    repeating-radial-gradient(circle at 50% 50%,transparent 0 27px,color-mix(in srgb,var(--accent) 5%,transparent) 28px 29px);
-  opacity:.62!important;
-  pointer-events:none!important;
-  animation:archivumHeroRingV22 12s ease-in-out infinite alternate;
+.hero-zebra-glow{
+  display:block!important;width:40%!important;right:5%!important;top:8%!important;
+  background:color-mix(in srgb,var(--sun) 24%,transparent)!important;
+  filter:blur(28px)!important;opacity:.8!important;
+  animation:heroIllustrationGlow 6s ease-in-out infinite alternate!important;
 }
-.home-hero-copy,.home-hero-intro,.home-subjects{z-index:3!important}
-@keyframes archivumHeroPatternV22{
-  from{background-position:0 0,0 0;transform:rotate(-3deg) translate3d(0,0,0)}
-  to{background-position:110px 70px,24px 24px;transform:rotate(-3deg) translate3d(18px,-10px,0)}
+.hero-illustration{position:absolute;display:block;pointer-events:none;z-index:1}
+.hero-illustration-one{
+  width:116px;height:116px;right:15%;top:16%;border:3px solid color-mix(in srgb,var(--accent) 22%,transparent);
+  border-radius:42% 58% 56% 44%;transform:rotate(14deg);animation:heroPaperFloatOne 6s ease-in-out infinite;
 }
-@keyframes archivumHeroRingV22{
-  from{transform:translate3d(0,0,0) rotate(0deg);opacity:.5}
-  to{transform:translate3d(-16px,14px,0) rotate(7deg);opacity:.72}
+.hero-illustration-two{
+  width:76px;height:76px;right:8%;top:50%;border-radius:50%;
+  background:color-mix(in srgb,var(--sun) 40%,transparent);box-shadow:0 14px 30px color-mix(in srgb,var(--sun) 14%,transparent);
+  animation:heroPaperFloatTwo 5s ease-in-out infinite;
 }
+.hero-illustration-three{
+  width:94px;height:62px;right:27%;bottom:12%;border:2px solid color-mix(in srgb,var(--accent) 20%,transparent);
+  border-radius:12px;transform:rotate(-10deg);
+  background:color-mix(in srgb,#fff 52%,transparent);
+  box-shadow:12px 10px 0 color-mix(in srgb,var(--accent-light) 70%,transparent);
+  animation:heroPaperFloatThree 7s ease-in-out infinite;
+}
+.home-hero-copy{position:relative!important;z-index:4!important}
+@keyframes heroPaperPattern{from{transform:translate3d(0,0,0)}to{transform:translate3d(430px,290px,0)}}
+@keyframes heroIllustrationGlow{from{transform:translate3d(0,0,0) scale(.9);opacity:.45}to{transform:translate3d(-18px,15px,0) scale(1.12);opacity:.9}}
+@keyframes heroPaperFloatOne{0%,100%{transform:rotate(14deg) translateY(0)}50%{transform:rotate(8deg) translateY(-10px)}}
+@keyframes heroPaperFloatTwo{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-13px) scale(1.08)}}
+@keyframes heroPaperFloatThree{0%,100%{transform:rotate(-10deg) translate(0,0)}50%{transform:rotate(-5deg) translate(-8px,-8px)}}
+
+/* Notes class selector: proper segmented control instead of unstyled tabs. */
+.notes-seg{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin:0 34px 30px!important;
+  padding:6px!important;
+  border:1px solid var(--border)!important;
+  border-radius:18px!important;
+  background:var(--surface-raised)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.7)!important;
+}
+.notes-seg-btn{
+  min-height:62px!important;padding:8px 10px!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:4px!important;
+  flex-direction:column!important;border:1px solid transparent!important;border-radius:13px!important;
+  background:transparent!important;color:var(--ink-muted)!important;font-family:"Lato",Arial,sans-serif!important;
+  transition:background .18s ease,color .18s ease,box-shadow .18s ease,transform .18s ease!important;
+}
+.notes-seg-btn small{font-size:10px!important;line-height:1!important;letter-spacing:.08em!important;text-transform:uppercase!important;font-weight:600!important;color:inherit!important}
+.notes-seg-btn b{font-size:20px!important;line-height:1!important;font-weight:800!important;color:inherit!important}
+.notes-seg-btn:hover{background:var(--surface)!important;color:var(--accent)!important;transform:translateY(-1px)!important}
+.notes-seg-btn.active{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important;box-shadow:0 7px 16px rgba(27,33,102,.16)!important;transform:none!important}
+.notes-seg-btn.active small{color:rgba(255,255,255,.7)!important}
+.notes-seg-btn:focus-visible{outline:2px solid var(--accent)!important;outline-offset:2px!important}
 
 @media(max-width:700px){
-  .site-header{
-    top:8px!important;
-    width:calc(100% - 16px)!important;
-    margin-top:8px!important;
-    border-radius:18px!important;
-  }
-  .site-header-inner{height:66px!important;padding-inline:12px!important}
-  .header-search{border-radius:0 0 18px 18px!important}
-  .home-hero-panel::before{opacity:.3!important;inset:-25%!important}
-  .home-hero-panel::after{width:250px!important;height:250px!important;right:-105px!important;top:-90px!important}
+  .site-header,.site-header-inner{min-height:66px!important}
+  .site-header-inner{height:66px!important}
+  .brand-logo{width:46px!important;height:46px!important}
+  .brand-lockup strong{font-size:18px!important}
+  .brand-lockup small{font-size:9px!important}
+  .header-action{width:40px!important;height:40px!important}
+  .header-menu{width:42px!important;min-width:42px!important;height:42px!important}
+  .home-hero-panel{min-height:285px!important;padding:25px 20px!important;border-radius:24px!important}
+  .home-hero-intro{font-size:13px!important;line-height:1.5!important;max-width:34ch!important}
+  .hm-search{margin-top:15px!important}
+  .hero-zebra-layer{-webkit-mask-size:300px 205px!important;mask-size:300px 205px!important;animation-duration:18s!important}
+  .hero-illustration-one{width:78px;height:78px;right:10%;top:17%}
+  .hero-illustration-two{width:50px;height:50px;right:5%;top:51%}
+  .hero-illustration-three{width:66px;height:45px;right:25%;bottom:10%}
+  .notes-seg{margin:0 16px 16px!important;gap:5px!important;padding:5px!important;border-radius:15px!important}
+  .notes-seg-btn{min-height:54px!important;padding:7px 5px!important;border-radius:11px!important}
+  .notes-seg-btn small{font-size:8px!important}
+  .notes-seg-btn b{font-size:17px!important}
+  .bs-credit{font-size:9px!important}
 }
 @media(prefers-reduced-motion:reduce){
-  .home-hero-panel::before,.home-hero-panel::after,.header-menu svg{animation:none!important}
+  .hero-zebra-layer,.hero-zebra-glow,.hero-illustration-one,.hero-illustration-two,.hero-illustration-three{animation:none!important}
 }

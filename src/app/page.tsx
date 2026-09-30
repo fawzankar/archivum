@@ -23,7 +23,13 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return <div className="hm">
     <div className="hm-shell">
       <header className="hm-top home-hero-panel">
-        <div className="hero-zebra" aria-hidden="true"><span className="hero-zebra-layer" /><span className="hero-zebra-glow" /></div>
+        <div className="hero-zebra" aria-hidden="true">
+          <span className="hero-zebra-layer" />
+          <span className="hero-zebra-glow" />
+          <span className="hero-illustration hero-illustration-one" />
+          <span className="hero-illustration hero-illustration-two" />
+          <span className="hero-illustration hero-illustration-three" />
+        </div>
         <div className="home-hero-copy">
           <PersonalGreeting activeClass={activeClass} />
           <p className="home-hero-intro">Your Class {activeClass} notes, previous year papers and study material, all organised in one place so you can easily find exactly what you need.</p>
