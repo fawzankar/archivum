@@ -28,9 +28,9 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', f);
   }, []);
   useEffect(() => {
-    document.body.style.overflow = drawerOpen ? 'hidden' : '';
+    document.body.style.overflow = drawerOpen || searchOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
-  }, [drawerOpen]);
+  }, [drawerOpen, searchOpen]);
   useEffect(() => { setDrawerOpen(false); setSearchOpen(false); }, [pathname]);
   useEffect(() => {
     // Warm the main routes so switching sections feels immediate after the first visit.
@@ -54,9 +54,22 @@ export default function Navbar() {
         </div>
       </div>
 
-      {searchOpen && <div className="header-search">
-        <div className="archive-shell"><div className="header-search-field"><SearchBar className="header-search-bar" onSearch={() => setSearchOpen(false)} /><button type="button" onClick={() => setSearchOpen(false)} aria-label="Close search"><X /></button></div></div>
-      </div>}
+      {searchOpen && (
+        <div className="search-modal" role="dialog" aria-modal="true" aria-label="Search ARCHIVUM">
+          <button className="search-modal-backdrop" type="button" onClick={() => setSearchOpen(false)} aria-label="Close search" />
+          <div className="search-modal-card">
+            <div className="search-modal-head">
+              <div>
+                <span className="search-modal-kicker">ARCHIVUM</span>
+                <h2>Search the archive</h2>
+                <p>Find notes, papers and study material.</p>
+              </div>
+              <button className="search-modal-close" type="button" onClick={() => setSearchOpen(false)} aria-label="Close search"><X /></button>
+            </div>
+            <SearchBar className="header-search-bar" onSearch={() => setSearchOpen(false)} autoFocus />
+          </div>
+        </div>
+      )}
     </header>
 
     <div className={`menu-layer ${drawerOpen ? 'open' : ''}`}>
