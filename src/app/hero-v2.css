@@ -906,3 +906,66 @@
 
 .boot-splash.sp .sp-tag{animation-delay:2.6s!important}
 .boot-splash.sp .sp-credit{animation-delay:3.1s!important}
+
+
+/* v70 — warmer, more human UI typography and cleaner mobile hero */
+:root{
+  --human-ui-font:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+}
+
+/* Keep the ARCHIVUM wordmark itself in its established font; make surrounding copy friendlier. */
+body,
+button,input,textarea,select,
+.hx-hello h1,
+.hx-intro,
+.hm-jump-card,
+.hm-subjects-home,
+.hm-head,
+.hm-recent,
+.ob,
+.ob-card{
+  font-family:var(--human-ui-font)!important;
+}
+
+/* The greeting and name share the same human display face. */
+.hx-hello h1,
+.hx-hello h1 .hx-hello-light,
+.hx-hello h1 strong{
+  font-family:var(--human-ui-font)!important;
+}
+
+/* Remove the old white edge/highlight around the name. */
+.hx-hello h1 strong{
+  text-shadow:none!important;
+  -webkit-text-stroke:0!important;
+  color:color-mix(in srgb,var(--accent) 72%,var(--peri) 28%)!important;
+  background:none!important;
+  -webkit-background-clip:border-box!important;
+  -webkit-text-fill-color:currentColor!important;
+}
+
+/* Mobile: hide decorative hero doodles/equations so they never overlap copy. */
+@media(max-width:640px){
+  .hx-scene .hx-d,
+  .hx-scene .hx-equation,
+  .hx-scene .hx-dot,
+  .hx-scene .hx-spark,
+  .hx-scene .hx-root-doodle{
+    display:none!important;
+  }
+
+  .hx-hello h1,
+  .hx-hello h1 .hx-hello-light,
+  .hx-hello h1 strong{
+    font-family:var(--human-ui-font)!important;
+  }
+}
+
+.boot-splash.sp .sp-word,
+.boot-splash.sp .sp-word span{
+  font-family:"Lato",Arial,sans-serif!important;
+}
+.boot-splash.sp .sp-tag,
+.boot-splash.sp .sp-credit{
+  font-family:var(--human-ui-font)!important;
+}
