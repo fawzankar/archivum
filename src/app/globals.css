@@ -3452,3 +3452,226 @@ html.profile-onboarding-active .profile-onboarding-panel::-webkit-scrollbar {
 @media(prefers-reduced-motion:reduce){
   .hero-doodle,.hero-ambient-glow,.home-hero-panel::before,.hm-hello .hm-wave,.bs-rule span{animation:none!important}
 }
+
+/* ===== V52: screenshot-accurate home hero + class picker repair ===== */
+/* Home hero: clean illustrated canvas, no photographic/background artwork. */
+.home-hero-panel{
+  position:relative!important;
+  width:100%!important;
+  min-height:410px!important;
+  padding:56px clamp(24px,5vw,72px) 46px!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  border:1px solid color-mix(in srgb,var(--accent) 12%,var(--border))!important;
+  border-radius:28px!important;
+  background:
+    radial-gradient(circle at 8% 8%,color-mix(in srgb,var(--accent-light) 72%,transparent) 0 18%,transparent 40%),
+    radial-gradient(circle at 94% 4%,color-mix(in srgb,var(--sun) 46%,transparent) 0 13%,transparent 34%),
+    linear-gradient(135deg,var(--surface) 0%,color-mix(in srgb,var(--surface) 92%,var(--accent-light)) 58%,color-mix(in srgb,var(--surface) 96%,var(--sun)) 100%)!important;
+  box-shadow:0 18px 50px color-mix(in srgb,var(--ink) 9%,transparent)!important;
+}
+.home-hero-panel::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 49% 50%,color-mix(in srgb,var(--accent) 7%,transparent) 0 2px,transparent 3px),
+    linear-gradient(115deg,transparent 0 68%,color-mix(in srgb,var(--accent) 5%,transparent) 68.2% 68.5%,transparent 68.7%);
+  opacity:.55!important;
+}
+.home-hero-panel::after{
+  content:""!important;
+  position:absolute!important;
+  width:360px!important;height:360px!important;
+  right:-155px!important;top:-150px!important;
+  border-radius:50%!important;
+  pointer-events:none!important;
+  border:1px solid color-mix(in srgb,var(--accent) 12%,transparent)!important;
+  box-shadow:0 0 0 34px color-mix(in srgb,var(--accent) 3%,transparent),0 0 70px color-mix(in srgb,var(--accent) 7%,transparent)!important;
+  animation:heroSoftGlowV52 7s ease-in-out infinite alternate!important;
+}
+.home-hero-copy{position:relative!important;z-index:5!important;max-width:930px!important}
+.hm-hello h1{
+  margin:0!important;
+  font-size:clamp(46px,6.2vw,76px)!important;
+  line-height:.98!important;
+  letter-spacing:-.045em!important;
+  font-weight:400!important;
+  color:var(--ink)!important;
+  white-space:normal!important;
+}
+.hm-hello h1 strong{font-weight:500!important;color:var(--accent)!important}
+.hm-hello .hm-wave{
+  font-size:.72em!important;
+  margin-left:.08em!important;
+  vertical-align:.02em!important;
+  display:inline-block!important;
+  transform-origin:70% 78%!important;
+  animation:heroHandV52 2.2s ease-in-out infinite!important;
+}
+.home-hero-intro{
+  display:block!important;
+  max-width:780px!important;
+  margin:17px 0 0!important;
+  font-size:17px!important;
+  line-height:1.55!important;
+  color:var(--ink-muted)!important;
+}
+.hm-search{max-width:780px!important;margin-top:30px!important}
+.hm-search .clean-search{
+  height:76px!important;
+  padding:0 12px 0 24px!important;
+  gap:14px!important;
+  border:1px solid color-mix(in srgb,var(--accent) 8%,var(--border))!important;
+  border-radius:18px!important;
+  background:color-mix(in srgb,var(--surface) 91%,white)!important;
+  box-shadow:0 14px 35px color-mix(in srgb,var(--accent) 9%,transparent)!important;
+}
+.hm-search .clean-search>svg{width:29px!important;height:29px!important;color:var(--accent)!important}
+.hm-search .clean-search input{font-size:18px!important;color:var(--ink)!important}
+.hm-search .clean-search input::placeholder{color:var(--ink-faint)!important}
+.hm-search .clean-search button{
+  width:58px!important;height:58px!important;
+  border-radius:16px!important;
+  background:var(--accent)!important;
+  color:var(--accent-contrast)!important;
+  box-shadow:0 10px 24px color-mix(in srgb,var(--accent) 20%,transparent)!important;
+}
+.hm-search .clean-search button svg{width:23px!important;height:23px!important}
+.hero-doodles{position:absolute!important;inset:0!important;z-index:3!important;pointer-events:none!important}
+.hero-doodle{filter:drop-shadow(0 7px 12px color-mix(in srgb,var(--accent) 10%,transparent))!important}
+.hero-doodle-star{width:50px!important;height:50px!important;left:3.4%!important;top:19%!important;color:var(--sun)!important;animation:heroStarV52 4.8s ease-in-out infinite!important}
+.hero-doodle-plane{width:64px!important;height:58px!important;right:19%!important;top:8%!important;color:var(--accent)!important;animation:heroPlaneV52 6s ease-in-out infinite!important}
+.hero-doodle-triangle{width:64px!important;height:59px!important;right:2.5%!important;top:29%!important;color:var(--accent)!important;animation:heroTriangleV52 5.8s ease-in-out infinite!important}
+.hero-doodle-pencil{width:44px!important;height:61px!important;right:5%!important;bottom:17%!important;color:var(--accent)!important;animation:heroPencilV52 5.4s ease-in-out infinite!important}
+.hero-doodle-book{width:82px!important;height:65px!important;left:2.7%!important;bottom:7%!important;color:var(--accent)!important;animation:heroBookV52 6.4s ease-in-out infinite!important}
+.hero-doodle-atom{width:62px!important;height:62px!important;right:18%!important;bottom:6%!important;color:var(--accent)!important;animation:heroAtomV52 6.8s ease-in-out infinite!important}
+.hero-doodles::before,.hero-doodles::after{content:"";position:absolute;pointer-events:none;border-radius:50%}
+.hero-doodles::before{width:9px;height:9px;left:55%;top:26%;background:var(--accent);opacity:.55;box-shadow:0 0 0 9px color-mix(in srgb,var(--accent) 8%,transparent);animation:heroDotV52 4s ease-in-out infinite}
+.hero-doodles::after{width:11px;height:11px;left:7%;bottom:29%;background:var(--sun);opacity:.7;box-shadow:0 0 18px color-mix(in srgb,var(--sun) 30%,transparent);animation:heroDotV52 4.8s ease-in-out infinite reverse}
+@keyframes heroSoftGlowV52{from{transform:translate3d(0,0,0) scale(.94);opacity:.35}to{transform:translate3d(-10px,12px,0) scale(1.05);opacity:.68}}
+@keyframes heroHandV52{0%,100%{transform:rotate(0)}15%{transform:rotate(12deg)}30%{transform:rotate(-8deg)}45%{transform:rotate(11deg)}60%{transform:rotate(-6deg)}75%{transform:rotate(0)}}
+@keyframes heroStarV52{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-7px) rotate(7deg)}}
+@keyframes heroPlaneV52{0%,100%{transform:translate3d(0,0,0) rotate(-4deg)}50%{transform:translate3d(-9px,-8px,0) rotate(2deg)}}
+@keyframes heroTriangleV52{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-8px) rotate(-3deg)}}
+@keyframes heroPencilV52{0%,100%{transform:translateY(0) rotate(7deg)}50%{transform:translateY(-8px) rotate(1deg)}}
+@keyframes heroBookV52{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(1deg)}}
+@keyframes heroAtomV52{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(9deg) scale(1.04)}}
+@keyframes heroDotV52{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-9px) scale(1.15)}}
+
+/* First-launch class/name picker: restore the screenshot's 2x2 card layout. */
+html.profile-onboarding-active .profile-onboarding{
+  padding:24px!important;
+  background:var(--accent-light)!important;
+  place-items:center!important;
+}
+html.profile-onboarding-active .profile-onboarding::before{display:none!important}
+html.profile-onboarding-active .profile-onboarding-panel{
+  width:min(760px,100%)!important;
+  max-height:calc(100dvh - 48px)!important;
+  overflow-y:auto!important;
+  padding:40px 44px!important;
+  border:1px solid color-mix(in srgb,var(--accent) 7%,var(--border))!important;
+  border-radius:20px!important;
+  background:var(--surface)!important;
+  box-shadow:0 22px 60px color-mix(in srgb,var(--ink) 10%,transparent)!important;
+}
+html.profile-onboarding-active .profile-onboarding-brand{font-size:18px!important;gap:12px!important}
+html.profile-onboarding-active .profile-onboarding-brand .brand-mark{width:42px!important;height:42px!important;background:var(--accent)!important}
+html.profile-onboarding-active .profile-onboarding-copy{margin-top:42px!important}
+html.profile-onboarding-active .profile-onboarding-copy h2{font-size:46px!important;line-height:1.04!important;letter-spacing:-.035em!important;color:var(--accent)!important}
+html.profile-onboarding-active .profile-onboarding-copy p{max-width:620px!important;margin-top:13px!important;font-size:16px!important;line-height:1.55!important;color:var(--ink-muted)!important}
+html.profile-onboarding-active .profile-step{margin-top:36px!important}
+html.profile-onboarding-active .profile-step-label{font-size:16px!important;font-weight:500!important;gap:9px!important}
+html.profile-onboarding-active .profile-step-label svg{width:20px!important;height:20px!important}
+html.profile-onboarding-active .cls-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+  margin-top:16px!important;
+}
+html.profile-onboarding-active .cls-card{
+  position:relative!important;
+  min-height:190px!important;
+  padding:25px 22px 18px!important;
+  overflow:hidden!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  text-align:left!important;
+  border:1.5px solid color-mix(in srgb,var(--accent) 22%,var(--border))!important;
+  border-radius:24px!important;
+  background:linear-gradient(145deg,var(--surface),color-mix(in srgb,var(--accent-light) 38%,var(--surface)))!important;
+  color:var(--ink)!important;
+  transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+html.profile-onboarding-active .cls-card::after{
+  content:""!important;position:absolute!important;width:150px!important;height:150px!important;right:-42px!important;top:-58px!important;border-radius:50%!important;background:color-mix(in srgb,var(--accent-light) 78%,var(--surface))!important;pointer-events:none!important;
+}
+html.profile-onboarding-active .cls-card:hover,
+html.profile-onboarding-active .cls-card.selected{
+  border-color:var(--accent)!important;
+  box-shadow:0 12px 30px color-mix(in srgb,var(--accent) 12%,transparent)!important;
+  transform:translateY(-2px)!important;
+}
+html.profile-onboarding-active .cls-card.selected::after{background:color-mix(in srgb,var(--accent-light) 95%,var(--surface))!important}
+html.profile-onboarding-active .cls-card .cls-check{position:absolute!important;right:15px!important;top:15px!important;width:25px!important;height:25px!important;display:grid!important;place-items:center!important;border-radius:50%!important;background:var(--accent)!important;color:var(--accent-contrast)!important;z-index:2!important;opacity:0!important;transform:scale(.7)!important;transition:.18s ease!important}
+html.profile-onboarding-active .cls-card.selected .cls-check{opacity:1!important;transform:scale(1)!important}
+html.profile-onboarding-active .cls-card .cls-check svg{width:14px!important;height:14px!important}
+html.profile-onboarding-active .cls-label{position:relative!important;z-index:2!important;font-size:12px!important;font-weight:800!important;letter-spacing:.2em!important;text-transform:uppercase!important;color:var(--accent)!important}
+html.profile-onboarding-active .cls-num{position:relative!important;z-index:2!important;margin-top:2px!important;font-size:68px!important;line-height:.92!important;font-weight:700!important;letter-spacing:-.055em!important;color:var(--accent)!important}
+html.profile-onboarding-active .cls-stage{position:relative!important;z-index:2!important;margin-top:7px!important;font-size:14px!important;font-weight:600!important;color:var(--ink)!important}
+html.profile-onboarding-active .cls-subjects{position:relative!important;z-index:2!important;display:flex!important;align-items:center!important;margin-top:auto!important;padding-top:16px!important}
+html.profile-onboarding-active .cls-sub{width:34px!important;height:34px!important;display:grid!important;place-items:center!important;margin-right:-5px!important;border:2px solid var(--surface)!important;border-radius:50%!important;background:var(--surface)!important;box-shadow:0 4px 10px color-mix(in srgb,var(--ink) 9%,transparent)!important}
+html.profile-onboarding-active .cls-sub .art,html.profile-onboarding-active .cls-sub svg{width:21px!important;height:21px!important}
+html.profile-onboarding-active .cls-more{margin-left:13px!important;font-size:13px!important;font-weight:700!important;color:var(--accent)!important}
+html.profile-onboarding-active .profile-name-field{height:66px!important;margin-top:14px!important;padding:0 18px!important;border-radius:16px!important;background:var(--surface)!important}
+html.profile-onboarding-active .profile-name-field input{font-size:18px!important}
+html.profile-onboarding-active .profile-name-field span{font-size:12px!important;font-weight:600!important}
+html.profile-onboarding-active .profile-private-note{margin-top:9px!important;font-size:12px!important}
+html.profile-onboarding-active .profile-continue{
+  height:64px!important;margin-top:30px!important;border-radius:999px!important;font-size:17px!important;font-weight:700!important;background:var(--accent)!important;color:var(--accent-contrast)!important;box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 18%,transparent)!important;
+}
+html.profile-onboarding-active .profile-continue:disabled{opacity:.42!important;box-shadow:none!important}
+
+@media(max-width:700px){
+  .home-hero-panel{min-height:350px!important;padding:34px 20px 28px!important;border-radius:24px!important}
+  .hm-hello h1{font-size:clamp(38px,11vw,56px)!important}
+  .home-hero-intro{font-size:14px!important;line-height:1.5!important;margin-top:13px!important;max-width:39ch!important}
+  .hm-search{margin-top:22px!important}
+  .hm-search .clean-search{height:60px!important;border-radius:15px!important;padding:0 8px 0 15px!important}
+  .hm-search .clean-search>svg{width:23px!important;height:23px!important}
+  .hm-search .clean-search input{font-size:15px!important}
+  .hm-search .clean-search button{width:46px!important;height:46px!important;border-radius:13px!important}
+  .hm-search .clean-search button svg{width:19px!important;height:19px!important}
+  .hero-doodle-star{width:34px!important;height:34px!important;left:3%!important;top:14%!important}
+  .hero-doodle-plane{width:44px!important;height:40px!important;right:18%!important;top:7%!important}
+  .hero-doodle-triangle{width:43px!important;height:40px!important;right:2%!important;top:30%!important}
+  .hero-doodle-pencil{width:31px!important;height:43px!important;right:4%!important;bottom:17%!important}
+  .hero-doodle-book{width:58px!important;height:46px!important;left:2%!important;bottom:6%!important}
+  .hero-doodle-atom{width:44px!important;height:44px!important;right:18%!important;bottom:6%!important}
+  html.profile-onboarding-active .profile-onboarding{padding:12px!important}
+  html.profile-onboarding-active .profile-onboarding-panel{width:min(100%,520px)!important;max-height:calc(100dvh - 24px)!important;padding:24px 20px 22px!important;border-radius:20px!important}
+  html.profile-onboarding-active .profile-onboarding-copy{margin-top:27px!important}
+  html.profile-onboarding-active .profile-onboarding-copy h2{font-size:clamp(32px,9vw,42px)!important}
+  html.profile-onboarding-active .profile-onboarding-copy p{font-size:14px!important}
+  html.profile-onboarding-active .profile-step{margin-top:27px!important}
+  html.profile-onboarding-active .cls-grid{gap:9px!important}
+  html.profile-onboarding-active .cls-card{min-height:150px!important;padding:18px 15px 14px!important;border-radius:18px!important}
+  html.profile-onboarding-active .cls-card::after{width:105px!important;height:105px!important;right:-35px!important;top:-42px!important}
+  html.profile-onboarding-active .cls-num{font-size:50px!important}
+  html.profile-onboarding-active .cls-stage{font-size:11px!important}
+  html.profile-onboarding-active .cls-subjects{padding-top:10px!important}
+  html.profile-onboarding-active .cls-sub{width:28px!important;height:28px!important}
+  html.profile-onboarding-active .cls-sub .art,html.profile-onboarding-active .cls-sub svg{width:17px!important;height:17px!important}
+  html.profile-onboarding-active .cls-more{font-size:11px!important;margin-left:9px!important}
+  html.profile-onboarding-active .profile-name-field{height:58px!important}
+  html.profile-onboarding-active .profile-name-field input{font-size:16px!important}
+  html.profile-onboarding-active .profile-continue{height:56px!important;margin-top:23px!important;font-size:15px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .home-hero-panel::after,.hm-hello .hm-wave,.hero-doodle,.hero-doodles::before,.hero-doodles::after{animation:none!important}
+}
