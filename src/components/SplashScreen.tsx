@@ -1,43 +1,34 @@
 'use client';
 import { useEffect, useState, type CSSProperties } from 'react';
-import { usePathname } from 'next/navigation';
 import Art from './Art';
 
-const SPLASH_KEY = 'archivum_splash_seen_v2'; // shown once per device, never again
-const SPLASH_MS = 1800;
-const LEAVE_MS = 380; // fade-out at the end of the splash
+const SPLASH_MS = 4000; // splash length on every fresh open of the home page
+const LEAVE_MS = 450; // fade-out at the end of the splash
 
 /* Subject icons that orbit the logo. */
 const SATELLITES = ['Maths', 'Biology', 'Chemistry', 'SST'];
 
 export default function SplashScreen() {
-  const pathname = usePathname();
   const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  // Runs ONCE per full page load (opening the site/app, or a browser refresh). SplashScreen lives in the
+  // root layout, so in-app navigation (returning from Notes, Papers, menus...) never remounts it and the
+  // splash does not appear again. It only plays when that page load is the home page.
   useEffect(() => {
-    if (pathname !== '/') { document.documentElement.classList.remove('archivum-booting'); return; }
-    try {
-      if (localStorage.getItem(SPLASH_KEY) === '1') { document.documentElement.classList.remove('archivum-booting'); return; }
-      localStorage.setItem(SPLASH_KEY, '1');
-    } catch {
-      // If storage is unavailable, still give a normal first-load splash.
-    }
+    if (window.location.pathname !== '/') { document.documentElement.classList.remove('archivum-booting'); return; }
+    document.documentElement.classList.add('archivum-booting');
     setShow(true);
-    setLeaving(false);
-    setProgress(0);
     const startedAt = performance.now();
     const frame = window.setInterval(() => {
-      const elapsed = performance.now() - startedAt;
-      // ease-out so the bar feels quick at first and settles at 100%
-      const t = Math.min(1, elapsed / (SPLASH_MS - LEAVE_MS));
-      setProgress(Math.round((1 - Math.pow(1 - t, 2)) * 100));
+      const t = Math.min(1, (performance.now() - startedAt) / (SPLASH_MS - LEAVE_MS));
+      setProgress(Math.round((1 - Math.pow(1 - t, 1.6)) * 100));
     }, 30);
     const leave = window.setTimeout(() => setLeaving(true), SPLASH_MS - LEAVE_MS);
     const timer = window.setTimeout(() => { setShow(false); document.documentElement.classList.remove('archivum-booting'); }, SPLASH_MS);
     return () => { window.clearTimeout(timer); window.clearTimeout(leave); window.clearInterval(frame); };
-  }, [pathname]);
+  }, []);
 
   if (!show) return null;
   return (
