@@ -50,7 +50,7 @@ export default function Navbar() {
 
         <div className="header-actions">
           <button className="header-action search-trigger" onClick={() => setSearchOpen(v => !v)} aria-label="Search"><Search /></button>
-          <button className="header-menu" onClick={() => setDrawerOpen(true)} aria-label="Open menu"><Menu /></button>
+          <button className="header-menu" onClick={() => setDrawerOpen(v => !v)} aria-label={drawerOpen ? "Close menu" : "Open menu"}>{drawerOpen ? <X /> : <Menu />}</button>
         </div>
       </div>
 
