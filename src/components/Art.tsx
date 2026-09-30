@@ -6,7 +6,7 @@ const N = '#1b2166', W = '#ffffff', Y = '#ffc75f', P = '#8d9bff', K = '#ffbdde',
 const art: Record<string, React.ReactNode> = {
   Maths: <>
     <circle cx="60" cy="60" r="43" fill={W} stroke={N} strokeWidth="4"/>
-    <text x="60" y="79" textAnchor="middle" fontFamily="Lato, Arial, sans-serif" fontSize="68" fontWeight="700" fontStyle="italic" fill={N}>π</text>
+    <text x="60" y="79" textAnchor="middle" fontFamily="Lato, Arial, sans-serif" fontSize="66" fontWeight="700" fontStyle="italic" fill={N}>π</text>
     <path d="M28 93h64" stroke={S} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Science: <>
@@ -30,12 +30,12 @@ const art: Record<string, React.ReactNode> = {
   </>,
   Hindi: <>
     <rect x="16" y="14" width="88" height="92" rx="14" fill={Y} stroke={N} strokeWidth="4"/>
-    <text x="60" y="82" textAnchor="middle" fontFamily="Noto Sans Devanagari, sans-serif" fontSize="58" fontWeight="700" fill={N}>अ</text>
+    <text x="60" y="82" textAnchor="middle" fontFamily="Noto Sans Devanagari, sans-serif" fontSize="56" fontWeight="700" fill={N}>अ</text>
     <path d="M30 96h60" stroke={P} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Urdu: <>
     <rect x="16" y="14" width="88" height="92" rx="14" fill={P} stroke={N} strokeWidth="4"/>
-    <text x="60" y="81" textAnchor="middle" direction="rtl" fontFamily="Noto Nastaliq Urdu, Noto Naskh Arabic, serif" fontSize="52" fontWeight="700" fill={N}>ا</text>
+    <text x="60" y="81" textAnchor="middle" direction="rtl" fontFamily="Noto Naskh Arabic, Noto Sans Arabic, sans-serif" fontSize="50" fontWeight="700" fill={N}>ا</text>
     <path d="M30 96h60" stroke={W} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Biology: <>
@@ -54,8 +54,8 @@ const art: Record<string, React.ReactNode> = {
   </>,
   Chemistry: <>
     <path d="M45 12h30v25l13 49a14 14 0 0 1-14 18H46a14 14 0 0 1-14-18l13-49Z" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M36 64h48l6 22a13 13 0 0 1-13 16H43a13 13 0 0 1-13-16Z" fill={P} className="chem-liquid"/>
-    <path d="M39 72c8-5 14 5 21 0s13-5 21 0" fill="none" stroke={S} strokeWidth="3" strokeLinecap="round" className="chem-liquid-line"/>
+    <path d="M38 68h44l5 17a10 10 0 0 1-10 12H43a10 10 0 0 1-10-12Z" fill={P} className="chem-liquid"/>
+    <path d="M39 69h42" fill="none" stroke={S} strokeWidth="3" strokeLinecap="round"/>
     <rect x="41" y="8" width="38" height="8" rx="4" fill={Y} stroke={N} strokeWidth="3"/>
     <circle cx="92" cy="34" r="7" fill={K} stroke={N} strokeWidth="3"/><circle cx="101" cy="52" r="4" fill={Y} stroke={N} strokeWidth="2.5"/>
   </>,

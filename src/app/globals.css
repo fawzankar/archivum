@@ -2181,3 +2181,81 @@ body,button,input,textarea,select{
 /* V23: library pages are designed around cached all-class payloads and instant client filtering. */
 .notes-library-stack,.pyq-finder{content-visibility:auto;contain-intrinsic-size:900px}
 .notes-subject-card,.notes-class-tab,.resource-card{touch-action:manipulation}
+
+/* V26: cleaner icons, restrained microcopy, and a premium blurred backing for document titles. */
+.resource-modern-hero-copy{
+  padding:22px 24px 24px;
+  border-radius:24px;
+  background:rgba(255,255,255,.34);
+  border:1px solid rgba(255,255,255,.38);
+  box-shadow:0 12px 34px rgba(27,33,102,.07);
+  backdrop-filter:blur(13px) saturate(1.04);
+  -webkit-backdrop-filter:blur(13px) saturate(1.04);
+}
+.resource-modern-kicker,
+.resource-modern-stats span,
+.notes-library-description,
+.notes-subject-card small,
+.notes-result-head p,
+.hm-subjects-home-head span,
+.resource-section-heading span,
+.resource-modern-content label,
+.library-loading-card span{
+  font-weight:500!important;
+}
+.notes-subject-card small{letter-spacing:.01em}
+.resource-modern-kicker{font-weight:600!important}
+.resource-modern-stats span{font-weight:500!important}
+.library-loading-screen{
+  min-height:60vh;
+  display:grid;
+  place-items:center;
+  padding:32px 16px;
+}
+.library-loading-card{
+  width:min(360px,92vw);
+  padding:24px;
+  border:1px solid var(--border);
+  border-radius:24px;
+  background:var(--surface);
+  box-shadow:0 18px 45px rgba(27,33,102,.08);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:9px;
+  color:var(--ink);
+}
+.library-loading-card strong{font-size:15px;font-weight:700}
+.library-loading-card>span{font-size:12px;color:var(--ink-muted)}
+.library-loading-spinner{
+  width:24px;height:24px;border-radius:50%;
+  border:3px solid var(--border);
+  border-top-color:var(--accent);
+  animation:librarySpin .75s linear infinite;
+}
+.library-loading-bar{
+  width:100%;height:5px;border-radius:999px;overflow:hidden;
+  background:var(--border-light);margin-top:4px;
+}
+.library-loading-bar i{
+  display:block;height:100%;width:42%;border-radius:inherit;
+  background:var(--accent);
+  animation:libraryLoadingSweep 1.25s ease-in-out infinite;
+}
+@keyframes librarySpin{to{transform:rotate(360deg)}}
+@keyframes libraryLoadingSweep{
+  0%{transform:translateX(-110%)} 100%{transform:translateX(250%)}
+}
+
+/* The illustrations should never leak their liquid beyond the glass silhouette. */
+.chem-liquid,.chem-liquid-line{animation:none!important}
+.chem-liquid-line{display:none!important}
+@media(max-width:700px){
+  .resource-modern-hero-copy{
+    padding:18px;
+    border-radius:20px;
+    background:rgba(255,255,255,.42);
+    backdrop-filter:blur(11px);
+    -webkit-backdrop-filter:blur(11px);
+  }
+}

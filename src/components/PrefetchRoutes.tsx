@@ -3,26 +3,22 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-const ROUTES = [
-  '/notes',
-  '/previous-papers',
-  '/search',
-  '/saved',
-  '/about',
-  '/contact',
-  '/contributors',
+const HTML_ROUTES = [
+  '/', '/about', '/admin', '/admin/login', '/contact', '/contributors',
+  '/feedback', '/guidelines', '/notes', '/previous-papers', '/privacy',
+  '/saved', '/search', '/terms', '/tips', '/upload',
 ];
 
 export default function PrefetchRoutes() {
   const router = useRouter();
 
   useEffect(() => {
-    const run = () => {
-      for (const route of ROUTES) router.prefetch(route);
-    };
+    // Warm all known HTML routes after the first paint.
+    const id = window.setTimeout(() => {
+      for (const route of HTML_ROUTES) router.prefetch(route);
+    }, 300);
 
-    const idle = window.setTimeout(run, 350);
-    return () => window.clearTimeout(idle);
+    return () => window.clearTimeout(id);
   }, [router]);
 
   return null;
