@@ -29,12 +29,13 @@ export default function SplashScreen() {
   return (
     <div className={`boot-splash bs${leaving ? ' is-leaving' : ''}`} aria-label="Loading ARCHIVUM" role="status">
       <div className="bs-content">
-        <Image className="bs-logo-image" src="/archivum-logo-dark.png" alt="ARCHIVUM" width={92} height={92} priority />
+        <div className="bs-mark-frame">
+          <Image className="bs-logo-image" src="/archivum-logo-dark.png" alt="ARCHIVUM" width={112} height={112} priority />
+        </div>
         <div className="bs-name">ARCHIVUM</div>
         <p className="bs-tagline">A Sister Organization Of <span className="quest-word">QUEST</span></p>
         <span className="bs-rule" aria-hidden="true" />
       </div>
-      <div className="bs-credit">Made with care by <strong>Fawzan Kar</strong></div>
     </div>
   );
 }
