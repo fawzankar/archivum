@@ -227,10 +227,11 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
             </div>
           ) : loading ? (
             <div className="pdf-reader-loading">
-              <div className="pdf-load-progress" aria-label={`Loading ${loadProgress}%`}>
+              <div className="pdf-load-progress" role="progressbar"
+                aria-valuemin={0} aria-valuemax={100} aria-valuenow={loadProgress}
+                aria-label={`Opening note ${loadProgress}%`}>
                 <div className="pdf-load-progress-bar" style={{ width: `${Math.max(4, loadProgress)}%` }} />
               </div>
-              <div className="pdf-load-spinner"><Loader2 /></div>
               <strong>{loadProgress > 0 ? `Opening note · ${loadProgress}%` : 'Opening note…'}</strong>
               <span>Preparing the first pages inside Archivum.</span>
             </div>

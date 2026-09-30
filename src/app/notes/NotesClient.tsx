@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
+import Art from '@/components/Art';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
 
@@ -133,6 +134,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
             onClick={() => setSelectedSubject('')}
             className={`notes-subject-card ${!activeSubject ? 'active' : ''}`}
           >
+            <span className="notes-subject-art"><Art name="papers" /></span>
             <span>All</span>
             <small>{classNotes.length} {classNotes.length === 1 ? 'resource' : 'resources'}</small>
           </button>
@@ -146,6 +148,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
                 onClick={() => setSelectedSubject(subject)}
                 className={`notes-subject-card ${active ? 'active' : ''}`}
               >
+                <span className="notes-subject-art"><Art name={subject} /></span>
                 <span>{subject}</span>
                 <small>{count} {count === 1 ? 'resource' : 'resources'}</small>
               </button>

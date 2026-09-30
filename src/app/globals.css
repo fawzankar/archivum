@@ -2294,10 +2294,16 @@ small,
 
 @media(max-width:700px){
   .notes-subject-art{
-    width:46px!important;
-    height:46px!important;
-    margin-bottom:10px!important;
-    opacity:.15!important;
+    width:52px!important;
+    height:52px!important;
+    flex-basis:52px!important;
+    margin-bottom:8px!important;
+    opacity:1!important;
+    filter:none!important;
+  }
+  .notes-subject-art .art{
+    width:52px!important;
+    height:52px!important;
   }
   .notes-subject-card span:not(.notes-subject-art){
     margin-top:0!important;
@@ -2308,7 +2314,6 @@ small,
 }
 
 /* V34: subject art is for resource cards, not the Notes subject filter pills. */
-.notes-subject-card .notes-subject-art{display:none!important}
 .notes-subject-card{
   justify-content:center!important;
   align-items:center!important;
@@ -2374,4 +2379,67 @@ input,textarea,select,[contenteditable="true"]{
   -moz-user-select:text;
   user-select:text;
   -webkit-touch-callout:default;
+}
+
+/* V35: Notes subject artwork is back inside the selector cards. */
+.notes-subject-card{
+  position:relative!important;
+  justify-content:flex-end!important;
+  align-items:flex-start!important;
+  overflow:hidden!important;
+  text-align:left!important;
+}
+.notes-subject-art{
+  display:grid!important;
+  place-items:center!important;
+  width:74px!important;
+  height:74px!important;
+  flex:0 0 74px!important;
+  margin:0 0 8px!important;
+  opacity:1!important;
+  filter:none!important;
+  align-self:center!important;
+}
+.notes-subject-art .art{
+  width:100%!important;
+  height:100%!important;
+  max-width:74px!important;
+  max-height:74px!important;
+}
+.notes-subject-card span:not(.notes-subject-art){
+  align-self:flex-start!important;
+}
+.notes-subject-card small{
+  align-self:flex-start!important;
+  font-weight:500!important;
+}
+
+/* Resource detail: the decorative subject illustration sits behind the copy,
+   intentionally soft and low-contrast rather than competing with the title. */
+.resource-modern-hero-copy .resource-modern-art{
+  opacity:.16!important;
+  filter:blur(3px)!important;
+  transform:scale(.96)!important;
+  pointer-events:none!important;
+}
+.resource-modern-hero-copy .resource-modern-art .art{
+  opacity:1!important;
+}
+.resource-modern-hero-copy{
+  position:relative!important;
+  overflow:hidden!important;
+}
+.resource-modern-hero-copy h1,
+.resource-modern-hero-copy p,
+.resource-modern-hero-copy .resource-modern-kicker,
+.resource-modern-hero-copy .resource-modern-actions{
+  position:relative!important;
+  z-index:1!important;
+}
+
+/* Never show an indeterminate "loading bar" for the library shell.
+   Real PDF download progress remains a percentage-based progress bar. */
+.library-loading-bar,
+.library-loading-bar i{
+  display:none!important;
 }
