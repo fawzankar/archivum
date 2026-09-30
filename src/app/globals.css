@@ -2646,3 +2646,83 @@ small,
     height:260px;
   }
 }
+
+/* ===== V40: remove artificial icon circles + lighter microcopy ===== */
+.hm-subject-home-art,
+.notes-subject-art{
+  background:transparent!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  padding:0!important;
+}
+.hm-subject-home-art .art,
+.notes-subject-art .art{
+  transform:none!important;
+}
+
+/* Subject artwork should read as an illustration above its label, not as a badge. */
+.hm-subject-home-card,
+.notes-subject-card{
+  justify-content:flex-start!important;
+  gap:10px!important;
+}
+.hm-subject-home-art{
+  order:0;
+  align-self:center!important;
+  margin-top:2px;
+}
+.hm-subject-home-card strong{
+  order:1;
+  margin-top:auto;
+}
+.notes-subject-art{
+  order:0;
+  align-self:center!important;
+}
+.notes-subject-card span:not(.notes-subject-art){
+  order:1;
+  margin-top:auto;
+}
+.notes-subject-card small{
+  order:2;
+}
+
+/* Resource/notes detail: keep the subject artwork clear of decorative circles and move it
+   visually above the hero content instead of burying it behind the text. */
+.resource-modern-art{
+  top:24px!important;
+  bottom:auto!important;
+  right:34px!important;
+  opacity:.95!important;
+}
+.notes-page-shell>.ph .ph-art{
+  position:relative!important;
+  z-index:3!important;
+  align-self:flex-start!important;
+  margin-top:-10px!important;
+  transform:translateY(-8px) rotate(5deg)!important;
+}
+
+/* Microcopy should stay regular-weight across the interface. */
+small,
+.notes-class-tab,
+.notes-library-class-badge,
+.notes-result-head p,
+.notes-subject-card small,
+.resource-modern-kicker,
+.resource-modern-stats span,
+.resource-section-heading,
+.rc-kind,
+.rc-chips span,
+[class*="text-xs"],
+[class*="text-[10px]"],
+[class*="text-[11px]"],
+[class*="text-[12px]"]{
+  font-weight:400!important;
+}
+.notes-subject-card span:not(.notes-subject-art){
+  font-weight:700!important;
+}
+.resource-modern-actions button{
+  font-weight:600!important;
+}

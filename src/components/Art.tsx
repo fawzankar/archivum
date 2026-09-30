@@ -5,13 +5,12 @@ const N = '#1b2166', W = '#ffffff', Y = '#ffc75f', P = '#8d9bff', K = '#ffbdde',
 
 const art: Record<string, React.ReactNode> = {
   Maths: <>
-    <circle cx="60" cy="60" r="43" fill={W} stroke={N} strokeWidth="4"/>
-    <g transform="translate(60 60)">
-      <text x="0" y="1" textAnchor="middle" dominantBaseline="central"
-        fontFamily="STIX Two Math, Cambria Math, DejaVu Serif, serif"
-        fontSize="60" fontWeight="700" fontStyle="italic" fill={N}>π</text>
-    </g>
-    <path d="M31 98h58" stroke={S} strokeWidth="7" strokeLinecap="round"/>
+    <path d="M25 90h70" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+    <path d="M31 90 49 28h24l16 62" fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
+    <path d="M48 28h26" stroke={Y} strokeWidth="8" strokeLinecap="round"/>
+    <path d="M40 63h42M37 74h48" stroke={S} strokeWidth="4" strokeLinecap="round"/>
+    <path d="M49 28 42 90M73 28l7 62" stroke={N} strokeWidth="3"/>
+    <circle cx="60" cy="48" r="5" fill={G} stroke={N} strokeWidth="3"/>
   </>,
 
   Science: <>
@@ -26,13 +25,13 @@ const art: Record<string, React.ReactNode> = {
   </>,
 
   SST: <>
-    <circle cx="60" cy="60" r="44" fill={S} stroke={N} strokeWidth="4"/>
-    <ellipse cx="60" cy="60" rx="18" ry="43" fill="none" stroke={N} strokeWidth="2.5"/>
-    <path d="M16 60h88M21 42h78M21 78h78" fill="none" stroke={N} strokeWidth="2.5" strokeLinecap="round" opacity=".72"/>
-    <path d="M42 30c6-6 12-5 16 1 3 4 0 8-5 10-5 2-8 7-11 10-4 4-10 3-13-2 3-8 7-14 13-19ZM76 67c7-4 13-1 15 5 2 7-3 12-10 14-6 1-10-3-11-8-1-4 2-8 6-11Z"
-      fill={G} stroke={N} strokeWidth="2.5" strokeLinejoin="round"/>
-    <path d="M60 16v88" stroke={N} strokeWidth="2" strokeDasharray="3 5" opacity=".6"/>
-    <path d="M43 106h34" stroke={N} strokeWidth="5" strokeLinecap="round"/>
+    <path d="M24 88h72" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+    <path d="M29 80c9-20 16-37 31-49 7-6 16-9 28-8-3 10-8 18-16 24-11 8-20 18-27 33Z"
+      fill={S} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
+    <path d="M74 55c11-1 20 2 25 9-6 8-14 12-25 10-6-2-9-7-8-12 1-4 4-6 8-7Z"
+      fill={G} stroke={N} strokeWidth="3.5"/>
+    <path d="M43 42c9 5 15 11 18 18M37 57c8 3 14 7 19 12" fill="none" stroke={Y} strokeWidth="4" strokeLinecap="round"/>
+    <circle cx="82" cy="28" r="7" fill={K} stroke={N} strokeWidth="3"/>
   </>,
 
   English: <>
@@ -58,17 +57,16 @@ const art: Record<string, React.ReactNode> = {
   </>,
 
   Biology: <>
-    <circle cx="60" cy="60" r="45" fill={W} stroke={N} strokeWidth="4"/>
-    <path d="M38 16c38 17 38 34 0 51-18 8-18 23 0 37"
-      fill="none" stroke={S} strokeWidth="8" strokeLinecap="round"/>
-    <path d="M82 16c-38 17-38 34 0 51 18 8 18 23 0 37"
+    <path d="M25 18c10 2 17 9 22 19 6 12 8 24 20 31 11 7 19 17 24 34"
+      fill="none" stroke={Y} strokeWidth="8" strokeLinecap="round"/>
+    <path d="M95 18c-10 2-17 9-22 19-6 12-8 24-20 31-11 7-19 17-24 34"
       fill="none" stroke={K} strokeWidth="8" strokeLinecap="round"/>
-    <path d="M42 27h36M34 44h52M34 60h52M34 76h52M42 93h36"
-      stroke={G} strokeWidth="4.5" strokeLinecap="round"/>
-    <circle cx="38" cy="16" r="5" fill={S} stroke={N} strokeWidth="2.5"/>
-    <circle cx="82" cy="16" r="5" fill={K} stroke={N} strokeWidth="2.5"/>
-    <circle cx="38" cy="104" r="5" fill={K} stroke={N} strokeWidth="2.5"/>
-    <circle cx="82" cy="104" r="5" fill={S} stroke={N} strokeWidth="2.5"/>
+    <path d="M33 28h54M27 44h66M29 60h62M29 76h62M36 92h48"
+      stroke={N} strokeWidth="4" strokeLinecap="round"/>
+    <path d="M78 18h15l-7 15h-8Z" fill={S} stroke={N} strokeWidth="3"/>
+    <path d="M72 32c-7 4-11 10-12 17M58 49c-7 4-10 9-10 15" fill="none" stroke={G} strokeWidth="5" strokeLinecap="round"/>
+    <circle cx="43" cy="103" r="7" fill={S} stroke={N} strokeWidth="3"/>
+    <path d="M50 103h45" stroke={N} strokeWidth="5" strokeLinecap="round"/>
   </>,
 
   Physics: <>
@@ -84,7 +82,10 @@ const art: Record<string, React.ReactNode> = {
     <path d="M47 10h26v30l10 50c2 10-5 18-15 18H52c-10 0-17-8-15-18l10-50Z"
       fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
     <rect x="43" y="7" width="34" height="9" rx="4.5" fill={Y} stroke={N} strokeWidth="3"/>
-    <path d="M47 40h26" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+    <path d="M43 67h34l4 23c1 8-4 13-12 13H51c-8 0-13-5-12-13Z" fill={S} stroke={N} strokeWidth="3"/>
+    <path d="M44 67h32" stroke={W} strokeWidth="3.5" strokeLinecap="round"/>
+    <circle cx="54" cy="83" r="4" fill={W}/>
+    <circle cx="68" cy="90" r="3" fill={W}/>
   </>,
 
   notes: <>
@@ -113,9 +114,9 @@ const art: Record<string, React.ReactNode> = {
 /* [centreX, centreY, scale] of each artwork's real painted bounds, so all icons sit dead-centre
    and share a consistent visual size (max 100 units). */
 const FIT: Record<string, [number, number, number]> = {
-  Maths: [60, 58, 1], Science: [60, 56.3, 1], SST: [60, 60.3, 1], English: [60, 60, 1],
-  Hindi: [60, 60, 0.92], Urdu: [60, 60, 0.92], Biology: [60, 60, 0.87], Physics: [60.3, 60, 0.98],
-  Chemistry: [60, 57.8, 0.96], notes: [67.9, 60, 1], papers: [60.4, 55.4, 0.95], default: [60, 58, 1],
+  Maths: [60, 60, 1], Science: [60, 56.3, 1], SST: [60, 60, 1], English: [60, 60, 1],
+  Hindi: [60, 60, 0.92], Urdu: [60, 60, 0.92], Biology: [60, 60, 0.9], Physics: [60.3, 60, 0.98],
+  Chemistry: [60, 60, 0.96], notes: [67.9, 60, 1], papers: [60.4, 55.4, 0.95], default: [60, 58, 1],
 };
 
 export default function Art({ name, className = '' }: { name: string; className?: string }) {
