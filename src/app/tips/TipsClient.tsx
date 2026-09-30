@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Check, Lightbulb, RefreshCw, Send, ShieldCheck, ArrowRight, Clock3 } from 'lucide-react';
+import { Lightbulb, RefreshCw, Send, ShieldCheck, Clock3 } from 'lucide-react';
 import type { Tip } from '@/lib/tips';
 import { subjectsForClass } from '@/lib/subjects';
 import { useStudentClass } from '@/components/StudentClassContext';
@@ -61,7 +61,7 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
          <div className="flex items-center justify-between"><span className="text-[10px] font-bold uppercase tracking-[.16em]" style={{color:'var(--accent)'}}>{tip.subject==='General'?'EXAM TIP':tip.subject}</span><span className="w-8 h-8 rounded-md flex items-center justify-center" style={{background:'var(--accent-light)',color:'var(--accent)'}}><Lightbulb className="w-4 h-4"/></span></div>
          <h3 className="font-display font-bold text-lg mt-6 leading-snug">{tip.title}</h3>
          <p className="text-sm leading-relaxed mt-2" style={{color:'var(--ink-muted)'}}>{tip.body}</p>
-         <div className="mt-auto pt-5 flex items-center justify-between gap-3"><div className="min-w-0"><span className="block text-[10px] font-medium truncate" style={{color:'var(--ink-faint)'}}>{tip.author||'SJS student'}</span><span className="mt-1 flex items-center gap-1 text-[9px] font-medium" style={{color:'var(--ink-faint)'}}><Clock3 className="w-3 h-3"/>{formatDate(tip.created_at)}</span></div><span title="Published after moderation" className="shrink-0 inline-flex items-center gap-1 text-[9px] font-medium" style={{color:'var(--accent)'}}><ShieldCheck className="w-4 h-4"/> Published</span></div>
+         <div className="mt-auto pt-5 flex items-center justify-between gap-3"><div className="min-w-0"><span className="block text-[10px] font-medium truncate" style={{color:'var(--ink-faint)'}}>{tip.author||'SJS student'}</span><span className="mt-1 flex items-center gap-1 text-[9px] font-medium" style={{color:'var(--ink-faint)'}}><Clock3 className="w-3 h-3"/>{formatDate(tip.created_at)}</span></div></div>
        </div>
      </article>)}
    </div>

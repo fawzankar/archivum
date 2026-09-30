@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
@@ -51,6 +51,8 @@ export default function SearchClient({
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [activePdf, setActivePdf] = useState<Resource | null>(null);
+  const firstFetch = useRef(true);
+  const requestRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     const urlQuery = searchParams.get('q') || '';
@@ -61,6 +63,9 @@ export default function SearchClient({
   }, [searchParams, query]);
 
   const fetchResults = useCallback(async () => {
+    requestRef.current?.abort();
+    const controller = new AbortController();
+    requestRef.current = controller;
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -74,19 +79,22 @@ export default function SearchClient({
       if (sortBy) params.set('sort', sortBy);
       if (page > 1) params.set('page', page.toString());
 
-      const res = await fetch(`/api/resources?${params.toString()}`);
+      const res = await fetch(`/api/resources?${params.toString()}`, { signal: controller.signal });
       if (res.ok) {
         const json = await res.json();
         setData(json);
       }
-    } catch {
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
     } finally {
       setLoading(false);
     }
   }, [query, selectedClass, selectedSubject, selectedType, selectedPaperType, selectedYear, selectedSchool, sortBy, page]);
 
   useEffect(() => {
+    if (firstFetch.current) { firstFetch.current = false; return; }
     fetchResults();
+    return () => requestRef.current?.abort();
   }, [fetchResults]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {

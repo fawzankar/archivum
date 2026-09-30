@@ -3033,3 +3033,110 @@ small,
 @media(prefers-reduced-motion:reduce){
   .hero-zebra-layer,.hero-zebra-glow,.hero-illustration-one,.hero-illustration-two,.hero-illustration-three{animation:none!important}
 }
+
+
+/* ===== V47: fixed top navigation + landscape hero + search polish ===== */
+.site-header{
+  position:fixed!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+  z-index:1800!important;
+  transform:none!important;
+}
+/* Keep the content naturally below the permanent header, while allowing it to scroll underneath. */
+body{padding-top:72px!important}
+.site-header-inner{height:72px!important}
+.header-search{z-index:1801!important}
+.menu-layer{z-index:3000!important}
+.menu-drawer{z-index:3002!important}
+.menu-scrim{z-index:3001!important}
+.mobile-nav{z-index:1900!important}
+
+/* Hero: use the supplied landscape artwork and only animate soft light, not the artwork itself. */
+.home-hero-panel{
+  position:relative!important;
+  overflow:hidden!important;
+  min-height:430px!important;
+  background-image:
+    linear-gradient(110deg,
+      color-mix(in srgb,var(--surface) 24%,transparent),
+      color-mix(in srgb,var(--accent-light) 26%,transparent)),
+    url('/hero-landscape.png')!important;
+  background-size:cover!important;
+  background-position:center!important;
+  border-color:color-mix(in srgb,var(--accent) 16%,var(--border))!important;
+}
+.home-hero-panel::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  pointer-events:none!important;
+  z-index:0!important;
+  background:
+    radial-gradient(circle at 76% 22%,color-mix(in srgb,var(--accent) 30%,transparent) 0,transparent 24%),
+    radial-gradient(circle at 25% 78%,color-mix(in srgb,var(--sun) 28%,transparent) 0,transparent 25%)!important;
+  animation:heroSoftGlowV47 7s ease-in-out infinite alternate!important;
+}
+.home-hero-panel::after{
+  content:""!important;
+  position:absolute!important;
+  width:280px!important;height:280px!important;
+  right:-90px!important;top:-80px!important;
+  border-radius:50%!important;
+  border:1px solid color-mix(in srgb,var(--surface) 62%,transparent)!important;
+  box-shadow:0 0 80px color-mix(in srgb,var(--accent) 18%,transparent)!important;
+  pointer-events:none!important;
+  z-index:1!important;
+  animation:heroGlowRingV47 8s ease-in-out infinite!important;
+}
+.hero-zebra{display:block!important;inset:0!important;z-index:1!important;pointer-events:none!important}
+.hero-zebra-layer{display:none!important;animation:none!important}
+.hero-zebra-glow{
+  display:block!important;
+  width:240px!important;height:240px!important;
+  right:12%!important;top:8%!important;
+  border-radius:50%!important;
+  background:radial-gradient(circle,color-mix(in srgb,var(--accent) 34%,transparent),transparent 68%)!important;
+  filter:blur(22px)!important;
+  opacity:.55!important;
+  animation:heroGlowOrbV47 5.5s ease-in-out infinite alternate!important;
+}
+.hero-illustration{display:none!important;animation:none!important}
+.home-hero-copy{position:relative!important;z-index:4!important}
+@keyframes heroSoftGlowV47{from{opacity:.55;transform:scale(1)}to{opacity:.95;transform:scale(1.045)}}
+@keyframes heroGlowRingV47{0%,100%{transform:translate3d(0,0,0) scale(1);opacity:.55}50%{transform:translate3d(-16px,12px,0) scale(1.08);opacity:.85}}
+@keyframes heroGlowOrbV47{from{transform:translate3d(0,0,0) scale(.85);opacity:.35}to{transform:translate3d(-28px,22px,0) scale(1.18);opacity:.8}}
+
+/* Accent themes tint the supplied landscape differently without replacing it. */
+:root[data-accent="forest"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(237,247,239,.28),rgba(15,77,46,.24)),url('/hero-landscape.png')!important}
+:root[data-accent="smoky-olive"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(245,242,231,.28),rgba(86,84,73,.23)),url('/hero-landscape.png')!important}
+:root[data-accent="soft-pink"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(255,241,247,.28),rgba(212,108,140,.20)),url('/hero-landscape.png')!important}
+:root[data-accent="ocean"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(232,247,250,.28),rgba(6,80,107,.23)),url('/hero-landscape.png')!important}
+
+/* Contributors get the same lively surface language as the rest of Archivum. */
+main:has(.contributors-intro){background:transparent!important}
+.contributors-thankyou{
+  background:linear-gradient(135deg,var(--accent-light),var(--surface) 48%,color-mix(in srgb,var(--accent) 13%,var(--surface)))!important;
+}
+.contributors-intro-icon{background:var(--accent)!important;color:var(--accent-contrast)!important;box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 22%,transparent)!important}
+.contributors-contact-grid a{background:var(--surface)!important;border-color:var(--border)!important;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease!important}
+.contributors-contact-grid a:hover{transform:translateY(-3px)!important;box-shadow:0 16px 30px var(--app-shadow)!important;border-color:var(--accent)!important}
+.contributors-contact-grid svg{color:var(--accent)!important}
+
+/* Circular library loading state. */
+.library-loading-spinner{width:34px!important;height:34px!important;border-radius:50%!important;border:3px solid color-mix(in srgb,var(--accent) 18%,transparent)!important;border-top-color:var(--accent)!important;animation:archivumLoaderV47 .8s linear infinite!important}
+@keyframes archivumLoaderV47{to{transform:rotate(360deg)}}
+.search-library-finder{min-height:420px}
+
+@media(max-width:700px){
+  body{padding-top:66px!important}
+  .site-header-inner{height:66px!important}
+  .home-hero-panel{min-height:285px!important;background-position:center!important}
+  .hero-zebra-glow{width:150px!important;height:150px!important;right:3%!important;top:4%!important;filter:blur(18px)!important}
+  .home-hero-panel::after{width:180px!important;height:180px!important;right:-75px!important;top:-55px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .home-hero-panel::before,.home-hero-panel::after,.hero-zebra-glow,.library-loading-spinner{animation:none!important}
+}

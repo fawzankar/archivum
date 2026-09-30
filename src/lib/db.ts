@@ -63,7 +63,7 @@ export async function batch(statements: InStatement[]) {
 }
 
 // Bump this whenever the schema/migration steps below change so they re-run once.
-const INIT_MARKER = 'db_init_complete_v37';
+const INIT_MARKER = 'db_init_complete_v38';
 
 export async function initDb(): Promise<void> {
   if (initPromise) return initPromise;
@@ -123,6 +123,9 @@ async function runFullInit(db: Client): Promise<void> {
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_class_subject ON resources(status,class_level,subject)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_contributor_created ON resources(status,contributor_name,created_at DESC)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_year ON resources(year)`, args: [] },
+      { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_class_subject_type_created ON resources(status,class_level,subject,resource_type,created_at DESC)`, args: [] },
+      { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_type_year_created ON resources(status,resource_type,year,created_at DESC)`, args: [] },
+      { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_school_created ON resources(status,school_name,created_at DESC)`, args: [] },
     ], 'write');
 
     await db.execute({ sql: `ALTER TABLE resources ADD COLUMN contributor_name TEXT`, args: [] }).catch(() => {});
