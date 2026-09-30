@@ -78,6 +78,17 @@ export async function getResources(options: ResourceFilterOptions = {}) {
   )();
 }
 
+// Shared by the Notes / Previous Papers server pages and /api/library-prefetch so they
+// hit the same unstable_cache entry (one Turso query per class per 5 minutes).
+export async function getLibraryItems(type: 'Notes' | 'Previous Year Paper', classLevel?: number): Promise<Resource[]> {
+  try {
+    const result = await getResources({ resource_type: type, class_level: classLevel, limit: 200, withCount: false });
+    return result.items;
+  } catch {
+    return [];
+  }
+}
+
 const getResourceByIdCached = (id:number) => unstable_cache(
   () => queryOne<Resource>('SELECT * FROM resources WHERE id = ?', [id]),
   ['resource-by-id', String(id)],

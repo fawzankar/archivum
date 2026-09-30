@@ -62,12 +62,43 @@ export async function batch(statements: InStatement[]) {
   return getClient().batch(statements, 'write');
 }
 
+// Bump this whenever the schema/migration steps below change so they re-run once.
+const INIT_MARKER = 'db_init_complete_v36';
+
 export async function initDb(): Promise<void> {
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
     const db = getClient();
 
+    // Fast path: one cheap round trip on a cold start instead of ~15 schema/migration
+    // statements. If the marker exists, the schema and all migrations are already applied.
+    try {
+      const done = await db.execute({
+        sql: 'SELECT 1 FROM app_migrations WHERE id = ? LIMIT 1',
+        args: [INIT_MARKER],
+      });
+      if (done.rows.length) return;
+    } catch {
+      // app_migrations does not exist yet (fresh database): fall through to full init.
+    }
+
+    await runFullInit(db);
+
+    await db.execute({
+      sql: 'INSERT OR IGNORE INTO app_migrations (id, applied_at) VALUES (?, ?)',
+      args: [INIT_MARKER, new Date().toISOString()],
+    });
+  })().catch((error) => {
+    initPromise = null;
+    throw error;
+  });
+
+  return initPromise;
+}
+
+async function runFullInit(db: Client): Promise<void> {
+  {
     await db.batch([
       { sql: `CREATE TABLE IF NOT EXISTS admin_users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS resources (id INTEGER PRIMARY KEY AUTOINCREMENT, slug TEXT UNIQUE NOT NULL, title TEXT NOT NULL, description TEXT, class_level INTEGER NOT NULL, board TEXT NOT NULL DEFAULT 'JKBOSE', subject TEXT NOT NULL, chapter TEXT, topic TEXT, resource_type TEXT NOT NULL, paper_type TEXT, year INTEGER, school_name TEXT, contributor_name TEXT, file_url TEXT NOT NULL, storage_key TEXT, file_size INTEGER NOT NULL DEFAULT 0, file_type TEXT NOT NULL DEFAULT 'application/pdf', file_name TEXT NOT NULL, file_hash TEXT, status TEXT NOT NULL DEFAULT 'pending', rejection_reason TEXT, featured INTEGER NOT NULL DEFAULT 0, views INTEGER NOT NULL DEFAULT 0, downloads INTEGER NOT NULL DEFAULT 0, average_rating REAL NOT NULL DEFAULT 0.0, rating_count INTEGER NOT NULL DEFAULT 0, tags TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, approved_at TEXT, photo_keys TEXT)`, args: [] },      { sql: `CREATE TABLE IF NOT EXISTS storage_reservations (storage_key TEXT PRIMARY KEY, file_size INTEGER NOT NULL, expires_at TEXT NOT NULL, created_at TEXT NOT NULL)`, args: [] },
@@ -181,12 +212,7 @@ export async function initDb(): Promise<void> {
         args: ['ratings_reset_v26', now],
       });
     }
-  })().catch((error) => {
-    initPromise = null;
-    throw error;
-  });
-
-  return initPromise;
+  }
 }
 
 async function seedDatabase(db: Client) {

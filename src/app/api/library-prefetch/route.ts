@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getResources } from '@/lib/resources';
+import { getLibraryItems } from '@/lib/resources';
 
 export const runtime = 'nodejs';
 export const revalidate = 300;
@@ -11,13 +11,13 @@ export async function GET(request: Request) {
 
   try {
     const [notes, papers] = await Promise.all([
-      getResources({ resource_type: 'Notes', class_level: classLevel, limit: 200, withCount: false }),
-      getResources({ resource_type: 'Previous Year Paper', class_level: classLevel, limit: 200, withCount: false }),
+      getLibraryItems('Notes', classLevel),
+      getLibraryItems('Previous Year Paper', classLevel),
     ]);
 
     return NextResponse.json({
-      notes: { [classLevel]: notes.items },
-      papers: { [classLevel]: papers.items },
+      notes: { [classLevel]: notes },
+      papers: { [classLevel]: papers },
       version: 2,
     }, {
       headers: {

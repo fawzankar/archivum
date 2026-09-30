@@ -8,15 +8,16 @@ import ResourceCard from '@/components/ResourceCard';
 import Art from '@/components/Art';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
+import { fetchClassBundle, readLibraryCache } from '@/lib/libraryCache';
 
 interface NotesClientProps {
   allNotes: Resource[];
   initialClass: number;
   initialSubject: string;
+  explicitClass?: boolean;
 }
 
 const CLASS_CONFIG = [9, 10, 11, 12] as const;
-const classCache = new Map<number, Resource[]>();
 
 function mergeUnique(items: Resource[]) {
   const seen = new Set<number>();
@@ -27,51 +28,57 @@ function mergeUnique(items: Resource[]) {
   });
 }
 
-export default function NotesClient({ allNotes, initialClass, initialSubject }: NotesClientProps) {
+export default function NotesClient({ allNotes, initialClass, initialSubject, explicitClass = false }: NotesClientProps) {
   const router = useRouter();
-  const [selectedClass, setSelectedClass] = useState<number>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = Number(localStorage.getItem('archivum_student_class') || '');
-      if ([9, 10, 11, 12].includes(stored)) return stored;
-    }
-    return initialClass;
-  });
+  // Initial state comes from the server (identical on server + client, so no hydration mismatch).
+  const [selectedClass, setSelectedClass] = useState<number>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
-  const [notes, setNotes] = useState<Resource[]>(() => {
-    if (typeof window === 'undefined') return mergeUnique(allNotes);
-    try {
-      const cached = sessionStorage.getItem('archivum_library_prefetch_v2') || sessionStorage.getItem('archivum_library_prefetch_v1');
-      if (cached) {
-        const parsed = JSON.parse(cached);
-        const bundle = parsed?.notes?.[selectedClass as 9 | 10 | 11 | 12];
-        if (Array.isArray(bundle) && bundle.length) return mergeUnique(bundle as Resource[]);
-      }
-      const legacy = sessionStorage.getItem('archivum_notes_bundle_v23');
-      if (legacy) {
-        const parsed = JSON.parse(legacy);
-        if (Array.isArray(parsed) && parsed.length) return mergeUnique(parsed as Resource[]);
-      }
-    } catch {}
-    return mergeUnique(allNotes);
-  });
+  const [notes, setNotes] = useState<Resource[]>(() => mergeUnique(allNotes));
+  const [loadedClasses, setLoadedClasses] = useState<Set<number>>(
+    () => new Set(allNotes.length ? [initialClass] : []),
+  );
 
-  React.useEffect(() => {
-    let cancelled = false;
-    const hydrateIfNeeded = async () => {
-      if (notes.length) return;
-      try {
-        const response = await fetch(`/api/library-prefetch?class=${selectedClass}`, { cache: 'force-cache' });
-        const data = await response.json();
-        const bundle = data?.notes?.[selectedClass];
-        if (!cancelled && Array.isArray(bundle)) {
-          setNotes(mergeUnique(bundle as Resource[]));
-          try { sessionStorage.setItem('archivum_library_prefetch_v1', JSON.stringify(data)); } catch {}
+  // Once mounted: honour the student's saved class (unless the URL asked for one) and
+  // pick up anything already warmed in sessionStorage.
+  useEffect(() => {
+    // Deferred one microtask: this syncs with browser-only storage after mount.
+    queueMicrotask(() => {
+      if (!explicitClass) {
+        const stored = Number(localStorage.getItem('archivum_student_class') || '');
+        if ([9, 10, 11, 12].includes(stored) && stored !== initialClass) setSelectedClass(stored);
+      }
+      const cache = readLibraryCache();
+      const cachedClasses: number[] = [];
+      const cachedItems: Resource[] = [];
+      for (const level of CLASS_CONFIG) {
+        const bundle = cache.notes[String(level)];
+        if (Array.isArray(bundle) && bundle.length) {
+          cachedClasses.push(level);
+          cachedItems.push(...bundle);
         }
-      } catch {}
-    };
-    void hydrateIfNeeded();
+      }
+      if (cachedItems.length) {
+        setNotes((prev) => mergeUnique([...prev, ...cachedItems]));
+        setLoadedClasses((prev) => new Set([...prev, ...cachedClasses]));
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Fetch a class only if we don't have it yet (fixes the blank list when switching class).
+  useEffect(() => {
+    if (loadedClasses.has(selectedClass)) return;
+    let cancelled = false;
+    void fetchClassBundle(selectedClass).then((data) => {
+      if (cancelled) return;
+      const bundle = data?.notes?.[String(selectedClass)];
+      if (Array.isArray(bundle)) setNotes((prev) => mergeUnique([...prev, ...bundle]));
+      setLoadedClasses((prev) => new Set(prev).add(selectedClass));
+    });
     return () => { cancelled = true; };
-  }, [selectedClass, notes.length]);
+  }, [selectedClass, loadedClasses]);
+
+  const isLoading = !loadedClasses.has(selectedClass);
 
   const classNotes = useMemo(() => {
     const seen = new Set<string>();
@@ -186,7 +193,13 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
         
       </div>
 
-      {filteredNotes.length > 0 ? (
+      {filteredNotes.length === 0 && isLoading ? (
+        <div className="notes-resource-grid" aria-busy="true" aria-label="Loading notes">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="rounded-3xl border animate-pulse h-44" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }} />
+          ))}
+        </div>
+      ) : filteredNotes.length > 0 ? (
         <div className="notes-resource-grid">
           {filteredNotes.map((resource) => <ResourceCard key={resource.id} resource={resource} />)}
         </div>
