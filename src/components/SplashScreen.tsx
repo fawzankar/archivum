@@ -39,7 +39,7 @@ export default function SplashScreen() {
           {LETTERS.map((l, i) => <span key={i} style={{ ['--i' as string]: i }}>{l}</span>)}
         </div>
         <div className="sp-rule" aria-hidden="true"><i /></div>
-        <p className="sp-tag">Notes <b>·</b> Papers <b>·</b> Study Material</p>
+Papers <b>·</b> Study Material</p>
       </div>
       <div className="sp-credit">Made by Fawzan Kar</div>
     </div>
