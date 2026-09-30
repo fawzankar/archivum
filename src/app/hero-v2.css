@@ -643,3 +643,141 @@
   color:rgba(255,244,201,.55)!important;
   font-weight:400!important;
 }
+
+
+/* v66 — remove the pencil doodle entirely */
+.hx-d-pencil-ref{
+  display:none!important;
+}
+
+/* Remove the decorative splash rule/line. */
+.boot-splash.sp .sp-rule{
+  display:none!important;
+}
+
+/* Splash typography: substantial, readable weight — no hairline credit text. */
+.boot-splash.sp .sp-word,
+.boot-splash.sp .sp-word span{
+  font-family:"Lato",Arial,sans-serif!important;
+  font-weight:600!important;
+  letter-spacing:.20em!important;
+}
+.boot-splash.sp .sp-tag,
+.boot-splash.sp .sp-tag b,
+.boot-splash.sp .sp-credit{
+  font-family:"Lato",Arial,sans-serif!important;
+  font-weight:600!important;
+  letter-spacing:.04em!important;
+}
+
+
+/* v67 — compact Android home cards + quieter hero decoration */
+@media (max-width: 640px){
+  /* Keep the hero compact instead of occupying most of the viewport. */
+  .hero-scene{
+    min-height:0!important;
+    height:auto!important;
+    padding-bottom:26px!important;
+  }
+
+  /* Make the hero doodles smaller and less visually dominant on phones. */
+  .hx-doodle,
+  .hero-scene svg,
+  .hero-scene [class*="doodle"],
+  .hero-scene [class*="Doodle"]{
+    opacity:.18!important;
+  }
+  .hx-hello h1{
+    font-size:clamp(2.9rem,13vw,4.2rem)!important;
+    line-height:.96!important;
+    max-width:94%!important;
+  }
+  .hx-hello p{
+    max-width:92%!important;
+    font-size:1rem!important;
+    line-height:1.42!important;
+  }
+
+  /* The feature/notes card below the hero becomes a compact app card. */
+  .home-feature-card,
+  .notes-feature-card,
+  .resource-feature-card{
+    min-height:0!important;
+    height:auto!important;
+    padding:24px 22px!important;
+    border-radius:28px!important;
+    margin-top:18px!important;
+  }
+
+  .home-feature-card h2,
+  .notes-feature-card h2,
+  .resource-feature-card h2{
+    font-size:2rem!important;
+    line-height:1.05!important;
+    margin-bottom:8px!important;
+  }
+
+  .home-feature-card p,
+  .notes-feature-card p,
+  .resource-feature-card p{
+    font-size:1rem!important;
+    line-height:1.35!important;
+    max-width:68%!important;
+    margin-bottom:14px!important;
+  }
+
+  .home-feature-card .open-button,
+  .notes-feature-card .open-button,
+  .resource-feature-card .open-button{
+    min-height:54px!important;
+    padding:0 22px!important;
+    border-radius:18px!important;
+  }
+
+  .home-feature-card .feature-art,
+  .notes-feature-card .feature-art,
+  .resource-feature-card .feature-art{
+    transform:scale(.72)!important;
+    transform-origin:right center!important;
+    right:8px!important;
+  }
+
+  /* Keep the floating chat/action control compact and out of the card copy. */
+  .home-feature-card .floating-action,
+  .notes-feature-card .floating-action,
+  .resource-feature-card .floating-action{
+    width:56px!important;
+    height:56px!important;
+    right:12px!important;
+    bottom:12px!important;
+  }
+}
+
+/* Small phones: preserve the compact rhythm without squeezing text. */
+@media (max-width:390px){
+  .hero-scene{
+    width:calc(100% - 20px)!important;
+    margin-left:10px!important;
+    margin-right:10px!important;
+    padding-bottom:22px!important;
+  }
+
+  .home-feature-card,
+  .notes-feature-card,
+  .resource-feature-card{
+    padding:20px 18px!important;
+    border-radius:24px!important;
+  }
+
+  .home-feature-card h2,
+  .notes-feature-card h2,
+  .resource-feature-card h2{
+    font-size:1.72rem!important;
+  }
+}
+
+@media (max-width:640px){
+  .hero-section + section{
+    min-height:0!important;
+  }
+}
