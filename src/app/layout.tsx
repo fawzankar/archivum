@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   icons: { icon: [{ url: '/archivum-icon.png', sizes: '512x512', type: 'image/png' }, { url: '/icon-192.png', sizes: '192x192', type: 'image/png' }], apple: '/archivum-icon.png' },
   appleWebApp: { capable: true, title: 'ARCHIVUM', statusBarStyle: 'black-translucent' },
-  openGraph: { title: 'ARCHIVUM | Academic Archive', description: 'A sister organisation of SJS Quest for SJS students.', siteName: 'ARCHIVUM', type: 'website' },
+  openGraph: { title: 'ARCHIVUM | Academic Archive', description: 'A sister organisation of Quest for SJS students.', siteName: 'ARCHIVUM', type: 'website' },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

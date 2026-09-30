@@ -2571,14 +2571,156 @@ small,
 @keyframes bsSimpleText{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.bs-logo-image,.bs-name,.bs-tagline,.bs-rule,.bs-credit{animation:none!important}}
 
-/* SJS Quest link: polished, restrained CTA that belongs to the Archivum interface. */
+/* QUEST link: polished, restrained CTA that belongs to the Archivum interface. */
 .hm-pill{position:relative;display:inline-flex!important;align-items:center;gap:8px;padding:11px 17px!important;border:1px solid color-mix(in srgb,var(--navy) 18%,transparent)!important;border-radius:12px!important;background:var(--navy)!important;color:#fff!important;font-size:12px!important;font-weight:700!important;letter-spacing:.01em;box-shadow:0 5px 14px rgba(27,33,102,.12);transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
 .hm-pill::after{content:'↗';font-family:Arial,sans-serif;font-size:13px;line-height:1;opacity:.72;transition:transform .18s ease}
 .hm-pill:hover{transform:translateY(-2px);background:var(--accent-strong)!important;box-shadow:0 9px 20px rgba(27,33,102,.17)}
 .hm-pill:hover::after{transform:translate(2px,-2px)}
 .menu-quest-cta{padding:18px 20px 12px!important}
 .menu-quest-cta a{position:relative!important;justify-content:space-between!important;min-height:50px!important;padding:0 15px 0 17px!important;border:1px solid color-mix(in srgb,var(--accent) 22%,var(--border))!important;border-radius:13px!important;background:var(--accent-light)!important;color:var(--accent)!important;box-shadow:0 5px 16px var(--app-shadow)!important;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important}
-.menu-quest-cta a::after{content:'Visit the main SJS Quest site';margin-left:auto;color:var(--ink-faint);font-size:9px;font-weight:500;position:absolute;left:17px;bottom:7px}
+.menu-quest-cta a::after{content:'Visit the main QUEST site';margin-left:auto;color:var(--ink-faint);font-size:9px;font-weight:500;position:absolute;left:17px;bottom:7px}
 .menu-quest-cta a>span{display:flex;align-items:center;gap:4px;position:relative;top:-5px;font-size:12px;font-weight:800}
 .menu-quest-cta a>svg{width:16px!important;height:16px!important;position:relative;top:-5px}
 .menu-quest-cta a:hover{transform:translateY(-2px);background:var(--surface)!important;border-color:var(--accent)!important;box-shadow:0 9px 22px var(--app-shadow)!important}
+
+
+/* ===== V19: refined Archivum visual pass ===== */
+/* The hero now feels like the site itself: quiet paper, soft colour, and one useful focal accent. */
+.home-hero-panel{
+  position:relative!important;
+  overflow:hidden!important;
+  isolation:isolate!important;
+  background:
+    radial-gradient(circle at 88% 18%, color-mix(in srgb,var(--accent) 10%,transparent) 0 16%, transparent 34%),
+    radial-gradient(circle at 8% 100%, color-mix(in srgb,var(--accent-light) 76%,transparent) 0 18%, transparent 40%),
+    linear-gradient(135deg,var(--surface) 0%,color-mix(in srgb,var(--surface) 88%,var(--accent-light)) 100%)!important;
+  border:1px solid color-mix(in srgb,var(--accent) 13%,var(--border))!important;
+  box-shadow:0 18px 46px var(--app-shadow)!important;
+}
+.home-hero-panel::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0!important;
+  z-index:0!important;
+  pointer-events:none!important;
+  background:
+    linear-gradient(115deg,transparent 0 62%,color-mix(in srgb,var(--accent) 4%,transparent) 62.2% 62.5%,transparent 62.7%),
+    radial-gradient(circle at 94% 88%,color-mix(in srgb,var(--accent) 7%,transparent),transparent 26%)!important;
+}
+.home-hero-panel::after{
+  content:""!important;
+  position:absolute!important;
+  width:230px!important;
+  height:230px!important;
+  right:-92px!important;
+  top:-92px!important;
+  border-radius:50%!important;
+  border:1px solid color-mix(in srgb,var(--accent) 12%,transparent)!important;
+  background:color-mix(in srgb,var(--surface) 28%,transparent)!important;
+  z-index:0!important;
+  pointer-events:none!important;
+}
+.hero-zebra{display:none!important}
+.home-hero-copy{position:relative!important;z-index:2!important}
+.hm-hello h1{position:relative;z-index:2}
+.hm-hello .hm-wave{
+  font-size:1.02em!important;
+  vertical-align:-.04em!important;
+  margin-left:.08em!important;
+  transform-origin:72% 78%!important;
+  animation:archivumBigHandWave 1.9s ease-in-out infinite!important;
+}
+@keyframes archivumBigHandWave{
+  0%,100%{transform:rotate(0deg)}
+  12%{transform:rotate(17deg)}
+  24%{transform:rotate(-12deg)}
+  36%{transform:rotate(17deg)}
+  48%{transform:rotate(-10deg)}
+  60%{transform:rotate(11deg)}
+  72%{transform:rotate(0deg)}
+}
+
+/* A proper Visit QUEST CTA: one clear label, comfortable type, no tiny secondary sentence. */
+.quest-visit{
+  min-height:48px!important;
+  padding:0 20px!important;
+  border-radius:13px!important;
+  font-size:14px!important;
+  font-weight:600!important;
+  letter-spacing:0!important;
+  box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 14%,transparent)!important;
+}
+.quest-visit .quest-word{font-weight:700!important}
+.menu-quest-cta{padding:16px 20px 12px!important}
+.menu-quest-cta .quest-visit-link{
+  min-height:54px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  padding:0 18px!important;
+  border:1px solid color-mix(in srgb,var(--accent) 18%,var(--border))!important;
+  border-radius:15px!important;
+  background:var(--accent-light)!important;
+  color:var(--ink)!important;
+  box-shadow:none!important;
+  transition:transform .18s ease,background .18s ease,border-color .18s ease,box-shadow .18s ease!important;
+}
+.menu-quest-cta .quest-visit-link span{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  position:static!important;
+  font-size:14px!important;
+  line-height:1!important;
+  font-weight:600!important;
+}
+.menu-quest-cta .quest-visit-link .quest-word{font-weight:700!important}
+.menu-quest-cta .quest-visit-link svg{position:static!important;width:18px!important;height:18px!important;color:var(--accent)!important}
+.menu-quest-cta .quest-visit-link::after{display:none!important}
+.menu-quest-cta .quest-visit-link:hover{transform:translateY(-2px);background:var(--surface)!important;border-color:var(--accent)!important;box-shadow:0 8px 22px var(--app-shadow)!important}
+
+/* Minimal, editorial splash: same palette and proportions as Archivum itself. */
+.boot-splash.bs{
+  background:
+    radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--accent-light) 48%,transparent),transparent 34%),
+    var(--ivory)!important;
+}
+.bs-content{transform:translateY(-2vh)!important}
+.bs-logo-image{width:88px!important;height:88px!important;animation:bsEditorialLogo .65s cubic-bezier(.2,.75,.2,1) both!important}
+.bs-name{
+  margin-top:20px!important;
+  font-size:27px!important;
+  font-weight:700!important;
+  letter-spacing:.16em!important;
+  color:var(--ink)!important;
+  animation:bsEditorialText .55s ease .08s both!important;
+}
+.bs-tagline{
+  margin-top:12px!important;
+  font-size:12px!important;
+  color:var(--ink-muted)!important;
+  letter-spacing:.01em!important;
+  animation:bsEditorialText .55s ease .16s both!important;
+}
+.bs-rule{width:38px!important;margin-top:18px!important;background:color-mix(in srgb,var(--accent) 28%,var(--border))!important}
+.bs-credit{
+  bottom:max(26px,env(safe-area-inset-bottom))!important;
+  font-size:10px!important;
+  letter-spacing:.045em!important;
+  color:var(--ink-faint)!important;
+}
+.bs-credit strong{font-weight:600!important;color:var(--ink)!important}
+@keyframes bsEditorialLogo{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes bsEditorialText{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:700px){
+  .hm-hello .hm-wave{font-size:.98em!important}
+  .home-hero-panel{min-height:360px!important;padding:30px 22px!important;border-radius:26px!important}
+  .quest-visit{min-height:46px!important;padding:0 18px!important;font-size:13px!important}
+  .bs-logo-image{width:80px!important;height:80px!important}
+  .bs-name{font-size:23px!important}
+  .bs-tagline{font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .hm-hello .hm-wave,.bs-logo-image,.bs-name,.bs-tagline,.bs-rule,.bs-credit{animation:none!important}
+}

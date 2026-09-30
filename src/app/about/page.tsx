@@ -29,8 +29,8 @@ export default function AboutPage() {
     <section className="ab-split">
       <div className="ab-block ab-peri">
         <h2>ARCHIVUM × <span className="quest-word">QUEST</span></h2>
-        <p>ARCHIVUM is connected with SJS <span className="quest-word">Quest</span>, the St. Joseph’s school <span className="quest-word">quest</span> community, and is currently looked after by <span className="quest-word">Quest</span> Club members.</p>
-        <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hm-pill">Visit SJS <span className="quest-word">Quest</span></a>
+        <p>ARCHIVUM is connected with the <span className="quest-word">Quest</span> community and is currently looked after by <span className="quest-word">Quest</span> Club members.</p>
+        <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hm-pill quest-visit">Visit <span className="quest-word">QUEST</span></a>
         <Art name="SST" className="ab-art" />
       </div>
       <div className="ab-block ab-blush">

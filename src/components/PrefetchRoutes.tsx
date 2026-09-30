@@ -6,8 +6,8 @@ import { warmLibrary } from '@/lib/libraryCache';
 
 // Only the pages people actually open next. (Prefetching every route + 24 resource pages on
 // Home fired dozens of requests/function calls and competed with the page the student was on.)
-const KEY_ROUTES = ['/notes', '/previous-papers', '/search', '/saved', '/about', '/contact', '/contributors'];
-const WARM_URLS = ['/notes', '/previous-papers', '/about', '/contact', '/contributors', '/saved', '/guidelines', '/privacy', '/terms', '/api/library'];
+const KEY_ROUTES = ['/notes', '/previous-papers', '/tips', '/search', '/saved', '/about', '/contact', '/contributors'];
+const WARM_URLS = ['/notes', '/previous-papers', '/tips', '/about', '/contact', '/contributors', '/saved', '/guidelines', '/privacy', '/terms', '/api/library'];
 
 export default function PrefetchRoutes() {
   const router = useRouter();
