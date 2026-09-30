@@ -34,9 +34,9 @@ export default function SplashScreen() {
         </div>
         <div className="bs-name">ARCHIVUM</div>
         <p className="bs-tagline">NOTES · PAPERS · STUDY MATERIAL</p>
-        <span className="bs-rule" aria-hidden="true" />
+        <div className="bs-rule" aria-hidden="true"><span /></div>
       </div>
-      <div className="bs-credit">This App Is Made By <strong>Fawzan Kar</strong></div>
+      <div className="bs-credit">This App Is Made By Fawzan Kar</div>
     </div>
   );
 }

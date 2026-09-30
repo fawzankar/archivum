@@ -6,6 +6,7 @@ import ResourceCard from '@/components/ResourceCard';
 import Art from '@/components/Art';
 import HomeClient from './HomeClient';
 import PersonalGreeting from '@/components/PersonalGreeting';
+import HeroDoodles from '@/components/HeroDoodles';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -23,6 +24,7 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   return <div className="hm">
     <div className="hm-shell">
       <header className="hm-top home-hero-panel">
+        <HeroDoodles />
         <div className="hero-zebra" aria-hidden="true">
           <span className="hero-zebra-layer" />
           <span className="hero-zebra-glow" />
