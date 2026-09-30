@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-const SPLASH_MS = 2900;
+const SPLASH_MS = 6300;
 const LEAVE_MS = 550;
 const LETTERS = 'ARCHIVUM'.split('');
 

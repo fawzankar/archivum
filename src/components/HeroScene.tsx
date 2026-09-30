@@ -10,7 +10,12 @@ export default function HeroScene() {
       <span className="hx-grain" />
 
       {/* Hand-drawn study doodles — deliberately kept to the right side. */}
-      <div className="hx-equation hx-equation-root">√x</div>
+      <svg className="hx-equation-root hx-root-doodle" viewBox="0 0 120 72" aria-hidden="true">
+  <path d="M8 43c6-2 10-5 14-12l10 26c2 5 5 7 8 2l10-36" />
+  <path d="M49 23c9 2 18 1 28-2" />
+  <path d="M78 28c5-4 10-3 14 1 4 5 1 10-4 14-5 4-10 6-15 10" />
+  <path d="M81 50c7 1 14 2 22 1" />
+</svg>
       <div className="hx-equation hx-equation-energy">E=mc²</div>
 
       {/* Colorful pencil doodle inspired by the supplied reference. */}

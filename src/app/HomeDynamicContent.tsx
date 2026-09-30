@@ -16,7 +16,7 @@ export function HomeHeroContent() {
     <div className="hx-copy">
       <PersonalGreeting activeClass={activeClass} />
       <p className="hx-intro">
-        Your Class {activeClass} notes, previous year papers and study material, all organised in one place so you can easily find exactly what you need.
+        Your Class {activeClass} notes, previous-year papers, and study material — neatly organised so you can find what you need without digging through folders.
       </p>
       <div className="hx-search"><HomeClient /></div>
     </div>
@@ -36,11 +36,11 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
       <section className="hm-jump" aria-label="Start here">
         <Link href={`/notes?class=${activeClass}`} className="hm-jump-card hm-sun">
           <div className="hm-jump-icon"><Art name="notes" /></div>
-          <div><h2>Class {activeClass} notes</h2><p>Chapter based study material, kept in one place.</p><span className="hm-pill">Open Notes</span></div>
+          <div><h2>Class {activeClass} notes</h2><p>Chapter-wise notes, summaries, and revision material in one place.</p><span className="hm-pill">Open Notes</span></div>
         </Link>
         <Link href={`/previous-papers?class=${activeClass}`} className="hm-jump-card hm-peri">
           <div className="hm-jump-icon"><Art name="papers" /></div>
-          <div><h2>Previous papers</h2><p>Practise with real question papers.</p><span className="hm-pill">Find Papers</span></div>
+          <div><h2>Previous papers</h2><p>Previous-year papers to practise, revise, and prepare with confidence.</p><span className="hm-pill">Find Papers</span></div>
         </Link>
       </section>
 
@@ -63,7 +63,7 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
         <div className="hm-head"><h2 id="hm-recent">Recently added</h2><Link href={`/search?class=${activeClass}`}>See everything</Link></div>
         {recent.length
           ? <div className="hm-recent">{recent.map(r => <ResourceCard key={r.id} resource={r} />)}</div>
-          : <div className="hm-empty"><p>Nothing here yet. New material shows up as soon as it’s approved.</p></div>}
+          : <div className="hm-empty"><p>No new material yet. Fresh resources will appear here as soon as they are added to the archive.</p></div>}
       </section>
     </>
   );

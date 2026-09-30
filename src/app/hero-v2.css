@@ -838,3 +838,71 @@
 .boot-splash.sp .sp-credit{
   font-weight:400!important;
 }
+
+
+/* v69 — centered hero composition on every viewport */
+.hx-hero{
+  align-items:center!important;
+  justify-content:center!important;
+}
+.hx-copy{
+  margin-inline:auto!important;
+}
+.hx-hello h1{
+  white-space:normal!important;
+  overflow:visible!important;
+}
+.hx-hello h1 strong{
+  max-width:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  overflow-wrap:anywhere!important;
+}
+.hx-root-doodle{
+  position:absolute;
+  width:74px;
+  height:auto;
+  right:29%;
+  top:8%;
+  fill:none;
+  stroke:var(--accent);
+  stroke-width:3.4;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  transform:rotate(-6deg);
+  opacity:.86;
+}
+@media(max-width:900px){
+  .hx-root-doodle{
+    width:52px;
+    right:25%;
+    top:7%;
+  }
+}
+@media(max-width:640px){
+  .hx-hero{
+    min-height:300px!important;
+    padding:24px 16px 26px!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .hx-copy{
+    transform:none!important;
+  }
+  .hx-root-doodle{
+    width:42px;
+    right:24%;
+    top:6%;
+    opacity:.20!important;
+  }
+}
+
+/* v69 — splash supporting lines: readable normal weight */
+.boot-splash.sp .sp-tag,
+.boot-splash.sp .sp-tag b,
+.boot-splash.sp .sp-credit{
+  font-weight:400!important;
+}
+
+.boot-splash.sp .sp-tag{animation-delay:2.6s!important}
+.boot-splash.sp .sp-credit{animation-delay:3.1s!important}
