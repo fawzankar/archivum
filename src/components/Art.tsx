@@ -45,31 +45,32 @@ const art: Record<string, React.ReactNode> = {
   </>,
 
   Hindi: <>
-    <rect x="10" y="9" width="100" height="101" rx="18" fill={Y} stroke={N} strokeWidth="4.5"/>
-    <text x="60" y="82" textAnchor="middle"
+    <rect x="8" y="9" width="104" height="102" rx="18" fill={Y} stroke={N} strokeWidth="4.5"/>
+    <text x="60" y="78" textAnchor="middle"
       fontFamily="Noto Sans Devanagari, Nirmala UI, sans-serif"
-      fontSize="68" fontWeight="800" fill={N}>अ</text>
-    <path d="M25 99h70" stroke={P} strokeWidth="7" strokeLinecap="round"/>
+      fontSize="39" fontWeight="800" fill={N}>हिन्दी</text>
+    <path d="M24 98h72" stroke={P} strokeWidth="7" strokeLinecap="round"/>
   </>,
 
   Urdu: <>
-    <rect x="10" y="9" width="100" height="101" rx="18" fill={P} stroke={N} strokeWidth="4.5"/>
-    <text x="60" y="83" textAnchor="middle" direction="rtl"
-      fontFamily="Noto Naskh Arabic, Noto Sans Arabic, Nirmala UI, serif"
-      fontSize="68" fontWeight="800" fill={N}>ا</text>
-    <path d="M25 99h70" stroke={W} strokeWidth="7" strokeLinecap="round"/>
+    <rect x="8" y="9" width="104" height="102" rx="18" fill={P} stroke={N} strokeWidth="4.5"/>
+    <text x="60" y="78" textAnchor="middle" direction="rtl"
+      fontFamily="Noto Naskh Arabic, Noto Sans Arabic, serif"
+      fontSize="40" fontWeight="800" fill={N}>اُردو</text>
+    <path d="M24 98h72" stroke={W} strokeWidth="7" strokeLinecap="round"/>
   </>,
 
   Biology: <>
-    <path d="M34 12C82 25 86 94 34 108M86 12C38 25 34 94 86 108"
-      fill="none" stroke={N} strokeWidth="6" strokeLinecap="round"/>
-    <path d="M42 22h36M37 38h46M34 54h52M35 70h50M39 86h42M46 101h28"
+    <path d="M31 10C79 24 88 48 60 60 32 72 41 96 89 110"
+      fill="none" stroke={S} strokeWidth="9" strokeLinecap="round"/>
+    <path d="M89 10C41 24 32 48 60 60 88 72 79 96 31 110"
+      fill="none" stroke={K} strokeWidth="9" strokeLinecap="round"/>
+    <path d="M39 22h42M34 39h52M34 60h52M34 81h52M39 98h42"
       stroke={G} strokeWidth="5" strokeLinecap="round"/>
-    <circle cx="34" cy="12" r="6" fill={S} stroke={N} strokeWidth="3"/>
-    <circle cx="86" cy="12" r="6" fill={K} stroke={N} strokeWidth="3"/>
-    <circle cx="34" cy="108" r="6" fill={K} stroke={N} strokeWidth="3"/>
-    <circle cx="86" cy="108" r="6" fill={S} stroke={N} strokeWidth="3"/>
-    <path d="M54 54h12M54 70h12" stroke={N} strokeWidth="2.5" strokeLinecap="round"/>
+    <circle cx="31" cy="10" r="6" fill={S} stroke={N} strokeWidth="3"/>
+    <circle cx="89" cy="10" r="6" fill={K} stroke={N} strokeWidth="3"/>
+    <circle cx="31" cy="110" r="6" fill={K} stroke={N} strokeWidth="3"/>
+    <circle cx="89" cy="110" r="6" fill={S} stroke={N} strokeWidth="3"/>
   </>,
 
   Physics: <>

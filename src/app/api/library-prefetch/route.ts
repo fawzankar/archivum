@@ -4,30 +4,31 @@ import { getResources } from '@/lib/resources';
 export const runtime = 'nodejs';
 export const revalidate = 300;
 
-export async function GET() {
+export async function GET(request: Request) {
+  const url = new URL(request.url);
+  const requested = Number(url.searchParams.get('class') || '');
+  const classLevel = [9, 10, 11, 12].includes(requested) ? requested : 10;
+
   try {
-    const classes = [9, 10, 11, 12] as const;
     const [notes, papers] = await Promise.all([
-      Promise.all(classes.map((class_level) =>
-        getResources({ resource_type: 'Notes', class_level, limit: 200, withCount: false })
-      )),
-      Promise.all(classes.map((class_level) =>
-        getResources({ resource_type: 'Previous Year Paper', class_level, limit: 200, withCount: false })
-      )),
+      getResources({ resource_type: 'Notes', class_level: classLevel, limit: 200, withCount: false }),
+      getResources({ resource_type: 'Previous Year Paper', class_level: classLevel, limit: 200, withCount: false }),
     ]);
 
-    const payload = {
-      notes: Object.fromEntries(classes.map((c, i) => [c, notes[i].items])),
-      papers: Object.fromEntries(classes.map((c, i) => [c, papers[i].items])),
-      version: 1,
-    };
-
-    return NextResponse.json(payload, {
+    return NextResponse.json({
+      notes: { [classLevel]: notes.items },
+      papers: { [classLevel]: papers.items },
+      version: 2,
+    }, {
       headers: {
         'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
       },
     });
   } catch {
-    return NextResponse.json({ notes: {}, papers: {}, version: 1 }, { status: 200 });
+    return NextResponse.json({
+      notes: { [classLevel]: [] },
+      papers: { [classLevel]: [] },
+      version: 2,
+    });
   }
 }

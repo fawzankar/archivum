@@ -1,32 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap");
 @import "tailwindcss";
-/* Disable text/image selection across Archivum */
-*,
-*::before,
-*::after {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
 
-img,
-svg {
-  -webkit-user-drag: none;
-  user-drag: none;
-  pointer-events: auto;
-}
-
-/* Keep form controls usable */
-input,
-textarea,
-select,
-[contenteditable="true"] {
-  -webkit-user-select: text;
-  -moz-user-select: text;
-  user-select: text;
-  -webkit-touch-callout: default;
-}
 :root {
   --ivory:#e4ecff; --ivory-deep:#d7e2fb; --ink:#1b2166; --ink-muted:#4a5088; --ink-faint:#6f76a8;
   --border:#cdd7f3; --border-light:#dde5f8; --surface:#fff; --surface-raised:#eef2ff;
@@ -2318,32 +2292,6 @@ small,
 .rc-rate svg{width:14px;height:14px;stroke-width:2}
 .rc-rate svg.filled{fill:var(--accent);color:var(--accent)}
 
-/* V33: desktop subject art is centered and the library artwork is deliberately quiet. */
-.hm-subject-home-art{
-  align-self:center!important;
-  justify-self:center!important;
-}
-.hm-subject-home-art .art{
-  transform:none!important;
-}
-.hm-hello .hm-wave{
-  font-size:.82em!important;
-  vertical-align:-.02em!important;
-}
-.notes-subject-art{
-  width:52px!important;
-  height:52px!important;
-  margin-bottom:12px!important;
-  opacity:.14!important;
-  flex:none!important;
-}
-.notes-subject-art .art{
-  width:100%!important;
-  height:100%!important;
-}
-.notes-subject-card.active .notes-subject-art{
-  opacity:.18!important;
-}
 @media(max-width:700px){
   .notes-subject-art{
     width:46px!important;
@@ -2357,4 +2305,73 @@ small,
   .hm-hello .hm-wave{
     font-size:.9em!important;
   }
+}
+
+/* V34: subject art is for resource cards, not the Notes subject filter pills. */
+.notes-subject-card .notes-subject-art{display:none!important}
+.notes-subject-card{
+  justify-content:center!important;
+  align-items:center!important;
+  text-align:left!important;
+  gap:8px!important;
+}
+.rc-title-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-width:0;
+}
+.rc-inline-art{
+  width:38px;
+  height:38px;
+  flex:0 0 38px;
+  display:grid;
+  place-items:center;
+  opacity:.62;
+}
+.rc-inline-art .art{width:100%;height:100%}
+.rc-title-row h3{min-width:0;margin:0!important}
+.hm-subject-home-art,
+.subject-home-art{
+  display:grid!important;
+  place-items:center!important;
+  align-self:center!important;
+  justify-self:center!important;
+  overflow:visible!important;
+}
+.hm-subject-home-art .art,
+.subject-home-art .art{
+  width:100%!important;
+  height:100%!important;
+  max-width:118px!important;
+  max-height:118px!important;
+  transform:none!important;
+}
+@media(min-width:701px){
+  .hm-subject-home-art,
+  .subject-home-art{width:132px!important;height:132px!important}
+  .hm-subject-home-art .art,
+  .subject-home-art .art{width:120px!important;height:120px!important}
+}
+@media(max-width:700px){
+  .hm-subject-home-art,
+  .subject-home-art{width:110px!important;height:110px!important}
+}
+
+/* V34: prevent accidental text/image selection while keeping form controls editable. */
+*,*::before,*::after{
+  -webkit-user-select:none;
+  -moz-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+img,svg{
+  -webkit-user-drag:none;
+  user-drag:none;
+}
+input,textarea,select,[contenteditable="true"]{
+  -webkit-user-select:text;
+  -moz-user-select:text;
+  user-select:text;
+  -webkit-touch-callout:default;
 }

@@ -19,7 +19,10 @@ export default function ResourceCard({ resource, onView, compact = false }: { re
   return <article className={`resource-card rc ${compact?'compact':''}`} role="link" tabIndex={0} onPointerDown={prime} onMouseEnter={prime} onClick={openFromCard} onKeyDown={e=>{if((e.key==='Enter'||e.key===' ') && e.target===e.currentTarget){e.preventDefault();router.push(href)}}}>
     <div className={`rc-top rc-c${tone}`}><Art name={artName} className="rc-art"/><span className="rc-kind">{isPaper?'Exam paper':(resource.resource_type||'Notes')}</span><button onClick={toggle} aria-label={saved?'Remove from saved':'Save resource'} className={`resource-save rc-save ${saved?'saved':''}`}>{saved?<BookmarkCheck/>:<Bookmark/>}</button></div>
     <Link href={href} onClick={onView?e=>{e.preventDefault();onView(resource)}:undefined} className="rc-body">
-      <h3>{resource.title}</h3>
+      <div className="rc-title-row">
+        <span className="rc-inline-art"><Art name={artName} /></span>
+        <h3>{resource.title}</h3>
+      </div>
       <div className="rc-chips"><span>Class {resource.class_level}</span><span>{resource.subject}</span>{resource.chapter&&<span>{resource.chapter}</span>}</div>
     </Link>
     <div className="rc-foot">

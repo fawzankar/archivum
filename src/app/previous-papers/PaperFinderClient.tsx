@@ -51,7 +51,7 @@ export default function PaperFinderClient({
   const [papers, setPapers] = useState<Resource[]>(() => {
     if (typeof window === 'undefined') return allPapers;
     try {
-      const cached = sessionStorage.getItem('archivum_library_prefetch_v1');
+      const cached = sessionStorage.getItem('archivum_library_prefetch_v2') || sessionStorage.getItem('archivum_library_prefetch_v1');
       if (cached) {
         const parsed = JSON.parse(cached);
         const key = selectedClass ? String(selectedClass) : '10';
@@ -83,7 +83,7 @@ export default function PaperFinderClient({
     const hydrateIfNeeded = async () => {
       if (papers.length) return;
       try {
-        const response = await fetch('/api/library-prefetch', { cache: 'force-cache' });
+        const response = await fetch(`/api/library-prefetch?class=${selectedClass || 10}`, { cache: 'force-cache' });
         const data = await response.json();
         const key = selectedClass ? String(selectedClass) : '10';
         const bundle = data?.papers?.[key];
