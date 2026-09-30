@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
 import PdfViewerModal from '@/components/PdfViewerModal';
@@ -35,6 +36,7 @@ export default function PaperFinderClient({
   initialYear,
   initialSchool,
 }: PaperFinderProps) {
+  const router = useRouter();
   const [selectedClass, setSelectedClass] = useState<number | undefined>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [selectedPaperType, setSelectedPaperType] = useState<string>(initialPaperType || '');
@@ -87,6 +89,21 @@ export default function PaperFinderClient({
       return true;
     });
   }, [allPapers, selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool]);
+
+  useEffect(() => {
+    const warm = () => {
+      for (const paper of filteredPapers.slice(0, 12)) {
+        router.prefetch(`/resource/${paper.slug || paper.id}`);
+      }
+    };
+    const id = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(warm, { timeout: 900 })
+      : window.setTimeout(warm, 250);
+    return () => {
+      if (typeof id === 'number') window.clearTimeout(id);
+      else window.cancelIdleCallback?.(id);
+    };
+  }, [filteredPapers, router]);
 
   const resetFilters = () => {
     setSelectedClass(undefined);

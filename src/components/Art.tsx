@@ -6,7 +6,7 @@ const N = '#1b2166', W = '#ffffff', Y = '#ffc75f', P = '#8d9bff', K = '#ffbdde',
 const art: Record<string, React.ReactNode> = {
   Maths: <>
     <circle cx="60" cy="60" r="43" fill={W} stroke={N} strokeWidth="4"/>
-    <text x="60" y="79" textAnchor="middle" fontFamily="Georgia, serif" fontSize="68" fontWeight="700" fontStyle="italic" fill={N}>π</text>
+    <text x="60" y="79" textAnchor="middle" fontFamily="Lato, Arial, sans-serif" fontSize="68" fontWeight="700" fontStyle="italic" fill={N}>π</text>
     <path d="M28 93h64" stroke={S} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Science: <>
@@ -16,7 +16,7 @@ const art: Record<string, React.ReactNode> = {
     <circle cx="53" cy="91" r="4" fill={W}/><circle cx="74" cy="87" r="3" fill={W}/>
     <rect x="42" y="9" width="36" height="8" rx="4" fill={Y} stroke={N} strokeWidth="3"/>
   </>,
-  SST:  SST: <>
+  SST: <>
     <circle cx="60" cy="58" r="42" fill={S} stroke={N} strokeWidth="4"/>
     <path d="M34 37c9-5 18-1 20 7 2 9-7 13-10 20-4 8-13 6-17-2-4-9-2-19 7-25ZM73 64c10-5 21 1 21 10 0 9-9 16-18 14-8-2-12-14-3-24Z" fill={G}/>
     <path d="M31 58c11-4 20-3 30 2 10 5 18 5 29 0" fill="none" stroke={N} strokeWidth="3" strokeLinecap="round"/>
@@ -25,7 +25,7 @@ const art: Record<string, React.ReactNode> = {
   </>,
   English: <>
     <rect x="16" y="14" width="88" height="92" rx="14" fill={W} stroke={N} strokeWidth="4"/>
-    <text x="60" y="83" textAnchor="middle" fontFamily="Georgia, serif" fontSize="62" fontWeight="700" fill={N}>A</text>
+    <text x="60" y="83" textAnchor="middle" fontFamily="Lato, Arial, sans-serif" fontSize="62" fontWeight="700" fill={N}>A</text>
     <path d="M30 94h60" stroke={Y} strokeWidth="7" strokeLinecap="round"/>
   </>,
   Hindi: <>

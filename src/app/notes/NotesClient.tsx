@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
 import { BookOpen, ArrowRight } from 'lucide-react';
@@ -27,6 +28,7 @@ function mergeUnique(items: Resource[]) {
 }
 
 export default function NotesClient({ allNotes, initialClass, initialSubject }: NotesClientProps) {
+  const router = useRouter();
   const [selectedClass, setSelectedClass] = useState<number>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [notes, setNotes] = useState<Resource[]>(() => {
@@ -79,6 +81,21 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
     () => activeSubject ? classNotes.filter((n) => resourceSubjectMatches(n.subject, activeSubject)) : classNotes,
     [classNotes, activeSubject],
   );
+
+  useEffect(() => {
+    const warm = () => {
+      for (const resource of filteredNotes.slice(0, 12)) {
+        router.prefetch(`/resource/${resource.slug || resource.id}`);
+      }
+    };
+    const id = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(warm, { timeout: 900 })
+      : window.setTimeout(warm, 250);
+    return () => {
+      if (typeof id === 'number') window.clearTimeout(id);
+      else window.cancelIdleCallback?.(id);
+    };
+  }, [filteredNotes, router]);
 
   const chooseClass = (level: number) => {
     setSelectedClass(level);
