@@ -12,18 +12,6 @@ export default function HeroScene() {
       <span className="hx-wash hx-wash-c" />
       <span className="hx-grain" />
 
-      <svg className="hx-waves" viewBox="0 0 1200 230" preserveAspectRatio="none">
-        <g className="hx-wave-group hx-wave-group-1">
-          <path className="hx-wave hx-wave-1" d="M-80 132C90 70 225 76 382 113s286 73 438 28 277-54 460-4v110H-80Z" />
-        </g>
-        <g className="hx-wave-group hx-wave-group-2">
-          <path className="hx-wave hx-wave-2" d="M-100 168C80 116 245 111 414 145s301 56 454 18 259-41 432-14v92H-100Z" />
-        </g>
-        <g className="hx-wave-group hx-wave-group-3">
-          <path className="hx-wave hx-wave-3" d="M-100 202C90 174 268 171 438 193s322 25 505-3 256-22 387-4v55H-100Z" />
-        </g>
-      </svg>
-
       {/* Archive / study doodles: deliberately static, hand-drawn SVGs. */}
       <svg className="hx-d hx-d-stack" viewBox="0 0 110 90">
         <path d="M14 26 65 15l30 14-50 12-31-15Z" />
