@@ -426,3 +426,51 @@
   .hx-d-paper-ref{display:none}
   .hx-wave{margin-left:.12em}
 }
+
+
+/* v63 refinement: distinctive student-name typography + redesigned pencil doodle */
+.hx-hello h1 strong{
+  font-family:"Trebuchet MS","Arial Rounded MT Bold",Arial,sans-serif!important;
+  font-weight:800!important;
+  letter-spacing:-.055em!important;
+  color:color-mix(in srgb,var(--sun) 78%,var(--accent))!important;
+  text-shadow:0 1px 0 color-mix(in srgb,var(--surface) 65%,transparent);
+}
+
+/* A cleaner, more hand-drawn pencil treatment: slightly larger, slimmer and angled. */
+.hx-d-pencil-ref{
+  width:154px!important;
+  right:16%!important;
+  top:37%!important;
+  transform:rotate(11deg)!important;
+  opacity:.94;
+}
+.hx-d-pencil-ref .pencil-eraser{fill:#e8a1c9!important}
+.hx-d-pencil-ref .pencil-ferrule{fill:#7669ad!important}
+.hx-d-pencil-ref .pencil-body{fill:#f6b72e!important}
+.hx-d-pencil-ref .pencil-highlight{fill:#ffd34b!important}
+.hx-d-pencil-ref .pencil-wood{fill:#ffe1a5!important}
+.hx-d-pencil-ref .pencil-lead{fill:#242424!important}
+.hx-d-pencil-ref .pencil-line,
+.hx-d-pencil-ref .pencil-ferrule-line{
+  stroke:#242424!important;
+  stroke-width:2.7!important;
+}
+.hx-d-pencil-ref .pencil-swoop{
+  stroke:#242424!important;
+  stroke-width:3.1!important;
+}
+@media(max-width:900px){
+  .hx-d-pencil-ref{
+    width:116px!important;
+    right:12%!important;
+    top:40%!important;
+  }
+}
+@media(max-width:640px){
+  .hx-d-pencil-ref{
+    width:92px!important;
+    right:7%!important;
+    top:39%!important;
+  }
+}
