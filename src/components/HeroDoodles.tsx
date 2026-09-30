@@ -26,6 +26,8 @@ export default function HeroDoodles() {
     <Icon className="hero-doodle-book">
       <svg viewBox="0 0 86 68" fill="none"><path d="M8 14c15-5 27-1 35 7v37c-10-7-21-10-35-5V14ZM78 14c-15-5-27-1-35 7v37c10-7 21-10 35-5V14Z" stroke="currentColor" strokeWidth="4" strokeLinejoin="round"/><path d="M17 25c7-2 13-1 20 3M69 25c-7-2-13-1-20 3" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
     </Icon>
+    <Icon className="hero-doodle-spark hero-doodle-spark-a"><svg viewBox="0 0 40 40" fill="none"><path d="M20 3v10M20 27v10M3 20h10M27 20h10" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round"/></svg></Icon>
+    <Icon className="hero-doodle-spark hero-doodle-spark-b"><svg viewBox="0 0 48 48" fill="none"><path d="M24 4v8M24 36v8M4 24h8M36 24h8M10 10l6 6M32 32l6 6M38 10l-6 6M16 32l-6 6" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round"/></svg></Icon>
     <Icon className="hero-doodle-atom">
       <svg viewBox="0 0 70 70" fill="none"><ellipse cx="35" cy="35" rx="28" ry="11" stroke="currentColor" strokeWidth="3"/><ellipse cx="35" cy="35" rx="28" ry="11" transform="rotate(60 35 35)" stroke="currentColor" strokeWidth="3"/><ellipse cx="35" cy="35" rx="28" ry="11" transform="rotate(120 35 35)" stroke="currentColor" strokeWidth="3"/><circle cx="35" cy="35" r="5" fill="currentColor"/></svg>
     </Icon>

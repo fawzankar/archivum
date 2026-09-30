@@ -3,7 +3,6 @@ import '@fontsource/lato/latin-400.css';
 import '@fontsource/lato/latin-700.css';
 import '@fontsource/lato/latin-900.css';
 import './globals.css';
-import './hero-v2.css';
 import { ThemeProvider } from '@/components/ThemeContext';
 import { ToastProvider } from '@/components/ToastContext';
 import { StudentClassProvider } from '@/components/StudentClassContext';
