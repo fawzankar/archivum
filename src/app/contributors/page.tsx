@@ -1,37 +1,24 @@
-import { unstable_cache } from 'next/cache';
 import { query } from '@/lib/db';
 import { Users, Upload, Trophy, Camera, Mail, Heart } from 'lucide-react';
 import PageHead from '@/components/PageHead';
 
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 type Contributor = { contributor_name: string; uploads: number; latest_title: string | null; latest_id: number | null };
 
-const getContributors = unstable_cache(
-  async () => query<Contributor>(`
-    WITH ranked AS (
-      SELECT contributor_name, title, id,
-        ROW_NUMBER() OVER (PARTITION BY contributor_name ORDER BY created_at DESC) AS rn
-      FROM resources
-      WHERE status='approved'
-        AND contributor_name IS NOT NULL
-        AND TRIM(contributor_name) != ''
-    )
-    SELECT contributor_name,
-      COUNT(*) AS uploads,
-      MAX(CASE WHEN rn=1 THEN title END) AS latest_title,
-      MAX(CASE WHEN rn=1 THEN id END) AS latest_id
-    FROM ranked
+export default async function ContributorsPage() {
+  const contributors = await query<Contributor>(`
+    SELECT contributor_name, COUNT(*) as uploads,
+      (SELECT r2.title FROM resources r2 WHERE r2.status='approved' AND r2.contributor_name = resources.contributor_name ORDER BY r2.created_at DESC LIMIT 1) as latest_title,
+      (SELECT r3.id FROM resources r3 WHERE r3.status='approved' AND r3.contributor_name = resources.contributor_name ORDER BY r3.created_at DESC LIMIT 1) as latest_id
+    FROM resources
+    WHERE status = 'approved'
+      AND contributor_name IS NOT NULL
+      AND TRIM(contributor_name) != ''
     GROUP BY contributor_name
     ORDER BY uploads DESC, contributor_name ASC
     LIMIT 50
-  `),
-  ['contributors-v2'],
-  { revalidate: 300, tags: ['library'] },
-);
-
-export default async function ContributorsPage() {
-  const contributors = await getContributors();
+  `);
 
   return (
     <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-12">
@@ -39,7 +26,7 @@ export default async function ContributorsPage() {
 
       <section className="contributors-intro contributors-thankyou">
         <div className="contributors-intro-icon"><Heart /></div>
-        <div><h2>Thank you to the people behind the archive.</h2><p>Every useful note, paper and study resource shared here helps keep ARCHIVUM alive. Our contributors give their time, material and helping nature to make studying a little easier for everyone who comes after them.</p><p>If you have material you think belongs in the archive, reach out to the <span className="quest-word">Quest</span> team and we’ll help you get it to the right place.</p></div>
+        <div><h2>Thank you to the people behind the archive.</h2><p>Every useful note, paper and study resource shared here helps keep ARCHIVUM alive. Our contributors give their time, material and helping nature to make studying a little easier for everyone who comes after them.</p><p>If you have material you think belongs in the archive, reach out to the Quest team and we’ll help you get it to the right place.</p></div>
       </section>
       <section className="contributors-contact-grid">
         <a href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><Camera /><span><strong>Instagram</strong><small>@quest_sjs</small></span></a>

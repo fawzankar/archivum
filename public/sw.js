@@ -1,4 +1,4 @@
-const VERSION = 'archivum-offline-v11';
+const VERSION = 'archivum-offline-v10';
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const DATA_CACHE = `${VERSION}-data`;

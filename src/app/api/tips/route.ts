@@ -10,8 +10,7 @@ export async function GET(request:Request){
   const params = new URL(request.url).searchParams;
   const classLevel=Number(params.get('class'));
   const subject=params.get('subject') || undefined;
-  const tips = await getTips([9,10,11,12].includes(classLevel)?classLevel:undefined, subject, 12);
-  return NextResponse.json({tips}, { headers: { 'Cache-Control': 'public, max-age=60, s-maxage=300, stale-while-revalidate=600' } });
+  return NextResponse.json({tips:await getTips([9,10,11,12].includes(classLevel)?classLevel:undefined, subject, 12)});
 }
 
 export async function POST(request:Request){

@@ -29,7 +29,8 @@ function Globe() {
     <defs><clipPath id={id}><circle cx="60" cy="56" r="42"/></clipPath></defs>
     <circle cx="60" cy="56" r="42" fill={S}/>
     <g clipPath={`url(#${id})`}>
-      <g className="ai-globe">
+      <g>
+        <animateTransform attributeName="transform" type="translate" from="0 0" to="-84 0" dur="12s" repeatCount="indefinite"/>
         <path d={LAND} fill={G}/>
         <path d={LAND} fill={G} transform="translate(84 0)"/>
       </g>

@@ -120,7 +120,6 @@ async function runFullInit(db: Client): Promise<void> {
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_paper_type ON resources(paper_type)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_class_type_created ON resources(status,class_level,resource_type,created_at DESC)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_class_subject ON resources(status,class_level,subject)`, args: [] },
-      { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_contributor_created ON resources(status,contributor_name,created_at DESC)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_year ON resources(year)`, args: [] },
     ], 'write');
 
