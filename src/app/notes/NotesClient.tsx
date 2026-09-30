@@ -83,13 +83,9 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
   );
 
   useEffect(() => {
-    const warm = () => {
-      for (const resource of filteredNotes.slice(0, 12)) {
-        router.prefetch(`/resource/${resource.slug || resource.id}`);
-      }
-    };
-    const id = window.setTimeout(warm, 250);
-    return () => window.clearTimeout(id);
+    for (const item of filteredNotes.slice(0, 16)) {
+      router.prefetch(`/resource/${item.slug || item.id}`);
+    }
   }, [filteredNotes, router]);
 
   const chooseClass = (level: number) => {

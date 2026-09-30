@@ -5,9 +5,11 @@ const N = '#1b2166', W = '#ffffff', Y = '#ffc75f', P = '#8d9bff', K = '#ffbdde',
 
 const art: Record<string, React.ReactNode> = {
   Maths: <>
-    <circle cx="60" cy="58" r="42" fill={W} stroke={N} strokeWidth="4"/>
-    <text x="60" y="78" textAnchor="middle" fontFamily="Cambria Math, STIX Two Math, DejaVu Serif, serif" fontSize="68" fontWeight="700" fontStyle="italic" fill={N}>π</text>
-    <path d="M31 94h58" stroke={S} strokeWidth="7" strokeLinecap="round"/>
+    <circle cx="60" cy="58" r="43" fill={W} stroke={N} strokeWidth="4"/>
+    <text x="60" y="80" textAnchor="middle"
+      fontFamily="Cambria Math, STIX Two Math, DejaVu Serif, serif"
+      fontSize="68" fontWeight="700" fontStyle="italic" fill={N}>π</text>
+    <path d="M31 96h58" stroke={S} strokeWidth="7" strokeLinecap="round"/>
   </>,
 
   Science: <>
@@ -43,31 +45,31 @@ const art: Record<string, React.ReactNode> = {
   </>,
 
   Hindi: <>
-    <rect x="13" y="11" width="94" height="98" rx="17" fill={Y} stroke={N} strokeWidth="4.5"/>
-    <text x="60" y="84" textAnchor="middle" fontFamily="Noto Sans Devanagari, Nirmala UI, sans-serif" fontSize="64" fontWeight="800" fill={N}>अ</text>
-    <path d="M27 98h66" stroke={P} strokeWidth="7" strokeLinecap="round"/>
+    <rect x="10" y="9" width="100" height="101" rx="18" fill={Y} stroke={N} strokeWidth="4.5"/>
+    <text x="60" y="82" textAnchor="middle"
+      fontFamily="Noto Sans Devanagari, Nirmala UI, sans-serif"
+      fontSize="68" fontWeight="800" fill={N}>अ</text>
+    <path d="M25 99h70" stroke={P} strokeWidth="7" strokeLinecap="round"/>
   </>,
 
   Urdu: <>
-    <rect x="13" y="11" width="94" height="98" rx="17" fill={P} stroke={N} strokeWidth="4.5"/>
-    <text x="60" y="84" textAnchor="middle" direction="rtl" fontFamily="Noto Naskh Arabic, Noto Sans Arabic, Nirmala UI, sans-serif" fontSize="58" fontWeight="800" fill={N}>ا</text>
-    <path d="M27 98h66" stroke={W} strokeWidth="7" strokeLinecap="round"/>
+    <rect x="10" y="9" width="100" height="101" rx="18" fill={P} stroke={N} strokeWidth="4.5"/>
+    <text x="60" y="83" textAnchor="middle" direction="rtl"
+      fontFamily="Noto Naskh Arabic, Noto Sans Arabic, Nirmala UI, serif"
+      fontSize="68" fontWeight="800" fill={N}>ا</text>
+    <path d="M25 99h70" stroke={W} strokeWidth="7" strokeLinecap="round"/>
   </>,
 
   Biology: <>
-    <path d="M35 14C83 27 85 91 35 106M85 14C37 27 35 91 85 106"
-      fill="none" stroke={N} strokeWidth="5" strokeLinecap="round"/>
-    <path d="M43 23h34M38 37h44M35 52h50M35 67h50M38 82h44M43 97h34"
+    <path d="M34 12C82 25 86 94 34 108M86 12C38 25 34 94 86 108"
+      fill="none" stroke={N} strokeWidth="6" strokeLinecap="round"/>
+    <path d="M42 22h36M37 38h46M34 54h52M35 70h50M39 86h42M46 101h28"
       stroke={G} strokeWidth="5" strokeLinecap="round"/>
-    <circle cx="35" cy="14" r="6" fill={S} stroke={N} strokeWidth="3"/>
-    <circle cx="85" cy="14" r="6" fill={K} stroke={N} strokeWidth="3"/>
-    <circle cx="35" cy="106" r="6" fill={K} stroke={N} strokeWidth="3"/>
-    <circle cx="85" cy="106" r="6" fill={S} stroke={N} strokeWidth="3"/>
-    <g transform="translate(48 47)">
-      <circle cx="0" cy="0" r="4" fill={K} stroke={N} strokeWidth="2"/>
-      <circle cx="24" cy="0" r="4" fill={S} stroke={N} strokeWidth="2"/>
-      <path d="M4 0h16" stroke={N} strokeWidth="2.5"/>
-    </g>
+    <circle cx="34" cy="12" r="6" fill={S} stroke={N} strokeWidth="3"/>
+    <circle cx="86" cy="12" r="6" fill={K} stroke={N} strokeWidth="3"/>
+    <circle cx="34" cy="108" r="6" fill={K} stroke={N} strokeWidth="3"/>
+    <circle cx="86" cy="108" r="6" fill={S} stroke={N} strokeWidth="3"/>
+    <path d="M54 54h12M54 70h12" stroke={N} strokeWidth="2.5" strokeLinecap="round"/>
   </>,
 
   Physics: <>
@@ -80,11 +82,10 @@ const art: Record<string, React.ReactNode> = {
   </>,
 
   Chemistry: <>
-    <path d="M45 12h30v35l13 39c3 10-4 18-14 18H46c-10 0-17-8-14-18l13-39Z"
+    <path d="M47 10h26v30l10 50c2 10-5 18-15 18H52c-10 0-17-8-15-18l10-50Z"
       fill={W} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
-    <path d="M45 12h30" stroke={N} strokeWidth="5" strokeLinecap="round"/>
-    <rect x="41" y="8" width="38" height="8" rx="4" fill={Y} stroke={N} strokeWidth="3"/>
-    <path d="M38 82h44" stroke={S} strokeWidth="3" strokeLinecap="round"/>
+    <rect x="43" y="7" width="34" height="9" rx="4.5" fill={Y} stroke={N} strokeWidth="3"/>
+    <path d="M47 40h26" stroke={N} strokeWidth="4" strokeLinecap="round"/>
   </>,
 
   notes: <>

@@ -12,9 +12,13 @@ export default async function NotesPage({
   searchParams: Promise<{ class?: string; subject?: string }>;
 }) {
   const params = await searchParams;
-  const initialClass = params.class ? parseInt(params.class, 10) : (await getPreferredClass()) || 10;
   const initialSubject = params.subject || '';
-  const initialNotes = (await getResources({ resource_type: 'Notes', limit: 200, withCount: false })).items;
+  const [preferredClass, notesResult] = await Promise.all([
+    params.class ? Promise.resolve(null) : getPreferredClass(),
+    getResources({ resource_type: 'Notes', limit: 200, withCount: false }),
+  ]);
+  const initialClass = params.class ? parseInt(params.class, 10) : preferredClass || 10;
+  const initialNotes = notesResult.items;
 
   return (
     <div className="notes-page-shell max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">

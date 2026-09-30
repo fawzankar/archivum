@@ -18,8 +18,11 @@ export default async function PreviousPapersPage({
   }>;
 }) {
   const params = await searchParams;
-  const selectedClass = params.class ? parseInt(params.class, 10) : await getPreferredClass();
-  const result = await getResources({ resource_type: 'Previous Year Paper', limit: 200, withCount: false });
+  const [preferredClass, result] = await Promise.all([
+    params.class ? Promise.resolve(null) : getPreferredClass(),
+    getResources({ resource_type: 'Previous Year Paper', limit: 200, withCount: false }),
+  ]);
+  const selectedClass = params.class ? parseInt(params.class, 10) : preferredClass;
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">

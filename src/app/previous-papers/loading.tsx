@@ -1,3 +1,1 @@
-export default function Loading() {
-  return <div className="route-loading-spacer" aria-hidden="true" />;
-}
+export default function Loading() { return null; }

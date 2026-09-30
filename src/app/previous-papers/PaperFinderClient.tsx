@@ -91,13 +91,9 @@ export default function PaperFinderClient({
   }, [allPapers, selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool]);
 
   useEffect(() => {
-    const warm = () => {
-      for (const paper of filteredPapers.slice(0, 12)) {
-        router.prefetch(`/resource/${paper.slug || paper.id}`);
-      }
-    };
-    const id = window.setTimeout(warm, 250);
-    return () => window.clearTimeout(id);
+    for (const item of filteredPapers.slice(0, 16)) {
+      router.prefetch(`/resource/${item.slug || item.id}`);
+    }
   }, [filteredPapers, router]);
 
   const resetFilters = () => {
