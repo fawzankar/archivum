@@ -36,6 +36,7 @@ export default function SplashScreen() {
         <p className="bs-tagline">A Sister Organization Of <span className="quest-word">QUEST</span></p>
         <span className="bs-rule" aria-hidden="true" />
       </div>
+      <div className="bs-credit">Made with care by <strong>Fawzan Kar</strong></div>
     </div>
   );
 }

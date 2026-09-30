@@ -38,7 +38,7 @@ export default function ContactPage() {
       <a className="contact-reach-card" href="mailto:sjsquest26@gmail.com"><span className="contact-reach-icon"><Mail /></span><div><strong>Email the <span className="quest-word">Quest</span> team</strong><p>Send us useful notes, papers or anything worth archiving.</p><span className="contact-reach-link">sjsquest26@gmail.com</span></div></a>
     </section>
     {sent
-      ? <div className="ct-done"><CheckCircle2 /><h2>Message sent.</h2><p>The admin team will read it soon.</p><button type="button" onClick={() => setSent(false)}>Send another</button></div>
+      ? <div className="ct-done"><CheckCircle2 /><h2>Message sent.</h2><p>The admin team will read it soon.</p><button type="button" onClick={() => setSent(false)}>Send Another</button></div>
       : <form className="ct-form" onSubmit={submit}>
         <fieldset><legend>What is this about?</legend>
           <div className="ct-chips">{KINDS.map(k => <button type="button" key={k} className={kind === k ? 'on' : ''} aria-pressed={kind === k} onClick={() => setKind(k)}>{k}</button>)}</div>

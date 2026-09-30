@@ -143,7 +143,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
             <p>{resource.description || `A carefully organised ${isPaper ? 'question paper' : 'study resource'} for Class ${resource.class_level} ${resource.subject}.`}</p>
             <div className="resource-modern-actions">
               <button onClick={handleDownload} className="resource-primary-action"><Download /> Download</button>
-              <button type="button" onClick={() => setReaderOpen(true)} className="resource-secondary-action"><Eye /> Read online</button>
+              <button type="button" onClick={() => setReaderOpen(true)} className="resource-secondary-action"><Eye /> Read Online</button>
               <button onClick={handleSaveToggle} className={`resource-icon-action ${saved ? 'is-saved' : ''}`} aria-label={saved?'Remove from saved':'Save resource'}>{saved?<BookmarkCheck/>:<Bookmark/>}</button>
               <button onClick={handleShare} className="resource-icon-action" aria-label="Share resource"><Share2 /></button>
             </div>
