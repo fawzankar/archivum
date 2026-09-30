@@ -163,6 +163,24 @@ export async function initDb(): Promise<void> {
         args: ['base_seed_v3', now],
       });
     }
+
+    // V26 rating reset: start the new rating mechanism with a clean slate.
+    // This runs exactly once, so future ratings are preserved across deploys.
+    const ratingResetMigration = await db.execute({
+      sql: `SELECT id FROM app_migrations WHERE id = ? LIMIT 1`,
+      args: ['ratings_reset_v26'],
+    });
+    if (!ratingResetMigration.rows.length) {
+      await db.execute({ sql: `DELETE FROM ratings`, args: [] });
+      await db.execute({
+        sql: `UPDATE resources SET average_rating=0, rating_count=0`,
+        args: [],
+      });
+      await db.execute({
+        sql: `INSERT OR IGNORE INTO app_migrations (id, applied_at) VALUES (?, ?)`,
+        args: ['ratings_reset_v26', now],
+      });
+    }
   })().catch((error) => {
     initPromise = null;
     throw error;

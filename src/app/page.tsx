@@ -16,7 +16,9 @@ export default async function HomePage({ searchParams }: { searchParams: Promise
   const requested = params.class ? Number(params.class) : undefined;
   const activeClass = [9, 10, 11, 12].includes(requested || 0) ? (requested as number) : preferred || 10;
   let recent: Awaited<ReturnType<typeof getResources>>['items'] = [];
-  try { recent = (await getResources({ sortBy: 'newest', class_level: activeClass, limit: 6 })).items; } catch { recent = []; }
+  try {
+    recent = (await getResources({ sortBy: 'newest', class_level: activeClass, limit: 6 })).items;
+  } catch { recent = []; }
 
   return <div className="hm">
     <div className="hm-shell">

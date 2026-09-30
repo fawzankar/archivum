@@ -114,18 +114,55 @@ export async function incrementDownloadCount(id:number, sessionId:string) {
   return true;
 }
 
-export async function rateResource(id:number, sessionId:string, rating:number) {
-  if (!Number.isInteger(rating) || rating<1 || rating>5) return {success:false,message:'Rating must be between 1 and 5 stars.'};
-  const existing = await queryOne('SELECT id FROM ratings WHERE resource_id=? AND session_id=?',[id,sessionId]);
-  if (existing) return {success:false,message:'You have already rated this resource in this session.'};
-  const inserted = await execute('INSERT OR IGNORE INTO ratings (resource_id,session_id,rating,created_at) VALUES (?,?,?,?)',[id,sessionId,rating,new Date().toISOString()]);
-  if (!inserted.rowsAffected) {
-    return {success:false,message:'You have already rated this resource in this session.'};
+export async function rateResource(id: number, sessionId: string, rating: number) {
+  const normalizedSession = sessionId.trim().slice(0, 128);
+  if (!normalizedSession) return { success: false, message: 'A rating session is required.' };
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+    return { success: false, message: 'Rating must be between 1 and 5 stars.' };
   }
-  const stats = await queryOne<{avg_rating:number;count:number}>('SELECT AVG(rating) AS avg_rating, COUNT(*) AS count FROM ratings WHERE resource_id=?',[id]);
-  const avg = Math.round(Number(stats?.avg_rating ?? rating)*10)/10; const count=Number(stats?.count ?? 1);
-  await execute('UPDATE resources SET average_rating=?,rating_count=? WHERE id=?',[avg,count,id]);
-  return {success:true,message:'Thank you! Your rating has been submitted.',average_rating:avg,rating_count:count};
+
+  const resource = await queryOne<{ id: number; status: string }>(
+    `SELECT id,status FROM resources WHERE id=? LIMIT 1`,
+    [id],
+  );
+  if (!resource || resource.status !== 'approved') {
+    return { success: false, message: 'This resource is not available for rating.' };
+  }
+
+  const now = new Date().toISOString();
+
+  // One rating per browser session, but allow that same user to change their rating.
+  // This is a true SQLite/Turso upsert rather than INSERT OR IGNORE, so a previous
+  // rating can never make the UI silently fail.
+  await execute(
+    `INSERT INTO ratings (resource_id,session_id,rating,created_at)
+     VALUES (?,?,?,?)
+     ON CONFLICT(resource_id,session_id)
+     DO UPDATE SET rating=excluded.rating, created_at=excluded.created_at`,
+    [id, normalizedSession, rating, now],
+  );
+
+  const stats = await queryOne<{ avg_rating: number | null; count: number }>(
+    `SELECT AVG(rating) AS avg_rating, COUNT(*) AS count
+     FROM ratings WHERE resource_id=?`,
+    [id],
+  );
+
+  const count = Number(stats?.count ?? 0);
+  const average = count > 0 ? Math.round(Number(stats?.avg_rating ?? 0) * 10) / 10 : 0;
+
+  await execute(
+    `UPDATE resources SET average_rating=?, rating_count=?, updated_at=? WHERE id=?`,
+    [average, count, now, id],
+  );
+
+  return {
+    success: true,
+    message: 'Rating saved.',
+    average_rating: average,
+    rating_count: count,
+    user_rating: rating,
+  };
 }
 
 export async function checkForDuplicates(fileHash:string,title:string,classLevel:number,subject:string) {

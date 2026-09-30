@@ -33,6 +33,35 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
     fetch(`/api/resources/${resource.id}/photos`).then(r => r.json()).then(data => setPhotoUrls(Array.isArray(data.photos) ? data.photos.map((p: {url:string}) => p.url) : [])).catch(() => {});
   }, [resource.id, resource.photo_keys]);
 
+  useEffect(() => {
+    try {
+      let sessionId = localStorage.getItem('sjs_session_id');
+      if (!sessionId) {
+        sessionId = `session_${crypto.randomUUID()}`;
+        localStorage.setItem('sjs_session_id', sessionId);
+      }
+
+      fetch(`/api/rate?resourceId=${resource.id}&sessionId=${encodeURIComponent(sessionId)}`, { cache: 'no-store' })
+        .then((r) => r.json())
+        .then((data) => {
+          const count = Number(data?.rating_count ?? 0);
+          const average = Number(data?.average_rating ?? 0);
+          setRatingCount(Number.isFinite(count) ? count : 0);
+          setAvgRating(Number.isFinite(average) ? average : 0);
+
+          const own = Number(data?.user_rating ?? 0);
+          if (own >= 1 && own <= 5) {
+            setUserRating(own);
+            setRatingSubmitted(true);
+          } else {
+            setUserRating(0);
+            setRatingSubmitted(false);
+          }
+        })
+        .catch(() => {});
+    } catch {}
+  }, [resource.id]);
+
   const handleSaveToggle = () => { const next = toggleSaveResource(resource); setSaved(next); showToast(next ? 'Saved to library' : 'Removed from saved', next ? 'success' : 'info'); };
   const handleDownload = async () => {
     let downloadUrl = `/api/resources/${resource.id}/file`;
@@ -47,19 +76,49 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
     } catch { window.open(downloadUrl, '_blank'); }
   };
   const handleRating = async (rating: number) => {
-    if (ratingSubmitted || ratingSaving) return;
-    setRatingSaving(true); setUserRating(rating);
-    const previousCount = ratingCount, previousAverage = avgRating, nextCount = previousCount + 1;
-    setRatingCount(nextCount); setAvgRating(previousCount ? ((previousAverage * previousCount) + rating) / nextCount : rating);
+    if (ratingSaving) return;
+    setRatingSaving(true);
+    const previousUserRating = userRating;
+    const previousCount = ratingCount;
+    const previousAverage = avgRating;
+
+    // Show the user's selection immediately; the aggregate is updated only
+    // after the server confirms the database write.
+    setUserRating(rating);
+
     try {
       let sessionId = localStorage.getItem('sjs_session_id');
-      if (!sessionId) { sessionId = `session_${crypto.randomUUID()}`; localStorage.setItem('sjs_session_id', sessionId); }
-      const res = await fetch('/api/rate', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({resourceId:resource.id,rating,sessionId}) });
-      const json = await res.json().catch(() => ({})); if (!res.ok) throw new Error(json.error || 'Could not record rating');
-      setAvgRating(json.average_rating); setRatingCount(json.rating_count); setRatingSubmitted(true); showToast('Rating saved', 'success');
-    } catch { setUserRating(0); setAvgRating(previousAverage); setRatingCount(previousCount); showToast('Could not record rating', 'error'); }
-    finally { setRatingSaving(false); }
+      if (!sessionId) {
+        sessionId = `session_${crypto.randomUUID()}`;
+        localStorage.setItem('sjs_session_id', sessionId);
+      }
+
+      const res = await fetch('/api/rate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ resourceId: resource.id, rating, sessionId }),
+      });
+      const json = await res.json().catch(() => ({}));
+
+      if (!res.ok || !json.success) {
+        throw new Error(json.error || json.message || 'Could not record rating');
+      }
+
+      setAvgRating(Number(json.average_rating ?? 0));
+      setRatingCount(Number(json.rating_count ?? 0));
+      setRatingSubmitted(true);
+      showToast('Rating saved', 'success');
+    } catch {
+      setUserRating(previousUserRating);
+      setAvgRating(previousAverage);
+      setRatingCount(previousCount);
+      showToast('Could not save rating. Please try again.', 'error');
+    } finally {
+      setRatingSaving(false);
+    }
   };
+
   const handleShare = () => {
     if (navigator.share) navigator.share({ title:resource.title, text:`Check out ${resource.title} on ARCHIVUM`, url:window.location.href }).catch(() => {});
     else navigator.clipboard.writeText(window.location.href).then(() => showToast('Link copied to clipboard'));
@@ -113,12 +172,12 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   <div className="resource-rating-control">
     <div className="resource-stars">{[1,2,3,4,5].map(star => {
       const selected = userRating >= star;
-      return <button key={star} onClick={() => handleRating(star)} aria-label={`Rate ${star} stars`} disabled={ratingSubmitted || ratingSaving}>
+      return <button key={star} onClick={() => handleRating(star)} aria-label={`Rate ${star} stars`} disabled={ratingSaving}>
         <Star className={selected ? 'is-selected' : ''}/>
       </button>;
     })}</div>
     {ratingSaving && <span className="rating-saving">Saving…</span>}
-    {ratingSubmitted && <span className="rating-saved">Thanks — your rating is saved.</span>}
+    {ratingSubmitted && <span className="rating-saved">Your rating is saved. Tap the stars anytime to change it.</span>}
   </div>
 </section>
         </div>
