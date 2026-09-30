@@ -22,7 +22,7 @@ export default async function PreviousPapersPage({
     params.class ? Promise.resolve(null) : getPreferredClass(),
     getResources({ resource_type: 'Previous Year Paper', limit: 200, withCount: false }),
   ]);
-  const selectedClass = params.class ? parseInt(params.class, 10) : preferredClass;
+  const selectedClass = params.class ? parseInt(params.class, 10) : (preferredClass ?? undefined);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
