@@ -1,12 +1,8 @@
 'use client';
-import { useEffect, useState, type CSSProperties } from 'react';
-import Art from './Art';
+import { useEffect, useState } from 'react';
 
 const SPLASH_MS = 4000; // splash length on every fresh open of the home page
 const LEAVE_MS = 450; // fade-out at the end of the splash
-
-/* Subject icons that orbit the logo. */
-const SATELLITES = ['Maths', 'Biology', 'Chemistry', 'SST'];
 
 export default function SplashScreen() {
   const [show, setShow] = useState(false);
@@ -23,7 +19,7 @@ export default function SplashScreen() {
     const startedAt = performance.now();
     const frame = window.setInterval(() => {
       const t = Math.min(1, (performance.now() - startedAt) / (SPLASH_MS - LEAVE_MS));
-      setProgress(Math.round((1 - Math.pow(1 - t, 1.6)) * 100));
+      setProgress(Math.round(t * 100));
     }, 30);
     const leave = window.setTimeout(() => setLeaving(true), SPLASH_MS - LEAVE_MS);
     const timer = window.setTimeout(() => { setShow(false); document.documentElement.classList.remove('archivum-booting'); }, SPLASH_MS);
@@ -33,32 +29,9 @@ export default function SplashScreen() {
   if (!show) return null;
   return (
     <div className={`boot-splash bs${leaving ? ' is-leaving' : ''}`} aria-label="Loading ARCHIVUM" role="status">
-      <div className="bs-blob bs-blob-a" />
-      <div className="bs-blob bs-blob-b" />
-      <div className="bs-dots" />
-
-      <div className="bs-stage">
-        <div className="bs-ring" />
-        <div className="bs-ring bs-ring-inner" />
-        <div className="bs-ripple" />
-        <div className="bs-ripple bs-ripple-2" />
-        <div className="bs-orbit" aria-hidden="true">
-          {SATELLITES.map((name, i) => (
-            <div key={name} className="bs-sat" style={{ '--a': `${i * 90}deg`, '--d': `${0.5 + i * 0.12}s` } as CSSProperties}>
-              <div className="bs-sat-in"><Art name={name} /></div>
-            </div>
-          ))}
-        </div>
-        <div className="bs-logo"><span className="archivum-css-logo" /></div>
-      </div>
-
-      <div className="bs-name" aria-hidden="true">
-        {'ARCHIVUM'.split('').map((ch, i) => <span key={i} style={{ '--i': i } as CSSProperties}>{ch}</span>)}
-      </div>
-      <p className="bs-tag">Notes · Papers · Study material</p>
-
+      <div className="bs-logo"><span className="archivum-css-logo" /></div>
+      <div className="bs-name">ARCHIVUM</div>
       <div className="bs-progress" aria-label={`Loading ${progress}%`}><span style={{ width: `${progress}%` }} /></div>
-      <div className="bs-percent">{progress}%</div>
       <p className="bs-credit">This App is Developed By Fawzan Kar</p>
     </div>
   );
