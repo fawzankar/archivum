@@ -1,8 +1,9 @@
 import React from 'react';
 
-/* Theme-aware hero artwork. Every colour comes from CSS variables (see hero-v2.css),
-   so switching accent recolours the whole scene. Strokes are slightly irregular and
-   hand-placed so it reads as sketched rather than generated. */
+/**
+ * Static Archivum doodle layer + animated paper waves.
+ * The illustrations stay still; only the bottom waves move.
+ */
 export default function HeroScene() {
   return (
     <div className="hx-scene" aria-hidden="true">
@@ -11,58 +12,69 @@ export default function HeroScene() {
       <span className="hx-wash hx-wash-c" />
       <span className="hx-grain" />
 
-      <svg className="hx-waves" viewBox="0 0 1200 220" preserveAspectRatio="none">
-        <path className="hx-wave hx-wave-1" d="M0 120C140 70 260 60 400 100s290 90 430 40 260-60 370-20v100H0Z" />
-        <path className="hx-wave hx-wave-2" d="M0 160C170 120 300 110 470 145s300 60 460 20 200-40 270-25v80H0Z" />
-        <path className="hx-wave hx-wave-3" d="M0 195C200 165 330 170 520 190s330 20 680-15v45H0Z" />
+      <svg className="hx-waves" viewBox="0 0 1200 230" preserveAspectRatio="none">
+        <g className="hx-wave-group hx-wave-group-1">
+          <path className="hx-wave hx-wave-1" d="M-80 132C90 70 225 76 382 113s286 73 438 28 277-54 460-4v110H-80Z" />
+        </g>
+        <g className="hx-wave-group hx-wave-group-2">
+          <path className="hx-wave hx-wave-2" d="M-100 168C80 116 245 111 414 145s301 56 454 18 259-41 432-14v92H-100Z" />
+        </g>
+        <g className="hx-wave-group hx-wave-group-3">
+          <path className="hx-wave hx-wave-3" d="M-100 202C90 174 268 171 438 193s322 25 505-3 256-22 387-4v55H-100Z" />
+        </g>
       </svg>
 
-      <svg className="hx-d hx-d-root" viewBox="0 0 100 64" fill="none">
-        <path d="M10 36l7 12 11-34h40" />
-        <path d="M46 24l16 20M62 24 46 44" />
-        <path className="hx-fill-soft" d="M76 50h9" />
+      {/* Archive / study doodles: deliberately static, hand-drawn SVGs. */}
+      <svg className="hx-d hx-d-stack" viewBox="0 0 110 90">
+        <path d="M14 26 65 15l30 14-50 12-31-15Z" />
+        <path d="M14 26v34l31 15V41M95 29v32L45 75" />
+        <path className="hx-soft" d="m28 32 31-7M27 43l31-7M27 55l31-7" />
       </svg>
 
-      <svg className="hx-d hx-d-star hx-warm" viewBox="0 0 64 64" fill="none">
-        <path d="M32 7l6 17 18 1-14 11 5 18-15-10-15 10 5-18L8 25l18-1 6-17Z" />
+      <svg className="hx-d hx-d-bookmark" viewBox="0 0 54 72">
+        <path d="M9 7h36v57L27 52 9 64V7Z" />
+        <path className="hx-soft" d="M17 17h20M17 27h20" />
       </svg>
 
-      <svg className="hx-d hx-d-plane" viewBox="0 0 72 64" fill="none">
-        <path className="hx-plane-body" d="M6 28 64 6 44 58 33 39 6 28Z" />
-        <path d="m33 39 31-33" />
+      <svg className="hx-d hx-d-cap" viewBox="0 0 90 66">
+        <path d="m7 25 38-17 38 17-38 17L7 25Z" />
+        <path d="M20 32v16c14 12 36 12 50 0V32M83 26v25" />
+        <circle className="hx-warm-fill" cx="83" cy="54" r="3" />
       </svg>
 
-      <svg className="hx-d hx-d-trail" viewBox="0 0 220 90" fill="none">
-        <path className="hx-trail" d="M4 82c18-8 34-6 30-20-3-11-18-9-16 2 2 12 38 16 84-4 46-20 70-38 96-56" />
+      <svg className="hx-d hx-d-file" viewBox="0 0 78 92">
+        <path d="M13 5h34l18 18v64H13V5Z" />
+        <path d="M47 5v19h18M24 40h30M24 51h30M24 62h21" />
+        <path className="hx-soft" d="M24 73h13" />
       </svg>
 
-      <svg className="hx-d hx-d-pyramid" viewBox="0 0 76 68" fill="none">
-        <path d="M38 5 70 62H6L38 5Z" />
-        <path className="hx-dash" d="M38 5v57M6 62l32-14 32 14" />
+      <svg className="hx-d hx-d-pencil" viewBox="0 0 54 98">
+        <path d="m17 12 11-7 12 18-10 56-14 13-8-17 9-56Z" />
+        <path d="m8 75 14 17M15 19l17 18M11 31l17 18" />
       </svg>
 
-      <svg className="hx-d hx-d-pencil hx-warm" viewBox="0 0 48 96" fill="none">
-        <path d="M14 14 24 4l10 10v54L24 90 14 68V14Z" />
-        <path d="M14 68h20M14 24h20M24 90v-14" />
+      <svg className="hx-d hx-d-magnify" viewBox="0 0 76 76">
+        <circle cx="31" cy="31" r="20" />
+        <path d="m46 46 22 22" />
+        <path className="hx-soft" d="M22 31c0-6 4-11 10-14" />
       </svg>
 
-      <svg className="hx-d hx-d-book" viewBox="0 0 110 80" fill="none">
-        <path d="M6 16c22-8 36-4 49 8v50c-14-10-30-12-49-6V16ZM104 16c-22-8-36-4-49 8v50c14-10 30-12 49-6V16Z" />
-        <path className="hx-soft" d="M16 30c9-2 18 0 28 6M16 42c9-2 18 0 28 6M94 30c-9-2-18 0-28 6M94 42c-9-2-18 0-28 6" />
+      <svg className="hx-d hx-d-pages" viewBox="0 0 96 72">
+        <path d="M11 14h59l15 12H26L11 14Z" />
+        <path d="M26 26v31l59-2V26M11 14v31l15 12" />
+        <path className="hx-soft" d="M37 36h34M37 46h25" />
       </svg>
 
-      <svg className="hx-d hx-d-atom" viewBox="0 0 70 70" fill="none">
-        <ellipse cx="35" cy="35" rx="28" ry="10" />
-        <ellipse cx="35" cy="35" rx="28" ry="10" transform="rotate(60 35 35)" />
-        <ellipse cx="35" cy="35" rx="28" ry="10" transform="rotate(120 35 35)" />
-        <circle className="hx-warm-fill" cx="35" cy="35" r="4.5" />
+      <svg className="hx-d hx-d-check" viewBox="0 0 58 58">
+        <circle cx="29" cy="29" r="22" />
+        <path d="m18 29 7 7 15-17" />
       </svg>
 
-      <svg className="hx-d hx-d-leaf hx-d-leaf-l" viewBox="0 0 80 90"><path d="M40 88C38 60 20 44 6 34c26-2 40 12 44 34 2-22 12-40 28-52-2 30-12 50-38 72Z" /></svg>
-      <svg className="hx-d hx-d-leaf hx-d-leaf-r" viewBox="0 0 80 90"><path d="M40 88C38 60 20 44 6 34c26-2 40 12 44 34 2-22 12-40 28-52-2 30-12 50-38 72Z" /></svg>
-
-      <i className="hx-dot hx-dot-1" /><i className="hx-dot hx-dot-2" /><i className="hx-dot hx-dot-3" /><i className="hx-dot hx-dot-4" />
-      <b className="hx-spark hx-spark-1" /><b className="hx-spark hx-spark-2" /><b className="hx-spark hx-spark-3" />
+      <span className="hx-dot hx-dot-1" />
+      <span className="hx-dot hx-dot-2" />
+      <span className="hx-dot hx-dot-3" />
+      <b className="hx-spark hx-spark-1" />
+      <b className="hx-spark hx-spark-2" />
     </div>
   );
 }

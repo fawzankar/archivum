@@ -216,3 +216,112 @@
   .hx-hero *,.hx-copy,.sp *,.boot-splash.sp,.ob,.ob *{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .sp-word span{-webkit-text-fill-color:var(--ink);background:none;color:var(--ink)}
 }
+
+/* ============================================================
+   V8 HERO PASS — large search, flat paper surface, new archive
+   doodles, and the only hero motion: slow layered paper waves.
+   ============================================================ */
+.hx-hero{
+  min-height:clamp(350px,38vw,430px);
+  padding:clamp(30px,4.2vw,52px) clamp(24px,5.5vw,72px);
+  background:
+    radial-gradient(34% 64% at 94% 5%, color-mix(in srgb,var(--sun) 68%,#fff4cf) 0%, transparent 74%),
+    radial-gradient(30% 58% at 5% 2%, color-mix(in srgb,var(--peri) 66%,#dbe4ff) 0%, transparent 76%),
+    radial-gradient(54% 56% at 50% 32%, color-mix(in srgb,var(--surface) 91%,var(--peri)) 0%, transparent 82%),
+    linear-gradient(150deg,
+      color-mix(in srgb,var(--peri) 58%,var(--ivory)) 0%,
+      color-mix(in srgb,var(--accent-light) 46%,var(--ivory)) 54%,
+      color-mix(in srgb,var(--peri) 38%,var(--ivory)) 100%);
+  box-shadow:0 1px 0 rgba(255,255,255,.72) inset,0 24px 55px -28px color-mix(in srgb,var(--accent) 35%,transparent);
+}
+.hx-scene{z-index:0}
+.hx-wash,.hx-grain{pointer-events:none}
+
+/* No translucent/glass panel behind the search. */
+.hx-search{width:min(100%,1080px);max-width:none;margin-top:clamp(22px,2.8vw,34px)}
+.hx-search .clean-search{
+  width:100%!important;
+  height:78px!important;
+  padding:0 10px 0 28px!important;
+  gap:16px!important;
+  border:2px solid color-mix(in srgb,var(--accent) 11%,var(--border))!important;
+  border-radius:22px!important;
+  background:var(--surface)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  box-shadow:0 18px 38px -24px color-mix(in srgb,var(--accent) 40%,transparent),0 2px 0 rgba(255,255,255,.8) inset!important;
+  transition:border-color .2s,box-shadow .2s,transform .2s!important;
+}
+.hx-search .clean-search:focus-within{
+  background:var(--surface)!important;
+  border-color:color-mix(in srgb,var(--accent) 35%,var(--border))!important;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 10%,transparent),0 22px 42px -24px color-mix(in srgb,var(--accent) 44%,transparent)!important;
+  transform:translateY(-1px);
+}
+.hx-search .clean-search>svg{width:27px!important;height:27px!important;color:var(--accent)!important;stroke-width:2.2}
+.hx-search .clean-search input{font-size:18px!important;line-height:1.2!important;color:var(--ink)!important}
+.hx-search .clean-search input::placeholder{color:var(--ink-faint)!important}
+.hx-search .clean-search button{width:58px!important;height:58px!important;border-radius:16px!important;background:var(--accent)!important;box-shadow:none!important}
+.hx-search .clean-search button svg{width:24px!important;height:24px!important}
+
+/* Completely new, static Archivum doodle language. */
+.hx-d{position:absolute;display:block;fill:none;stroke:color-mix(in srgb,var(--accent) 88%,#24306f);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible;opacity:.84;z-index:1}
+.hx-soft{stroke:color-mix(in srgb,var(--accent) 48%,transparent);stroke-width:2.2}
+.hx-warm-fill{fill:color-mix(in srgb,var(--sun) 90%,#a66a00);stroke:none}
+.hx-d-stack{width:94px;left:2.5%;top:12%;transform:rotate(-7deg)}
+.hx-d-bookmark{width:42px;left:17%;top:7%;transform:rotate(7deg)}
+.hx-d-cap{width:78px;right:15%;top:10%;transform:rotate(-4deg)}
+.hx-d-file{width:60px;right:5.5%;top:30%;transform:rotate(7deg)}
+.hx-d-pencil{width:38px;right:15%;bottom:23%;transform:rotate(25deg);stroke:color-mix(in srgb,var(--sun) 84%,#9a6900)}
+.hx-d-magnify{width:52px;left:7%;bottom:19%;transform:rotate(-10deg)}
+.hx-d-pages{width:78px;right:3.5%;bottom:6%;transform:rotate(6deg)}
+.hx-d-check{width:42px;left:28%;bottom:8%;stroke:color-mix(in srgb,var(--accent) 70%,#26336d)}
+
+/* Ground is now pure paper waves, with no glass strip. */
+.hx-waves{height:37%;bottom:-1px;z-index:1;overflow:visible}
+.hx-wave{transform-box:fill-box;transform-origin:center;will-change:transform}
+.hx-wave-1{fill:color-mix(in srgb,var(--peri) 43%,transparent)}
+.hx-wave-2{fill:color-mix(in srgb,var(--accent) 22%,var(--peri) 32%);opacity:.6}
+.hx-wave-3{fill:color-mix(in srgb,var(--surface) 76%,transparent);opacity:.86}
+.hx-wave-group-1{animation:hxPaperWaveOne 13s ease-in-out infinite}
+.hx-wave-group-2{animation:hxPaperWaveTwo 17s ease-in-out -3s infinite}
+.hx-wave-group-3{animation:hxPaperWaveThree 20s ease-in-out -7s infinite}
+@keyframes hxPaperWaveOne{0%,100%{transform:translateX(-1.2%) scaleX(1.01)}50%{transform:translateX(1.4%) scaleX(1.035)}}
+@keyframes hxPaperWaveTwo{0%,100%{transform:translateX(1.2%) scaleX(1.02)}50%{transform:translateX(-1.8%) scaleX(1.045)}}
+@keyframes hxPaperWaveThree{0%,100%{transform:translateX(-.7%) scaleX(1.025)}50%{transform:translateX(1.1%) scaleX(1.045)}}
+
+/* Quiet decorative dots; unlike the old version, nothing else moves. */
+.hx-dot{position:absolute;border-radius:50%;background:color-mix(in srgb,var(--accent) 46%,var(--peri));z-index:1}
+.hx-dot-1{width:12px;height:12px;left:51%;top:15%}
+.hx-dot-2{width:8px;height:8px;left:33%;bottom:19%;background:var(--sun)}
+.hx-dot-3{width:15px;height:15px;right:10%;bottom:20%;opacity:.75}
+.hx-spark{position:absolute;width:19px;height:19px;opacity:.86;z-index:1}
+.hx-spark::before,.hx-spark::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:100%;border-radius:2px;background:var(--sun);transform:translate(-50%,-50%)}
+.hx-spark::after{height:60%;transform:translate(-50%,-50%) rotate(90deg)}
+.hx-spark-1{left:12%;top:17%}
+.hx-spark-2{right:12%;top:12%}
+
+@media(max-width:900px){
+  .hx-d-bookmark,.hx-d-check{display:none}
+  .hx-d-cap{right:7%;top:8%;width:62px}
+  .hx-d-file{right:3%;width:48px}
+  .hx-d-pages{right:3%;width:62px}
+  .hx-search{width:100%}
+}
+@media(max-width:640px){
+  .hx-hero{min-height:380px;padding:28px 18px 32px}
+  .hx-search{margin-top:22px}
+  .hx-search .clean-search{height:66px!important;border-radius:18px!important;padding-left:18px!important}
+  .hx-search .clean-search input{font-size:15px!important}
+  .hx-search .clean-search button{width:50px!important;height:50px!important;border-radius:14px!important}
+  .hx-d-stack{width:66px;left:2%;top:7%}
+  .hx-d-magnify{width:40px;left:4%;bottom:17%}
+  .hx-d-cap{width:50px;right:5%;top:6%}
+  .hx-d-file,.hx-d-pages,.hx-d-pencil{display:none}
+  .hx-spark-1{left:24%;top:9%}
+  .hx-spark-2{right:17%;top:17%}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .hx-wave-group-1,.hx-wave-group-2,.hx-wave-group-3{animation:none!important}
+}
