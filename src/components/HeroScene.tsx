@@ -1,9 +1,6 @@
 import React from 'react';
 
-/**
- * Static Archivum doodle layer + animated paper waves.
- * The illustrations stay still; only the bottom waves move.
- */
+/** Static Archivum illustration layer. Only the paper-like waves and greeting hand animate. */
 export default function HeroScene() {
   return (
     <div className="hx-scene" aria-hidden="true">
@@ -12,57 +9,33 @@ export default function HeroScene() {
       <span className="hx-wash hx-wash-c" />
       <span className="hx-grain" />
 
-      {/* Archive / study doodles: deliberately static, hand-drawn SVGs. */}
-      <svg className="hx-d hx-d-stack" viewBox="0 0 110 90">
-        <path d="M14 26 65 15l30 14-50 12-31-15Z" />
-        <path d="M14 26v34l31 15V41M95 29v32L45 75" />
-        <path className="hx-soft" d="m28 32 31-7M27 43l31-7M27 55l31-7" />
+      {/* Fresh, app-specific study doodles — intentionally static. */}
+      <div className="hx-equation hx-equation-a">√x</div>
+      <div className="hx-equation hx-equation-b">E=mc²</div>
+
+      <svg className="hx-d hx-d-pencil-new" viewBox="0 0 80 150">
+        <path d="M31 7 49 4l17 102-19 36-14-32L31 7Z" />
+        <path d="m33 23 29-5M36 40l29-5M39 57l29-5M42 74l29-5M45 91l20-4" />
+        <path d="m47 142 2-31 14-3 3 17-19 17Z" />
+        <path className="hx-soft" d="m31 7 18-3 4 24-18 3Z" />
       </svg>
 
-      <svg className="hx-d hx-d-bookmark" viewBox="0 0 54 72">
-        <path d="M9 7h36v57L27 52 9 64V7Z" />
-        <path className="hx-soft" d="M17 17h20M17 27h20" />
+      <svg className="hx-d hx-d-folder" viewBox="0 0 110 82">
+        <path d="M7 18h35l10 12h51v43H7V18Z" />
+        <path d="M7 30h96" />
+        <path className="hx-soft" d="M18 45h52M18 56h38" />
       </svg>
 
-      <svg className="hx-d hx-d-cap" viewBox="0 0 90 66">
-        <path d="m7 25 38-17 38 17-38 17L7 25Z" />
-        <path d="M20 32v16c14 12 36 12 50 0V32M83 26v25" />
-        <circle className="hx-warm-fill" cx="83" cy="54" r="3" />
-      </svg>
-
-      <svg className="hx-d hx-d-file" viewBox="0 0 78 92">
+      <svg className="hx-d hx-d-paper" viewBox="0 0 78 92">
         <path d="M13 5h34l18 18v64H13V5Z" />
-        <path d="M47 5v19h18M24 40h30M24 51h30M24 62h21" />
-        <path className="hx-soft" d="M24 73h13" />
+        <path d="M47 5v19h18M24 41h30M24 52h24M24 63h18" />
+        <path className="hx-soft" d="M24 74h11" />
       </svg>
 
-      <svg className="hx-d hx-d-pencil" viewBox="0 0 54 98">
-        <path d="m17 12 11-7 12 18-10 56-14 13-8-17 9-56Z" />
-        <path d="m8 75 14 17M15 19l17 18M11 31l17 18" />
+      <svg className="hx-d hx-d-bookmark-new" viewBox="0 0 52 72">
+        <path d="M9 7h34v57L26 51 9 64V7Z" />
+        <path className="hx-soft" d="M17 19h18M17 29h18" />
       </svg>
-
-      <svg className="hx-d hx-d-magnify" viewBox="0 0 76 76">
-        <circle cx="31" cy="31" r="20" />
-        <path d="m46 46 22 22" />
-        <path className="hx-soft" d="M22 31c0-6 4-11 10-14" />
-      </svg>
-
-      <svg className="hx-d hx-d-pages" viewBox="0 0 96 72">
-        <path d="M11 14h59l15 12H26L11 14Z" />
-        <path d="M26 26v31l59-2V26M11 14v31l15 12" />
-        <path className="hx-soft" d="M37 36h34M37 46h25" />
-      </svg>
-
-      <svg className="hx-d hx-d-check" viewBox="0 0 58 58">
-        <circle cx="29" cy="29" r="22" />
-        <path d="m18 29 7 7 15-17" />
-      </svg>
-
-      <span className="hx-dot hx-dot-1" />
-      <span className="hx-dot hx-dot-2" />
-      <span className="hx-dot hx-dot-3" />
-      <b className="hx-spark hx-spark-1" />
-      <b className="hx-spark hx-spark-2" />
     </div>
   );
 }
