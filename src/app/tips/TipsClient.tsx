@@ -1,12 +1,15 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Check, Lightbulb, RefreshCw, Send, ShieldCheck, ArrowRight, Clock3 } from 'lucide-react';
 import type { Tip } from '@/lib/tips';
 import { subjectsForClass } from '@/lib/subjects';
+import { useStudentClass } from '@/components/StudentClassContext';
 
 export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[];initialClass:number}){
- const [tips,setTips]=useState(initialTips);
+ const allTips=initialTips;
+ const { studentClass } = useStudentClass();
+ const [refreshSeed,setRefreshSeed]=useState(0);
  const [classLevel,setClassLevel]=useState(initialClass);
  const [subject,setSubject]=useState('All');
  const [title,setTitle]=useState('');
@@ -15,12 +18,12 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
  const [status,setStatus]=useState('');
  const [sending,setSending]=useState(false);
 
- const loadTips=async(level:number, nextSubject='All')=>{
-   const query=`/api/tips?class=${level}${nextSubject!=='All'?`&subject=${encodeURIComponent(nextSubject)}`:''}`;
-   const r=await fetch(query);
-   if(r.ok){const j=await r.json();setTips(j.tips||[]);}
- };
- const shuffled=useMemo(()=>[...tips], [tips]);
+ useEffect(()=>{ if(studentClass) setClassLevel(studentClass); },[studentClass]);
+
+ const filteredTips=useMemo(()=>allTips.filter(t=>t.class_level===classLevel && (subject==='All' || t.subject===subject || t.subject==='General')), [allTips,classLevel,subject]);
+ const shuffled=useMemo(()=>{const copy=[...filteredTips]; if(refreshSeed) copy.sort((a,b)=>((a.id*9301+refreshSeed*49297)%233280)-((b.id*9301+refreshSeed*49297)%233280)); return copy;}, [filteredTips,refreshSeed]);
+ const loadTips=(level:number,nextSubject='All')=>{ setClassLevel(level); setSubject(nextSubject); setRefreshSeed(0); };
+ const refreshTips=()=>setRefreshSeed(Date.now());
  const formatDate=(value:string)=>{const d=new Date(value); return Number.isNaN(d.getTime())?'Recently':d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});};
 
  const submit=async(e:React.FormEvent)=>{
@@ -37,12 +40,12 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
      <div className="p-6 sm:p-8" style={{background:'var(--surface)'}}>
        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
          <div><span className="text-[10px] font-bold uppercase tracking-[.2em]" style={{color:'var(--accent)'}}>PERSONALISED EXAM PLAYBOOK</span><h2 className="font-display font-bold text-2xl sm:text-3xl mt-2">Practical advice for Class {classLevel}.</h2><p className="text-xs sm:text-sm mt-2 max-w-2xl" style={{color:'var(--ink-muted)'}}>Browse genuine study tips submitted by SJS students. Community posts are tagged by class and subject, reviewed by ARCHIVUM, and published here after approval.</p></div>
-         <button onClick={()=>loadTips(classLevel,subject)} className="shrink-0 inline-flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-xs font-semibold transition-colors" style={{borderColor:'var(--border)',background:'var(--surface)'}}><RefreshCw className="w-3.5 h-3.5"/> New tips</button>
+         <button onClick={refreshTips} className="shrink-0 inline-flex items-center justify-center gap-2 rounded-md border px-4 py-2.5 text-xs font-semibold transition-colors" style={{borderColor:'var(--border)',background:'var(--surface)'}}><RefreshCw className="w-3.5 h-3.5"/> New tips</button>
        </div>
      </div>
      <div className="p-4 sm:p-6 border-t space-y-4" style={{borderColor:'var(--border-light)'}}>
        <div className="flex gap-2 overflow-x-auto no-scrollbar">
-         {[9,10,11,12].map(level=><button key={level} onClick={()=>{setClassLevel(level);setSubject('All');loadTips(level,'All')}} className="shrink-0 px-4 py-2 rounded-md text-[11px] font-semibold border transition-all" style={{borderColor:level===classLevel?'var(--accent)':'var(--border)',background:level===classLevel?'var(--accent-light)':'var(--surface)',color:level===classLevel?'var(--accent)':'var(--ink-muted)'}}>Class {level}</button>)}
+         {[9,10,11,12].map(level=><button key={level} onClick={()=>loadTips(level,'All')} className="shrink-0 px-4 py-2 rounded-md text-[11px] font-semibold border transition-all" style={{borderColor:level===classLevel?'var(--accent)':'var(--border)',background:level===classLevel?'var(--accent-light)':'var(--surface)',color:level===classLevel?'var(--accent)':'var(--ink-muted)'}}>Class {level}</button>)}
        </div>
        <div className="flex gap-2 overflow-x-auto no-scrollbar">
          <button onClick={()=>{setSubject('All');loadTips(classLevel,'All')}} className="shrink-0 px-3.5 py-2 rounded-xl text-[11px] font-bold" style={{background:subject==='All'?'var(--accent)':'var(--surface-raised)',color:subject==='All'?'var(--accent-contrast)':'var(--ink-muted)'}}>All subjects</button>

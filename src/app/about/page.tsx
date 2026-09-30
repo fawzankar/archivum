@@ -14,7 +14,7 @@ export default function AboutPage() {
         <h2>Built to make useful study material easier to find.</h2>
       </div>
       <p>ARCHIVUM exists to solve a simple problem: important academic material should not disappear into chats, folders and old devices. The aim is to give students one organised place where they can discover, read and save resources for their classes.</p>
-      <p>ARCHIVUM is currently managed by the members of the Quest Club, who help keep the archive useful for the students who rely on it.</p>
+      <p>ARCHIVUM is currently managed by the members of the <span className="quest-word">Quest</span> Club, who help keep the archive useful for the students who rely on it.</p>
     </section>
 
     <section className="ab-story ab-our-story">
@@ -28,9 +28,9 @@ export default function AboutPage() {
 
     <section className="ab-split">
       <div className="ab-block ab-peri">
-        <h2>ARCHIVUM × QUEST</h2>
-        <p>ARCHIVUM is connected with SJS Quest, the St. Joseph’s school quest community, and is currently looked after by Quest Club members.</p>
-        <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hm-pill">Visit SJS Quest</a>
+        <h2>ARCHIVUM × <span className="quest-word">QUEST</span></h2>
+        <p>ARCHIVUM is connected with SJS <span className="quest-word">Quest</span>, the St. Joseph’s school <span className="quest-word">quest</span> community, and is currently looked after by <span className="quest-word">Quest</span> Club members.</p>
+        <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hm-pill">Visit SJS <span className="quest-word">Quest</span></a>
         <Art name="SST" className="ab-art" />
       </div>
       <div className="ab-block ab-blush">

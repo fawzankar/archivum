@@ -1,38 +1,40 @@
 'use client';
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-const SPLASH_MS = 4000; // splash length on every fresh open of the home page
-const LEAVE_MS = 450; // fade-out at the end of the splash
+const SPLASH_MS = 1250;
+const LEAVE_MS = 220;
 
 export default function SplashScreen() {
   const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const [progress, setProgress] = useState(0);
 
-  // Runs ONCE per full page load (opening the site/app, or a browser refresh). SplashScreen lives in the
-  // root layout, so in-app navigation (returning from Notes, Papers, menus...) never remounts it and the
-  // splash does not appear again. It only plays when that page load is the home page.
   useEffect(() => {
-    if (window.location.pathname !== '/') { document.documentElement.classList.remove('archivum-booting'); return; }
+    if (window.location.pathname !== '/') {
+      document.documentElement.classList.remove('archivum-booting');
+      return;
+    }
     document.documentElement.classList.add('archivum-booting');
-    setShow(true);
-    const startedAt = performance.now();
-    const frame = window.setInterval(() => {
-      const t = Math.min(1, (performance.now() - startedAt) / (SPLASH_MS - LEAVE_MS));
-      setProgress(Math.round(t * 100));
-    }, 30);
     const leave = window.setTimeout(() => setLeaving(true), SPLASH_MS - LEAVE_MS);
-    const timer = window.setTimeout(() => { setShow(false); document.documentElement.classList.remove('archivum-booting'); }, SPLASH_MS);
-    return () => { window.clearTimeout(timer); window.clearTimeout(leave); window.clearInterval(frame); };
+    const timer = window.setTimeout(() => {
+      setShow(false);
+      document.documentElement.classList.remove('archivum-booting');
+    }, SPLASH_MS);
+    setShow(true);
+    return () => { window.clearTimeout(timer); window.clearTimeout(leave); };
   }, []);
 
   if (!show) return null;
+
   return (
     <div className={`boot-splash bs${leaving ? ' is-leaving' : ''}`} aria-label="Loading ARCHIVUM" role="status">
-      <div className="bs-logo"><span className="archivum-css-logo" /></div>
-      <div className="bs-name">ARCHIVUM</div>
-      <div className="bs-progress" aria-label={`Loading ${progress}%`}><span style={{ width: `${progress}%` }} /></div>
-      <p className="bs-credit">This App is Developed By Fawzan Kar</p>
+      <div className="bs-content">
+        <Image className="bs-logo-image" src="/archivum-logo-dark.png" alt="ARCHIVUM" width={92} height={92} priority />
+        <div className="bs-name">ARCHIVUM</div>
+        <p className="bs-tagline">A Sister Organization Of <span className="quest-word">QUEST</span></p>
+        <span className="bs-rule" aria-hidden="true" />
+      </div>
+      <div className="bs-credit">Made with care by <strong>Fawzan Kar</strong></div>
     </div>
   );
 }

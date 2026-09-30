@@ -45,7 +45,7 @@ export default function Navbar() {
       <div className="archive-shell site-header-inner">
         <Link href="/" className="brand-lockup" aria-label="ARCHIVUM home">
           <span className="brand-logo"><span className="archivum-css-logo" /></span>
-          <span><strong>ARCHIVUM</strong><small>A Sister Organization Of Quest</small></span>
+          <span><strong>ARCHIVUM</strong><small>A Sister Organization Of <span className="quest-word">Quest</span></small></span>
         </Link>
 
         <div className="header-actions">
@@ -63,7 +63,7 @@ export default function Navbar() {
       <button className="menu-scrim" onClick={() => setDrawerOpen(false)} aria-label="Close menu" />
       <aside className="menu-drawer">
         <div className="menu-top">
-          <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>A Sister Organization Of Quest</small></span></div>
+          <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>A Sister Organization Of <span className="quest-word">Quest</span></small></span></div>
           <button className="header-action" onClick={() => setDrawerOpen(false)} aria-label="Close menu"><X /></button>
         </div>
 
@@ -81,7 +81,7 @@ export default function Navbar() {
         </div>
 
           <div className="menu-quest-cta">
-            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><ExternalLink /><span>Visit SJS Quest</span></a>
+            <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><ExternalLink /><span>Visit SJS <span className="quest-word">Quest</span></span></a>
           </div>
         <div className="menu-note"><span>This App is Developed By</span><a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">Fawzan Kar</a></div>
       </aside>
