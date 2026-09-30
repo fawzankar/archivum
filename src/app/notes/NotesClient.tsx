@@ -1,96 +1,51 @@
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Resource } from '@/lib/resources';
+import { useSearchParams } from 'next/navigation';
+import type { LibraryBundle, Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
 import Art from '@/components/Art';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import { resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
-import { fetchClassBundle, readLibraryCache } from '@/lib/libraryCache';
-
-interface NotesClientProps {
-  allNotes: Resource[];
-  initialClass: number;
-  initialSubject: string;
-  explicitClass?: boolean;
-}
+import { useLibraryBundle } from '@/lib/libraryCache';
 
 const CLASS_CONFIG = [9, 10, 11, 12] as const;
 
-function mergeUnique(items: Resource[]) {
-  const seen = new Set<number>();
-  return items.filter((item) => {
-    if (seen.has(item.id)) return false;
-    seen.add(item.id);
-    return true;
-  });
+function validClass(value: unknown): number | null {
+  const n = Number(value);
+  return (CLASS_CONFIG as readonly number[]).includes(n) ? n : null;
 }
 
-export default function NotesClient({ allNotes, initialClass, initialSubject, explicitClass = false }: NotesClientProps) {
-  const router = useRouter();
-  // Initial state comes from the server (identical on server + client, so no hydration mismatch).
+/** Client wrapper: reads ?class= / ?subject= and the saved class, then renders the (static) library. */
+export default function NotesClient({ bundle: serverBundle }: { bundle: LibraryBundle }) {
+  const params = useSearchParams();
+  const bundle = useLibraryBundle(serverBundle);
+  let initialClass = validClass(params.get('class'));
+  if (initialClass === null) {
+    let stored: number | null = null;
+    try { stored = validClass(localStorage.getItem('archivum_student_class')); } catch {}
+    initialClass = stored ?? 10;
+  }
+  return <NotesView bundle={bundle} initialClass={initialClass} initialSubject={params.get('subject') || ''} />;
+}
+
+/** Pure view: all data is already in `bundle`, so switching class/subject is instant and offline-safe. */
+export function NotesView({ bundle, initialClass, initialSubject }: { bundle: LibraryBundle; initialClass: number; initialSubject: string }) {
   const [selectedClass, setSelectedClass] = useState<number>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
-  const [notes, setNotes] = useState<Resource[]>(() => mergeUnique(allNotes));
-  const [loadedClasses, setLoadedClasses] = useState<Set<number>>(
-    () => new Set(allNotes.length ? [initialClass] : []),
-  );
-
-  // Once mounted: honour the student's saved class (unless the URL asked for one) and
-  // pick up anything already warmed in sessionStorage.
-  useEffect(() => {
-    // Deferred one microtask: this syncs with browser-only storage after mount.
-    queueMicrotask(() => {
-      if (!explicitClass) {
-        const stored = Number(localStorage.getItem('archivum_student_class') || '');
-        if ([9, 10, 11, 12].includes(stored) && stored !== initialClass) setSelectedClass(stored);
-      }
-      const cache = readLibraryCache();
-      const cachedClasses: number[] = [];
-      const cachedItems: Resource[] = [];
-      for (const level of CLASS_CONFIG) {
-        const bundle = cache.notes[String(level)];
-        if (Array.isArray(bundle) && bundle.length) {
-          cachedClasses.push(level);
-          cachedItems.push(...bundle);
-        }
-      }
-      if (cachedItems.length) {
-        setNotes((prev) => mergeUnique([...prev, ...cachedItems]));
-        setLoadedClasses((prev) => new Set([...prev, ...cachedClasses]));
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Fetch a class only if we don't have it yet (fixes the blank list when switching class).
-  useEffect(() => {
-    if (loadedClasses.has(selectedClass)) return;
-    let cancelled = false;
-    void fetchClassBundle(selectedClass).then((data) => {
-      if (cancelled) return;
-      const bundle = data?.notes?.[String(selectedClass)];
-      if (Array.isArray(bundle)) setNotes((prev) => mergeUnique([...prev, ...bundle]));
-      setLoadedClasses((prev) => new Set(prev).add(selectedClass));
-    });
-    return () => { cancelled = true; };
-  }, [selectedClass, loadedClasses]);
-
-  const isLoading = !loadedClasses.has(selectedClass);
+  const notes: Resource[] = bundle.notes[selectedClass] || [];
 
   const classNotes = useMemo(() => {
     const seen = new Set<string>();
     return notes
-      .filter((n) => n.class_level === selectedClass)
       .filter((n) => {
         const key = `${n.class_level}|${n.subject}|${n.title.trim().toLowerCase()}`;
         if (seen.has(key)) return false;
         seen.add(key);
         return true;
       });
-  }, [notes, selectedClass]);
+  }, [notes]);
 
   const availableSubjects = subjectsForClass(selectedClass);
   const activeSubject = selectedSubject && availableSubjects.includes(selectedSubject) ? selectedSubject : '';
@@ -112,12 +67,6 @@ export default function NotesClient({ allNotes, initialClass, initialSubject, ex
     () => activeSubject ? classNotes.filter((n) => resourceSubjectMatches(n.subject, activeSubject)) : classNotes,
     [classNotes, activeSubject],
   );
-
-  useEffect(() => {
-    for (const item of filteredNotes.slice(0, 16)) {
-      router.prefetch(`/resource/${item.slug || item.id}`);
-    }
-  }, [filteredNotes, router]);
 
   const chooseClass = (level: number) => {
     setSelectedClass(level);
@@ -193,13 +142,7 @@ export default function NotesClient({ allNotes, initialClass, initialSubject, ex
         
       </div>
 
-      {filteredNotes.length === 0 && isLoading ? (
-        <div className="notes-resource-grid" aria-busy="true" aria-label="Loading notes">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="rounded-3xl border animate-pulse h-44" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }} />
-          ))}
-        </div>
-      ) : filteredNotes.length > 0 ? (
+      {filteredNotes.length > 0 ? (
         <div className="notes-resource-grid">
           {filteredNotes.map((resource) => <ResourceCard key={resource.id} resource={resource} />)}
         </div>

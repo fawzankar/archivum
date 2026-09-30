@@ -1,28 +1,16 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Resource } from '@/lib/resources';
-import ResourceCard from '@/components/ResourceCard';
 import dynamic from 'next/dynamic';
-import { fetchClassBundle, readLibraryCache } from '@/lib/libraryCache';
+import { useSearchParams } from 'next/navigation';
+import type { LibraryBundle, Resource } from '@/lib/resources';
+import ResourceCard from '@/components/ResourceCard';
+import { Filter, FileText, RotateCcw, Layers3 } from 'lucide-react';
+import { subjectsForClass, resourceSubjectMatches } from '@/lib/subjects';
+import { allPapersSorted, useLibraryBundle } from '@/lib/libraryCache';
 
 // Heavy PDF viewer is only needed once someone opens a paper.
 const PdfViewerModal = dynamic(() => import('@/components/PdfViewerModal'), { ssr: false });
-import { Filter, FileText, RotateCcw, Layers3 } from 'lucide-react';
-import { subjectsForClass, resourceSubjectMatches } from '@/lib/subjects';
-
-interface PaperFinderProps {
-  allPapers: Resource[];
-  initialClass?: number;
-  initialSubject?: string;
-  initialPaperType?: string;
-  initialYear?: number;
-  initialSchool?: string;
-  explicitClass?: boolean;
-}
-
-const ALL_CLASSES = [9, 10, 11, 12] as const;
 
 const PAPER_TYPES = [
   'Board',
@@ -35,36 +23,62 @@ const PAPER_TYPES = [
   'Other',
 ];
 
-function mergeById(items: Resource[]) {
-  const seen = new Set<number>();
-  return items.filter((item) => {
-    if (seen.has(item.id)) return false;
-    seen.add(item.id);
-    return true;
-  });
+interface PaperInitial {
+  initialClass?: number;
+  initialSubject?: string;
+  initialPaperType?: string;
+  initialYear?: number;
+  initialSchool?: string;
 }
 
-export default function PaperFinderClient({
-  allPapers,
+function validClass(value: unknown): number | undefined {
+  const n = Number(value);
+  return [9, 10, 11, 12].includes(n) ? n : undefined;
+}
+
+/** Client wrapper: reads the URL filters + saved class, then renders the (static) paper library. */
+export default function PaperFinderClient({ bundle: serverBundle }: { bundle: LibraryBundle }) {
+  const params = useSearchParams();
+  const bundle = useLibraryBundle(serverBundle);
+  let initialClass = validClass(params.get('class'));
+  if (initialClass === undefined && !params.has('class')) {
+    let stored: number | undefined;
+    try { stored = validClass(localStorage.getItem('archivum_student_class')); } catch {}
+    initialClass = stored ?? 10;
+  }
+  const year = params.get('year');
+  return (
+    <PaperFinderView
+      bundle={bundle}
+      initialClass={initialClass}
+      initialSubject={params.get('subject') || undefined}
+      initialPaperType={params.get('paperType') || undefined}
+      initialYear={year ? parseInt(year, 10) : undefined}
+      initialSchool={params.get('school') || undefined}
+    />
+  );
+}
+
+/** Pure view: every paper is already in `bundle`, so filtering is instant and works offline. */
+export function PaperFinderView({
+  bundle,
   initialClass,
   initialSubject,
   initialPaperType,
   initialYear,
   initialSchool,
-  explicitClass = false,
-}: PaperFinderProps) {
-  const router = useRouter();
-  // Initial state comes from the server (same on server + client, so no hydration mismatch).
+}: PaperInitial & { bundle: LibraryBundle }) {
   const [selectedClass, setSelectedClass] = useState<number | undefined>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [selectedPaperType, setSelectedPaperType] = useState<string>(initialPaperType || '');
   const [selectedYear, setSelectedYear] = useState<number | undefined>(initialYear);
   const [selectedSchool, setSelectedSchool] = useState<string>(initialSchool || '');
-  const [papers, setPapers] = useState<Resource[]>(allPapers);
-  const [loadedClasses, setLoadedClasses] = useState<Set<number>>(
-    () => new Set(allPapers.length ? (initialClass ? [initialClass] : [...ALL_CLASSES]) : []),
-  );
   const [activePdf, setActivePdf] = useState<Resource | null>(null);
+
+  const papers: Resource[] = useMemo(
+    () => (selectedClass ? bundle.papers[selectedClass] || [] : allPapersSorted(bundle)),
+    [bundle, selectedClass],
+  );
 
   useEffect(() => {
     const params = new URLSearchParams();
@@ -80,54 +94,6 @@ export default function PaperFinderClient({
       window.history.replaceState(null, '', nextUrl);
     }
   }, [selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool]);
-
-  // Once mounted: honour the student's saved class (unless the URL asked for one) and
-  // pick up anything already warmed in sessionStorage.
-  useEffect(() => {
-    // Deferred one microtask: this syncs with browser-only storage after mount.
-    queueMicrotask(() => {
-      if (!explicitClass) {
-        const stored = Number(localStorage.getItem('archivum_student_class') || '');
-        if ([9, 10, 11, 12].includes(stored) && stored !== initialClass) setSelectedClass(stored);
-      }
-      const cache = readLibraryCache();
-      const cachedClasses: number[] = [];
-      const cachedItems: Resource[] = [];
-      for (const level of ALL_CLASSES) {
-        const bundle = cache.papers[String(level)];
-        if (Array.isArray(bundle) && bundle.length) {
-          cachedClasses.push(level);
-          cachedItems.push(...bundle);
-        }
-      }
-      if (cachedItems.length) {
-        setPapers((prev) => mergeById([...prev, ...cachedItems]));
-        setLoadedClasses((prev) => new Set([...prev, ...cachedClasses]));
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Fetch only the classes we don't have yet (also fixes "All Classes" showing just Class 10).
-  useEffect(() => {
-    const needed = selectedClass ? [selectedClass] : [...ALL_CLASSES];
-    const missing = needed.filter((c) => !loadedClasses.has(c));
-    if (!missing.length) return;
-    let cancelled = false;
-    void Promise.all(missing.map((c) => fetchClassBundle(c).then((data) => ({ c, data })))).then((results) => {
-      if (cancelled) return;
-      const incoming: Resource[] = [];
-      for (const { c, data } of results) {
-        const bundle = data?.papers?.[String(c)];
-        if (Array.isArray(bundle)) incoming.push(...bundle);
-      }
-      if (incoming.length) setPapers((prev) => mergeById([...prev, ...incoming]));
-      setLoadedClasses((prev) => new Set([...prev, ...missing]));
-    });
-    return () => { cancelled = true; };
-  }, [selectedClass, loadedClasses]);
-
-  const isLoading = (selectedClass ? [selectedClass] : [...ALL_CLASSES]).some((c) => !loadedClasses.has(c));
 
   const availableSubjects = useMemo(() => {
     return selectedClass ? subjectsForClass(selectedClass) : Array.from(new Set(papers.map(p => p.subject).filter(Boolean))).sort();
@@ -159,12 +125,6 @@ export default function PaperFinderClient({
       return true;
     });
   }, [papers, selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool]);
-
-  useEffect(() => {
-    for (const item of filteredPapers.slice(0, 16)) {
-      router.prefetch(`/resource/${item.slug || item.id}`);
-    }
-  }, [filteredPapers, router]);
 
   const resetFilters = () => {
     setSelectedClass(undefined);
@@ -312,13 +272,7 @@ export default function PaperFinderClient({
         </span>
       </div>
 
-      {filteredPapers.length === 0 && isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" aria-busy="true" aria-label="Loading papers">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="rounded-3xl border animate-pulse h-44" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }} />
-          ))}
-        </div>
-      ) : filteredPapers.length > 0 ? (
+      {filteredPapers.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPapers.map((paper) => (
             <ResourceCard key={paper.id} resource={paper} onView={(res) => setActivePdf(res)} />

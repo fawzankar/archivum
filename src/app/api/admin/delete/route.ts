@@ -1,3 +1,4 @@
+import { revalidateTag, revalidatePath } from 'next/cache';
 import { NextResponse } from 'next/server';
 import { execute, queryOne } from '@/lib/db';
 import { getAdminSession } from '@/lib/auth';
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
     await execute('DELETE FROM downloads WHERE resource_id=?', [id]);
     await execute('DELETE FROM storage_reservations WHERE storage_key=?', [resource.storage_key || resource.file_url]);
     await execute('DELETE FROM resources WHERE id=?', [id]);
+    revalidateTag('library', { expire: 0 }); revalidatePath('/notes'); revalidatePath('/previous-papers');
 
     return NextResponse.json({ success: true, message: 'Resource and all associated files and records were permanently deleted.' });
   } catch (error) {

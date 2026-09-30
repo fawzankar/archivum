@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -865,8 +864,8 @@ html.archivum-booting::before{content:"";position:fixed;inset:0;z-index:21474836
   position:absolute;
   inset:-30%;
   background:var(--accent);
-  -webkit-mask-image:url('/zebra-pattern.png');
-  mask-image:url('/zebra-pattern.png');
+  -webkit-mask-image:url('/zebra-pattern.webp');
+  mask-image:url('/zebra-pattern.webp');
   -webkit-mask-mode:luminance;
   mask-mode:luminance;
   -webkit-mask-repeat:repeat;
@@ -954,8 +953,8 @@ html.archivum-booting::before{content:"";position:fixed;inset:0;z-index:21474836
   z-index:0;
   opacity:.11;
   background:var(--accent);
-  -webkit-mask-image:url('/zebra-pattern.png');
-  mask-image:url('/zebra-pattern.png');
+  -webkit-mask-image:url('/zebra-pattern.webp');
+  mask-image:url('/zebra-pattern.webp');
   -webkit-mask-mode:luminance;
   mask-mode:luminance;
   -webkit-mask-repeat:repeat;
@@ -1186,8 +1185,8 @@ main:has(.contributors-intro){
   position:absolute;
   inset:-1px;
   background:linear-gradient(112deg,var(--accent-strong) 0%,var(--accent) 48%,var(--sun) 100%);
-  -webkit-mask-image:url('/zebra-pattern.png');
-  mask-image:url('/zebra-pattern.png');
+  -webkit-mask-image:url('/zebra-pattern.webp');
+  mask-image:url('/zebra-pattern.webp');
   -webkit-mask-mode:luminance;
   mask-mode:luminance;
   -webkit-mask-repeat:no-repeat;

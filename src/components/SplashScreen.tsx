@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 
-const SPLASH_KEY = 'archivum_home_splash_seen';
+const SPLASH_KEY = 'archivum_splash_seen_v2'; // shown once per device, never again
+const SPLASH_MS = 900;
 
 export default function SplashScreen() {
   const pathname = usePathname();
@@ -12,20 +13,20 @@ export default function SplashScreen() {
   useEffect(() => {
     if (pathname !== '/') { document.documentElement.classList.remove('archivum-booting'); return; }
     try {
-      if (sessionStorage.getItem(SPLASH_KEY) === '1') { document.documentElement.classList.remove('archivum-booting'); return; }
-      sessionStorage.setItem(SPLASH_KEY, '1');
+      if (localStorage.getItem(SPLASH_KEY) === '1') { document.documentElement.classList.remove('archivum-booting'); return; }
+      localStorage.setItem(SPLASH_KEY, '1');
     } catch {
       // If storage is unavailable, still give a normal first-load splash.
     }
     setShow(true);
     setProgress(0);
     const startedAt = performance.now();
-    const duration = 3000;
+    const duration = SPLASH_MS;
     const frame = window.setInterval(() => {
       const elapsed = performance.now() - startedAt;
       setProgress(Math.min(100, Math.round((elapsed / duration) * 100)));
-    }, 40);
-    const timer = window.setTimeout(() => { setShow(false); document.documentElement.classList.remove('archivum-booting'); }, 3000);
+    }, 30);
+    const timer = window.setTimeout(() => { setShow(false); document.documentElement.classList.remove('archivum-booting'); }, SPLASH_MS);
     return () => { window.clearTimeout(timer); window.clearInterval(frame); };
   }, [pathname]);
 

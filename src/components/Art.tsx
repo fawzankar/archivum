@@ -112,6 +112,14 @@ const art: Record<string, React.ReactNode> = {
   </>,
 };
 
+/* [centreX, centreY, scale] of each artwork's real painted bounds, so all icons sit dead-centre
+   and share a consistent visual size (max 100 units). */
+const FIT: Record<string, [number, number, number]> = {
+  Maths: [60, 58, 1], Science: [60, 56.3, 1], SST: [60, 60.3, 1], English: [60, 60, 1],
+  Hindi: [60, 60, 0.92], Urdu: [60, 60, 0.92], Biology: [60, 60, 0.87], Physics: [60.3, 60, 0.98],
+  Chemistry: [60, 57.8, 0.96], notes: [67.9, 60, 1], papers: [60.4, 55.4, 0.95], default: [60, 58, 1],
+};
+
 export default function Art({ name, className = '' }: { name: string; className?: string }) {
   const raw = (name || '').trim();
   const aliases: Record<string,string> = {
@@ -121,5 +129,8 @@ export default function Art({ name, className = '' }: { name: string; className?
     notes:'notes', paper:'papers', papers:'papers', 'previous year paper':'papers', 'previous papers':'papers'
   };
   const key = aliases[raw.toLowerCase()] || raw;
-  return <svg className={`art ${className}`} viewBox="0 0 120 120" role="img" aria-hidden="true" focusable="false">{art[key] || art.default}</svg>;
+  const k = art[key] ? key : 'default';
+  const [cx, cy, sc] = FIT[k] || [60, 60, 1];
+  // Re-centre every illustration on the 120x120 canvas (measured from the rendered artwork).
+  return <svg className={`art ${className}`} viewBox="0 0 120 120" role="img" aria-hidden="true" focusable="false"><g transform={`translate(60 60) scale(${sc}) translate(${-cx} ${-cy})`}>{art[k]}</g></svg>;
 }

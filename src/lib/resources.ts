@@ -78,14 +78,47 @@ export async function getResources(options: ResourceFilterOptions = {}) {
   )();
 }
 
-// Shared by the Notes / Previous Papers server pages and /api/library-prefetch so they
-// hit the same unstable_cache entry (one Turso query per class per 5 minutes).
-export async function getLibraryItems(type: 'Notes' | 'Previous Year Paper', classLevel?: number): Promise<Resource[]> {
+// ---- Library bundle -------------------------------------------------------------------
+// ONE cached query returns every approved Note + Previous Paper, grouped by class. The
+// Notes / Papers pages are statically generated from it, and it is also shipped to the
+// browser (localStorage + service worker) so those pages never need an API call to render.
+export interface LibraryBundle {
+  notes: Record<number, Resource[]>;
+  papers: Record<number, Resource[]>;
+  generatedAt: number;
+}
+
+const CARD_COLUMNS = `id, slug, title, NULL AS description, class_level, board, subject, chapter, topic,
+  resource_type, paper_type, year, school_name, contributor_name, file_url, file_size, file_type, file_name,
+  NULL AS storage_key, NULL AS file_hash, status, NULL AS rejection_reason, featured, views, downloads,
+  average_rating, rating_count, NULL AS tags, created_at, updated_at, approved_at, NULL AS photo_keys`;
+
+async function getLibraryBundleUncached(): Promise<LibraryBundle> {
+  const rows = await query<Resource>(
+    `SELECT ${CARD_COLUMNS} FROM resources
+     WHERE status = 'approved' AND resource_type IN ('Notes', 'Previous Year Paper')
+     ORDER BY created_at DESC LIMIT 1500`,
+  );
+  const notes: Record<number, Resource[]> = { 9: [], 10: [], 11: [], 12: [] };
+  const papers: Record<number, Resource[]> = { 9: [], 10: [], 11: [], 12: [] };
+  for (const row of rows) {
+    const target = row.resource_type === 'Notes' ? notes : papers;
+    (target[row.class_level] ||= []).push(row);
+  }
+  return { notes, papers, generatedAt: Date.now() };
+}
+
+export const getLibraryBundle = unstable_cache(getLibraryBundleUncached, ['library-bundle-v1'], {
+  revalidate: 300,
+  tags: ['library'],
+});
+
+// Safe wrapper for pages: a database hiccup must never break the build or the page.
+export async function getLibraryBundleSafe(): Promise<LibraryBundle> {
   try {
-    const result = await getResources({ resource_type: type, class_level: classLevel, limit: 200, withCount: false });
-    return result.items;
+    return await getLibraryBundle();
   } catch {
-    return [];
+    return { notes: { 9: [], 10: [], 11: [], 12: [] }, papers: { 9: [], 10: [], 11: [], 12: [] }, generatedAt: 0 };
   }
 }
 
@@ -105,6 +138,10 @@ export async function getResourceById(id:number) { return getResourceByIdCached(
 export async function getResourceBySlug(slug:string) { return getResourceBySlugCached(slug); }
 
 export async function getRelatedResources(resource:Resource, limit=4) {
+  return unstable_cache(() => getRelatedResourcesUncached(resource, limit), ['related', String(resource.id), String(limit)], { revalidate: 300, tags: ['library'] })();
+}
+
+async function getRelatedResourcesUncached(resource:Resource, limit=4) {
   const items = await query<Resource>(`SELECT * FROM resources WHERE status='approved' AND id != ? AND class_level = ? AND (subject = ? OR resource_type = ? OR chapter = ?) ORDER BY (CASE WHEN subject = ? THEN 3 ELSE 0 END + CASE WHEN chapter = ? THEN 2 ELSE 0 END + CASE WHEN resource_type = ? THEN 1 ELSE 0 END) DESC, downloads DESC LIMIT ?`, [resource.id,resource.class_level,resource.subject,resource.resource_type,resource.chapter,resource.subject,resource.chapter,resource.resource_type,limit]);
   if (items.length >= limit) return items;
   const ids = [resource.id, ...items.map(i=>i.id)];
