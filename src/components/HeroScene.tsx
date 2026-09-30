@@ -1,6 +1,6 @@
 import React from 'react';
 
-/** Static Archivum illustration layer. Only the paper-like waves and greeting hand animate. */
+/** Static study doodles for the hero. Only the greeting hand animates. */
 export default function HeroScene() {
   return (
     <div className="hx-scene" aria-hidden="true">
@@ -9,32 +9,36 @@ export default function HeroScene() {
       <span className="hx-wash hx-wash-c" />
       <span className="hx-grain" />
 
-      {/* Fresh, app-specific study doodles — intentionally static. */}
-      <div className="hx-equation hx-equation-a">√x</div>
-      <div className="hx-equation hx-equation-b">E=mc²</div>
+      {/* Hand-drawn study doodles — deliberately kept to the right side. */}
+      <div className="hx-equation hx-equation-root">√x</div>
+      <div className="hx-equation hx-equation-energy">E=mc²</div>
 
-      <svg className="hx-d hx-d-pencil-new" viewBox="0 0 80 150">
-        <path d="M31 7 49 4l17 102-19 36-14-32L31 7Z" />
-        <path d="m33 23 29-5M36 40l29-5M39 57l29-5M42 74l29-5M45 91l20-4" />
-        <path d="m47 142 2-31 14-3 3 17-19 17Z" />
-        <path className="hx-soft" d="m31 7 18-3 4 24-18 3Z" />
+      {/* Colorful pencil doodle inspired by the supplied reference. */}
+      <svg className="hx-d hx-d-pencil-ref" viewBox="0 0 180 180">
+        <g transform="rotate(-36 90 90)">
+          <path className="pencil-eraser" d="M55 14h70c9 0 16 7 16 16v18H39V30c0-9 7-16 16-16Z" />
+          <path className="pencil-ferrule" d="M39 48h102v24H39z" />
+          <path className="pencil-body" d="M43 72h94v74l-25 26H68l-25-26V72Z" />
+          <path className="pencil-highlight" d="M61 77h13v64H61z" />
+          <path className="pencil-wood" d="m68 146 22 26 22-26Z" />
+          <path className="pencil-lead" d="m84 165 6 7 6-7-6-12Z" />
+          <path className="pencil-line" d="M55 86h67M55 103h67M55 120h67" />
+          <path className="pencil-ferrule-line" d="M52 55h76M52 64h76" />
+        </g>
+        <path className="pencil-swoop" d="M124 151c19 11 26 26 14 37-12 11-34 5-37-11-2-10 7-17 17-13 16 6 29 26 45 19 11-5 15-19 9-31" />
       </svg>
 
-      <svg className="hx-d hx-d-folder" viewBox="0 0 110 82">
-        <path d="M7 18h35l10 12h51v43H7V18Z" />
-        <path d="M7 30h96" />
-        <path className="hx-soft" d="M18 45h52M18 56h38" />
+      {/* Graduation cap, brought back as requested. */}
+      <svg className="hx-d hx-d-cap-ref" viewBox="0 0 150 110">
+        <path d="M14 42 75 12l61 30-61 30-61-30Z" />
+        <path d="M39 56v25c22 18 50 18 72 0V56" />
+        <path d="M136 43v39" />
+        <circle cx="136" cy="85" r="3" />
       </svg>
 
-      <svg className="hx-d hx-d-paper" viewBox="0 0 78 92">
-        <path d="M13 5h34l18 18v64H13V5Z" />
-        <path d="M47 5v19h18M24 41h30M24 52h24M24 63h18" />
-        <path className="hx-soft" d="M24 74h11" />
-      </svg>
-
-      <svg className="hx-d hx-d-bookmark-new" viewBox="0 0 52 72">
-        <path d="M9 7h34v57L26 51 9 64V7Z" />
-        <path className="hx-soft" d="M17 19h18M17 29h18" />
+      <svg className="hx-d hx-d-paper-ref" viewBox="0 0 90 105">
+        <path d="M15 7h39l21 21v70H15V7Z" />
+        <path d="M54 7v23h21M28 47h35M28 60h29M28 73h22" />
       </svg>
     </div>
   );

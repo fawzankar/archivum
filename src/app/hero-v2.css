@@ -348,3 +348,81 @@
   .hx-d-folder{left:3%;bottom:8%;width:68px}
   .hx-d-paper{right:3%;bottom:7%;width:48px}
 }
+
+
+/* ============================================================
+   V10 — supplied doodle direction: clean right-side study marks.
+   Nothing decorative is placed on the left side of the hero.
+   ============================================================ */
+.hx-equation-root{
+  left:auto;
+  right:31%;
+  top:9%;
+  font-size:clamp(24px,2.9vw,38px);
+  transform:rotate(-7deg);
+  font-family:"Comic Sans MS","Bradley Hand",cursive;
+  font-weight:700;
+  opacity:.82;
+}
+.hx-equation-energy{
+  left:auto;
+  right:7%;
+  top:24%;
+  font-size:clamp(20px,2.5vw,32px);
+  transform:rotate(5deg);
+  font-family:"Comic Sans MS","Bradley Hand",cursive;
+  font-weight:700;
+  opacity:.72;
+}
+.hx-d-pencil-ref{
+  width:132px;
+  right:18%;
+  top:39%;
+  overflow:visible;
+  stroke:none;
+  transform:rotate(7deg);
+}
+.hx-d-pencil-ref .pencil-eraser{fill:#e69bc5}
+.hx-d-pencil-ref .pencil-ferrule{fill:#8270b7}
+.hx-d-pencil-ref .pencil-body{fill:#f4a31c}
+.hx-d-pencil-ref .pencil-highlight{fill:#ffc52d}
+.hx-d-pencil-ref .pencil-wood{fill:#ffdda0}
+.hx-d-pencil-ref .pencil-lead{fill:#202020}
+.hx-d-pencil-ref .pencil-line,.hx-d-pencil-ref .pencil-ferrule-line{fill:none;stroke:#242424;stroke-width:3.2;stroke-linecap:round}
+.hx-d-pencil-ref .pencil-swoop{fill:none;stroke:#242424;stroke-width:3.5;stroke-linecap:round}
+.hx-d-cap-ref{
+  width:84px;
+  right:7%;
+  top:9%;
+  stroke:color-mix(in srgb,var(--accent) 90%,#222);
+  stroke-width:3;
+}
+.hx-d-paper-ref{
+  width:54px;
+  right:4%;
+  bottom:12%;
+  stroke:color-mix(in srgb,var(--accent) 76%,#333);
+  stroke-width:2.8;
+}
+.hx-wave{
+  margin-left:.16em;
+}
+/* Remove every previous left-side decorative mark. */
+.hx-d-stack,.hx-d-bookmark,.hx-d-cap,.hx-d-file,.hx-d-pencil,.hx-d-magnify,.hx-d-pages,.hx-d-check,
+.hx-d-folder,.hx-d-paper,.hx-d-bookmark-new,.hx-dot,.hx-spark,.hx-equation-a,.hx-equation-b{display:none!important}
+
+@media(max-width:900px){
+  .hx-equation-root{right:29%;top:8%;font-size:24px}
+  .hx-equation-energy{right:6%;top:22%;font-size:21px}
+  .hx-d-pencil-ref{right:14%;top:41%;width:104px}
+  .hx-d-cap-ref{right:5%;top:7%;width:68px}
+  .hx-d-paper-ref{right:3%;bottom:10%;width:44px}
+}
+@media(max-width:640px){
+  .hx-equation-root{right:25%;top:7%;font-size:19px}
+  .hx-equation-energy{right:5%;top:21%;font-size:17px}
+  .hx-d-pencil-ref{right:8%;top:40%;width:84px}
+  .hx-d-cap-ref{right:4%;top:6%;width:54px}
+  .hx-d-paper-ref{display:none}
+  .hx-wave{margin-left:.12em}
+}
