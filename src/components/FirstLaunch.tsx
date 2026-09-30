@@ -75,7 +75,7 @@ export default function FirstLaunch() {
               const subs = subjectsForClass(level);
               const selected = selectedClass === level;
               return (
-                <button key={level} type="button" role="radio" aria-checked={selected} onClick={() => setSelectedClass(level)} className={`cls-card cls-t${level}${selected ? ' selected' : ''}`}>
+                <button key={level} type="button" role="radio" aria-checked={selected} onClick={() => setSelectedClass(level)} className={`cls-card cls-t${level}${selected ? ' selected' : ''}`} style={{ '--cls-delay': `${(level - 9) * 55}ms` } as React.CSSProperties}>
                   <span className="cls-check"><Check /></span>
                   <span className="cls-label">Class</span>
                   <strong className="cls-num">{level}</strong>

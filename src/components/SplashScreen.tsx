@@ -1,9 +1,9 @@
 'use client';
-import Image from 'next/image';
+import React from 'react';
 import { useEffect, useState } from 'react';
 
-const SPLASH_MS = 1250;
-const LEAVE_MS = 220;
+const SPLASH_MS = 1750;
+const LEAVE_MS = 280;
 
 export default function SplashScreen() {
   const [show, setShow] = useState(false);
@@ -39,12 +39,19 @@ export default function SplashScreen() {
   return (
     <div className={`boot-splash bs${leaving ? ' is-leaving' : ''}`} aria-label="Loading ARCHIVUM" role="status">
       <div className="bs-content">
-        <div className="bs-mark-frame">
-          <Image className="bs-logo-image" src="/archivum-logo-dark.png" alt="ARCHIVUM" width={112} height={112} priority />
+        <div className="bs-overline">THE ACADEMIC ARCHIVE</div>
+        <div className="bs-mark-frame" aria-hidden="true">
+          <span className="bs-monogram">A</span>
         </div>
-        <div className="bs-name">ARCHIVUM</div>
+        <div className="bs-name" aria-label="ARCHIVUM">
+          {'ARCHIVUM'.split('').map((letter, index) => (
+            <span key={`${letter}-${index}`} style={{ '--bs-delay': `${index * 55}ms` } as React.CSSProperties}>{letter}</span>
+          ))}
+        </div>
         <p className="bs-tagline">NOTES · PAPERS · STUDY MATERIAL</p>
-        <div className="bs-rule" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>
+        <div className="bs-rule" aria-hidden="true">
+          <span style={{ width: `${progress}%` }} />
+        </div>
       </div>
       <div className="bs-credit">This App Is Made By Fawzan Kar</div>
     </div>
