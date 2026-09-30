@@ -1,0 +1,3 @@
+export default function Loading() {
+  return <div className="hm" aria-busy="true"><div className="hm-shell animate-pulse"><div className="h-64 rounded-[2rem] border" style={{background:'var(--surface)',borderColor:'var(--border)'}} /><div className="grid sm:grid-cols-2 gap-4 mt-5"><div className="h-32 rounded-2xl border" style={{background:'var(--surface)',borderColor:'var(--border)'}} /><div className="h-32 rounded-2xl border" style={{background:'var(--surface)',borderColor:'var(--border)'}} /></div><div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mt-5">{Array.from({length:5}).map((_,i)=><div key={i} className="h-24 rounded-2xl border" style={{background:'var(--surface)',borderColor:'var(--border)'}} />)}</div></div></div>;
+}

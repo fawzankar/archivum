@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache';
 import { execute, initDb, query, queryOne } from './db';
 
 export interface Tip {
@@ -20,6 +21,20 @@ export async function getTips(classLevel?: number, subject?: string, limit=12) {
   if (classLevel) return query<Tip>(`SELECT * FROM tips WHERE status='approved' AND class_level=? ORDER BY RANDOM() LIMIT ?`, [classLevel, safeLimit]);
   return query<Tip>(`SELECT * FROM tips WHERE status='approved' ORDER BY RANDOM() LIMIT ?`, [safeLimit]);
 }
+
+
+export const getTipsForPage = (classLevel: number, subject?: string, limit=12) => unstable_cache(
+  async () => {
+    await initDb();
+    const safeLimit = Math.min(Math.max(limit, 1), 30);
+    if (subject && subject !== 'All') {
+      return query<Tip>(`SELECT * FROM tips WHERE status='approved' AND class_level=? AND (subject=? OR subject='General') ORDER BY created_at DESC LIMIT ?`, [classLevel, subject, safeLimit]);
+    }
+    return query<Tip>(`SELECT * FROM tips WHERE status='approved' AND class_level=? ORDER BY created_at DESC LIMIT ?`, [classLevel, safeLimit]);
+  },
+  ['tips-page', String(classLevel), subject || 'All', String(limit)],
+  { revalidate: 300, tags: ['tips'] },
+)();
 
 export async function createTip(classLevel:number, subject:string, title:string, body:string, author:string|null) {
   await initDb();

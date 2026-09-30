@@ -2547,22 +2547,60 @@ small,
 
 
 /* =====================================================================
-   V40 - Minimal splash: logo, name, thin progress line, credit. Regular weight only.
+   V41 - Premium ARCHIVUM splash
    ===================================================================== */
-.boot-splash.bs{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
-  background:var(--ivory);color:var(--ink);
+.quest-word{
+  font-family:"Libre Baskerville",Georgia,"Times New Roman",serif!important;
+  font-weight:700;
+  letter-spacing:-.015em;
 }
-.boot-splash.bs,.boot-splash.bs *{font-family:"Lato",Arial,sans-serif;font-weight:400!important}
-.boot-splash.bs.is-leaving{animation:bootOut .45s ease forwards}
-.bs-logo{width:88px;height:88px;animation:bsFade .7s ease both}
-.bs-logo .art{width:100%;height:100%}
-.bs-name{margin:22px 0 0;padding-left:.32em;font-size:22px;letter-spacing:.32em;color:var(--ink);animation:bsFade .7s ease .15s both}
-.bs-progress{width:120px;height:1px;margin-top:34px;overflow:hidden;background:color-mix(in srgb,var(--ink) 16%,transparent);animation:bsFade .6s ease .3s both}
-.bs-progress span{display:block;height:100%;background:var(--ink);transition:width .05s linear}
-.bs-credit{position:absolute;left:0;right:0;bottom:calc(28px + env(safe-area-inset-bottom,0px));margin:0;text-align:center;font-size:12px;letter-spacing:.02em;color:var(--ink-muted);animation:bsFade .7s ease .4s both}
-@keyframes bsFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.bs-logo,.bs-name,.bs-progress,.bs-credit{animation:none!important}}
+.boot-splash.bs{
+  position:fixed;
+  overflow:hidden;
+  isolation:isolate;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 38%,rgba(119,133,255,.18),transparent 28%),
+    radial-gradient(circle at 15% 82%,rgba(95,219,195,.12),transparent 28%),
+    linear-gradient(145deg,#070a18 0%,#0c1024 46%,#11172f 100%);
+  color:#f5f7ff;
+}
+.boot-splash.bs.is-leaving{animation:bootOut .42s cubic-bezier(.4,0,.2,1) forwards}
+.bs-content{position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;text-align:center;transform:translateY(-2vh)}
+.bs-logo-wrap{position:relative;width:132px;height:132px;display:grid;place-items:center;animation:bsLogoIn .9s cubic-bezier(.16,1,.3,1) both}
+.bs-logo-image{position:relative;z-index:2;width:106px;height:106px;object-fit:contain;filter:drop-shadow(0 14px 34px rgba(124,143,255,.25))}
+.bs-logo-ring{position:absolute;inset:8px;border:1px solid rgba(255,255,255,.16);border-radius:50%;box-shadow:0 0 0 10px rgba(255,255,255,.025),0 0 50px rgba(115,132,255,.12);animation:bsRing 2.8s ease-in-out infinite}
+.bs-logo-ring::before,.bs-logo-ring::after{content:"";position:absolute;border-radius:50%;border:1px solid rgba(255,255,255,.08);inset:13px}
+.bs-logo-ring::after{inset:-13px;opacity:.45}
+.bs-name{display:flex;margin-top:24px;padding-left:.28em;font-family:"Lato",Arial,sans-serif;font-size:clamp(24px,6vw,34px);font-weight:800;letter-spacing:.28em;color:#fff;text-shadow:0 8px 30px rgba(0,0,0,.25);animation:bsNameIn .75s cubic-bezier(.16,1,.3,1) .16s both}
+.bs-name span{display:inline-block;animation:bsLetterIn .65s cubic-bezier(.16,1,.3,1) both}
+.bs-name span:nth-child(1){animation-delay:.18s}.bs-name span:nth-child(2){animation-delay:.21s}.bs-name span:nth-child(3){animation-delay:.24s}.bs-name span:nth-child(4){animation-delay:.27s}.bs-name span:nth-child(5){animation-delay:.30s}.bs-name span:nth-child(6){animation-delay:.33s}.bs-name span:nth-child(7){animation-delay:.36s}.bs-name span:nth-child(8){animation-delay:.39s}
+.bs-divider{width:42px;height:1px;margin-top:18px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.65),transparent);animation:bsFade .7s ease .42s both}
+.bs-tagline{margin:13px 0 0;color:rgba(238,242,255,.7);font-size:12px;letter-spacing:.045em;line-height:1.7;animation:bsFade .75s ease .46s both}
+.bs-tagline .quest-word{color:#fff;text-shadow:0 0 18px rgba(160,175,255,.22)}
+.bs-progress{width:min(170px,42vw);height:2px;margin-top:28px;overflow:hidden;border-radius:999px;background:rgba(255,255,255,.1);animation:bsFade .7s ease .55s both}
+.bs-progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#a9b7ff,#fff,#9be7d6);box-shadow:0 0 14px rgba(167,183,255,.45);transition:width .04s linear}
+.bs-credit{position:absolute;z-index:4;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);display:flex;align-items:center;gap:9px;white-space:nowrap;padding:8px 13px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:rgba(255,255,255,.055);box-shadow:0 10px 30px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.06);backdrop-filter:blur(12px);font-size:10px;letter-spacing:.04em;animation:bsCreditIn .8s cubic-bezier(.16,1,.3,1) .62s both}
+.bs-credit-label{color:rgba(238,242,255,.46);font-size:8px;font-weight:800;letter-spacing:.16em}
+.bs-credit-name{color:#fff;font-weight:700}
+.bs-orbit{position:absolute;z-index:1;border:1px solid rgba(255,255,255,.055);border-radius:50%;pointer-events:none}
+.bs-orbit-one{width:72vw;height:72vw;max-width:720px;max-height:720px;animation:bsOrbit 18s linear infinite}
+.bs-orbit-two{width:118vw;height:118vw;max-width:1180px;max-height:1180px;border-color:rgba(255,255,255,.035);animation:bsOrbit 26s linear infinite reverse}
+.bs-glow{position:absolute;z-index:0;border-radius:50%;filter:blur(70px);pointer-events:none;opacity:.45}
+.bs-glow-one{width:180px;height:180px;background:#687cff;top:17%;left:18%;animation:bsGlow 7s ease-in-out infinite}
+.bs-glow-two{width:220px;height:220px;background:#35bda4;right:12%;bottom:12%;animation:bsGlow 9s ease-in-out -2s infinite reverse}
+@keyframes bsLogoIn{0%{opacity:0;transform:translateY(18px) scale(.82) rotate(-5deg)}70%{opacity:1;transform:translateY(-2px) scale(1.025) rotate(.7deg)}100%{opacity:1;transform:none}}
+@keyframes bsRing{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.055);opacity:1}}
+@keyframes bsNameIn{from{opacity:0;filter:blur(8px);transform:translateY(12px)}to{opacity:1;filter:none;transform:none}}
+@keyframes bsLetterIn{from{opacity:0;transform:translateY(15px) scale(.82)}to{opacity:1;transform:none}}
+@keyframes bsFade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes bsCreditIn{from{opacity:0;transform:translate(-50%,10px) scale(.96)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes bsOrbit{to{transform:rotate(360deg)}}
+@keyframes bsGlow{0%,100%{transform:translate3d(0,0,0) scale(1);opacity:.35}50%{transform:translate3d(16px,-12px,0) scale(1.13);opacity:.52}}
+@media (max-width:560px){.bs-logo-wrap{width:116px;height:116px}.bs-logo-image{width:92px;height:92px}.bs-name{font-size:25px}.bs-credit{bottom:calc(18px + env(safe-area-inset-bottom,0px))}}
+@media (prefers-reduced-motion:reduce){.bs-logo-wrap,.bs-name,.bs-name span,.bs-divider,.bs-tagline,.bs-progress,.bs-credit,.bs-logo-ring,.bs-orbit,.bs-glow{animation:none!important}.bs-name span{opacity:1!important;transform:none!important}.bs-credit{transform:translateX(-50%)!important;opacity:1!important}}
 
 
 /* =====================================================================
