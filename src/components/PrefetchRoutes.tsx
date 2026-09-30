@@ -21,14 +21,8 @@ export default function PrefetchRoutes() {
       for (const route of ROUTES) router.prefetch(route);
     };
 
-    const idle = 'requestIdleCallback' in window
-      ? window.requestIdleCallback(run, { timeout: 1200 })
-      : window.setTimeout(run, 350);
-
-    return () => {
-      if (typeof idle === 'number') window.clearTimeout(idle);
-      else window.cancelIdleCallback?.(idle);
-    };
+    const idle = window.setTimeout(run, 350);
+    return () => window.clearTimeout(idle);
   }, [router]);
 
   return null;

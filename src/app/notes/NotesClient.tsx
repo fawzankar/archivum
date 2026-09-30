@@ -88,13 +88,8 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
         router.prefetch(`/resource/${resource.slug || resource.id}`);
       }
     };
-    const id = 'requestIdleCallback' in window
-      ? window.requestIdleCallback(warm, { timeout: 900 })
-      : window.setTimeout(warm, 250);
-    return () => {
-      if (typeof id === 'number') window.clearTimeout(id);
-      else window.cancelIdleCallback?.(id);
-    };
+    const id = window.setTimeout(warm, 250);
+    return () => window.clearTimeout(id);
   }, [filteredNotes, router]);
 
   const chooseClass = (level: number) => {

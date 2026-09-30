@@ -96,13 +96,8 @@ export default function PaperFinderClient({
         router.prefetch(`/resource/${paper.slug || paper.id}`);
       }
     };
-    const id = 'requestIdleCallback' in window
-      ? window.requestIdleCallback(warm, { timeout: 900 })
-      : window.setTimeout(warm, 250);
-    return () => {
-      if (typeof id === 'number') window.clearTimeout(id);
-      else window.cancelIdleCallback?.(id);
-    };
+    const id = window.setTimeout(warm, 250);
+    return () => window.clearTimeout(id);
   }, [filteredPapers, router]);
 
   const resetFilters = () => {
