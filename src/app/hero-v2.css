@@ -9,22 +9,35 @@
 
 /* ---------- HERO ---------- */
 .hx-hero{
-  --hx-tint: color-mix(in srgb,var(--peri) 34%,var(--ivory));
-  --hx-tint-2: color-mix(in srgb,var(--accent-light) 70%,var(--surface));
+  --hx-tint: color-mix(in srgb,var(--peri) 38%,var(--ivory));
+  --hx-tint-2: color-mix(in srgb,var(--accent-light) 72%,var(--surface));
   position:relative;isolation:isolate;overflow:hidden;
   min-height:clamp(300px,34vw,372px);
   display:flex;align-items:center;
   padding:clamp(24px,4vw,44px) clamp(22px,5.5vw,64px);
   border-radius:clamp(22px,3vw,32px);
-  background:linear-gradient(118deg,var(--hx-tint-2) 0%,var(--hx-tint) 55%,color-mix(in srgb,var(--peri) 46%,var(--ivory)) 100%);
-  box-shadow:0 1px 0 rgba(255,255,255,.6) inset,0 22px 50px -24px color-mix(in srgb,var(--accent) 38%,transparent);
+  /*
+   * Reference-style background:
+   * soft blue/lilac paper wash, a warm upper-right glow, and
+   * quiet layered hills along the bottom. No image asset is used,
+   * so the same treatment can recolour with the active theme.
+   */
+  background:
+    radial-gradient(36% 62% at 93% 4%, color-mix(in srgb,var(--sun) 62%,#fff6d6) 0%, transparent 72%),
+    radial-gradient(30% 55% at 6% 5%, color-mix(in srgb,var(--peri) 62%,#dce5ff) 0%, transparent 74%),
+    radial-gradient(48% 48% at 49% 34%, color-mix(in srgb,var(--surface) 88%,var(--peri)) 0%, transparent 78%),
+    linear-gradient(150deg,
+      color-mix(in srgb,var(--peri) 58%,var(--ivory)) 0%,
+      color-mix(in srgb,var(--accent-light) 52%,var(--ivory)) 50%,
+      color-mix(in srgb,var(--peri) 44%,var(--ivory)) 100%);
+  box-shadow:0 1px 0 rgba(255,255,255,.65) inset,0 22px 50px -24px color-mix(in srgb,var(--accent) 38%,transparent);
   border:1px solid color-mix(in srgb,var(--accent) 10%,var(--border));
   max-width:none;
 }
 .hx-scene{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.hx-wash{position:absolute;border-radius:50%;filter:blur(38px);opacity:.75}
+.hx-wash{position:absolute;border-radius:50%;filter:blur(38px);opacity:.72}
 .hx-wash-a{width:46%;aspect-ratio:1;left:-10%;top:-30%;background:color-mix(in srgb,var(--surface) 70%,var(--peri))}
-.hx-wash-b{width:34%;aspect-ratio:1.3;right:-6%;top:-26%;background:color-mix(in srgb,var(--sun) 55%,transparent);animation:hxBreathe 9s ease-in-out infinite}
+.hx-wash-b{width:34%;aspect-ratio:1.3;right:-6%;top:-26%;background:color-mix(in srgb,var(--sun) 55%,transparent)}
 .hx-wash-c{width:40%;aspect-ratio:1.4;left:22%;bottom:-38%;background:color-mix(in srgb,var(--accent) 22%,transparent)}
 .hx-grain{position:absolute;inset:0;opacity:.35;mix-blend-mode:soft-light;
   background-image:radial-gradient(color-mix(in srgb,var(--ink) 40%,transparent) .5px,transparent .6px);background-size:5px 5px}
@@ -32,8 +45,6 @@
 .hx-wave-1{fill:color-mix(in srgb,var(--peri) 42%,transparent)}
 .hx-wave-2{fill:color-mix(in srgb,var(--accent) 22%,var(--peri) 30%);opacity:.55}
 .hx-wave-3{fill:color-mix(in srgb,var(--surface) 60%,transparent)}
-.hx-wave-1{animation:hxSway 11s ease-in-out infinite alternate}
-.hx-wave-2{animation:hxSway 14s ease-in-out infinite alternate-reverse}
 
 .hx-d{position:absolute;display:block;fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;overflow:visible;opacity:.86}
 .hx-d.hx-warm,.hx-warm{stroke:color-mix(in srgb,var(--sun) 88%,#b57900)}
@@ -41,36 +52,36 @@
 .hx-soft{stroke:color-mix(in srgb,var(--accent) 55%,transparent);stroke-width:2.4}
 .hx-dash{stroke-dasharray:2 6;stroke-width:2.4}
 .hx-plane-body{fill:color-mix(in srgb,var(--surface) 70%,transparent)}
-.hx-trail{stroke:color-mix(in srgb,var(--accent) 60%,var(--peri));stroke-width:2.4;stroke-dasharray:3 7;animation:hxDash 22s linear infinite}
+.hx-trail{stroke:color-mix(in srgb,var(--accent) 60%,var(--peri));stroke-width:2.4;stroke-dasharray:3 7;}
 .hx-d-pencil{fill:color-mix(in srgb,var(--sun) 40%,transparent)}
-.hx-d-root{width:74px;left:2.4%;top:8%;transform:rotate(-8deg);animation:hxFloat 7s ease-in-out infinite}
-.hx-d-star{width:40px;left:2.6%;top:40%;animation:hxTwinkle 4.6s ease-in-out infinite}
-.hx-d-plane{width:66px;right:19%;top:11%;animation:hxGlide 7.5s ease-in-out infinite}
+.hx-d-root{width:74px;left:2.4%;top:8%;transform:rotate(-8deg);}
+.hx-d-star{width:40px;left:2.6%;top:40%;}
+.hx-d-plane{width:66px;right:19%;top:11%;}
 .hx-d-trail{width:210px;right:23%;top:14%;opacity:.7}
-.hx-d-pyramid{width:70px;right:3%;top:18%;animation:hxFloat 8s ease-in-out infinite reverse}
-.hx-d-pencil{width:42px;right:5.5%;top:44%;transform:rotate(28deg);animation:hxTilt 6s ease-in-out infinite}
-.hx-d-book{width:104px;left:2.4%;bottom:6%;transform:rotate(-9deg);animation:hxFloat 8.5s ease-in-out infinite;fill:color-mix(in srgb,var(--surface) 55%,transparent)}
-.hx-d-atom{width:62px;right:3.2%;bottom:5%;animation:hxSpin 30s linear infinite}
+.hx-d-pyramid{width:70px;right:3%;top:18%;}
+.hx-d-pencil{width:42px;right:5.5%;top:44%;transform:rotate(28deg);}
+.hx-d-book{width:104px;left:2.4%;bottom:6%;transform:rotate(-9deg);fill:color-mix(in srgb,var(--surface) 55%,transparent)}
+.hx-d-atom{width:62px;right:3.2%;bottom:5%;}
 .hx-d-leaf{fill:color-mix(in srgb,var(--accent) 34%,transparent);stroke:none;width:52px;opacity:.7}
 .hx-d-leaf-l{left:17%;bottom:2%;transform:rotate(-8deg)}
 .hx-d-leaf-r{right:19%;bottom:1%;transform:rotate(14deg) scaleX(-1)}
 .hx-dot{position:absolute;border-radius:50%;background:color-mix(in srgb,var(--accent) 45%,var(--peri))}
-.hx-dot-1{width:14px;height:14px;left:52%;top:16%;animation:hxFloat 6s ease-in-out infinite}
+.hx-dot-1{width:14px;height:14px;left:52%;top:16%;}
 .hx-dot-2{width:8px;height:8px;left:33%;bottom:24%;background:var(--sun)}
 .hx-dot-3{width:18px;height:18px;right:9%;bottom:24%;opacity:.8}
 .hx-dot-4{width:6px;height:6px;right:16%;bottom:16%;opacity:.7}
 .hx-spark{position:absolute;width:20px;height:20px;opacity:.9}
 .hx-spark::before,.hx-spark::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:100%;border-radius:2px;background:var(--sun);transform:translate(-50%,-50%) rotate(var(--r,0deg))}
 .hx-spark::after{--r:90deg;transform:translate(-50%,-50%) rotate(90deg);height:60%}
-.hx-spark-1{left:7.5%;top:9%;--r:0deg;animation:hxTwinkle 3.8s ease-in-out infinite}
-.hx-spark-2{right:12.5%;top:9%;animation:hxTwinkle 4.4s ease-in-out .8s infinite}
-.hx-spark-3{right:2.5%;top:60%;animation:hxTwinkle 5s ease-in-out .3s infinite}
+.hx-spark-1{left:7.5%;top:9%;--r:0deg;}
+.hx-spark-2{right:12.5%;top:9%;}
+.hx-spark-3{right:2.5%;top:60%;}
 
-.hx-copy{position:relative;z-index:2;width:min(100%,1000px);min-width:0;animation:hxRise .7s cubic-bezier(.2,.8,.2,1) both}
+.hx-copy{position:relative;z-index:2;width:min(100%,1000px);min-width:0;}
 .hx-hello h1{margin:0;font-family:"Lato",Arial,sans-serif;font-size:clamp(40px,6.2vw,80px);line-height:1;letter-spacing:-.045em;color:var(--ink);white-space:nowrap;display:flex;align-items:center;gap:.22em;flex-wrap:nowrap}
 .hx-hello-light{font-weight:400}
 .hx-hello strong{font-weight:900;color:var(--accent);max-width:9ch;overflow:hidden;text-overflow:ellipsis}
-.hx-wave{display:inline-block;font-size:.72em;transform-origin:70% 80%;animation:hxWave 2.8s ease-in-out infinite}
+.hx-wave{display:inline-block;font-size:.72em;transform-origin:70% 80%;}
 .hx-intro{margin:clamp(12px,1.6vw,18px) 0 0;max-width:62ch;color:var(--ink-muted);font-size:clamp(14px,1.55vw,18px);line-height:1.5;font-weight:500}
 .hx-search{margin-top:clamp(18px,2.4vw,28px);max-width:900px}
 .hx-search .clean-search{height:62px!important;padding:0 8px 0 20px!important;gap:12px;border:1px solid color-mix(in srgb,var(--accent) 10%,transparent)!important;border-radius:16px!important;

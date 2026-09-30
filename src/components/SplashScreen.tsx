@@ -2,13 +2,13 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
-const SPLASH_MS = 1250;
-const LEAVE_MS = 220;
+const SPLASH_MS = 2900;
+const LEAVE_MS = 550;
+const LETTERS = 'ARCHIVUM'.split('');
 
 export default function SplashScreen() {
   const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
-  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     if (window.location.pathname !== '/') {
@@ -16,37 +16,33 @@ export default function SplashScreen() {
       return;
     }
     document.documentElement.classList.add('archivum-booting');
-    const started = performance.now();
-    let raf = 0;
-    const tick = (now: number) => {
-      const elapsed = now - started;
-      const eased = Math.min(100, Math.round((1 - Math.pow(1 - Math.min(elapsed / SPLASH_MS, 1), 2.2)) * 100));
-      setProgress(eased);
-      if (elapsed < SPLASH_MS) raf = window.requestAnimationFrame(tick);
-    };
-    raf = window.requestAnimationFrame(tick);
+    setShow(true);
     const leave = window.setTimeout(() => setLeaving(true), SPLASH_MS - LEAVE_MS);
-    const timer = window.setTimeout(() => {
+    const done = window.setTimeout(() => {
       setShow(false);
       document.documentElement.classList.remove('archivum-booting');
     }, SPLASH_MS);
-    setShow(true);
-    return () => { window.clearTimeout(timer); window.clearTimeout(leave); window.cancelAnimationFrame(raf); };
+    return () => { window.clearTimeout(leave); window.clearTimeout(done); };
   }, []);
 
   if (!show) return null;
 
   return (
-    <div className={`boot-splash bs${leaving ? ' is-leaving' : ''}`} aria-label="Loading ARCHIVUM" role="status">
-      <div className="bs-content">
-        <div className="bs-mark-frame">
-          <Image className="bs-logo-image" src="/archivum-logo-dark.png" alt="ARCHIVUM" width={112} height={112} priority />
+    <div className={`boot-splash sp${leaving ? ' is-leaving' : ''}`} aria-label="Loading ARCHIVUM" role="status">
+      <span className="sp-orb sp-orb-a" /><span className="sp-orb sp-orb-b" />
+      <span className="sp-frame" aria-hidden="true" />
+      <div className="sp-content">
+        <div className="sp-mark">
+          <span className="sp-ring" />
+          <Image className="sp-logo" src="/archivum-logo-dark.png" alt="" width={72} height={72} priority />
         </div>
-        <div className="bs-name">ARCHIVUM</div>
-        <p className="bs-tagline">NOTES · PAPERS · STUDY MATERIAL</p>
-        <div className="bs-rule" aria-hidden="true"><span style={{ width: `${progress}%` }} /></div>
+        <div className="sp-word" aria-hidden="true">
+          {LETTERS.map((l, i) => <span key={i} style={{ ['--i' as string]: i }}>{l}</span>)}
+        </div>
+        <div className="sp-rule" aria-hidden="true"><i /></div>
+        <p className="sp-tag">Notes <b>·</b> Papers <b>·</b> Study Material</p>
       </div>
-      <div className="bs-credit">This App Is Made By Fawzan Kar</div>
+      <div className="sp-credit">Made by Fawzan Kar</div>
     </div>
   );
 }

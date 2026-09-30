@@ -2,12 +2,15 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { ArrowRight, Check, UserRound, GraduationCap } from 'lucide-react';
+import { ArrowRight, Check } from 'lucide-react';
 import { useStudentClass, type StudentClass } from './StudentClassContext';
-import { subjectsForClass } from '@/lib/subjects';
-import Art from './Art';
 
-const classes: StudentClass[] = [9, 10, 11, 12];
+const classes: { level: StudentClass; stage: string }[] = [
+  { level: 9, stage: 'Secondary' },
+  { level: 10, stage: 'Secondary' },
+  { level: 11, stage: 'Sr. Secondary' },
+  { level: 12, stage: 'Sr. Secondary' },
+];
 
 export default function FirstLaunch() {
   const { studentClass, displayName, setStudentClass, setDisplayName } = useStudentClass();
@@ -30,20 +33,22 @@ export default function FirstLaunch() {
     const shouldShow = !completed || !studentClass;
     setVisible(shouldShow);
     document.documentElement.classList.toggle('profile-onboarding-active', shouldShow);
-
     return () => document.documentElement.classList.remove('profile-onboarding-active');
   }, [pathname, studentClass, displayName]);
 
   const heading = useMemo(() => {
-    if (!selectedClass) return 'Choose your class.';
-    if (!name.trim()) return 'What should we call you?';
-    return 'Ready when you are.';
+    if (!selectedClass) return 'Pick your class';
+    if (!name.trim()) return 'And your name?';
+    return `Welcome, ${name.trim().split(' ')[0]}`;
   }, [selectedClass, name]);
 
   if (!visible) return null;
 
+  const canFinish = Boolean(selectedClass && name.trim());
+  const step = !selectedClass ? 0 : !name.trim() ? 1 : 2;
+
   const finish = () => {
-    if (!selectedClass) return;
+    if (!selectedClass || !name.trim()) return;
     setStudentClass(selectedClass);
     setDisplayName(name);
     window.localStorage.setItem('archivum_profile_completed', '1');
@@ -52,57 +57,45 @@ export default function FirstLaunch() {
     document.documentElement.classList.remove('profile-onboarding-active');
   };
 
-  const canFinish = Boolean(selectedClass && name.trim());
-
   return (
-    <div className="profile-onboarding" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
-      <div className="profile-onboarding-panel">
-        <div className="profile-onboarding-brand">
-          <span className="brand-mark"><span className="archivum-css-logo" /></span>
-          <span>ARCHIVUM</span>
+    <div className="ob" role="dialog" aria-modal="true" aria-labelledby="ob-title">
+      <span className="ob-orb ob-orb-a" /><span className="ob-orb ob-orb-b" />
+      <form className="ob-card" onSubmit={e => { e.preventDefault(); finish(); }}>
+        <div className="ob-top">
+          <span className="ob-brand">ARCHIVUM</span>
+          <span className="ob-steps" aria-hidden="true">
+            {[0, 1, 2].map(i => <i key={i} className={i <= step ? 'on' : ''} />)}
+          </span>
         </div>
 
-        <div className="profile-onboarding-copy">
-          
-          <h2 id="welcome-title" className="font-display">{heading}</h2>
-          <p>Pick your class and tell us your name. We will use that to keep the archive focused on your study material.</p>
+        <h2 id="ob-title" key={heading} className="ob-title">{heading}</h2>
+
+        <div className="ob-classes" role="radiogroup" aria-label="Choose your class" data-picked={selectedClass ?? ''}>
+          {classes.map(({ level, stage }, i) => {
+            const on = selectedClass === level;
+            return (
+              <button key={level} type="button" role="radio" aria-checked={on} onClick={() => setSelectedClass(level)}
+                className={`ob-class${on ? ' is-on' : ''}`} style={{ ['--d' as string]: `${120 + i * 60}ms` }}>
+                <span className="ob-class-check"><Check strokeWidth={3} /></span>
+                <small>Class</small>
+                <strong>{level}</strong>
+                <em>{stage}</em>
+              </button>
+            );
+          })}
         </div>
 
-        <div className="profile-step">
-          <div className="profile-step-label"><GraduationCap /> <span>Your class</span></div>
-          <div className="cls-grid" role="radiogroup" aria-label="Choose your class">
-            {classes.map(level => {
-              const subs = subjectsForClass(level);
-              const selected = selectedClass === level;
-              return (
-                <button key={level} type="button" role="radio" aria-checked={selected} onClick={() => setSelectedClass(level)} className={`cls-card cls-t${level}${selected ? ' selected' : ''}`} style={{ '--cls-delay': `${(level - 9) * 55}ms` } as React.CSSProperties}>
-                  <span className="cls-check"><Check /></span>
-                  <span className="cls-label">Class</span>
-                  <strong className="cls-num">{level}</strong>
-                  <span className="cls-stage">{level <= 10 ? 'Secondary' : 'Senior Secondary'}</span>
-                  <span className="cls-subjects" aria-hidden="true">
-                    {subs.slice(0, 3).map(sub => <span key={sub} className="cls-sub"><Art name={sub} /></span>)}
-                    {subs.length > 3 && <span className="cls-more">+{subs.length - 3}</span>}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <label className={`ob-field${name ? ' has-value' : ''}`}>
+          <input value={name} onChange={e => setName(e.target.value.slice(0, 40))} maxLength={40} autoComplete="given-name" aria-label="Your name" placeholder=" " />
+          <span className="ob-float">Your name</span>
+          <span className="ob-count">{name.length ? `${name.length}/40` : ''}</span>
+        </label>
 
-        <div className="profile-step">
-          <div className="profile-step-label"><UserRound /> <span>Your name</span></div>
-          <div className="profile-name-field">
-            <input value={name} onChange={e => setName(e.target.value.slice(0, 40))} maxLength={40} placeholder="What should we call you?" autoComplete="given-name" />
-            <span>{name.length}/40</span>
-          </div>
-          <p className="profile-private-note">Used only on this device to personalise the app.</p>
-        </div>
-
-        <button type="button" disabled={!canFinish} onClick={finish} className="profile-continue">
-          Enter ARCHIVUM <ArrowRight />
+        <button type="submit" disabled={!canFinish} className="ob-go">
+          <span>Enter ARCHIVUM</span><ArrowRight />
         </button>
-      </div>
+        <p className="ob-note">Stays on this device. Change it anytime from the menu.</p>
+      </form>
     </div>
   );
 }
