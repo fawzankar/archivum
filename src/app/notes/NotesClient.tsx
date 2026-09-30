@@ -154,6 +154,13 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
         <div>
           <p>ARCHIVE RESULTS</p>
           <h3>{activeSubject || 'All subjects'} <span>· {filteredNotes.length}</span></h3>
+          <p className="notes-result-rating-summary">
+            {(() => {
+              const rated = filteredNotes.filter((r) => Number(r.rating_count) > 0);
+              const votes = rated.reduce((sum, r) => sum + Number(r.rating_count || 0), 0);
+              return votes ? `${votes} ${votes === 1 ? 'rating' : 'ratings'} across these notes` : 'No ratings yet on these notes';
+            })()}
+          </p>
         </div>
         <span className="notes-result-class">Class {selectedClass}</span>
         

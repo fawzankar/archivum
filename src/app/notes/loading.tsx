@@ -1,5 +1,3 @@
-import LibraryLoading from '@/components/LibraryLoading';
-
 export default function Loading() {
-  return <LibraryLoading label="Loading notes" />;
+  return <div className="route-loading-spacer" aria-hidden="true" />;
 }

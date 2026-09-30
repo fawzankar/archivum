@@ -2259,3 +2259,35 @@ body,button,input,textarea,select{
     -webkit-backdrop-filter:blur(11px);
   }
 }
+
+/* V30: small/microcopy is intentionally quiet; headings retain their hierarchy. */
+small,
+.notes-library-description,
+.notes-result-head p,
+.notes-result-rating-summary,
+.rc-kind,
+.rc-chips span,
+.rc-foot,
+.resource-modern-rating>div:first-child span,
+.resource-related>div>span,
+.community-rating-summary span,
+.rating-saving,
+.rating-saved,
+.library-loading-card span{
+  font-weight:500!important;
+}
+.route-loading-spacer{min-height:12vh}
+.notes-result-rating-summary{
+  margin:5px 0 0!important;
+  color:var(--ink-muted)!important;
+  font-size:11px!important;
+  letter-spacing:.01em!important;
+}
+.rc-rate{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  white-space:nowrap;
+}
+.rc-rate svg{width:14px;height:14px;stroke-width:2}
+.rc-rate svg.filled{fill:var(--accent);color:var(--accent)}

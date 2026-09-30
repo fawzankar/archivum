@@ -22,6 +22,12 @@ export default function ResourceCard({ resource, onView, compact = false }: { re
       <h3>{resource.title}</h3>
       <div className="rc-chips"><span>Class {resource.class_level}</span><span>{resource.subject}</span>{resource.chapter&&<span>{resource.chapter}</span>}</div>
     </Link>
-    <div className="rc-foot"><span className="rc-rate"><Star className={resource.rating_count?'filled':''}/>{resource.rating_count?resource.average_rating.toFixed(1):'Not rated yet'}</span><span className="rc-open">Open <ArrowUpRight/></span></div>
+    <div className="rc-foot">
+      <span className="rc-rate" aria-label={resource.rating_count ? `${resource.average_rating.toFixed(1)} out of 5 from ${resource.rating_count} votes` : 'No ratings yet'}>
+        <Star className={resource.rating_count?'filled':''}/>
+        {resource.rating_count ? `${resource.average_rating.toFixed(1)} · ${resource.rating_count} ${resource.rating_count === 1 ? 'vote' : 'votes'}` : 'No votes yet'}
+      </span>
+      <span className="rc-open">Open <ArrowUpRight/></span>
+    </div>
   </article>;
 }
