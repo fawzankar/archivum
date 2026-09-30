@@ -2291,3 +2291,44 @@ small,
 }
 .rc-rate svg{width:14px;height:14px;stroke-width:2}
 .rc-rate svg.filled{fill:var(--accent);color:var(--accent)}
+
+/* V33: desktop subject art is centered and the library artwork is deliberately quiet. */
+.hm-subject-home-art{
+  align-self:center!important;
+  justify-self:center!important;
+}
+.hm-subject-home-art .art{
+  transform:none!important;
+}
+.hm-hello .hm-wave{
+  font-size:.82em!important;
+  vertical-align:-.02em!important;
+}
+.notes-subject-art{
+  width:52px!important;
+  height:52px!important;
+  margin-bottom:12px!important;
+  opacity:.14!important;
+  flex:none!important;
+}
+.notes-subject-art .art{
+  width:100%!important;
+  height:100%!important;
+}
+.notes-subject-card.active .notes-subject-art{
+  opacity:.18!important;
+}
+@media(max-width:700px){
+  .notes-subject-art{
+    width:46px!important;
+    height:46px!important;
+    margin-bottom:10px!important;
+    opacity:.15!important;
+  }
+  .notes-subject-card span:not(.notes-subject-art){
+    margin-top:0!important;
+  }
+  .hm-hello .hm-wave{
+    font-size:.9em!important;
+  }
+}

@@ -37,11 +37,30 @@ export default function PaperFinderClient({
   initialSchool,
 }: PaperFinderProps) {
   const router = useRouter();
-  const [selectedClass, setSelectedClass] = useState<number | undefined>(initialClass);
+  const [selectedClass, setSelectedClass] = useState<number | undefined>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = Number(localStorage.getItem('archivum_student_class') || '');
+      if ([9, 10, 11, 12].includes(stored)) return stored;
+    }
+    return initialClass;
+  });
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [selectedPaperType, setSelectedPaperType] = useState<string>(initialPaperType || '');
   const [selectedYear, setSelectedYear] = useState<number | undefined>(initialYear);
   const [selectedSchool, setSelectedSchool] = useState<string>(initialSchool || '');
+  const [papers, setPapers] = useState<Resource[]>(() => {
+    if (typeof window === 'undefined') return allPapers;
+    try {
+      const cached = sessionStorage.getItem('archivum_library_prefetch_v1');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        const key = selectedClass ? String(selectedClass) : '10';
+        const bundle = parsed?.papers?.[key];
+        if (Array.isArray(bundle) && bundle.length) return bundle as Resource[];
+      }
+    } catch {}
+    return allPapers;
+  });
   const [activePdf, setActivePdf] = useState<Resource | null>(null);
 
   useEffect(() => {
@@ -59,28 +78,47 @@ export default function PaperFinderClient({
     }
   }, [selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool]);
 
+  useEffect(() => {
+    let cancelled = false;
+    const hydrateIfNeeded = async () => {
+      if (papers.length) return;
+      try {
+        const response = await fetch('/api/library-prefetch', { cache: 'force-cache' });
+        const data = await response.json();
+        const key = selectedClass ? String(selectedClass) : '10';
+        const bundle = data?.papers?.[key];
+        if (!cancelled && Array.isArray(bundle)) {
+          setPapers(bundle as Resource[]);
+          try { sessionStorage.setItem('archivum_library_prefetch_v1', JSON.stringify(data)); } catch {}
+        }
+      } catch {}
+    };
+    void hydrateIfNeeded();
+    return () => { cancelled = true; };
+  }, [selectedClass, papers.length]);
+
   const availableSubjects = useMemo(() => {
-    return selectedClass ? subjectsForClass(selectedClass) : Array.from(new Set(allPapers.map(p => p.subject).filter(Boolean))).sort();
-  }, [allPapers, selectedClass]);
+    return selectedClass ? subjectsForClass(selectedClass) : Array.from(new Set(papers.map(p => p.subject).filter(Boolean))).sort();
+  }, [papers, selectedClass]);
 
   const availableSchools = useMemo(() => {
     const set = new Set<string>();
-    allPapers.forEach((p) => {
+    papers.forEach((p) => {
       if (p.school_name) set.add(p.school_name);
     });
     return Array.from(set).sort();
-  }, [allPapers]);
+  }, [papers]);
 
   const availableYears = useMemo(() => {
     const set = new Set<number>();
-    allPapers.forEach((p) => {
+    papers.forEach((p) => {
       if (p.year) set.add(p.year);
     });
     return Array.from(set).sort((a, b) => b - a);
-  }, [allPapers]);
+  }, [papers]);
 
   const filteredPapers = useMemo(() => {
-    return allPapers.filter((p) => {
+    return papers.filter((p) => {
       if (selectedClass && p.class_level !== selectedClass) return false;
       if (selectedSubject && !resourceSubjectMatches(p.subject, selectedSubject)) return false;
       if (selectedPaperType && p.paper_type?.toLowerCase() !== selectedPaperType.toLowerCase()) return false;
@@ -88,7 +126,7 @@ export default function PaperFinderClient({
       if (selectedSchool && p.school_name?.toLowerCase() !== selectedSchool.toLowerCase()) return false;
       return true;
     });
-  }, [allPapers, selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool]);
+  }, [papers, selectedClass, selectedSubject, selectedPaperType, selectedYear, selectedSchool]);
 
   useEffect(() => {
     for (const item of filteredPapers.slice(0, 16)) {

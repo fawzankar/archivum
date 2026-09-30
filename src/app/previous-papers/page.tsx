@@ -1,7 +1,5 @@
 import React from 'react';
-import { getPreferredClass } from '@/lib/studentClass';
 import PageHead from '@/components/PageHead';
-import { getResources } from '@/lib/resources';
 import PaperFinderClient from './PaperFinderClient';
 
 export const revalidate = 300;
@@ -18,20 +16,16 @@ export default async function PreviousPapersPage({
   }>;
 }) {
   const params = await searchParams;
-  const [preferredClass, result] = await Promise.all([
-    params.class ? Promise.resolve(null) : getPreferredClass(),
-    getResources({ resource_type: 'Previous Year Paper', limit: 200, withCount: false }),
-  ]);
-  const selectedClass = params.class ? parseInt(params.class, 10) : (preferredClass ?? undefined);
+  const parsed = params.class ? parseInt(params.class, 10) : 10;
+  const selectedClass = [9, 10, 11, 12].includes(parsed) ? parsed : undefined;
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <PageHead title="Previous Papers" art="papers" tone="peri">
-          JKBOSE board examinations, school pre-boards, unit tests, and terminal test papers across Classes 9 to 12.
-        </PageHead>
-
+        JKBOSE board examinations, school pre-boards, unit tests, and terminal test papers across Classes 9 to 12.
+      </PageHead>
       <PaperFinderClient
-        allPapers={result.items}
+        allPapers={[]}
         initialClass={selectedClass}
         initialSubject={params.subject}
         initialPaperType={params.paperType}

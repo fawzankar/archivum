@@ -29,14 +29,26 @@ function mergeUnique(items: Resource[]) {
 
 export default function NotesClient({ allNotes, initialClass, initialSubject }: NotesClientProps) {
   const router = useRouter();
-  const [selectedClass, setSelectedClass] = useState<number>(initialClass);
+  const [selectedClass, setSelectedClass] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = Number(localStorage.getItem('archivum_student_class') || '');
+      if ([9, 10, 11, 12].includes(stored)) return stored;
+    }
+    return initialClass;
+  });
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [notes, setNotes] = useState<Resource[]>(() => {
     if (typeof window === 'undefined') return mergeUnique(allNotes);
     try {
-      const cached = sessionStorage.getItem('archivum_notes_bundle_v23');
+      const cached = sessionStorage.getItem('archivum_library_prefetch_v1');
       if (cached) {
         const parsed = JSON.parse(cached);
+        const bundle = parsed?.notes?.[selectedClass as 9 | 10 | 11 | 12];
+        if (Array.isArray(bundle) && bundle.length) return mergeUnique(bundle as Resource[]);
+      }
+      const legacy = sessionStorage.getItem('archivum_notes_bundle_v23');
+      if (legacy) {
+        const parsed = JSON.parse(legacy);
         if (Array.isArray(parsed) && parsed.length) return mergeUnique(parsed as Resource[]);
       }
     } catch {}
@@ -44,10 +56,22 @@ export default function NotesClient({ allNotes, initialClass, initialSubject }: 
   });
 
   React.useEffect(() => {
-    try {
-      sessionStorage.setItem('archivum_notes_bundle_v23', JSON.stringify(allNotes));
-    } catch {}
-  }, [allNotes]);
+    let cancelled = false;
+    const hydrateIfNeeded = async () => {
+      if (notes.length) return;
+      try {
+        const response = await fetch('/api/library-prefetch', { cache: 'force-cache' });
+        const data = await response.json();
+        const bundle = data?.notes?.[selectedClass];
+        if (!cancelled && Array.isArray(bundle)) {
+          setNotes(mergeUnique(bundle as Resource[]));
+          try { sessionStorage.setItem('archivum_library_prefetch_v1', JSON.stringify(data)); } catch {}
+        }
+      } catch {}
+    };
+    void hydrateIfNeeded();
+    return () => { cancelled = true; };
+  }, [selectedClass, notes.length]);
 
   const classNotes = useMemo(() => {
     const seen = new Set<string>();
