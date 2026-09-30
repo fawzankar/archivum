@@ -33,7 +33,6 @@ export default function SplashScreen() {
       <span className="sp-frame" aria-hidden="true" />
       <div className="sp-content">
         <div className="sp-mark">
-          <span className="sp-ring" />
           <Image className="sp-logo" src="/archivum-logo-dark.png" alt="" width={72} height={72} priority />
         </div>
         <div className="sp-word" aria-hidden="true">

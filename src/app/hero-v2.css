@@ -532,3 +532,114 @@
     width:62px!important;
   }
 }
+
+
+/* v65 — the input itself fills the search bar; no small pill/cylindrical inner container. */
+.hx-search .clean-search{
+  overflow:hidden!important;
+}
+.hx-search .clean-search input{
+  align-self:stretch!important;
+  height:100%!important;
+  width:auto!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  outline:0!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+}
+.hx-search .clean-search input:focus{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}
+.hx-search .clean-search input::selection{
+  background:color-mix(in srgb,var(--accent) 16%,var(--peri))!important;
+  color:var(--ink)!important;
+}
+
+/* Hey + the student's name use the same expressive display face. */
+.hx-hello h1,
+.hx-hello h1 .hx-hello-light,
+.hx-hello h1 strong{
+  font-family:"Trebuchet MS","Arial Rounded MT Bold",Arial,sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:-.045em!important;
+}
+.hx-hello h1 strong{
+  color:color-mix(in srgb,var(--sun) 78%,var(--accent))!important;
+}
+
+/* v65: the reference pencil stays away from the search field. */
+.hx-d-pencil-ref{
+  top:25%!important;
+  right:12%!important;
+}
+@media(max-width:900px){
+  .hx-d-pencil-ref{top:23%!important;right:9%!important;width:102px!important}
+}
+@media(max-width:640px){
+  .hx-d-pencil-ref{top:18%!important;right:7%!important;width:76px!important;opacity:.20!important}
+}
+
+
+/* v65 — premium navy splash, no circular logo treatment. */
+.boot-splash.sp{
+  background:
+    radial-gradient(70% 65% at 15% 12%,color-mix(in srgb,var(--peri) 24%,transparent),transparent 70%),
+    radial-gradient(60% 65% at 88% 84%,color-mix(in srgb,var(--sun) 18%,transparent),transparent 72%),
+    linear-gradient(145deg,#171d5d 0%,#20286f 52%,#11164d 100%)!important;
+  color:#fff8df!important;
+}
+.boot-splash.sp .sp-frame{display:none!important}
+.boot-splash.sp .sp-mark{
+  width:auto!important;
+  height:auto!important;
+  margin-bottom:clamp(20px,4vh,34px)!important;
+}
+.boot-splash.sp .sp-ring{display:none!important}
+.boot-splash.sp .sp-logo{
+  width:74px!important;
+  height:74px!important;
+  filter:brightness(0) invert(1)!important;
+}
+.boot-splash.sp .sp-word{
+  font-family:"Lato",Arial,sans-serif!important;
+  font-weight:400!important;
+  letter-spacing:.24em!important;
+  color:#fff4c9!important;
+}
+.boot-splash.sp .sp-word span{
+  font-family:"Lato",Arial,sans-serif!important;
+  font-weight:400!important;
+  background:none!important;
+  color:#fff4c9!important;
+  -webkit-text-fill-color:#fff4c9!important;
+  animation:
+    spLetter .95s cubic-bezier(.2,.8,.2,1) calc(.45s + var(--i)*.085s) both!important;
+}
+.boot-splash.sp .sp-rule{
+  background:rgba(255,244,201,.20)!important;
+}
+.boot-splash.sp .sp-rule i{
+  background:linear-gradient(90deg,transparent,#f5c95d,transparent)!important;
+}
+.boot-splash.sp .sp-tag{
+  color:rgba(255,244,201,.68)!important;
+  font-weight:400!important;
+}
+.boot-splash.sp .sp-tag b{
+  color:#f5c95d!important;
+  font-weight:400!important;
+}
+.boot-splash.sp .sp-credit{
+  color:rgba(255,244,201,.55)!important;
+  font-weight:400!important;
+}
