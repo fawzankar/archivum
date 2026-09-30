@@ -2036,7 +2036,7 @@ main:has(.contributors-intro){
 }
 .pdf-load-spinner svg{width:19px;height:19px;animation:pdfSpin .75s linear infinite}
 
-/* V21: distinctive typography; no Inter / Geist / Space Grotesk / Instrument Serif. */
+/* V21: distinctive typography; no Lato / Lato / Lato / Lato. */
 body,button,input,textarea,select{font-family:"Lato",Arial,sans-serif}
 .font-display,.home-greeting-title,.home-subjects-home-head h2,.resource-modern-rating h2,.resource-related h2{font-family:"Lato",Arial,sans-serif}
 
@@ -2491,4 +2491,158 @@ small,
   display: block !important;
   margin: auto !important;
   transform: none !important;
+}
+
+/* ===== V39: subject artwork + class selector + premium splash ===== */
+
+/* Subject artwork sits inside a consistent circular stage on large screens. */
+.hm-subject-home-art,
+.notes-subject-art{
+  border-radius:50%;
+  background:rgba(255,255,255,.18);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);
+  padding:7px;
+}
+.hm-subject-home-art .art,
+.notes-subject-art .art{
+  width:100%!important;
+  height:100%!important;
+  display:block;
+}
+
+/* Keep the icon itself from touching the circle edge. */
+.hm-subject-home-art .art{transform:scale(.92)}
+.notes-subject-art .art{transform:scale(.90)}
+
+/* Class selector: clearer, more premium controls without oversized bold microcopy. */
+.notes-class-tabs{
+  gap:10px!important;
+  padding:4px 36px 30px!important;
+  align-items:center;
+}
+.notes-class-tab{
+  min-width:108px!important;
+  min-height:46px!important;
+  padding:0 18px!important;
+  border-radius:999px!important;
+  background:var(--surface)!important;
+  border:1px solid var(--border)!important;
+  color:var(--ink-muted)!important;
+  font-family:"Lato",Arial,sans-serif!important;
+  font-size:12px!important;
+  font-weight:600!important;
+  letter-spacing:.01em!important;
+  box-shadow:0 4px 12px rgba(27,33,102,.04)!important;
+  transition:transform .16s ease,background .16s ease,border-color .16s ease,box-shadow .16s ease!important;
+}
+.notes-class-tab:hover{
+  transform:translateY(-1px)!important;
+  border-color:var(--accent)!important;
+  box-shadow:0 8px 18px rgba(27,33,102,.08)!important;
+}
+.notes-class-tab.active{
+  background:var(--accent)!important;
+  border-color:var(--accent)!important;
+  color:var(--accent-contrast)!important;
+  box-shadow:0 8px 20px var(--accent-glow)!important;
+}
+
+/* Premium splash: layered brand mark, progress track and cleaner hierarchy. */
+.boot-splash{
+  background:
+    radial-gradient(circle at 50% 35%, color-mix(in srgb,var(--accent-light) 72%,transparent), transparent 34%),
+    var(--ivory)!important;
+  gap:11px!important;
+  overflow:hidden;
+}
+.boot-splash::before{
+  content:"";
+  position:absolute;
+  width:340px;
+  height:340px;
+  border-radius:50%;
+  border:1px solid color-mix(in srgb,var(--accent) 18%,transparent);
+  box-shadow:0 0 90px color-mix(in srgb,var(--accent) 12%,transparent);
+  animation:splashOrbit 4s ease-in-out infinite alternate;
+  pointer-events:none;
+}
+.boot-splash-mark{
+  position:relative;
+  width:76px!important;
+  height:76px!important;
+  border-radius:24px!important;
+  background:var(--navy)!important;
+  box-shadow:0 20px 55px color-mix(in srgb,var(--navy) 24%,transparent)!important;
+  animation:splashMark 1.2s ease-out both;
+}
+.boot-splash-mark .archivum-css-logo{
+  width:35px!important;
+  height:35px!important;
+}
+.boot-splash-name{
+  position:relative;
+  font-size:24px!important;
+  font-weight:700!important;
+  letter-spacing:.11em!important;
+  animation:splashText .7s ease-out .08s both;
+}
+.boot-splash-credit{
+  position:relative;
+  font-size:11px!important;
+  font-weight:400!important;
+  animation:splashText .7s ease-out .16s both;
+}
+.boot-splash-progress{
+  position:relative;
+  width:min(300px,72vw)!important;
+  height:7px!important;
+  margin-top:5px;
+  background:color-mix(in srgb,var(--border) 70%,transparent)!important;
+  box-shadow:inset 0 1px 3px rgba(27,33,102,.10),0 5px 20px color-mix(in srgb,var(--accent) 12%,transparent)!important;
+}
+.boot-splash-progress span{
+  background:linear-gradient(90deg,var(--accent),var(--navy))!important;
+}
+.boot-splash-percent{
+  font-weight:500!important;
+}
+@keyframes splashMark{
+  from{opacity:0;transform:translateY(10px) scale(.88)}
+  to{opacity:1;transform:none}
+}
+@keyframes splashText{
+  from{opacity:0;transform:translateY(7px)}
+  to{opacity:1;transform:none}
+}
+@keyframes splashOrbit{
+  from{transform:scale(.86);opacity:.45}
+  to{transform:scale(1.05);opacity:.9}
+}
+
+@media(max-width:700px){
+  .hm-subject-home-art{
+    width:78px!important;
+    height:78px!important;
+    padding:5px!important;
+  }
+  .notes-subject-art{
+    width:74px!important;
+    height:74px!important;
+    padding:5px!important;
+    margin-bottom:22px!important;
+  }
+  .notes-class-tabs{
+    padding:2px 16px 18px!important;
+    gap:7px!important;
+  }
+  .notes-class-tab{
+    min-width:88px!important;
+    min-height:40px!important;
+    padding:0 13px!important;
+    font-size:11px!important;
+  }
+  .boot-splash::before{
+    width:260px;
+    height:260px;
+  }
 }
