@@ -93,6 +93,36 @@ const CARD_COLUMNS = `id, slug, title, NULL AS description, class_level, board, 
   NULL AS storage_key, NULL AS file_hash, status, NULL AS rejection_reason, featured, views, downloads,
   average_rating, rating_count, NULL AS tags, created_at, updated_at, approved_at, NULL AS photo_keys`;
 
+
+export interface RecentHomeBundle {
+  9: Resource[];
+  10: Resource[];
+  11: Resource[];
+  12: Resource[];
+}
+
+const getRecentHomeBundleUncached = async (): Promise<RecentHomeBundle> => {
+  const rows = await query<Resource>(
+    `SELECT ${CARD_COLUMNS} FROM resources
+     WHERE status = 'approved'
+     ORDER BY created_at DESC
+     LIMIT 120`,
+  );
+  const grouped: RecentHomeBundle = { 9: [], 10: [], 11: [], 12: [] };
+  for (const row of rows) {
+    if (grouped[row.class_level as 9|10|11|12] && grouped[row.class_level as 9|10|11|12].length < 6) {
+      grouped[row.class_level as 9|10|11|12].push(row);
+    }
+  }
+  return grouped;
+};
+
+export const getRecentHomeBundle = unstable_cache(
+  getRecentHomeBundleUncached,
+  ['home-recent-bundle-v1'],
+  { revalidate: 300, tags: ['library'] },
+);
+
 async function getLibraryBundleUncached(): Promise<LibraryBundle> {
   const rows = await query<Resource>(
     `SELECT ${CARD_COLUMNS} FROM resources

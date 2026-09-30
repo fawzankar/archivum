@@ -781,3 +781,60 @@
     min-height:0!important;
   }
 }
+
+
+/* v68 — deep mobile hero/layout fix */
+.hx-hello h1{
+  white-space:normal!important;
+  flex-wrap:wrap!important;
+  max-width:100%!important;
+  overflow:visible!important;
+}
+.hx-hello h1 strong{
+  max-width:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  min-width:0!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
+}
+
+@media (max-width:640px){
+  .hx-hero{
+    min-height:300px!important;
+    height:auto!important;
+    padding:22px 16px 24px!important;
+  }
+  .hx-copy{
+    width:100%!important;
+    max-width:100%!important;
+  }
+  .hx-hello h1{
+    font-size:clamp(2.65rem,11.5vw,4rem)!important;
+    line-height:.98!important;
+    gap:.14em .18em!important;
+  }
+  .hx-hello h1 strong{
+    flex:0 1 auto!important;
+    max-width:100%!important;
+  }
+  .hx-intro{
+    max-width:94%!important;
+    margin-top:12px!important;
+    font-size:.96rem!important;
+    line-height:1.4!important;
+  }
+  .hx-search{
+    margin-top:16px!important;
+  }
+  .hx-search .clean-search{
+    height:60px!important;
+  }
+}
+
+/* v68 — splash supporting lines should read as normal Lato, not bold */
+.boot-splash.sp .sp-tag,
+.boot-splash.sp .sp-tag b,
+.boot-splash.sp .sp-credit{
+  font-weight:400!important;
+}
