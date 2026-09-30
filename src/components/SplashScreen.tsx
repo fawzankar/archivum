@@ -33,7 +33,7 @@ export default function SplashScreen() {
           <Image className="bs-logo-image" src="/archivum-logo-dark.png" alt="ARCHIVUM" width={112} height={112} priority />
         </div>
         <div className="bs-name">ARCHIVUM</div>
-        <p className="bs-tagline">A Sister Organization Of <span className="quest-word">QUEST</span></p>
+        <p className="bs-tagline">NOTES · PAPERS · STUDY MATERIAL</p>
         <span className="bs-rule" aria-hidden="true" />
       </div>
       <div className="bs-credit">This App Is Made By <strong>Fawzan Kar</strong></div>

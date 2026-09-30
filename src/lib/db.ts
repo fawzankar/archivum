@@ -126,6 +126,7 @@ async function runFullInit(db: Client): Promise<void> {
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_class_subject_type_created ON resources(status,class_level,subject,resource_type,created_at DESC)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_type_year_created ON resources(status,resource_type,year,created_at DESC)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_resources_status_school_created ON resources(status,school_name,created_at DESC)`, args: [] },
+      { sql: `CREATE INDEX IF NOT EXISTS idx_resources_search_filters ON resources(status,class_level,subject,resource_type,paper_type,year,created_at DESC)`, args: [] },
     ], 'write');
 
     await db.execute({ sql: `ALTER TABLE resources ADD COLUMN contributor_name TEXT`, args: [] }).catch(() => {});

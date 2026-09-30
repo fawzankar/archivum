@@ -3063,7 +3063,7 @@ body{padding-top:72px!important}
     linear-gradient(110deg,
       color-mix(in srgb,var(--surface) 24%,transparent),
       color-mix(in srgb,var(--accent-light) 26%,transparent)),
-    url('/hero-landscape.png')!important;
+    url('/hero-landscape.jpg')!important;
   background-size:cover!important;
   background-position:center!important;
   border-color:color-mix(in srgb,var(--accent) 16%,var(--border))!important;
@@ -3110,10 +3110,10 @@ body{padding-top:72px!important}
 @keyframes heroGlowOrbV47{from{transform:translate3d(0,0,0) scale(.85);opacity:.35}to{transform:translate3d(-28px,22px,0) scale(1.18);opacity:.8}}
 
 /* Accent themes tint the supplied landscape differently without replacing it. */
-:root[data-accent="forest"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(237,247,239,.28),rgba(15,77,46,.24)),url('/hero-landscape.png')!important}
-:root[data-accent="smoky-olive"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(245,242,231,.28),rgba(86,84,73,.23)),url('/hero-landscape.png')!important}
-:root[data-accent="soft-pink"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(255,241,247,.28),rgba(212,108,140,.20)),url('/hero-landscape.png')!important}
-:root[data-accent="ocean"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(232,247,250,.28),rgba(6,80,107,.23)),url('/hero-landscape.png')!important}
+:root[data-accent="forest"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(237,247,239,.28),rgba(15,77,46,.24)),url('/hero-landscape.jpg')!important}
+:root[data-accent="smoky-olive"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(245,242,231,.28),rgba(86,84,73,.23)),url('/hero-landscape.jpg')!important}
+:root[data-accent="soft-pink"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(255,241,247,.28),rgba(212,108,140,.20)),url('/hero-landscape.jpg')!important}
+:root[data-accent="ocean"] .home-hero-panel{background-image:linear-gradient(110deg,rgba(232,247,250,.28),rgba(6,80,107,.23)),url('/hero-landscape.jpg')!important}
 
 /* Contributors get the same lively surface language as the rest of Archivum. */
 main:has(.contributors-intro){background:transparent!important}
@@ -3139,4 +3139,134 @@ main:has(.contributors-intro){background:transparent!important}
 }
 @media(prefers-reduced-motion:reduce){
   .home-hero-panel::before,.home-hero-panel::after,.hero-zebra-glow,.library-loading-spinner{animation:none!important}
+}
+
+
+/* ===== V48: reference-led hero + splash, fixed app chrome, interaction lock ===== */
+.site-header{
+  position:fixed!important;
+  top:0!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+  z-index:1800!important;
+  min-height:72px!important;
+  transform:none!important;
+}
+.site-header.is-scrolled{position:fixed!important;top:0!important}
+body{padding-top:72px!important}
+
+/* The supplied mountain artwork fills the hero; only the light/glow layer moves. */
+.home-hero-panel{
+  min-height:430px!important;
+  background-image:
+    linear-gradient(120deg,
+      color-mix(in srgb,var(--ivory) 20%,transparent),
+      color-mix(in srgb,var(--accent-light) 22%,transparent)),
+    url('/hero-landscape.jpg')!important;
+  background-size:cover!important;
+  background-repeat:no-repeat!important;
+  background-position:center center!important;
+}
+.hero-zebra{display:none!important}
+.home-hero-panel::before{
+  content:""!important;
+  position:absolute!important;
+  inset:-18%!important;
+  z-index:1!important;
+  pointer-events:none!important;
+  background:
+    radial-gradient(circle at 18% 24%,color-mix(in srgb,var(--accent) 26%,transparent) 0,transparent 21%),
+    radial-gradient(circle at 82% 72%,color-mix(in srgb,var(--sun) 28%,transparent) 0,transparent 22%),
+    radial-gradient(circle at 58% 40%,color-mix(in srgb,var(--peri) 17%,transparent) 0,transparent 18%);
+  filter:blur(20px);
+  opacity:.62;
+  animation:archivumHeroGlowV48 7s ease-in-out infinite alternate;
+}
+.home-hero-panel::after{
+  content:""!important;
+  position:absolute!important;
+  width:44vw!important;height:44vw!important;max-width:520px!important;max-height:520px!important;
+  right:-15%!important;top:-30%!important;border-radius:50%!important;
+  border:1px solid color-mix(in srgb,var(--surface) 45%,transparent)!important;
+  box-shadow:0 0 90px color-mix(in srgb,var(--accent) 20%,transparent)!important;
+  pointer-events:none!important;z-index:2!important;
+  animation:archivumHeroHaloV48 9s ease-in-out infinite alternate;
+}
+.home-hero-copy{position:relative!important;z-index:4!important}
+@keyframes archivumHeroGlowV48{0%{transform:translate3d(-2%,0,0) scale(.96);opacity:.38}100%{transform:translate3d(3%,2%,0) scale(1.06);opacity:.76}}
+@keyframes archivumHeroHaloV48{0%{transform:translate3d(0,0,0) scale(.92);opacity:.35}100%{transform:translate3d(-7%,8%,0) scale(1.08);opacity:.72}}
+
+/* Each accent changes the landscape's color atmosphere without replacing the artwork. */
+:root[data-accent="indigo"] .home-hero-panel{background-image:linear-gradient(120deg,rgba(228,236,255,.24),rgba(141,155,255,.24)),url('/hero-landscape.jpg')!important}
+:root[data-accent="forest"] .home-hero-panel{background-image:linear-gradient(120deg,rgba(227,243,230,.22),rgba(15,77,46,.27)),url('/hero-landscape.jpg')!important}
+:root[data-accent="smoky-olive"] .home-hero-panel{background-image:linear-gradient(120deg,rgba(255,251,244,.22),rgba(86,84,73,.27)),url('/hero-landscape.jpg')!important}
+:root[data-accent="soft-pink"] .home-hero-panel{background-image:linear-gradient(120deg,rgba(255,242,247,.22),rgba(212,108,140,.25)),url('/hero-landscape.jpg')!important}
+:root[data-accent="ocean"] .home-hero-panel{background-image:linear-gradient(120deg,rgba(223,244,248,.22),rgba(6,80,107,.27)),url('/hero-landscape.jpg')!important}
+
+/* Recreate the supplied splash composition with CSS: no unrelated reference graphics. */
+.boot-splash.bs{
+  background:
+    radial-gradient(circle at 8% 8%,color-mix(in srgb,var(--accent) 22%,transparent) 0,transparent 31%),
+    radial-gradient(circle at 92% 86%,color-mix(in srgb,var(--sun) 38%,transparent) 0,transparent 34%),
+    radial-gradient(circle at 52% 42%,color-mix(in srgb,var(--accent-light) 86%,transparent) 0,transparent 54%),
+    linear-gradient(135deg,var(--ivory) 0%,color-mix(in srgb,var(--ivory) 80%,var(--accent-light)) 54%,var(--surface) 100%)!important;
+  color:var(--ink)!important;
+}
+.boot-splash.bs::before{display:none!important}
+.boot-splash.bs::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.18!important;
+  background:radial-gradient(circle at 50% 50%,transparent 0 25%,color-mix(in srgb,var(--accent) 6%,transparent) 55%,transparent 72%)!important;
+}
+.bs-content{transform:translateY(-5vh)!important}
+.bs-mark-frame{
+  width:112px!important;height:112px!important;border-radius:50%!important;
+  border:1px solid color-mix(in srgb,var(--accent) 16%,var(--border))!important;
+  background:color-mix(in srgb,var(--surface) 76%,transparent)!important;
+  box-shadow:0 18px 48px color-mix(in srgb,var(--accent) 13%,transparent)!important;
+}
+.bs-logo-image{width:82px!important;height:82px!important}
+.bs-name{
+  margin-top:25px!important;font-size:32px!important;line-height:1!important;
+  font-weight:700!important;letter-spacing:.22em!important;color:var(--ink)!important;
+}
+.bs-tagline{
+  margin-top:15px!important;font-size:11px!important;line-height:1.6!important;
+  letter-spacing:.22em!important;text-transform:uppercase!important;font-weight:700!important;
+  color:var(--ink-muted)!important;
+}
+.bs-rule{
+  width:210px!important;height:3px!important;margin-top:27px!important;border-radius:999px!important;
+  background:linear-gradient(90deg,var(--accent),var(--peri),var(--sun))!important;
+  opacity:1!important;box-shadow:0 0 18px color-mix(in srgb,var(--accent) 22%,transparent)!important;
+}
+.bs-credit{
+  bottom:max(30px,env(safe-area-inset-bottom))!important;
+  font-size:15px!important;letter-spacing:.015em!important;font-weight:600!important;
+  color:var(--ink-muted)!important;
+}
+.bs-credit strong{font-weight:800!important;color:var(--ink)!important}
+
+/* App-like interaction: PDF reader is the only area where zoom/menus remain enabled. */
+html,body{overscroll-behavior-x:none!important}
+body{-webkit-touch-callout:none!important}
+body>*:not(.pdf-reader-shell){-webkit-user-select:none}
+input,textarea,[contenteditable="true"],.pdf-reader-shell{-webkit-user-select:text}
+
+@media(max-width:700px){
+  body{padding-top:66px!important}
+  .site-header,.site-header-inner{min-height:66px!important;height:66px!important}
+  .home-hero-panel{min-height:300px!important;padding:28px 20px!important;background-position:center center!important}
+  .home-hero-panel::before{filter:blur(15px);opacity:.55}
+  .home-hero-panel::after{width:220px!important;height:220px!important;right:-95px!important;top:-70px!important}
+  .bs-content{transform:translateY(-4vh)!important}
+  .bs-mark-frame{width:94px!important;height:94px!important}
+  .bs-logo-image{width:70px!important;height:70px!important}
+  .bs-name{font-size:25px!important;letter-spacing:.17em!important}
+  .bs-tagline{font-size:9px!important;letter-spacing:.16em!important}
+  .bs-rule{width:160px!important;margin-top:22px!important}
+  .bs-credit{font-size:13px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .home-hero-panel::before,.home-hero-panel::after,.bs-logo-image,.bs-name,.bs-tagline,.bs-rule,.bs-credit{animation:none!important}
 }
