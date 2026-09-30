@@ -21,9 +21,17 @@ export default function FirstLaunch() {
   useEffect(() => setSelectedClass(studentClass), [studentClass]);
 
   useEffect(() => {
-    if (pathname !== '/') return setVisible(false);
+    if (pathname !== '/') {
+      setVisible(false);
+      document.documentElement.classList.remove('profile-onboarding-active');
+      return;
+    }
     const completed = window.localStorage.getItem('archivum_profile_completed') === '1';
-    setVisible(!completed || !studentClass);
+    const shouldShow = !completed || !studentClass;
+    setVisible(shouldShow);
+    document.documentElement.classList.toggle('profile-onboarding-active', shouldShow);
+
+    return () => document.documentElement.classList.remove('profile-onboarding-active');
   }, [pathname, studentClass, displayName]);
 
   const heading = useMemo(() => {
@@ -41,6 +49,7 @@ export default function FirstLaunch() {
     window.localStorage.setItem('archivum_profile_completed', '1');
     router.replace(`/?class=${selectedClass}`, { scroll: false });
     setVisible(false);
+    document.documentElement.classList.remove('profile-onboarding-active');
   };
 
   const canFinish = Boolean(selectedClass && name.trim());

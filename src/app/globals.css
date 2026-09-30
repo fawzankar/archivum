@@ -3270,3 +3270,73 @@ input,textarea,[contenteditable="true"],.pdf-reader-shell{-webkit-user-select:te
 @media(prefers-reduced-motion:reduce){
   .home-hero-panel::before,.home-hero-panel::after,.bs-logo-image,.bs-name,.bs-tagline,.bs-rule,.bs-credit{animation:none!important}
 }
+
+
+/* First-launch selection screen: intentionally takes over the full app viewport.
+   The fixed site chrome must not appear behind or over the onboarding controls. */
+html.profile-onboarding-active,
+html.profile-onboarding-active body {
+  overflow: hidden !important;
+  height: 100%;
+}
+
+html.profile-onboarding-active .site-header,
+html.profile-onboarding-active .mobile-nav,
+html.profile-onboarding-active .nav-progress {
+  display: none !important;
+}
+
+html.profile-onboarding-active main {
+  min-height: 100dvh !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+html.profile-onboarding-active .profile-onboarding {
+  z-index: 99999 !important;
+  min-height: 100dvh;
+  padding: clamp(18px, 4vw, 42px);
+  align-items: center;
+}
+
+html.profile-onboarding-active .profile-onboarding-panel {
+  width: min(560px, 100%);
+  max-height: calc(100dvh - 36px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
+}
+
+html.profile-onboarding-active .profile-onboarding-panel::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  html.profile-onboarding-active .profile-onboarding {
+    padding: 16px;
+    place-items: center;
+  }
+
+  html.profile-onboarding-active .profile-onboarding-panel {
+    max-height: calc(100dvh - 32px);
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  html.profile-onboarding-active .profile-onboarding-copy {
+    margin-top: 20px;
+  }
+
+  html.profile-onboarding-active .profile-onboarding-copy h2 {
+    font-size: clamp(27px, 8vw, 34px);
+  }
+
+  html.profile-onboarding-active .cls-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  html.profile-onboarding-active .cls-card {
+    min-height: 112px;
+  }
+}
