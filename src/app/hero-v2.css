@@ -474,3 +474,61 @@
     top:39%!important;
   }
 }
+
+
+/* v64: Android/mobile hero polish */
+@media (max-width: 640px){
+  .hero-scene{
+    width:calc(100% - 28px)!important;
+    max-width:none!important;
+    margin-left:14px!important;
+    margin-right:14px!important;
+    border-radius:24px!important;
+    overflow:hidden!important;
+  }
+
+  .hx-doodle,
+  .hx-d-pencil-ref,
+  .hero-scene svg,
+  .hero-scene [class*="doodle"],
+  .hero-scene [class*="Doodle"]{
+    opacity:.28!important;
+  }
+
+  .hx-hello{
+    position:relative;
+    z-index:5;
+  }
+
+  .hx-hello h1,
+  .hx-hello p{
+    position:relative;
+    z-index:6;
+  }
+
+  .hx-d-pencil-ref{
+    right:5%!important;
+    top:18%!important;
+    width:76px!important;
+    opacity:.22!important;
+  }
+
+  .hx-hello h1{
+    max-width:88%!important;
+  }
+}
+
+/* Narrow Android phones */
+@media (max-width:390px){
+  .hero-scene{
+    width:calc(100% - 20px)!important;
+    margin-left:10px!important;
+    margin-right:10px!important;
+  }
+
+  .hx-d-pencil-ref{
+    right:3%!important;
+    top:15%!important;
+    width:62px!important;
+  }
+}
