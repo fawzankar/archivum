@@ -6,9 +6,9 @@ const N = '#1b2166', W = '#ffffff', Y = '#ffc75f', P = '#8d9bff', K = '#ffbdde',
 const art: Record<string, React.ReactNode> = {
   Maths: <>
     <circle cx="60" cy="58" r="43" fill={W} stroke={N} strokeWidth="4"/>
-    <text x="60" y="80" textAnchor="middle"
+    <text x="60" y="58" textAnchor="middle" dominantBaseline="central"
       fontFamily="Cambria Math, STIX Two Math, DejaVu Serif, serif"
-      fontSize="68" fontWeight="700" fontStyle="italic" fill={N}>π</text>
+      fontSize="66" fontWeight="700" fontStyle="italic" fill={N}>π</text>
     <path d="M31 96h58" stroke={S} strokeWidth="7" strokeLinecap="round"/>
   </>,
 
@@ -46,17 +46,17 @@ const art: Record<string, React.ReactNode> = {
 
   Hindi: <>
     <rect x="8" y="9" width="104" height="102" rx="18" fill={Y} stroke={N} strokeWidth="4.5"/>
-    <text x="60" y="78" textAnchor="middle"
+    <text x="60" y="59" textAnchor="middle" dominantBaseline="central"
       fontFamily="Noto Sans Devanagari, Nirmala UI, sans-serif"
-      fontSize="39" fontWeight="800" fill={N}>हिन्दी</text>
+      fontSize="58" fontWeight="700" fill={N}>अ</text>
     <path d="M24 98h72" stroke={P} strokeWidth="7" strokeLinecap="round"/>
   </>,
 
   Urdu: <>
     <rect x="8" y="9" width="104" height="102" rx="18" fill={P} stroke={N} strokeWidth="4.5"/>
-    <text x="60" y="78" textAnchor="middle" direction="rtl"
-      fontFamily="Noto Naskh Arabic, Noto Sans Arabic, serif"
-      fontSize="40" fontWeight="800" fill={N}>اُردو</text>
+    <text x="60" y="59" textAnchor="middle" dominantBaseline="central" direction="rtl"
+      fontFamily="Noto Naskh Arabic, Noto Sans Arabic, sans-serif"
+      fontSize="58" fontWeight="700" fill={N}>ا</text>
     <path d="M24 98h72" stroke={W} strokeWidth="7" strokeLinecap="round"/>
   </>,
 

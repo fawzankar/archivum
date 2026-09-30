@@ -2443,3 +2443,53 @@ input,textarea,select,[contenteditable="true"]{
 .library-loading-bar i{
   display:none!important;
 }
+
+/* V36 typography cleanup: compact/supporting text is regular, not heavy. */
+small,
+.notes-library-eyebrow,
+.notes-eyebrow,
+.notes-result-head p,
+.notes-count,
+.resource-modern-eyebrow,
+.resource-modern-stats label,
+.resource-section-label,
+.resource-detail-label,
+.resource-type,
+.resource-meta,
+.resource-card small,
+.subject-tile-copy small,
+.home-section-head span,
+.home-section-head>a,
+.hm-head span,
+.hm-head a,
+.profile-step-label,
+.footer-links,
+.footer-credit small,
+.search-library-meta,
+.library-loading-card>span {
+  font-weight: 400 !important;
+}
+
+/* Tiny uppercase metadata should remain legible without the bold/black look. */
+.resource-modern-stats strong,
+.resource-detail-grid strong,
+.notes-class-label,
+.notes-subject-meta {
+  font-weight: 500 !important;
+}
+
+/* Keep the subject artwork visually clean and centered. */
+.hm-subject-home-art,
+.subject-home-art,
+.notes-subject-art {
+  display: grid !important;
+  place-items: center !important;
+  overflow: visible !important;
+}
+.hm-subject-home-art .art,
+.subject-home-art .art,
+.notes-subject-art .art {
+  display: block !important;
+  margin: auto !important;
+  transform: none !important;
+}
