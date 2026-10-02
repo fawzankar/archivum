@@ -48,7 +48,7 @@ export default async function SearchPage({
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <PageHead title="Search Library" art="papers" tone="mint">
-          Search by chapter, topic or subject, across notes and papers for Classes 9 to 12.
+          Search notes, examination papers, formula sheets, chapters, and topics across Classes 9 to 12.
         </PageHead>
 
       <SearchClient

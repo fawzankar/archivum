@@ -7,7 +7,6 @@ import PersonalGreeting from '@/components/PersonalGreeting';
 import HomeClient from './HomeClient';
 import ResourceCard from '@/components/ResourceCard';
 import Art from '@/components/Art';
-import StudyHub from '@/components/StudyHub';
 import type { RecentHomeBundle } from '@/lib/resources';
 
 export function HomeHeroContent() {
@@ -17,7 +16,7 @@ export function HomeHeroContent() {
     <div className="hx-copy">
       <PersonalGreeting activeClass={activeClass} />
       <p className="hx-intro">
-        Everything for Class {activeClass}, notes, past papers and study material, sorted so you can find it in seconds instead of scrolling through chats.
+        Your Class {activeClass} notes, previous-year papers, and study material — neatly organised so you can find what you need without digging through folders.
       </p>
       <div className="hx-search"><HomeClient /></div>
     </div>
@@ -37,19 +36,17 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
       <section className="hm-jump" aria-label="Start here">
         <Link href={`/notes?class=${activeClass}`} className="hm-jump-card hm-sun">
           <div className="hm-jump-icon"><Art name="notes" /></div>
-          <div><h2>Class {activeClass} notes</h2><p>Chapter-wise notes and quick revision material, ready when you are.</p><span className="hm-pill">Open Notes</span></div>
+          <div><h2>Class {activeClass} notes</h2><p>Chapter-wise notes, summaries, and revision material in one place.</p><span className="hm-pill">Open Notes</span></div>
         </Link>
         <Link href={`/previous-papers?class=${activeClass}`} className="hm-jump-card hm-peri">
           <div className="hm-jump-icon"><Art name="papers" /></div>
-          <div><h2>Previous papers</h2><p>Real past papers to practise with, so exam day feels familiar.</p><span className="hm-pill">Find Papers</span></div>
+          <div><h2>Previous papers</h2><p>Previous-year papers to practise, revise, and prepare with confidence.</p><span className="hm-pill">Find Papers</span></div>
         </Link>
       </section>
 
-      <StudyHub activeClass={activeClass} />
-
       <section className="hm-subjects-home" aria-labelledby="hm-subjects-title">
         <div className="hm-subjects-home-head">
-          <h2 id="hm-subjects-title">Pick a subject</h2>
+          <h2 id="hm-subjects-title">Your subjects</h2>
           <span>{activeClass <= 10 ? '6 subjects' : '5 subjects'}</span>
         </div>
         <div className="hm-subjects-home-grid">
@@ -63,10 +60,10 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
       </section>
 
       <section aria-labelledby="hm-recent">
-        <div className="hm-head"><h2 id="hm-recent">Recently added</h2><Link href={`/search?class=${activeClass}`}>Browse all</Link></div>
+        <div className="hm-head"><h2 id="hm-recent">Recently added</h2><Link href={`/search?class=${activeClass}`}>See everything</Link></div>
         {recent.length
           ? <div className="hm-recent">{recent.map(r => <ResourceCard key={r.id} resource={r} />)}</div>
-          : <div className="hm-empty"><p>Nothing new just yet. Fresh material shows up here the moment it’s added.</p></div>}
+          : <div className="hm-empty"><p>No new material yet. Fresh resources will appear here as soon as they are added to the archive.</p></div>}
       </section>
     </>
   );

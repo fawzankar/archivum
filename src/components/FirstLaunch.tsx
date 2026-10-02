@@ -39,9 +39,9 @@ export default function FirstLaunch() {
   }, [pathname, studentClass, displayName]);
 
   const heading = useMemo(() => {
-    if (!selectedClass) return 'Which class are you in?';
-    if (!name.trim()) return 'Nice. What’s your name?';
-    return `Good to meet you, ${name.trim().split(' ')[0]}!`;
+    if (!selectedClass) return 'Choose your class.';
+    if (!name.trim()) return 'And your name?';
+    return `Welcome, ${name.trim().split(' ')[0]}`;
   }, [selectedClass, name]);
 
   if (!visible) return null;
@@ -69,7 +69,7 @@ export default function FirstLaunch() {
 
         <div className="profile-onboarding-copy">
           <h2 id="ob-title" key={heading}>{heading}</h2>
-          <p>Two quick things and you’re in. We’ll use them to show you the right material and say hello properly.</p>
+          <p>Pick your class and tell us your name. We will use that to keep the archive focused on your study material.</p>
         </div>
 
         <section className="profile-step" aria-labelledby="class-step-label">
@@ -128,11 +128,11 @@ export default function FirstLaunch() {
             />
             <span>{name.length}/40</span>
           </label>
-          <p className="profile-private-note">Stays on this device. We never send it anywhere.</p>
+          <p className="profile-private-note">Used only on this device to personalise the app.</p>
         </section>
 
         <button type="submit" disabled={!canFinish} className="profile-continue">
-          <span>Let’s go</span><ArrowRight />
+          <span>Enter ARCHIVUM</span><ArrowRight />
         </button>
       </form>
     </div>

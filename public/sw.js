@@ -1,10 +1,10 @@
-const VERSION = 'archivum-offline-v13';
+const VERSION = 'archivum-offline-v12';
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const DATA_CACHE = `${VERSION}-data`;
 const STATIC_ASSETS = ['/manifest.json', '/icon-192.png', '/icon-512.png', '/archivum-icon-192.png', '/archivum-icon-512.png'];
 // Statically generated pages: identical HTML for every query string, so cache them by pathname.
-const LIBRARY_PAGES = ['/notes', '/previous-papers', '/tips', '/focus'];
+const LIBRARY_PAGES = ['/notes', '/previous-papers', '/tips'];
 const LIBRARY_DATA = '/api/library';
 
 self.addEventListener('install', (event) => {

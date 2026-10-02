@@ -222,7 +222,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
             <div className="pdf-reader-error">
               <AlertTriangle />
               <strong>Couldn’t open this document.</strong>
-              <span>Something got in the way. Give it another go.</span>
+              <span>Please try again.</span>
               <button type="button" onClick={() => window.location.reload()}><RefreshCw /> Try again</button>
             </div>
           ) : loading ? (
@@ -232,8 +232,8 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
                 aria-label={`Opening note ${loadProgress}%`}>
                 <div className="pdf-load-progress-bar" style={{ width: `${Math.max(4, loadProgress)}%` }} />
               </div>
-              <strong>{loadProgress > 0 ? `Opening · ${loadProgress}%` : 'Opening your file…'}</strong>
-              <span>Getting the first pages ready.</span>
+              <strong>{loadProgress > 0 ? `Opening note · ${loadProgress}%` : 'Opening note…'}</strong>
+              <span>Preparing the first pages inside Archivum.</span>
             </div>
           ) : (
             <div className="pdf-reader-pages">

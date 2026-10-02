@@ -285,7 +285,7 @@ export default function SearchClient({
         <span>
           Found <strong className="font-semibold" style={{ color: 'var(--ink)' }}>{data.totalCount}</strong> resources
         </span>
-        {loading && <span className="text-zinc-400">Updating…</span>}
+        {loading && <span className="text-zinc-400">Updating...</span>}
       </div>
 
       {data.items.length > 0 ? (
@@ -307,7 +307,7 @@ export default function SearchClient({
             No resources match your search
           </h3>
           <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>
-            Try something broader, like “Science”, “Maths”, “Class 10” or “Pre board”.
+            Try searching for a general term like "Science", "Math", "Class 10", or "Pre board".
           </p>
           <button
             onClick={resetAll}

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const metadata = {
   title: 'Terms of Service | ARCHIVUM',
-  description: 'The simple ground rules for using ARCHIVUM.',
+  description: 'Terms of Service and educational usage guidelines for ARCHIVUM.',
 };
 
 export default function TermsPage() {
@@ -10,7 +10,7 @@ export default function TermsPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
         <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
-          THE GROUND RULES
+          LEGAL & POLICY
         </span>
         <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
           Terms of Service
@@ -26,22 +26,22 @@ export default function TermsPage() {
         }}
       >
         <p>
-          Welcome to <strong className="text-zinc-900 dark:text-zinc-100">ARCHIVUM</strong>. By using it, you’re agreeing to a few simple ground rules.
+          Welcome to <strong className="text-zinc-900 dark:text-zinc-100">ARCHIVUM</strong>. By accessing or using this platform, you agree to these straightforward student guidelines.
         </p>
 
         <div className="space-y-1.5 pt-2">
-          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">1. It’s for studying</h3>
-          <p>ARCHIVUM exists to help students in Classes 9 to 12 study and revise. That’s all it’s for.</p>
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">1. Educational Purpose</h3>
+          <p>ARCHIVUM is operated purely for high-school academic study and revision purposes for students of Classes 9, 10, 11, and 12.</p>
         </div>
 
         <div className="space-y-1.5 pt-2">
-          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">2. When you share something</h3>
-          <p>When you submit notes or papers, you’re telling us you’re allowed to share them. Our admins may approve, tidy up the details, reject or remove any submission.</p>
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">2. Student Submissions</h3>
+          <p>By submitting academic notes or previous examination papers, you confirm that you have permission to share the material. Administrators maintain full discretion to approve, edit metadata for clarity, reject, or remove any submission.</p>
         </div>
 
         <div className="space-y-1.5 pt-2">
-          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">3. What “Verified” means</h3>
-          <p>The &ldquo;✓ Verified&rdquo; label means an admin has checked that the file is readable, matches the syllabus and isn’t a duplicate.</p>
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">3. Verification Notice</h3>
+          <p>The &ldquo;✓ Verified&rdquo; label signifies that an administrator checked the file for readability, syllabus relevance, and absence of duplication.</p>
         </div>
       </div>
     </div>

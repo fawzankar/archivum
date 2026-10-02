@@ -25,22 +25,22 @@ export default function ContactPage() {
       fd.append('section', ''); fd.append('message', `[${kind}] ${message.trim()}`);
       const r = await fetch('/api/feedback', { method: 'POST', body: fd });
       const j = await r.json();
-      if (!r.ok) throw new Error(j.error || 'Couldn’t send your message. Please try again.');
+      if (!r.ok) throw new Error(j.error || 'Could not send your message.');
       setSent(true); setMessage('');
     } catch (err) { setError(err instanceof Error ? err.message : 'Could not send your message.'); }
     finally { setSending(false); }
   };
 
   return <main className="ct">
-    <PageHead title="Contact us" art="notes" tone="blush">Something broken? Something missing? An idea? Tell us, we read everything.</PageHead>
+    <PageHead title="Contact us" art="notes" tone="blush">Tell us what’s wrong, what’s missing, or what you’d like to see.</PageHead>
     <section className="contact-reach">
-      <a className="contact-reach-card" href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><span className="contact-reach-icon"><Camera /></span><div><strong><span className="quest-word">Quest</span> on Instagram</strong><p>Message the <span className="quest-word">Quest</span> team about material, ideas or updates.</p><span className="contact-reach-link">@quest_sjs</span></div></a>
-      <a className="contact-reach-card" href="mailto:sjsquest26@gmail.com"><span className="contact-reach-icon"><Mail /></span><div><strong>Email the <span className="quest-word">Quest</span> team</strong><p>Got notes or papers worth sharing? Send them our way.</p><span className="contact-reach-link">sjsquest26@gmail.com</span></div></a>
+      <a className="contact-reach-card" href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><span className="contact-reach-icon"><Camera /></span><div><strong><span className="quest-word">Quest</span> on Instagram</strong><p>Reach the <span className="quest-word">Quest</span> team for material, ideas or updates.</p><span className="contact-reach-link">@quest_sjs</span></div></a>
+      <a className="contact-reach-card" href="mailto:sjsquest26@gmail.com"><span className="contact-reach-icon"><Mail /></span><div><strong>Email the <span className="quest-word">Quest</span> team</strong><p>Send us useful notes, papers or anything worth archiving.</p><span className="contact-reach-link">sjsquest26@gmail.com</span></div></a>
     </section>
     {sent
-      ? <div className="ct-done"><CheckCircle2 /><h2>Got it, thank you!</h2><p>Our team will read your message soon.</p><button type="button" onClick={() => setSent(false)}>Send another</button></div>
+      ? <div className="ct-done"><CheckCircle2 /><h2>Message sent.</h2><p>The admin team will read it soon.</p><button type="button" onClick={() => setSent(false)}>Send Another</button></div>
       : <form className="ct-form" onSubmit={submit}>
-        <fieldset><legend>What’s this about?</legend>
+        <fieldset><legend>What is this about?</legend>
           <div className="ct-chips">{KINDS.map(k => <button type="button" key={k} className={kind === k ? 'on' : ''} aria-pressed={kind === k} onClick={() => setKind(k)}>{k}</button>)}</div>
         </fieldset>
         <fieldset><legend>Your class</legend>
@@ -48,9 +48,9 @@ export default function ContactPage() {
         </fieldset>
         <label>Name<input value={name} onChange={e => setName(e.target.value)} placeholder="Your name" maxLength={80} autoComplete="name" /></label>
         <label>Email<input required type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com" maxLength={160} autoComplete="email" inputMode="email" /></label>
-        <label>Message<textarea required rows={6} value={message} onChange={e => setMessage(e.target.value)} placeholder="Tell us what’s on your mind" maxLength={3000} /></label>
+        <label>Message<textarea required rows={6} value={message} onChange={e => setMessage(e.target.value)} placeholder="Write it here" maxLength={3000} /></label>
         {error && <p className="ct-error" role="alert">{error}</p>}
-        <button className="ct-send" disabled={sending || !classLevel}>{sending ? 'Sending…' : classLevel ? 'Send message' : 'Pick your class first'}<Send /></button>
+        <button className="ct-send" disabled={sending || !classLevel}>{sending ? 'Sending…' : classLevel ? 'Send message' : 'Choose your class first'}<Send /></button>
       </form>}
   </main>;
 }

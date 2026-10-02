@@ -11,7 +11,7 @@ export default async function NotesPage() {
   return (
     <div className="notes-page-shell max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <PageHead title="Notes Library" art="notes" tone="sun">
-        Chapter notes, summaries and revision guides for JKBOSE Classes 9 to 12.
+        Structured chapter notes, theory summaries, and revision guides curated for JKBOSE Classes 9 to 12.
       </PageHead>
       {/* The fallback is the full default-class list, so the HTML already contains real content. */}
       <Suspense fallback={<NotesView bundle={bundle} initialClass={10} initialSubject="" />}>

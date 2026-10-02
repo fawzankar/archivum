@@ -12,7 +12,7 @@ export default function ClassTransitionOverlay() {
       <div className="flex items-center gap-2 rounded-full border px-4 py-2 shadow-lg animate-soft-scale opacity-80"
         style={{ background: 'color-mix(in srgb,var(--surface) 88%,transparent)', borderColor:'var(--border)' }}>
         <LoaderCircle className="w-4 h-4 animate-spin" style={{color:'var(--accent)'}} />
-        <span className="text-xs font-bold">Switching your class…</span>
+        <span className="text-xs font-bold">Updating your class archive…</span>
       </div>
     </div>
   );
