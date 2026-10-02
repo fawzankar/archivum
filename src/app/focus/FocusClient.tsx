@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Pause, Play, RotateCcw, SkipForward } from 'lucide-react';
+import { Bell, BellOff, Pause, Play, RotateCcw, SkipForward } from 'lucide-react';
 import { useToast } from '@/components/ToastContext';
 import { loadStudy, recordFocus, todayStats, STUDY_EVENT } from '@/lib/studyStats';
 
@@ -47,6 +47,7 @@ export default function FocusClient() {
   const [running, setRunning] = useState(false);
   const [rounds, setRounds] = useState(0);
   const [todayMin, setTodayMin] = useState(0);
+  const [alarmEnabled, setAlarmEnabled] = useState(true);
   const endRef = useRef<number | null>(null);
   const startedRef = useRef<number | null>(null);
   const wakeRef = useRef<WakeLockSentinel | null>(null);
@@ -55,6 +56,7 @@ export default function FocusClient() {
 
   const syncToday = useCallback(() => setTodayMin(todayStats(loadStudy()).focusMin), []);
   useEffect(() => {
+    try { setAlarmEnabled(localStorage.getItem('archivum_focus_alarm') !== '0'); } catch {}
     syncToday();
     window.addEventListener(STUDY_EVENT, syncToday);
     return () => window.removeEventListener(STUDY_EVENT, syncToday);
@@ -92,8 +94,18 @@ export default function FocusClient() {
     setRunning(false);
     endRef.current = null;
     releaseWake();
-    chime();
-    try { navigator.vibrate?.([180, 90, 180]); } catch {}
+    if (alarmEnabled) {
+      chime();
+      try { navigator.vibrate?.([180, 90, 180]); } catch {}
+      try {
+        if ('Notification' in window && Notification.permission === 'granted') {
+          new Notification(mode === 'focus' ? 'Focus session complete' : 'Break complete', {
+            body: mode === 'focus' ? 'Nice work. Your break is ready.' : 'Ready for another focused round?',
+            icon: '/archivum-icon.png',
+          });
+        }
+      } catch {}
+    }
     if (mode === 'focus') {
       recordFocus(focusMin);
       startedRef.current = null;
@@ -108,7 +120,7 @@ export default function FocusClient() {
       setMode('focus');
       setRemaining(focusMin * 60);
     }
-  }, [focusMin, mode, releaseWake, rounds, showToast]);
+  }, [alarmEnabled, focusMin, mode, releaseWake, rounds, showToast]);
 
   // Timestamp-based so the clock stays honest even when the tab is in the background.
   useEffect(() => {
@@ -194,6 +206,22 @@ export default function FocusClient() {
         </button>
         <button type="button" className="fx-side" onClick={skip} aria-label="Skip to next"><SkipForward /></button>
       </div>
+
+      <button
+        type="button"
+        className={`fx-alarm${alarmEnabled ? ' on' : ''}`}
+        onClick={async () => {
+          const next = !alarmEnabled;
+          if (next && 'Notification' in window && Notification.permission === 'default') {
+            try { await Notification.requestPermission(); } catch {}
+          }
+          setAlarmEnabled(next);
+          try { localStorage.setItem('archivum_focus_alarm', next ? '1' : '0'); } catch {}
+        }}
+        aria-pressed={alarmEnabled}
+      >
+        {alarmEnabled ? <Bell /> : <BellOff />} {alarmEnabled ? 'Alarm on' : 'Alarm off'}
+      </button>
 
       {mode === 'focus' && (
         <div className="fx-lengths" role="group" aria-label="Round length">

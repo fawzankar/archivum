@@ -2,12 +2,12 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, CalendarClock, Check, Flame, Lightbulb, Minus, Pencil, Plus, Target, Timer, X } from 'lucide-react';
+import { ArrowRight, CalendarClock, Check, Flame, Minus, Pencil, Plus, Target, Timer, X } from 'lucide-react';
 import type { Resource } from '@/lib/resources';
 import { getRecentlyViewed } from '@/lib/savedStorage';
 import {
   STUDY_EVENT, currentStreak, daysUntil, lastSevenDays, loadStudy, longestStreak,
-  setExam, setGoal, tipOfTheDay, todayStats, totalFocusMinutes, type StudyData,
+  setExam, setGoal, todayStats, totalFocusMinutes, type StudyData,
 } from '@/lib/studyStats';
 
 function formatMinutes(total: number) {
@@ -41,7 +41,6 @@ export default function StudyHub({ activeClass }: { activeClass: number }) {
   const [editingExam, setEditingExam] = useState(false);
   const [examLabel, setExamLabel] = useState('');
   const [examDate, setExamDate] = useState('');
-  const [tip, setTip] = useState('');
 
   const refresh = useCallback(() => {
     setData(loadStudy());
@@ -50,7 +49,6 @@ export default function StudyHub({ activeClass }: { activeClass: number }) {
 
   useEffect(() => {
     refresh();
-    setTip(tipOfTheDay());
     setReady(true);
     window.addEventListener(STUDY_EVENT, refresh);
     window.addEventListener('sjs_saved_updated', refresh);
@@ -199,12 +197,6 @@ export default function StudyHub({ activeClass }: { activeClass: number }) {
         </div>
       )}
 
-      {tip && (
-        <aside className="sh-tip">
-          <span className="sh-icon sh-icon-tip"><Lightbulb aria-hidden="true" /></span>
-          <div><span className="sh-label">Tip of the day</span><p>{tip}</p></div>
-        </aside>
-      )}
     </section>
   );
 }

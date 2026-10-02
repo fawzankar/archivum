@@ -227,9 +227,9 @@ export default function SearchClient({
               className="w-full text-xs py-1.5 px-2.5 rounded-xl border bg-transparent font-medium outline-none cursor-pointer"
               style={{ borderColor: 'var(--border)', color: 'var(--ink)' }}
             >
-              <option value="">All Resource Types</option>
+              <option value="">Everything</option>
               <option value="Notes">Notes Only</option>
-              <option value="Previous Year Paper">Previous Papers Only</option>
+              <option value="Previous Year Paper">Papers only</option>
               <option value="Study Material">Study Material</option>
               <option value="Syllabus">Syllabus</option>
             </select>

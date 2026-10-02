@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { greetingForNow } from '@/lib/studyStats';
 
@@ -31,12 +32,6 @@ export default function SplashScreen() {
   }, []);
 
   useEffect(() => {
-    let seen = false;
-    try { seen = sessionStorage.getItem(SEEN_KEY) === '1'; } catch {}
-    if (window.location.pathname !== '/' || seen) {
-      document.documentElement.classList.remove('archivum-booting');
-      return;
-    }
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const total = reduced ? REDUCED_MS : SPLASH_MS;
@@ -90,6 +85,11 @@ export default function SplashScreen() {
 
         <p className="ax-greet">{greeting}</p>
         <p className="ax-line">Notes, papers and study material, all in one place.</p>
+        <nav className="ax-menu" aria-label="Quick sections" onClick={e => e.stopPropagation()}>
+          <Link href="/notes">Notes</Link><i aria-hidden="true" />
+          <Link href="/previous-papers">Papers</Link><i aria-hidden="true" />
+          <Link href="/focus">Focus</Link>
+        </nav>
       </div>
 
       <div className="ax-foot">

@@ -16,7 +16,10 @@ const NAVS = [
 
 export default function MobileNav() {
   const pathname = usePathname();
-  const { studentClass } = useStudentClass();
+  const { studentClass: ctxClass } = useStudentClass();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  const studentClass = mounted ? ctxClass : null;
   const [hidden, setHidden] = useState(false);
   const [savedCount, setSavedCount] = useState(0);
   const lastY = useRef(0);

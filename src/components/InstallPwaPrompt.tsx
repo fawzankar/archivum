@@ -66,8 +66,8 @@ export default function InstallPwaPrompt() {
           <Download className="w-4 h-4" />
         </div>
         <div>
-          <h4 className="font-display text-xs sm:text-sm" style={{ color:'var(--ink)' }}>Keep ARCHIVUM on your phone</h4>
-          <p className="text-[11px]" style={{ color:'var(--ink-muted)' }}>{ios ? 'Tap Share, then “Add to Home Screen”.' : 'Opens fast and works offline, right from your home screen.'}</p>
+          <h4 className="font-display text-xs sm:text-sm" style={{ color:'var(--ink)' }}>{ios ? 'Add ARCHIVUM to your Home Screen' : 'Take ARCHIVUM with you'}</h4>
+          <p className="text-[11px]" style={{ color:'var(--ink-muted)' }}>{ios ? 'Share → Add to Home Screen for one-tap access.' : 'One tap from your home screen. Fast and offline-ready.'}</p>
         </div>
       </div>
 
@@ -76,7 +76,7 @@ export default function InstallPwaPrompt() {
           onClick={handleInstall}
           className="px-3 py-1.5 text-xs font-semibold rounded-full text-white bg-zinc-900 hover:bg-zinc-800 transition-colors cursor-pointer"
         >
-          {ios ? 'Got it' : 'Install'}
+          {ios ? 'Show me' : 'Add to device'}
         </button>
         <button
           onClick={handleDismiss}

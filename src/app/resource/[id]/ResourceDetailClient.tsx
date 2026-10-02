@@ -71,7 +71,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
       if (!sessionId) { sessionId = `session_${crypto.randomUUID()}`; localStorage.setItem('sjs_session_id', sessionId); }
       const response = await fetch(`/api/download/${resource.id}`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({sessionId}) });
       const result = await response.json().catch(() => ({})); downloadUrl = result.download_url || downloadUrl;
-      if (!response.ok || !result.success) throw new Error(result.error || 'Download could not be started');
+      if (!response.ok || !result.success) throw new Error(result.error || 'Couldn’t start the download. Try again.');
       setDownloads(result.downloads ?? resource.downloads);
       const link = document.createElement('a'); link.href = downloadUrl; link.download = resource.file_name || resource.title; document.body.appendChild(link); link.click(); link.remove(); showToast('Your download is starting…');
     } catch { window.open(downloadUrl, '_blank'); }
