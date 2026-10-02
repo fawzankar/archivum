@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import SearchBar from './SearchBar';
-import { Search, X, ChevronRight, Home, BookOpen, FileText, Info, Users, RotateCcw, MessageCircle, ArrowUpRight, Timer, Bookmark } from 'lucide-react';
+import { Search, X, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ArrowUpRight, Timer, Bookmark } from 'lucide-react';
 import { getSavedResourceIds } from '@/lib/savedStorage';
 
 const tiles = [
@@ -16,10 +16,10 @@ const tiles = [
   ['Saved', 'Your bookmarks', '/saved', Bookmark],
 ] as const;
 const more = [
-  ['Home', '/', Home], ['Contributors', '/contributors', Users],
+  ['Home', '/', Home], ['Tips & Tricks', '/tips', Lightbulb], ['Contributors', '/contributors', Users],
   ['Contact us', '/contact', MessageCircle], ['About ARCHIVUM', '/about', Info],
 ] as const;
-const prefetchList = ['/notes', '/previous-papers', '/focus', '/saved'];
+const prefetchList = ['/notes', '/previous-papers', '/focus', '/saved', '/tips'];
 const CLASSES = [9, 10, 11, 12] as const;
 
 export default function Navbar() {

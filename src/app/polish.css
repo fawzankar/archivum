@@ -298,10 +298,3 @@ nav.mobile-nav.mn.mn-hidden{transform:translate(-50%,calc(100% + 24px));opacity:
 .dr-credit a{color:var(--ink);font-weight:800;text-decoration:underline;text-underline-offset:2px}
 @media(prefers-reduced-motion:reduce){.dr-panel,.dr-scrim{transition-duration:.01ms}.dr-layer.open :is(.dr-profile,.dr-tile,.dr-list a,.dr-colours){animation-duration:.01ms;animation-delay:0s}}
 .dr-scroll>*{flex-shrink:0}
-
-
-/* Focus alarm */
-.fx-alarm{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:36px;padding:0 13px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--ink-muted);font:800 11px/1 "Lato",Arial,sans-serif;cursor:pointer;transition:.2s ease}
-.fx-alarm svg{width:15px;height:15px}
-.fx-alarm.on{border-color:color-mix(in srgb,var(--accent) 48%,var(--border));background:var(--accent-light);color:var(--accent)}
-.fx-alarm:hover{transform:translateY(-1px);border-color:var(--accent);color:var(--accent)}

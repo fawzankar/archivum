@@ -5,9 +5,9 @@ export type Accent = 'indigo' | 'forest' | 'smoky-olive' | 'soft-pink' | 'ocean'
 export const ACCENTS: { id: Accent; label: string; color: string }[] = [
   { id: 'indigo', label: 'Indigo', color: '#1b2166' },
   { id: 'forest', label: 'Forest', color: '#0f4d2e' },
-  { id: 'smoky-olive', label: 'Smoky Black', color: '#2b2b2b' },
+  { id: 'smoky-olive', label: 'Smoky Black', color: '#565449' },
   { id: 'soft-pink', label: 'Soft Pink', color: '#D46C8C' },
-  { id: 'ocean', label: 'Ocean', color: '#881144' },
+  { id: 'ocean', label: 'Ocean', color: '#06506b' },
 ];
 type ThemeMode = 'light';
 interface ThemeContextType { accent: Accent; setAccent: (accent: Accent) => void; mode: ThemeMode; setMode: (mode: ThemeMode) => void; }
