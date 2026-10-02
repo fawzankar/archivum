@@ -9,6 +9,7 @@ import ResourceCard from '@/components/ResourceCard';
 import Art from '@/components/Art';
 import SubjectPicker from '@/components/SubjectPicker';
 import { getRecentlyViewed } from '@/lib/savedStorage';
+import { getReaderProgress } from '@/lib/readerState';
 import { useEffect, useState } from 'react';
 import type { RecentHomeBundle } from '@/lib/resources';
 
@@ -34,12 +35,17 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
   useEffect(() => { setProfileReady(true); }, []);
   const activeClass = (profileReady ? studentClass : null) ?? 10;
   const recent = recentByClass[activeClass] || [];
-  const [recentNotes, setRecentNotes] = useState<import('@/lib/resources').Resource[]>([]);
+  const [recentNotes, setRecentNotes] = useState<(import('@/lib/resources').Resource & { resumeBadge?: string })[]>([]);
   useEffect(() => {
-    const sync = () => setRecentNotes(getRecentlyViewed().filter((resource) => resource.resource_type === 'Notes' && resource.class_level === activeClass).slice(0, 4));
+    // Recently opened notes and papers for this class, each with the page the reader will continue from.
+    const sync = () => setRecentNotes(getRecentlyViewed().filter((resource) => resource.class_level === activeClass).slice(0, 4).map((resource) => {
+      const progress = getReaderProgress(resource.id);
+      return { ...resource, resumeBadge: progress && progress.page > 1 ? `Page ${progress.page}${progress.pages ? ` / ${progress.pages}` : ''}` : undefined };
+    }));
     sync();
     window.addEventListener('sjs_recently_viewed_updated', sync);
-    return () => window.removeEventListener('sjs_recently_viewed_updated', sync);
+    window.addEventListener('sjs_reader_progress_updated', sync);
+    return () => { window.removeEventListener('sjs_recently_viewed_updated', sync); window.removeEventListener('sjs_reader_progress_updated', sync); };
   }, [activeClass]);
   const subjects = activeClass <= 10
     ? ['Maths', 'Science', 'SST', 'English', 'Hindi', 'Urdu']
@@ -76,12 +82,12 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
         <section className="hm-pickup" aria-labelledby="hm-pickup-title">
           <div className="hm-head">
             <div>
-              <h2 id="hm-pickup-title">Pick Up Where You Left Off</h2>
-              <p className="hm-pickup-subtitle">Your recently opened notes, ready to continue.</p>
+              <h2 id="hm-pickup-title">Recently Opened</h2>
+              <p className="hm-pickup-subtitle">Jump back in — the reader remembers your page.</p>
             </div>
           </div>
           <div className="hm-pickup-grid">
-            {recentNotes.map((resource) => <ResourceCard key={`pickup-${resource.id}`} resource={resource} compact />)}
+            {recentNotes.map((resource) => <ResourceCard key={`pickup-${resource.id}`} resource={resource} compact badge={resource.resumeBadge} />)}
           </div>
         </section>
       )}

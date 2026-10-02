@@ -3,7 +3,9 @@ import { query } from '@/lib/db';
 import { Users, Upload, Trophy, Camera, Mail, Heart } from 'lucide-react';
 import PageHead from '@/components/PageHead';
 
-export const revalidate = 300;
+// Render on request instead of during `next build`, so a Turso hiccup can never fail a deploy.
+// The query result is still cached for 5 minutes by unstable_cache below.
+export const dynamic = 'force-dynamic';
 
 type Contributor = { contributor_name: string; uploads: number; latest_title: string | null; latest_id: number | null };
 
@@ -31,7 +33,14 @@ const getContributors = unstable_cache(
 );
 
 export default async function ContributorsPage() {
-  const contributors = await getContributors();
+  let contributors: Contributor[] = [];
+  let loadFailed = false;
+  try {
+    contributors = await getContributors();
+  } catch (error) {
+    console.error('[contributors] database unavailable', error);
+    loadFailed = true;
+  }
 
   return (
     <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-12">
@@ -47,7 +56,13 @@ export default async function ContributorsPage() {
       </section>
 
       <section className="mt-5 grid gap-2.5">
-        {contributors.length === 0 ? (
+        {loadFailed ? (
+          <div className="rounded-xl border p-10 text-center" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
+            <Trophy className="w-8 h-8 mx-auto" style={{color:'var(--accent)'}}/>
+            <h2 className="font-display font-bold text-xl mt-3">The contributor list is taking a break</h2>
+            <p className="text-xs mt-2" style={{color:'var(--ink-muted)'}}>We couldn’t reach the archive just now. Please refresh in a minute.</p>
+          </div>
+        ) : contributors.length === 0 ? (
           <div className="rounded-xl border p-10 text-center" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
             <Trophy className="w-8 h-8 mx-auto" style={{color:'var(--accent)'}}/>
             <h2 className="font-display font-bold text-xl mt-3">No contributors yet</h2>

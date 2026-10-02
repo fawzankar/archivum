@@ -9,7 +9,7 @@ import { useToast } from './ToastContext';
 import Art from './Art';
 import { Bookmark, BookmarkCheck, ArrowUpRight, Star } from 'lucide-react';
 
-export default function ResourceCard({ resource, onView, compact = false }: { resource: Resource; onView?: (resource: Resource) => void; compact?: boolean }) {
+export default function ResourceCard({ resource, onView, compact = false, badge }: { resource: Resource; onView?: (resource: Resource) => void; compact?: boolean; badge?: string }) {
   const [saved,setSaved]=useState(false); const {showToast}=useToast(); const router=useRouter();
   useEffect(()=>{const sync=()=>setSaved(isResourceSaved(resource.id));sync();window.addEventListener('sjs_saved_updated',sync);return()=>window.removeEventListener('sjs_saved_updated',sync)},[resource.id]);
   const toggle=(e:React.MouseEvent)=>{e.preventDefault();e.stopPropagation();const next=toggleSaveResource(resource);setSaved(next);showToast(next?'Saved to library':'Removed from saved',next?'success':'info')};
@@ -23,7 +23,7 @@ export default function ResourceCard({ resource, onView, compact = false }: { re
         <span className="rc-inline-art"><Art name={artName} /></span>
         <h3>{resource.title}</h3>
       </div>
-      <div className="rc-chips"><span>Class {resource.class_level}</span><span>{resource.subject}</span>{resource.chapter&&<span>{resource.chapter}</span>}</div>
+      <div className="rc-chips">{badge&&<span className="rc-resume">{badge}</span>}<span>Class {resource.class_level}</span><span>{resource.subject}</span>{resource.chapter&&<span>{resource.chapter}</span>}</div>
     </Link>
     <div className="rc-foot">
       <span className="rc-rate" aria-label={resource.rating_count ? `${resource.average_rating.toFixed(1)} out of 5 from ${resource.rating_count} votes` : 'No ratings yet'}>

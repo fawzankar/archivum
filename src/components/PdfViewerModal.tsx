@@ -1,9 +1,13 @@
 'use client';
 
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import { readPdfPage, writePdfPage } from '@/lib/pdfPageCache';
-import { X, Download, FileText, Maximize2, Minimize2, AlertTriangle, RefreshCw, Minus, Plus } from 'lucide-react';
+import { getReaderProgress, saveReaderProgress, getNightMode, setNightMode } from '@/lib/readerState';
+import { getOfflinePdf, hasOfflinePdf, offlineSupported, removeOfflinePdf, saveOfflinePdf } from '@/lib/offlinePdfs';
+import { addRecentlyViewed } from '@/lib/savedStorage';
+import { useToast } from '@/components/ToastContext';
+import { X, Download, FileText, Maximize2, Minimize2, AlertTriangle, RefreshCw, Minus, Plus, Search, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Moon, Sun, HardDriveDownload, Check } from 'lucide-react';
 
 interface Props { resource: Resource | null; onClose: () => void; }
 
@@ -24,19 +28,68 @@ const pdfDocuments = new Map<string, Promise<any>>();
 type Focal = { x: number; y: number };
 type ZoomAnchor = { ratio: number; x0: number; y0: number; x1: number; y1: number; sx: number; sy: number };
 
-function loadPdfDocument(fileUrl: string, onProgress: (loaded: number, total: number) => void) {
-  const existing = pdfDocuments.get(fileUrl);
+function loadPdfDocument(fileUrl: string, fileKey: string, onProgress: (loaded: number, total: number) => void) {
+  const existing = pdfDocuments.get(fileKey);
   if (existing) return existing;
-  const pending = import('pdfjs-dist/build/pdf.mjs').then((pdfjs) => {
+  const pending = (async () => {
+    const pdfjs = await import('pdfjs-dist/build/pdf.mjs');
     pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-    const task = pdfjs.getDocument({ url: fileUrl, rangeChunkSize: 512 * 1024, disableAutoFetch: false, disableStream: false });
+    // A copy saved for offline reading wins: it opens instantly and works without a connection.
+    const offline = await getOfflinePdf(fileKey);
+    const task = offline
+      ? pdfjs.getDocument({ data: new Uint8Array(offline) })
+      : pdfjs.getDocument({ url: fileUrl, rangeChunkSize: 512 * 1024, disableAutoFetch: false, disableStream: false });
     (task as any).onProgress = ({ loaded, total }: { loaded: number; total: number }) => onProgress(loaded, total);
     return task.promise;
-  });
-  pdfDocuments.set(fileUrl, pending);
-  pending.catch(() => { if (pdfDocuments.get(fileUrl) === pending) pdfDocuments.delete(fileUrl); });
+  })();
+  pdfDocuments.set(fileKey, pending);
+  pending.catch(() => { if (pdfDocuments.get(fileKey) === pending) pdfDocuments.delete(fileKey); });
   return pending;
 }
+
+/** Wraps every occurrence of `query` inside the text-layer spans; returns the active mark (if any). */
+function highlightSpans(container: HTMLElement, query: string, activeOrdinal: number): HTMLElement | null {
+  const needle = query.toLowerCase();
+  let ordinal = 0;
+  let current: HTMLElement | null = null;
+  container.querySelectorAll<HTMLElement>('span:not(.markedContent)').forEach((span) => {
+    const source = span.dataset.src ?? (span.dataset.src = span.textContent ?? '');
+    if (!source) return;
+    const lower = source.toLowerCase();
+    let index = needle ? lower.indexOf(needle) : -1;
+    if (index < 0) { if (span.childElementCount) span.textContent = source; return; }
+    const fragment = document.createDocumentFragment();
+    let last = 0;
+    while (index >= 0) {
+      if (index > last) fragment.append(source.slice(last, index));
+      const mark = document.createElement('mark');
+      mark.className = ordinal === activeOrdinal ? 'pdf-hit is-current' : 'pdf-hit';
+      mark.textContent = source.slice(index, index + needle.length);
+      if (ordinal === activeOrdinal) current = mark;
+      fragment.append(mark);
+      ordinal += 1;
+      last = index + needle.length;
+      index = lower.indexOf(needle, last);
+    }
+    if (last < source.length) fragment.append(source.slice(last));
+    span.replaceChildren(fragment);
+  });
+  return current;
+}
+
+/** Same matching rule as highlightSpans, so the match count and the highlights stay in step. */
+function countMatches(items: string[], query: string) {
+  const needle = query.toLowerCase();
+  let total = 0;
+  for (const item of items) {
+    const lower = item.toLowerCase();
+    let index = lower.indexOf(needle);
+    while (index >= 0) { total += 1; index = lower.indexOf(needle, index + needle.length); }
+  }
+  return total;
+}
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
 function canvasBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/webp', 0.9));
@@ -59,14 +112,18 @@ function useNearViewport(hostRef: React.RefObject<HTMLDivElement | null>, rootRe
   return near;
 }
 
-function PdfPage({ pdf, pageNumber, fileKey, displayScale, zoomLevel, settledZoom, stageRef }: {
+const PdfPage = memo(function PdfPage({ pdf, pageNumber, fileKey, displayScale, zoomLevel, settledZoom, stageRef, query, activeOrdinal, focusToken }: {
   pdf: any; pageNumber: number; fileKey: string; displayScale: number; zoomLevel: number; settledZoom: number;
-  stageRef: React.RefObject<HTMLElement | null>;
+  stageRef: React.RefObject<HTMLElement | null>; query: string; activeOrdinal: number; focusToken: number;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hiCanvasRef = useRef<HTMLCanvasElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+  const lastFocusRef = useRef(0);
   const [rendered, setRendered] = useState(false);
+  const [textLayout, setTextLayout] = useState<{ contentScale: number; offX: number; offY: number } | null>(null);
+  const [textReady, setTextReady] = useState(false);
   const baseDoneRef = useRef(false);
   const near = useNearViewport(hostRef, stageRef, '1400px 0px');
   const visible = useNearViewport(hostRef, stageRef, '250px 0px');
@@ -165,14 +222,61 @@ function PdfPage({ pdf, pageNumber, fileKey, displayScale, zoomLevel, settledZoo
     return () => { cancelled = true; task?.cancel?.(); };
   }, [pdf, pageNumber, visible, rendered, displayScale, settledZoom]);
 
+  // Selectable / searchable text layer, aligned to the same A4 box the canvas is drawn into.
+  useEffect(() => {
+    const container = textRef.current;
+    if (!container) return;
+    if (!pdf || !near) { container.replaceChildren(); setTextReady(false); return; }
+    let cancelled = false;
+    let layer: any = null;
+    (async () => {
+      try {
+        const page = await pdf.getPage(pageNumber);
+        if (cancelled) return;
+        const base = page.getViewport({ scale: 1 });
+        const contentScale = Math.min(A4_WIDTH / base.width, A4_HEIGHT / base.height);
+        const textContent = await page.getTextContent();
+        if (cancelled) return;
+        const pdfjs = await import('pdfjs-dist/build/pdf.mjs');
+        container.replaceChildren();
+        layer = new pdfjs.TextLayer({ textContentSource: textContent, container, viewport: base });
+        await layer.render();
+        if (cancelled) return;
+        setTextLayout({ contentScale, offX: (A4_WIDTH - base.width * contentScale) / 2, offY: (A4_HEIGHT - base.height * contentScale) / 2 });
+        setTextReady(true);
+      } catch { /* scanned page or cancelled: the canvas still shows the page */ }
+    })();
+    return () => { cancelled = true; try { layer?.cancel(); } catch { /* ignore */ } };
+  }, [pdf, pageNumber, near]);
+
+  useEffect(() => {
+    const container = textRef.current;
+    if (!container || !textReady) return;
+    const current = highlightSpans(container, query, activeOrdinal);
+    if (current && focusToken !== lastFocusRef.current) {
+      lastFocusRef.current = focusToken;
+      current.scrollIntoView({ block: 'center', inline: 'center' });
+    }
+  }, [textReady, query, activeOrdinal, focusToken]);
+
+  const perUnit = displayScale * zoomLevel;
+  const textStyle = textLayout ? ({
+    left: textLayout.offX * perUnit,
+    top: textLayout.offY * perUnit,
+    '--scale-factor': textLayout.contentScale * perUnit,
+    '--total-scale-factor': textLayout.contentScale * perUnit,
+    '--user-unit': 1,
+  } as React.CSSProperties) : undefined;
+
   return (
-    <div ref={hostRef} className="pdf-js-page" aria-label={`Page ${pageNumber}`} style={{ width: cssWidth, height: cssHeight }}>
+    <div ref={hostRef} className="pdf-js-page" aria-label={`Page ${pageNumber}`} data-page={pageNumber} style={{ width: cssWidth, height: cssHeight }}>
       {!rendered && <div className="pdf-js-page-placeholder"><span>Page {pageNumber}</span></div>}
       <canvas ref={canvasRef} className={rendered ? 'is-rendered' : ''} />
       <canvas ref={hiCanvasRef} className="pdf-js-hires" aria-hidden="true" />
+      <div className="pdf-js-text-wrap" style={textStyle}><div ref={textRef} className="pdf-js-text" /></div>
     </div>
   );
-}
+});
 
 export default function PdfViewerModal({ resource, onClose }: Props) {
   const [pdf, setPdf] = useState<any>(null);
@@ -193,6 +297,34 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const chromeTimerRef = useRef<number | null>(null);
   const shellRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLElement>(null);
+  const pagesRef = useRef<HTMLDivElement>(null);
+  const { showToast } = useToast();
+
+  // Page position
+  const [currentPage, setCurrentPage] = useState(1);
+  const currentPageRef = useRef(1);
+  const [pageDraft, setPageDraft] = useState<string | null>(null);
+  const restoreRef = useRef<{ page: number } | null>(null);
+  const restoredRef = useRef(false);
+  const [resumedAt, setResumedAt] = useState<number | null>(null);
+
+  // Search
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchOpenRef = useRef(false);
+  const [searchInput, setSearchInput] = useState('');
+  const [query, setQuery] = useState('');
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const textIndexRef = useRef<string[][]>([]);
+  const [indexVersion, setIndexVersion] = useState(0);
+  const [indexedPages, setIndexedPages] = useState(0);
+  const [activeMatch, setActiveMatch] = useState(0);
+  const [focusToken, setFocusToken] = useState(0);
+  const pendingFocusRef = useRef(false);
+
+  // Night reading + offline
+  const [night, setNight] = useState(() => getNightMode());
+  const [offlineState, setOfflineState] = useState<'none' | 'saving' | 'saved'>('none');
+  const [offlineProgress, setOfflineProgress] = useState(0);
 
   const fullscreen = nativeFullscreen || pseudoFullscreen;
   fullscreenRef.current = fullscreen;
@@ -244,11 +376,24 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     setPdf(null);
     setPageCount(0);
     setFitScaleReady(false);
-    zoomRef.current = INITIAL_READER_ZOOM;
-    setZoomLevel(INITIAL_READER_ZOOM);
-    setSettledZoom(INITIAL_READER_ZOOM);
 
-    loadPdfDocument(fileUrl, (loaded, total) => {
+    // Continue where the student stopped: last page + zoom for this resource.
+    const saved = getReaderProgress(resource.id);
+    const startZoom = saved ? clamp(Number(saved.zoom) || INITIAL_READER_ZOOM, MIN_READER_ZOOM, MAX_READER_ZOOM) : INITIAL_READER_ZOOM;
+    zoomRef.current = startZoom;
+    setZoomLevel(startZoom);
+    setSettledZoom(startZoom);
+    restoreRef.current = saved && saved.page > 1 ? { page: saved.page } : null;
+    restoredRef.current = false;
+    currentPageRef.current = 1;
+    setCurrentPage(1);
+    setResumedAt(null);
+    textIndexRef.current = [];
+    setIndexVersion(0);
+    setIndexedPages(0);
+    addRecentlyViewed(resource);
+
+    loadPdfDocument(fileUrl, fileKey, (loaded, total) => {
       if (total > 0 && !cancelled) setLoadProgress(Math.max(1, Math.min(99, Math.round((loaded / total) * 100))));
     }).then((document) => {
       if (cancelled) return;
@@ -262,7 +407,186 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     });
 
     return () => { cancelled = true; };
-  }, [resource?.id, fileUrl, isImage]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resource?.id, fileUrl, fileKey, isImage]);
+
+  const ready = Boolean(pdf) && !loading && !failed && fitScaleReady && !isImage;
+
+  // ---- Where am I? Measures real page positions so it stays correct at any zoom.
+  const getMetrics = useCallback(() => {
+    const stage = stageRef.current;
+    const pages = pagesRef.current;
+    if (!stage || !pages || !pages.children.length) return null;
+    const stageTop = stage.getBoundingClientRect().top;
+    const first = (pages.children[0] as HTMLElement).getBoundingClientRect();
+    const pitch = pages.children.length > 1 ? (pages.children[1] as HTMLElement).getBoundingClientRect().top - first.top : first.height;
+    return { stage, top0: first.top - stageTop + stage.scrollTop, pitch: Math.max(1, pitch) };
+  }, []);
+
+  const jumpToPage = useCallback((value: number) => {
+    const metrics = getMetrics();
+    if (!metrics || !pageCount) return;
+    const page = clamp(Math.round(value) || 1, 1, pageCount);
+    metrics.stage.scrollTop = Math.max(0, metrics.top0 + (page - 1) * metrics.pitch - 8);
+    currentPageRef.current = page;
+    setCurrentPage(page);
+  }, [getMetrics, pageCount]);
+
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!ready || !stage) return;
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const metrics = getMetrics();
+      if (!metrics) return;
+      const probe = stage.scrollTop + stage.clientHeight * 0.4;
+      const page = clamp(Math.floor((probe - metrics.top0) / metrics.pitch) + 1, 1, pageCount);
+      if (page !== currentPageRef.current) { currentPageRef.current = page; setCurrentPage(page); }
+    };
+    const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(update); };
+    stage.addEventListener('scroll', onScroll, { passive: true });
+    if (restoredRef.current) update();
+    return () => { if (frame) window.cancelAnimationFrame(frame); stage.removeEventListener('scroll', onScroll); };
+  }, [ready, pageCount, getMetrics, zoomLevel, fitScale]);
+
+  // Restore the saved page once the page boxes exist (their heights are known, so one jump is exact).
+  useLayoutEffect(() => {
+    if (!ready || restoredRef.current) return;
+    restoredRef.current = true;
+    const target = restoreRef.current;
+    restoreRef.current = null;
+    if (target && target.page > 1) {
+      jumpToPage(target.page);
+      setResumedAt(clamp(target.page, 1, pageCount));
+    }
+  }, [ready, jumpToPage, pageCount]);
+
+  useEffect(() => {
+    if (resumedAt === null) return;
+    const timer = window.setTimeout(() => setResumedAt(null), 7000);
+    return () => window.clearTimeout(timer);
+  }, [resumedAt]);
+
+  // Save page + zoom (debounced, and flushed when the reader closes).
+  const latestProgressRef = useRef<{ id: number; page: number; zoom: number; pages: number } | null>(null);
+  useEffect(() => {
+    if (!resource || !ready || !restoredRef.current) return;
+    const snapshot = { id: resource.id, page: currentPage, zoom: Math.round(zoomLevel * 100) / 100, pages: pageCount };
+    latestProgressRef.current = snapshot;
+    const timer = window.setTimeout(() => saveReaderProgress(snapshot.id, snapshot), 400);
+    return () => window.clearTimeout(timer);
+  }, [resource, ready, currentPage, zoomLevel, pageCount]);
+  useEffect(() => () => {
+    const snapshot = latestProgressRef.current;
+    if (snapshot) saveReaderProgress(snapshot.id, snapshot);
+  }, [resource?.id]);
+
+  // ---- Search: index text lazily the first time search opens.
+  const openSearch = useCallback(() => {
+    searchOpenRef.current = true;
+    setSearchOpen(true);
+    window.setTimeout(() => { searchInputRef.current?.focus(); searchInputRef.current?.select(); }, 30);
+  }, []);
+  const closeSearch = useCallback(() => {
+    searchOpenRef.current = false;
+    setSearchOpen(false);
+    setSearchInput('');
+    setQuery('');
+  }, []);
+
+  useEffect(() => {
+    if (!searchOpen || !pdf || !pageCount || textIndexRef.current.length >= pageCount) return;
+    let cancelled = false;
+    (async () => {
+      for (let index = textIndexRef.current.length; index < pageCount; index += 1) {
+        if (cancelled) return;
+        try {
+          const page = await pdf.getPage(index + 1);
+          const content = await page.getTextContent();
+          textIndexRef.current[index] = (content.items as Array<{ str?: string }>).map((item) => item.str ?? '').filter((text) => text.length > 0);
+        } catch { textIndexRef.current[index] = []; }
+        if ((index + 1) % 4 === 0 || index + 1 === pageCount) { setIndexedPages(index + 1); setIndexVersion((v) => v + 1); }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [searchOpen, pdf, pageCount]);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const next = searchInput.trim();
+      setQuery(next.length >= 2 ? next : '');
+      pendingFocusRef.current = true;
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, [searchInput]);
+
+  const matches = useMemo(() => {
+    if (!query) return [] as { page: number; ordinal: number }[];
+    const found: { page: number; ordinal: number }[] = [];
+    textIndexRef.current.forEach((items, pageIndex) => {
+      if (!items) return;
+      const count = countMatches(items, query);
+      for (let ordinal = 0; ordinal < count && found.length < 3000; ordinal += 1) found.push({ page: pageIndex + 1, ordinal });
+    });
+    return found;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, indexVersion]);
+
+  const goToMatch = useCallback((index: number) => {
+    if (!matches.length) return;
+    const wrapped = (index + matches.length) % matches.length;
+    setActiveMatch(wrapped);
+    jumpToPage(matches[wrapped].page);
+    setFocusToken((token) => token + 1);
+  }, [matches, jumpToPage]);
+
+  // A new query jumps to its first hit as soon as one exists.
+  useEffect(() => {
+    if (!query || !matches.length || !pendingFocusRef.current) return;
+    pendingFocusRef.current = false;
+    goToMatch(0);
+  }, [query, matches, goToMatch]);
+
+  const activeHit = matches[activeMatch];
+  const allIndexed = pageCount > 0 && indexedPages >= pageCount;
+  const noTextAtAll = allIndexed && textIndexRef.current.every((items) => !items || items.length === 0);
+  const searchStatus = !query ? (searchInput.trim().length === 1 ? 'Type 2+ letters' : '')
+    : matches.length ? `${Math.min(activeMatch + 1, matches.length)} of ${matches.length}${allIndexed ? '' : '+'}`
+    : noTextAtAll ? 'Scanned note: no text to search'
+    : allIndexed ? 'No matches' : 'Searching…';
+
+  // ---- Night reading
+  const toggleNight = useCallback(() => { setNight((on) => { setNightMode(!on); return !on; }); }, []);
+
+  // ---- Offline reading
+  useEffect(() => {
+    let cancelled = false;
+    setOfflineState('none');
+    if (!fileKey || isImage || !offlineSupported()) return;
+    hasOfflinePdf(fileKey).then((has) => { if (!cancelled && has) setOfflineState('saved'); });
+    return () => { cancelled = true; };
+  }, [fileKey, isImage]);
+
+  const toggleOffline = useCallback(async () => {
+    if (!resource || offlineState === 'saving') return;
+    if (offlineState === 'saved') {
+      await removeOfflinePdf(resource.id);
+      setOfflineState('none');
+      showToast('Removed from offline notes', 'info');
+      return;
+    }
+    setOfflineState('saving');
+    setOfflineProgress(0);
+    try {
+      await saveOfflinePdf({ id: resource.id, title: resource.title, fileKey, url: fileUrl, pageUrl: `/resource/${resource.slug || resource.id}` }, setOfflineProgress);
+      setOfflineState('saved');
+      showToast('Saved for offline reading', 'success');
+    } catch {
+      setOfflineState('none');
+      showToast('Could not save this note offline. Check your connection and storage.', 'error');
+    }
+  }, [resource, offlineState, fileKey, fileUrl, showToast]);
 
   // Chrome (header) visibility in fullscreen.
   const showChrome = useCallback((autoHide: boolean) => {
@@ -435,7 +759,9 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       setNativeFullscreen(Boolean(document.fullscreenElement || doc.webkitFullscreenElement));
     };
     const onKey = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'f' && !isImage) { event.preventDefault(); openSearch(); return; }
       if (event.key === 'Escape') {
+        if (searchOpenRef.current) { closeSearch(); return; }
         if (fullscreenRef.current && !document.fullscreenElement) setPseudoFullscreen(false);
         else if (!document.fullscreenElement) onClose();
         return;
@@ -458,11 +784,15 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       else if (doc.webkitFullscreenElement) doc.webkitExitFullscreen?.();
       setPseudoFullscreen(false);
     };
-  }, [resource, onClose, applyZoom, isImage]);
+  }, [resource, onClose, applyZoom, isImage, openSearch, closeSearch]);
 
   if (!resource) return null;
 
-  const shellClass = `pdf-reader-shell${fullscreen ? ' is-fullscreen' : ''}${fullscreen && chromeHidden ? ' chrome-hidden' : ''}`;
+  const shellClass = `pdf-reader-shell${fullscreen ? ' is-fullscreen' : ''}${fullscreen && chromeHidden ? ' chrome-hidden' : ''}${night && !isImage ? ' is-night' : ''}`;
+  const commitPage = () => {
+    if (pageDraft !== null && pageDraft.trim() !== '') jumpToPage(Number(pageDraft));
+    setPageDraft(null);
+  };
 
   return (
     <div ref={shellRef} className={shellClass} role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
@@ -474,9 +804,16 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           </div>
           <div className="pdf-reader-actions">
             {!isImage && <>
-              <button type="button" onClick={() => applyZoom(zoomRef.current - READER_ZOOM_STEP)} disabled={zoomLevel <= MIN_READER_ZOOM} aria-label="Zoom out"><Minus /></button>
+              <button type="button" className={searchOpen ? 'is-active' : ''} onClick={() => (searchOpen ? closeSearch() : openSearch())} aria-label="Search in this note" aria-pressed={searchOpen} title="Search (Ctrl+F)"><Search /></button>
+              <button type="button" className={night ? 'is-active' : ''} onClick={toggleNight} aria-label={night ? 'Switch to day reading' : 'Switch to night reading'} aria-pressed={night} title={night ? 'Day mode' : 'Night mode'}>{night ? <Sun /> : <Moon />}</button>
+              {offlineSupported() && (
+                <button type="button" className={`pdf-offline-btn${offlineState === 'saved' ? ' is-active' : ''}`} onClick={toggleOffline} disabled={offlineState === 'saving'} aria-label={offlineState === 'saved' ? 'Remove offline copy' : 'Save for offline reading'} title={offlineState === 'saved' ? 'Saved offline. Tap to remove' : offlineState === 'saving' ? `Saving ${offlineProgress}%` : 'Save for offline reading'}>
+                  {offlineState === 'saving' ? <span className="pdf-offline-pct">{offlineProgress}%</span> : offlineState === 'saved' ? <Check /> : <HardDriveDownload />}
+                </button>
+              )}
+              <button type="button" className="pdf-zoom-btn" onClick={() => applyZoom(zoomRef.current - READER_ZOOM_STEP)} disabled={zoomLevel <= MIN_READER_ZOOM} aria-label="Zoom out"><Minus /></button>
               <button type="button" className="pdf-reader-zoom" onClick={() => applyZoom(INITIAL_READER_ZOOM)} aria-label="Reset zoom" title="Reset zoom">{Math.round(zoomLevel * 100)}%</button>
-              <button type="button" onClick={() => applyZoom(zoomRef.current + READER_ZOOM_STEP)} disabled={zoomLevel >= MAX_READER_ZOOM} aria-label="Zoom in"><Plus /></button>
+              <button type="button" className="pdf-zoom-btn" onClick={() => applyZoom(zoomRef.current + READER_ZOOM_STEP)} disabled={zoomLevel >= MAX_READER_ZOOM} aria-label="Zoom in"><Plus /></button>
             </>}
             <button type="button" onClick={toggleFullscreen} aria-label={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}>{fullscreen ? <Minimize2 /> : <Maximize2 />}</button>
             <a href={fileUrl} download={resource.file_name || resource.title} aria-label="Download"><Download /></a>
@@ -494,13 +831,46 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
               <strong>{loadProgress > 0 ? `Opening note · ${loadProgress}%` : 'Opening note…'}</strong><span>Preparing the pages inside Archivum.</span>
             </div>
           ) : (
-            <div className="pdf-reader-pages">
+            <div ref={pagesRef} className="pdf-reader-pages">
               {Array.from({ length: pageCount }, (_, index) => (
-                <PdfPage key={`${fileKey}-${index + 1}`} pdf={pdf} pageNumber={index + 1} fileKey={fileKey} displayScale={fitScale} zoomLevel={zoomLevel} settledZoom={settledZoom} stageRef={stageRef} />
+                <PdfPage key={`${fileKey}-${index + 1}`} pdf={pdf} pageNumber={index + 1} fileKey={fileKey} displayScale={fitScale} zoomLevel={zoomLevel} settledZoom={settledZoom} stageRef={stageRef}
+                  query={searchOpen ? query : ''} activeOrdinal={activeHit && activeHit.page === index + 1 ? activeHit.ordinal : -1} focusToken={focusToken} />
               ))}
             </div>
           )}
         </main>
+        {searchOpen && !isImage && (
+          <div className="pdf-reader-search" role="search">
+            <Search className="pdf-search-icon" />
+            <input ref={searchInputRef} type="search" value={searchInput} placeholder="Search in this note" aria-label="Search in this note" autoComplete="off" spellCheck={false}
+              onChange={(event) => setSearchInput(event.target.value)}
+              onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); goToMatch(activeMatch + (event.shiftKey ? -1 : 1)); } }} />
+            <span className="pdf-search-status" aria-live="polite">{searchStatus}</span>
+            <button type="button" onClick={() => goToMatch(activeMatch - 1)} disabled={!matches.length} aria-label="Previous match"><ChevronUp /></button>
+            <button type="button" onClick={() => goToMatch(activeMatch + 1)} disabled={!matches.length} aria-label="Next match"><ChevronDown /></button>
+            <button type="button" onClick={closeSearch} aria-label="Close search"><X /></button>
+          </div>
+        )}
+        {ready && pageCount > 0 && (
+          <div className="pdf-reader-pager">
+            {resumedAt !== null && (
+              <div className="pdf-resume-chip" role="status">Continued from page {resumedAt}<button type="button" onClick={() => { jumpToPage(1); setResumedAt(null); }}>Start over</button></div>
+            )}
+            <div className="pdf-pager-pill">
+              <button type="button" onClick={() => jumpToPage(currentPage - 1)} disabled={currentPage <= 1} aria-label="Previous page"><ChevronLeft /></button>
+              <label className="pdf-pager-label">
+                <span>Page</span>
+                <input type="text" inputMode="numeric" pattern="[0-9]*" aria-label="Jump to page" value={pageDraft ?? String(currentPage)}
+                  onFocus={(event) => { setPageDraft(String(currentPage)); event.currentTarget.select(); }}
+                  onChange={(event) => setPageDraft(event.target.value.replace(/[^0-9]/g, '').slice(0, 4))}
+                  onBlur={commitPage}
+                  onKeyDown={(event) => { if (event.key === 'Enter') { event.preventDefault(); commitPage(); event.currentTarget.blur(); } else if (event.key === 'Escape') { event.stopPropagation(); setPageDraft(null); event.currentTarget.blur(); } }} />
+                <span>/ {pageCount}</span>
+              </label>
+              <button type="button" onClick={() => jumpToPage(currentPage + 1)} disabled={currentPage >= pageCount} aria-label="Next page"><ChevronRight /></button>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

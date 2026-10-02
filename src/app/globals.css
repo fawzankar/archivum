@@ -4238,3 +4238,66 @@ html.splash-active .boot-splash.sp{visibility:visible;z-index:2147483647!importa
 .pdf-reader-shell.is-fullscreen .pdf-reader-pages{padding-top:0}
 /* keep the native :fullscreen selector consistent with the class above */
 .pdf-reader-shell:fullscreen{background:#000}
+
+/* ===== PDF reader v3: page pager, search, selectable text, night reading ===== */
+.pdf-reader-window{position:relative}
+.pdf-reader-actions button.is-active{background:var(--accent-light);color:var(--accent)}
+.pdf-offline-pct{font-size:9px;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* Text layer: invisible text above the canvas so it can be selected, copied and searched. */
+.pdf-js-text-wrap{position:absolute;z-index:2;pointer-events:none;line-height:1;--scale-round-x:1px;--scale-round-y:1px;--user-unit:1}
+.pdf-js-text{position:relative;text-align:initial;overflow:clip;opacity:1;line-height:1;text-size-adjust:none;-webkit-text-size-adjust:none;forced-color-adjust:none;transform-origin:0 0;pointer-events:auto}
+.pdf-js-text,.pdf-js-text *{-webkit-user-select:text!important;-moz-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important}
+.pdf-js-text :is(span,br){position:absolute;color:transparent;white-space:pre;cursor:text;transform-origin:0 0}
+.pdf-js-text{--min-font-size:1;--text-scale-factor:calc(var(--total-scale-factor) * var(--min-font-size));--min-font-size-inv:calc(1 / var(--min-font-size))}
+.pdf-js-text>:not(.markedContent),.pdf-js-text .markedContent span:not(.markedContent){z-index:1;--font-height:0;font-size:calc(var(--text-scale-factor) * var(--font-height));--scale-x:1;--rotate:0deg;transform:rotate(var(--rotate)) scaleX(var(--scale-x)) scale(var(--min-font-size-inv))}
+.pdf-js-text .markedContent{display:contents}
+.pdf-js-text span{pointer-events:auto}
+.pdf-js-text br::selection{background:transparent}
+.pdf-js-text ::selection{background:rgba(40,90,255,.28);color:transparent}
+.pdf-js-text mark.pdf-hit{color:transparent;background:rgba(255,213,0,.55);border-radius:2px;padding:0;margin:0}
+.pdf-js-text mark.pdf-hit.is-current{background:rgba(255,128,0,.7);outline:2px solid rgba(255,128,0,.9)}
+
+/* Floating page indicator + jump-to-page */
+.pdf-reader-pager{position:absolute;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));z-index:4;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;transition:opacity .22s ease,transform .22s ease}
+.pdf-reader-pager>*{pointer-events:auto}
+.pdf-reader-shell.chrome-hidden .pdf-reader-pager{opacity:0;transform:translateY(12px);pointer-events:none}
+.pdf-reader-shell.chrome-hidden .pdf-reader-pager>*{pointer-events:none}
+.pdf-pager-pill{display:inline-flex;align-items:center;gap:2px;padding:4px;border:1px solid var(--border);border-radius:999px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(0,0,0,.2);color:var(--ink)}
+.pdf-pager-pill button{width:32px;height:32px;display:grid;place-items:center;border:0;border-radius:50%;background:transparent;color:var(--ink-muted)}
+.pdf-pager-pill button:hover:not(:disabled){background:var(--surface-raised);color:var(--accent)}
+.pdf-pager-pill button:disabled{opacity:.35}
+.pdf-pager-pill svg{width:17px;height:17px}
+.pdf-pager-label{display:inline-flex;align-items:center;gap:6px;padding:0 4px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pdf-pager-label input{width:3.2ch;min-width:34px;height:26px;padding:0 4px;text-align:center;border:1px solid var(--border);border-radius:8px;background:var(--surface-raised);color:var(--ink);font:inherit;font-size:12px}
+.pdf-pager-label input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.pdf-resume-chip{display:inline-flex;align-items:center;gap:10px;padding:7px 8px 7px 13px;border:1px solid var(--border);border-radius:999px;background:var(--surface);box-shadow:0 6px 20px rgba(0,0,0,.18);color:var(--ink);font-size:11px;font-weight:600}
+.pdf-resume-chip button{padding:4px 10px;border:0;border-radius:999px;background:var(--accent);color:var(--accent-contrast);font-size:11px;font-weight:800}
+
+/* Search bar */
+.pdf-reader-search{position:absolute;top:72px;right:14px;z-index:6;display:flex;align-items:center;gap:2px;width:min(420px,calc(100% - 28px));padding:5px 6px 5px 10px;border:1px solid var(--border);border-radius:14px;background:var(--surface);box-shadow:0 10px 32px rgba(0,0,0,.25);color:var(--ink)}
+.pdf-reader-shell.is-fullscreen .pdf-reader-search{top:62px}
+.pdf-search-icon{width:16px;height:16px;flex:none;color:var(--ink-muted);margin-right:4px}
+.pdf-reader-search input{flex:1;min-width:0;height:32px;border:0;background:transparent;color:var(--ink);font-size:13px;outline:none}
+.pdf-search-status{flex:none;padding:0 6px;color:var(--ink-muted);font-size:11px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pdf-reader-search button{width:30px;height:30px;flex:none;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:var(--ink-muted)}
+.pdf-reader-search button:hover:not(:disabled){background:var(--surface-raised);color:var(--accent)}
+.pdf-reader-search button:disabled{opacity:.35}
+.pdf-reader-search svg{width:16px;height:16px}
+
+/* Night reading: invert the page bitmaps only, so highlights and selection keep their colours. */
+.pdf-reader-shell.is-night .pdf-reader-stage{background:#101214!important}
+.pdf-reader-shell.is-night .pdf-js-page{background:#16181b;border-color:rgba(255,255,255,.08);box-shadow:0 2px 14px rgba(0,0,0,.5)}
+.pdf-reader-shell.is-night .pdf-js-page-placeholder{background:#16181b;color:#6c747c}
+.pdf-reader-shell.is-night .pdf-js-page canvas{filter:invert(1) hue-rotate(180deg)}
+.pdf-reader-shell.is-night .pdf-js-text mark.pdf-hit{background:rgba(255,213,0,.5)}
+
+@media(max-width:700px){
+  .pdf-zoom-btn{display:none!important}
+  .pdf-reader-search{top:62px;right:8px;width:calc(100% - 16px)}
+  .pdf-reader-pager{bottom:calc(10px + env(safe-area-inset-bottom))}
+}
+.pdf-reader-stage .pdf-reader-pages{padding-bottom:84px}
+
+/* Recently opened: "Page 7 / 20" chip */
+.rc-chips .rc-resume{background:var(--accent)!important;color:var(--accent-contrast)!important;font-weight:800}

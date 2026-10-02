@@ -9,8 +9,13 @@ declare module 'pdfjs-dist/build/pdf.mjs' {
     cancel?: () => void;
   }
 
+  export interface PDFTextContent {
+    items: Array<{ str?: string }>;
+  }
+
   export interface PDFPageProxy {
     getViewport(options: { scale: number }): PDFViewport;
+    getTextContent(): Promise<PDFTextContent>;
     render(options: {
       canvasContext: CanvasRenderingContext2D;
       viewport: PDFViewport;
@@ -34,6 +39,12 @@ declare module 'pdfjs-dist/build/pdf.mjs' {
     disableAutoFetch?: boolean;
     disableStream?: boolean;
     rangeChunkSize?: number;
+  }
+
+  export class TextLayer {
+    constructor(options: { textContentSource: PDFTextContent; container: HTMLElement; viewport: PDFViewport });
+    render(): Promise<void>;
+    cancel(): void;
   }
 
   export const GlobalWorkerOptions: {
