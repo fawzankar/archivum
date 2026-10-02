@@ -29,7 +29,7 @@ export default function ReviewsSection() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Could not submit review');
       setName(''); setReview(''); setRating(5);
-      setStatus('Thanks, your review is waiting for moderation.');
+      setStatus('Thank you! We’ll check it and put it up soon.');
     } catch (error) {
       setStatus(error instanceof Error ? error.message : 'Could not submit review.');
     } finally { setLoading(false); }
@@ -39,9 +39,9 @@ export default function ReviewsSection() {
     <section className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
       <div className="flex items-end justify-between gap-4">
         <div>
-          <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color:'var(--accent)' }}>STUDENT FEEDBACK</span>
+          <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color:'var(--accent)' }}>FROM STUDENTS</span>
           <h2 className="font-display font-bold text-2xl sm:text-3xl" style={{ color:'var(--ink)' }}>What students say.</h2>
-          <p className="text-xs mt-1 max-w-xl" style={{ color:'var(--ink-muted)' }}>Reviews are approved before they appear here.</p>
+          <p className="text-xs mt-1 max-w-xl" style={{ color:'var(--ink-muted)' }}>Every review here comes from a student and is checked before it goes live.</p>
         </div>
         <MessageSquareQuote className="hidden sm:block w-7 h-7" style={{ color:'var(--accent)' }} />
       </div>
@@ -56,19 +56,19 @@ export default function ReviewsSection() {
             </article>
           )) : (
             <div className="sm:col-span-2 rounded-2xl border border-dashed p-8 text-center" style={{ borderColor:'var(--border)', color:'var(--ink-muted)' }}>
-              <p className="text-sm font-semibold" style={{ color:'var(--ink)' }}>No public reviews yet.</p>
-              <p className="text-xs mt-1">Be the first to leave one.</p>
+              <p className="text-sm font-semibold" style={{ color:'var(--ink)' }}>No reviews yet.</p>
+              <p className="text-xs mt-1">Be the first to tell us what you think.</p>
             </div>
           )}
         </div>
 
         <form onSubmit={submit} className="rounded-2xl border p-5 space-y-4" style={{ backgroundColor:'var(--surface-raised)', borderColor:'var(--border)' }}>
-          <div><h3 className="font-display font-bold text-lg" style={{ color:'var(--ink)' }}>Share your experience</h3><p className="text-[11px]" style={{ color:'var(--ink-muted)' }}>Tell us what you think.</p></div>
+          <div><h3 className="font-display font-bold text-lg" style={{ color:'var(--ink)' }}>How’s it going?</h3><p className="text-[11px]" style={{ color:'var(--ink-muted)' }}>Be honest, we read everything.</p></div>
           <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Your name" maxLength={80} className="w-full rounded-xl border px-3 py-2.5 text-xs outline-none bg-transparent" style={{ borderColor:'var(--border)', color:'var(--ink)' }} />
           <div className="flex items-center gap-1">
             {[1,2,3,4,5].map((star) => <button type="button" key={star} onClick={()=>setRating(star)} aria-label={`${star} stars`} className="p-1"><Star className="w-5 h-5" style={{ color: star <= rating ? 'var(--accent)' : 'var(--border)', fill: star <= rating ? 'var(--accent)' : 'transparent' }} /></button>)}
           </div>
-          <textarea value={review} onChange={(e)=>setReview(e.target.value)} rows={4} maxLength={800} placeholder="What did you find useful? What should improve?" className="w-full rounded-xl border px-3 py-2.5 text-xs outline-none bg-transparent resize-none" style={{ borderColor:'var(--border)', color:'var(--ink)' }} />
+          <textarea value={review} onChange={(e)=>setReview(e.target.value)} rows={4} maxLength={800} placeholder="What helped? What could be better?" className="w-full rounded-xl border px-3 py-2.5 text-xs outline-none bg-transparent resize-none" style={{ borderColor:'var(--border)', color:'var(--ink)' }} />
           <button disabled={loading} className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold disabled:opacity-50" style={{ backgroundColor:'var(--ink)', color:'var(--surface)' }}>
             <Send className="w-3.5 h-3.5" />{loading ? 'Sending…' : 'Submit review'}
           </button>

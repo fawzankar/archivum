@@ -11,7 +11,7 @@ export default async function PreviousPapersPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <PageHead title="Previous Papers" art="papers" tone="peri">
-        JKBOSE board papers, school pre-boards, unit tests and terminal exams for Classes 9 to 12.
+        Board papers, pre-boards, unit tests and terminal exams for Classes 9 to 12. Practise the real thing.
       </PageHead>
       {/* The fallback is the full default-class list, so the HTML already contains real content. */}
       <Suspense fallback={<PaperFinderView bundle={bundle} initialClass={10} />}>

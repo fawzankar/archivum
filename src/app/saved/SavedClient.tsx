@@ -33,7 +33,7 @@ export default function SavedClient() {
         <div className="flex items-center justify-between">
           <h2 className="font-display font-bold text-xl sm:text-2xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
             <Bookmark className="w-5 h-5 text-rose-600" />
-            <span>Bookmarked ({savedItems.length})</span>
+            <span>Saved ({savedItems.length})</span>
           </h2>
         </div>
 
@@ -57,14 +57,14 @@ export default function SavedClient() {
                 Nothing saved yet
               </h3>
               <p className="text-xs text-zinc-500 max-w-sm mx-auto leading-relaxed">
-                Tap the bookmark on any note or paper to keep it here.
+                Tap the bookmark on any note or paper and it’ll wait for you here.
               </p>
             </div>
             <Link
               href="/notes"
               className="saved-explore-button inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-semibold transition-all cursor-pointer"
             >
-              <span>Explore Notes</span>
+              <span>Find something to save</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -75,7 +75,7 @@ export default function SavedClient() {
         <section className="space-y-5 pt-8 border-t" style={{ borderColor: 'var(--border-light)' }}>
           <h2 className="font-display font-bold text-xl text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
             <Clock className="w-4 h-4 text-zinc-400" />
-            <span>Recently Viewed</span>
+            <span>Recently opened</span>
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

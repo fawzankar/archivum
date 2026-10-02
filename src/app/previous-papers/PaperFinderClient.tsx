@@ -151,7 +151,7 @@ export function PaperFinderView({
         <div className="flex items-center justify-between pb-3 border-b" style={{ borderColor: 'var(--border-light)' }}>
           <div className="flex items-center gap-2 text-xs font-semibold" style={{ color: 'var(--ink)' }}>
             <Filter className="w-3.5 h-3.5" style={{ color: 'var(--sage)' }} />
-            <span>Refine Examinations</span>
+            <span>Narrow it down</span>
           </div>
 
           {hasActiveFilters && (

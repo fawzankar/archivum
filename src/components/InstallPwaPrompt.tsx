@@ -66,8 +66,8 @@ export default function InstallPwaPrompt() {
           <Download className="w-4 h-4" />
         </div>
         <div>
-          <h4 className="font-display text-xs sm:text-sm" style={{ color:'var(--ink)' }}>Install ARCHIVUM</h4>
-          <p className="text-[11px]" style={{ color:'var(--ink-muted)' }}>{ios ? 'Tap Share → Add to Home Screen.' : 'Add it to your home screen for quicker access.'}</p>
+          <h4 className="font-display text-xs sm:text-sm" style={{ color:'var(--ink)' }}>Keep ARCHIVUM on your phone</h4>
+          <p className="text-[11px]" style={{ color:'var(--ink-muted)' }}>{ios ? 'Tap Share, then “Add to Home Screen”.' : 'Opens fast and works offline, right from your home screen.'}</p>
         </div>
       </div>
 

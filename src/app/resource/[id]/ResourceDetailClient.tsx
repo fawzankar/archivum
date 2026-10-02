@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Resource } from '@/lib/resources';
 import { isResourceSaved, toggleSaveResource, addRecentlyViewed } from '@/lib/savedStorage';
+import { recordOpen } from '@/lib/studyStats';
 import ResourceCard from '@/components/ResourceCard';
 import PdfViewerModal from '@/components/PdfViewerModal';
 import Art from '@/components/Art';
@@ -27,7 +28,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   const backHref = isPaper ? `/previous-papers?class=${resource.class_level}` : `/notes?class=${resource.class_level}&subject=${encodeURIComponent(resource.subject)}`;
   const artName = isPaper ? 'papers' : resource.subject;
 
-  useEffect(() => { addRecentlyViewed(resource); }, [resource]);
+  useEffect(() => { addRecentlyViewed(resource); recordOpen(resource.id); }, [resource]);
   useEffect(() => {
     if (!resource.photo_keys) return;
     fetch(`/api/resources/${resource.id}/photos`).then(r => r.json()).then(data => setPhotoUrls(Array.isArray(data.photos) ? data.photos.map((p: {url:string}) => p.url) : [])).catch(() => {});
@@ -62,7 +63,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
     } catch {}
   }, [resource.id]);
 
-  const handleSaveToggle = () => { const next = toggleSaveResource(resource); setSaved(next); showToast(next ? 'Saved to library' : 'Removed from saved', next ? 'success' : 'info'); };
+  const handleSaveToggle = () => { const next = toggleSaveResource(resource); setSaved(next); showToast(next ? 'Saved. Find it under Saved anytime.' : 'Removed from your saved list', next ? 'success' : 'info'); };
   const handleDownload = async () => {
     let downloadUrl = `/api/resources/${resource.id}/file`;
     try {
@@ -72,7 +73,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
       const result = await response.json().catch(() => ({})); downloadUrl = result.download_url || downloadUrl;
       if (!response.ok || !result.success) throw new Error(result.error || 'Download could not be started');
       setDownloads(result.downloads ?? resource.downloads);
-      const link = document.createElement('a'); link.href = downloadUrl; link.download = resource.file_name || resource.title; document.body.appendChild(link); link.click(); link.remove(); showToast('Downloading document…');
+      const link = document.createElement('a'); link.href = downloadUrl; link.download = resource.file_name || resource.title; document.body.appendChild(link); link.click(); link.remove(); showToast('Your download is starting…');
     } catch { window.open(downloadUrl, '_blank'); }
   };
   const handleRating = async (rating: number) => {
@@ -108,12 +109,12 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
       setAvgRating(Number(json.average_rating ?? 0));
       setRatingCount(Number(json.rating_count ?? 0));
       setRatingSubmitted(true);
-      showToast('Rating saved', 'success');
+      showToast('Thanks for rating!', 'success');
     } catch {
       setUserRating(previousUserRating);
       setAvgRating(previousAverage);
       setRatingCount(previousCount);
-      showToast('Could not save rating. Please try again.', 'error');
+      showToast('That rating didn’t go through. Give it another try.', 'error');
     } finally {
       setRatingSaving(false);
     }
@@ -121,13 +122,13 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
 
   const handleShare = () => {
     if (navigator.share) navigator.share({ title:resource.title, text:`Check out ${resource.title} on ARCHIVUM`, url:window.location.href }).catch(() => {});
-    else navigator.clipboard.writeText(window.location.href).then(() => showToast('Link copied to clipboard'));
+    else navigator.clipboard.writeText(window.location.href).then(() => showToast('Link copied. Go share it!'));
   };
   const formatFileSize = (bytes: number) => { if (!bytes) return 'PDF'; const mb=bytes/(1024*1024); return mb>=1?`${mb.toFixed(1)} MB`:`${Math.round(bytes/1024)} KB`; };
   const details: [string,string][] = [
     ['Board', resource.board || 'JKBOSE'], ['Type', resource.resource_type || 'Notes'], ['Subject', resource.subject],
-    ['Chapter and topic', resource.chapter || resource.topic || 'General syllabus'], ['Exam and year', resource.year ? `${resource.paper_type ? `${resource.paper_type} | ` : ''}${resource.year}` : ''],
-    ['Source', resource.school_name || resource.contributor_name || 'ARCHIVUM contributor'],
+    ['Chapter and topic', resource.chapter || resource.topic || 'Whole syllabus'], ['Exam and year', resource.year ? `${resource.paper_type ? `${resource.paper_type} | ` : ''}${resource.year}` : ''],
+    ['Shared by', resource.school_name || resource.contributor_name || 'An ARCHIVUM contributor'],
   ];
 
   return <main className="resource-modern-page">
@@ -140,7 +141,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
             <div className="resource-modern-kicker"><span>CLASS {resource.class_level}</span><i/> <span>{resource.subject}</span><i/> <span>{isPaper ? 'PAPER' : 'NOTES'}</span></div>
             <div className="resource-modern-art"><Art name={artName} /></div>
             <h1>{resource.title}</h1>
-            <p>{resource.description || `${isPaper ? 'Question paper' : 'Study material'} for Class ${resource.class_level} ${resource.subject}.`}</p>
+            <p>{resource.description || `${isPaper ? 'A question paper' : 'A study resource'} for Class ${resource.class_level} ${resource.subject}.`}</p>
             <div className="resource-modern-actions">
               <button onClick={handleDownload} className="resource-primary-action"><Download /> Download</button>
               <button type="button" onClick={() => setReaderOpen(true)} className="resource-secondary-action"><Eye /> Read Online</button>
@@ -156,17 +157,17 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
 
         <div className="resource-modern-content">
           <section className="resource-modern-section">
-            <div className="resource-section-heading"><span>DOCUMENT DETAILS</span><Sparkles /></div>
-            <h2>The details, before you open it.</h2>
+            <div className="resource-section-heading"><span>ABOUT THIS FILE</span><Sparkles /></div>
+            <h2>A quick look before you open it.</h2>
             <div className="resource-detail-grid">{details.map(([label,value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
           </section>
 
-          {photoUrls.length > 0 && <section className="resource-modern-section"><div className="resource-section-heading"><span>COMMUNITY PREVIEW</span><ImageIcon /></div><h2>Shared alongside the document.</h2><div className="resource-photo-grid">{photoUrls.map((url,i)=><a key={url} href={url} target="_blank" rel="noopener noreferrer"><img src={url} alt={`Supporting page ${i+1}`} loading="lazy" /></a>)}</div></section>}
+          {photoUrls.length > 0 && <section className="resource-modern-section"><div className="resource-section-heading"><span>EXTRA PHOTOS</span><ImageIcon /></div><h2>Photos shared with this file.</h2><div className="resource-photo-grid">{photoUrls.map((url,i)=><a key={url} href={url} target="_blank" rel="noopener noreferrer"><img src={url} alt={`Supporting page ${i+1}`} loading="lazy" /></a>)}</div></section>}
 
           <section className="resource-modern-rating">
   <div>
     <span>YOUR RATING</span><h2>Was this useful?</h2>
-    <p>Rate it yourself. Other people’s ratings won’t fill in your stars.</p>
+    <p>Tap the stars to rate it. Your stars only show your own rating, not everyone else’s.</p>
     {ratingCount > 0 && <div className="community-rating-summary"><strong>{avgRating.toFixed(1)} / 5</strong><span>from {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}</span></div>}
   </div>
   <div className="resource-rating-control">
@@ -177,13 +178,13 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
       </button>;
     })}</div>
     {ratingSaving && <span className="rating-saving">Saving…</span>}
-    {ratingSubmitted && <span className="rating-saved">Your rating is saved. Tap the stars anytime to change it.</span>}
+    {ratingSubmitted && <span className="rating-saved">Got it, thanks! You can tap the stars again to change it.</span>}
   </div>
 </section>
         </div>
       </article>
 
-      {relatedResources.length > 0 && <section className="resource-related"><div><span>RELATED MATERIAL</span><h2>More for Class {resource.class_level} {resource.subject}</h2></div><div className="resource-related-grid">{relatedResources.slice(0,3).map(res => <ResourceCard key={res.id} resource={res} />)}</div></section>}
+      {relatedResources.length > 0 && <section className="resource-related"><div><span>KEEP GOING</span><h2>More Class {resource.class_level} {resource.subject}</h2></div><div className="resource-related-grid">{relatedResources.slice(0,3).map(res => <ResourceCard key={res.id} resource={res} />)}</div></section>}
     </div>
     <PdfViewerModal resource={readerOpen ? resource : null} onClose={() => setReaderOpen(false)} />
   </main>;

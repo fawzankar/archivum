@@ -35,11 +35,11 @@ export default async function ContributorsPage() {
 
   return (
     <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-12">
-      <PageHead title="The people behind the notes." art="default" tone="mint">This list comes straight from approved uploads, so everyone here has added something.</PageHead>
+      <PageHead title="The people behind the archive." art="default" tone="mint">Everyone here has shared material that’s actually in the archive. No padding, just real contributions.</PageHead>
 
       <section className="contributors-intro contributors-thankyou">
         <div className="contributors-intro-icon"><Heart /></div>
-        <div><h2>Thank you.</h2><p>Every note and paper someone shares here saves another student a lot of searching. This archive is only as good as what people put into it.</p><p>If you have material that belongs here, message the <span className="quest-word">Quest</span> team and we’ll help you get it added.</p></div>
+        <div><h2>Thank you, truly.</h2><p>Every note, paper and resource shared here keeps ARCHIVUM going. These students gave their time and their material to make studying a little easier for the ones coming after them.</p><p>Got something that belongs here? Message the <span className="quest-word">Quest</span> team and we’ll help you get it in.</p></div>
       </section>
       <section className="contributors-contact-grid">
         <a href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><Camera /><span><strong>Instagram</strong><small>@quest_sjs</small></span></a>
@@ -51,12 +51,12 @@ export default async function ContributorsPage() {
           <div className="rounded-xl border p-10 text-center" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
             <Trophy className="w-8 h-8 mx-auto" style={{color:'var(--accent)'}}/>
             <h2 className="font-display font-bold text-xl mt-3">No contributors yet</h2>
-            <p className="text-xs mt-2" style={{color:'var(--ink-muted)'}}>Once your upload is approved, your name will show up here.</p>
+            <p className="text-xs mt-2" style={{color:'var(--ink-muted)'}}>Share something useful and you could be the first name on this list.</p>
           </div>
         ) : contributors.map((c, i) => (
           <div key={c.contributor_name} className="rounded-2xl border p-3.5 sm:p-5 flex items-center gap-3 sm:gap-4 min-w-0" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center font-display font-bold" style={{background:'var(--accent-light)',color:'var(--accent)'}}>{i+1}</div>
-            <div className="min-w-0 flex-1"><div className="font-display font-medium truncate">{c.contributor_name}</div><div className="text-[11px] mt-1 truncate" style={{color:'var(--ink-muted)'}}>{c.latest_title ? `Latest: ${c.latest_title}` : 'Approved contributor'}</div></div>
+            <div className="min-w-0 flex-1"><div className="font-display font-medium truncate">{c.contributor_name}</div><div className="text-[11px] mt-1 truncate" style={{color:'var(--ink-muted)'}}>{c.latest_title ? `Latest: ${c.latest_title}` : 'Contributor'}</div></div>
             <div className="shrink-0 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-[10px] sm:text-xs font-bold" style={{background:'var(--surface-raised)',color:'var(--ink-muted)'}}><Upload className="w-3.5 h-3.5"/>{c.uploads} {c.uploads === 1 ? 'upload' : 'uploads'}</div>
           </div>
         ))}

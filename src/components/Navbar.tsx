@@ -6,12 +6,11 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import SearchBar from './SearchBar';
-import Credit from './Credit';
-import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink } from 'lucide-react';
+import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink, Timer } from 'lucide-react';
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],
-  ['Tips & Tricks','/tips',Lightbulb], ['Contributors','/contributors',Users], ['Contact us','/contact',MessageCircle], ['About','/about',Info]
+  ['Focus Timer','/focus',Timer], ['Tips & Tricks','/tips',Lightbulb], ['Contributors','/contributors',Users], ['Contact us','/contact',MessageCircle], ['About','/about',Info]
 ] as const;
 
 export default function Navbar() {
@@ -46,7 +45,7 @@ export default function Navbar() {
       <div className="archive-shell site-header-inner">
         <Link href="/" className="brand-lockup" aria-label="ARCHIVUM home">
           <span className="brand-logo"><span className="archivum-css-logo" /></span>
-          <span><strong>ARCHIVUM</strong><small>A sister organisation of <span className="quest-word">Quest</span></small></span>
+          <span><strong>ARCHIVUM</strong><small>A Sister Organization Of <span className="quest-word">Quest</span></small></span>
         </Link>
 
         <div className="header-actions">
@@ -62,12 +61,12 @@ export default function Navbar() {
             <div className="search-modal-head">
               <div>
                 <span className="search-modal-kicker">ARCHIVUM</span>
-                <h2>Search the archive</h2>
-                <p>Find notes, papers and study material.</p>
+                <h2>What are you looking for?</h2>
+                <p>Looking for a chapter, a topic or a paper? Type it in.</p>
               </div>
               <button className="search-modal-close" type="button" onClick={() => setSearchOpen(false)} aria-label="Close search"><X /></button>
             </div>
-            <SearchBar className="header-search-bar" onSearch={() => setSearchOpen(false)} autoFocus />
+            <SearchBar className="header-search-bar" onSearch={() => setSearchOpen(false)} autoFocus showRecent />
           </div>
         </div>
       )}
@@ -77,27 +76,27 @@ export default function Navbar() {
       <button className="menu-scrim" onClick={() => setDrawerOpen(false)} aria-label="Close menu" />
       <aside className="menu-drawer">
         <div className="menu-top">
-          <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>A sister organisation of <span className="quest-word">Quest</span></small></span></div>
+          <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>A Sister Organization Of <span className="quest-word">Quest</span></small></span></div>
           <button className="header-action" onClick={() => setDrawerOpen(false)} aria-label="Close menu"><X /></button>
         </div>
 
         <div className="menu-scroll">
-          {displayName && <div className="menu-welcome"><span className="menu-welcome-mark">{displayName.charAt(0).toUpperCase()}</span><div><strong>Hello, {displayName}</strong><small>Class {studentClass || 'Not selected'}</small></div></div>}
-          <div className="menu-section-label">Explore</div>
+          {displayName && <div className="menu-welcome"><span className="menu-welcome-mark">{displayName.charAt(0).toUpperCase()}</span><div><strong>Hi, {displayName.split(' ')[0]}</strong><small>{studentClass ? `Class ${studentClass}` : 'No class picked yet'}</small></div></div>}
+          <div className="menu-section-label">Where to?</div>
           <div className="menu-links">{links.map(([label,href,Icon]) => <Link key={href} href={withClass(href)} onClick={() => setDrawerOpen(false)} className={active(href) ? 'active' : ''}><Icon /><span>{label}</span><ChevronRight /></Link>)}</div>
 
           <div className="menu-section menu-appearance">
-            <div className="menu-section-label">Colour theme</div>
+            <div className="menu-section-label">Pick your colour</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ background: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
 
-          <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset my profile</button>
+          <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Start over with a new profile</button>
         </div>
 
-        <div className="menu-quest-cta">
-          <a className="quest-visit-link" href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span>Visit <span className="quest-word">QUEST</span></span><ExternalLink /></a>
-        </div>
-        <div className="menu-credit"><Credit link /></div>
+          <div className="menu-quest-cta">
+            <a className="quest-visit-link" href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span>Visit <span className="quest-word">QUEST</span></span><ExternalLink /></a>
+          </div>
+        <div className="menu-note"><span>Built by</span><a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">Fawzan Kar</a></div>
       </aside>
     </div>
   </>;
