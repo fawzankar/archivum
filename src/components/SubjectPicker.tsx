@@ -52,8 +52,8 @@ export default function SubjectPicker({ subject, classLevel, description, compac
 
   return <>
     <button type="button" onClick={() => setOpen(true)} className={`subject-tile group ${compact ? 'subject-tile-compact' : ''}`} aria-label={`Open ${subject} resources`}>
-      <span className="subject-tile-copy"><strong>{subject}</strong>{description && <small>{description}</small>}</span>
       <Art name={subject} className="subject-tile-art" />
+      <span className="subject-tile-copy"><strong>{subject}</strong>{description && <small>{description}</small>}</span>
       <ArrowUpRight className="subject-tile-arrow" aria-hidden="true" />
     </button>
     {modal}

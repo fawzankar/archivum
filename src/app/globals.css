@@ -4115,3 +4115,85 @@ html.profile-onboarding-active .profile-continue{height:50px!important;margin-to
 /* Greeting: name on the next line */
 .hx-hello h1{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:0!important;white-space:normal!important}
 .hx-hello strong{display:block!important;max-width:100%!important;line-height:.96!important}.hx-hello .hx-wave{display:inline-block;margin-top:8px}
+
+/* ===== User refinement pass ===== */
+/* Greeting: keep the waving hand on the same line as the name. */
+.hx-hello .hx-name-line{display:flex;align-items:center;gap:10px;line-height:.96}
+.hx-hello .hx-name-line .hx-wave{margin-top:0;font-size:.72em;line-height:1;transform:translateY(.04em)}
+
+/* Subject shelf: slightly more compact, artwork above, subject name centered at the bottom. */
+.hm-subject-home-card{min-height:190px!important;padding:12px!important;border-radius:16px!important}
+.hm-subject-home-card>.subject-tile{min-height:190px!important;padding:12px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:space-between!important;gap:6px!important}
+.hm-subject-home-card .subject-tile-art{position:relative!important;top:auto!important;right:auto!important;width:82px!important;height:82px!important;flex:0 0 auto!important;margin-top:2px!important;order:0!important;transform:none!important}
+.hm-subject-home-card .subject-tile-copy{width:100%;margin-top:auto;text-align:center;display:flex;justify-content:center;align-items:center;min-height:34px}
+.hm-subject-home-card .subject-tile-copy strong{font-size:20px!important;line-height:1.05!important;font-weight:800!important;text-align:center!important}
+.hm-subject-home-card .subject-tile-copy small{display:none!important}
+.hm-subject-home-card .subject-tile-arrow{display:none!important}
+
+/* Theme picker: use colour swatches only; the selected label stays theme-coloured, never white. */
+.accent-swatch{position:relative}
+.accent-swatch.active small{color:var(--accent)!important;font-weight:800}
+.accent-swatch.active::after{color:var(--accent-contrast)!important}
+
+/* Splash: theme colour treatment only; no theme image as a page background. Keep the logo/icon unchanged. */
+.sp-backdrop{background:var(--ivory)!important}
+.sp-backdrop::before{display:block!important;inset:-18%!important;background:
+  radial-gradient(circle at 50% 44%, color-mix(in srgb,var(--accent) 24%,transparent) 0%, color-mix(in srgb,var(--accent-light) 70%,transparent) 34%, transparent 68%),
+  linear-gradient(135deg, color-mix(in srgb,var(--ivory) 88%,var(--accent-light)), var(--ivory))!important;
+  transform:scale(1.08)}
+.sp-orb-a{left:-9vw;top:-8vw}
+.sp-orb-b{right:-6vw;bottom:-8vw}
+.sp-mark{background:var(--navy)}
+.sp-kicker{color:var(--ink-muted)}
+.sp-word{color:var(--ink)}
+.sp-credit{color:var(--accent)}
+.sp-credit strong{color:var(--accent);font-weight:800}
+:root[data-accent="crimson-veil"] .sp-kicker,
+:root[data-accent="crimson-veil"] .sp-word,
+:root[data-accent="crimson-veil"] .sp-credit,
+:root[data-accent="crimson-veil"] .sp-credit strong{color:var(--accent)}
+:root[data-accent="crimson-veil"] .sp-rule{background:color-mix(in srgb,var(--accent) 18%,var(--border))}
+:root[data-accent="crimson-veil"] .sp-rule span{background:var(--accent)}
+
+@media(max-width:1050px){
+  .hm-subject-home-card,.hm-subject-home-card>.subject-tile{min-height:175px!important}
+  .hm-subject-home-card .subject-tile-art{width:76px!important;height:76px!important}
+}
+@media(max-width:640px){
+  .hm-subject-home-card,.hm-subject-home-card>.subject-tile{min-height:145px!important}
+  .hm-subject-home-card .subject-tile-art{width:62px!important;height:62px!important}
+  .hm-subject-home-card .subject-tile-copy strong{font-size:17px!important}
+  .hx-hello .hx-name-line{gap:8px}
+}
+
+/* Crimson Veil is a normal colour theme now — the supplied artwork is not used as an app background. */
+:root[data-accent="crimson-veil"]{
+  --navy:#610027;
+  --ink:#610027;
+  --ink-muted:#7d4658;
+  --ink-faint:#a06d7d;
+  --sun:#fcd0d9;
+  --peri:#b45a69;
+  --blush:#f3b1c0;
+  --mint:#f8e1e6;
+  --ivory:#fff4f7;
+  --ivory-deep:#fbe7ec;
+  --border:#e8c5ce;
+  --border-light:#f1dce2;
+  --surface:#fffafb;
+  --surface-raised:#fff0f4;
+  --accent:#912b48;
+  --accent-strong:#610027;
+  --accent-light:#f6dbe2;
+  --accent-contrast:#fff;
+  --accent-glow:rgba(145,43,72,.18);
+  --app-shadow:rgba(97,0,39,.11)
+}
+:root[data-accent="crimson-veil"] body{background-color:var(--ivory);background-image:none;background-attachment:initial}
+:root[data-accent="crimson-veil"] .site-header,
+:root[data-accent="crimson-veil"] .site-header.is-scrolled{background:color-mix(in srgb,var(--surface) 94%,transparent);color:var(--ink);border-bottom-color:var(--border)}
+:root[data-accent="crimson-veil"] .brand-logo{background:var(--navy);color:#fff;border-color:var(--navy)}
+:root[data-accent="crimson-veil"] .mobile-nav{background:color-mix(in srgb,var(--surface) 95%,transparent);border-color:var(--border)}
+:root[data-accent="crimson-veil"] .mobile-nav-link{color:var(--ink-faint)}
+:root[data-accent="crimson-veil"] .mobile-nav-link.active{color:var(--accent)}
+:root[data-accent="crimson-veil"] .accent-swatch.active small{color:var(--accent)!important}

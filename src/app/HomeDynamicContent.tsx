@@ -75,7 +75,6 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
               <h2 id="hm-pickup-title">Pick Up Where You Left Off</h2>
               <p className="hm-pickup-subtitle">Your recently opened notes, ready to continue.</p>
             </div>
-            <Link href={`/notes?class=${activeClass}`}>Open notes</Link>
           </div>
           <div className="hm-pickup-grid">
             {recentNotes.map((resource) => <ResourceCard key={`pickup-${resource.id}`} resource={resource} compact />)}

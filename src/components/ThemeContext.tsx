@@ -2,12 +2,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export type Accent = 'indigo' | 'forest' | 'smoky-ink' | 'soft-pink' | 'crimson-veil';
-export const ACCENTS: { id: Accent; label: string; color: string; image?: string }[] = [
+export const ACCENTS: { id: Accent; label: string; color: string }[] = [
   { id: 'indigo', label: 'Indigo', color: '#1b2166' },
   { id: 'forest', label: 'Forest', color: '#0f4d2e' },
   { id: 'smoky-ink', label: 'Smoky Ink', color: '#202329' },
   { id: 'soft-pink', label: 'Soft Pink', color: '#D46C8C' },
-  { id: 'crimson-veil', label: 'Crimson Veil', color: '#610027', image: '/crimson-veil-theme.jpg' },
+  { id: 'crimson-veil', label: 'Crimson Veil', color: '#610027' },
 ];
 type ThemeMode = 'light';
 interface ThemeContextType { accent: Accent; setAccent: (accent: Accent) => void; mode: ThemeMode; setMode: (mode: ThemeMode) => void; }

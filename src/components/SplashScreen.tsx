@@ -25,7 +25,7 @@ export default function SplashScreen() {
         <div className="sp-word" aria-hidden="true">ARCHIVUM</div>
         <span className="sp-rule" aria-hidden="true"><span /></span>
       </div>
-      <div className="sp-credit">Built by <strong>Fawzan Kar</strong></div>
+      <div className="sp-credit">This App Is Built By <strong>Fawzan Kar</strong></div>
     </div>
   );
 }
