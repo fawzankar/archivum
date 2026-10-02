@@ -68,6 +68,7 @@ export function addRecentlyViewed(resource: Resource) {
     let list: Resource[] = JSON.parse(raw);
     list = [resource, ...list.filter((r) => r.id !== resource.id)].slice(0, 10);
     localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+    window.dispatchEvent(new Event('sjs_recently_viewed_updated'));
   } catch {}
 }
 

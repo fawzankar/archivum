@@ -7,6 +7,9 @@ import PersonalGreeting from '@/components/PersonalGreeting';
 import HomeClient from './HomeClient';
 import ResourceCard from '@/components/ResourceCard';
 import Art from '@/components/Art';
+import SubjectPicker from '@/components/SubjectPicker';
+import { getRecentlyViewed } from '@/lib/savedStorage';
+import { useEffect, useState } from 'react';
 import type { RecentHomeBundle } from '@/lib/resources';
 
 export function HomeHeroContent() {
@@ -27,6 +30,13 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
   const { studentClass } = useStudentClass();
   const activeClass = studentClass ?? 10;
   const recent = recentByClass[activeClass] || [];
+  const [recentNotes, setRecentNotes] = useState<import('@/lib/resources').Resource[]>([]);
+  useEffect(() => {
+    const sync = () => setRecentNotes(getRecentlyViewed().filter((resource) => resource.resource_type === 'Notes' && resource.class_level === activeClass).slice(0, 4));
+    sync();
+    window.addEventListener('sjs_recently_viewed_updated', sync);
+    return () => window.removeEventListener('sjs_recently_viewed_updated', sync);
+  }, [activeClass]);
   const subjects = activeClass <= 10
     ? ['Maths', 'Science', 'SST', 'English', 'Hindi', 'Urdu']
     : ['Maths', 'Biology', 'Physics', 'Chemistry', 'English'];
@@ -51,14 +61,27 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
         </div>
         <div className="hm-subjects-home-grid">
           {subjects.map((subject, index) => (
-            <Link key={subject} href={`/notes?class=${activeClass}&subject=${encodeURIComponent(subject)}`} className={`hm-subject-home-card subject-home-${index % 6}`}>
-              <div className="hm-subject-home-art"><Art name={subject} /></div>
-              <strong>{subject}</strong>
-            </Link>
+            <div key={subject} className={`hm-subject-home-card subject-home-${index % 6}`}>
+              <SubjectPicker subject={subject} classLevel={activeClass} compact />
+            </div>
           ))}
         </div>
       </section>
 
+      {recentNotes.length > 0 && (
+        <section className="hm-pickup" aria-labelledby="hm-pickup-title">
+          <div className="hm-head">
+            <div>
+              <h2 id="hm-pickup-title">Pick Up Where You Left Off</h2>
+              <p className="hm-pickup-subtitle">Your recently opened notes, ready to continue.</p>
+            </div>
+            <Link href={`/notes?class=${activeClass}`}>Open notes</Link>
+          </div>
+          <div className="hm-pickup-grid">
+            {recentNotes.map((resource) => <ResourceCard key={`pickup-${resource.id}`} resource={resource} compact />)}
+          </div>
+        </section>
+      )}
       <section aria-labelledby="hm-recent">
         <div className="hm-head"><h2 id="hm-recent">Recently added</h2><Link href={`/search?class=${activeClass}`}>See everything</Link></div>
         {recent.length

@@ -87,7 +87,7 @@ export default function Navbar() {
 
           <div className="menu-section menu-appearance">
             <div className="menu-section-label">Colour Theme</div>
-            <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ background: item.color }} /><small>{item.label}</small></button>)}</div>
+            <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ backgroundColor: item.color, ...(item.image ? { backgroundImage: `url(${item.image})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}) }} /><small>{item.label}</small></button>)}</div>
           </div>
 
           <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset My Profile</button>
