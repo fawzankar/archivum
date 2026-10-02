@@ -7,11 +7,10 @@ export default function SplashScreen() {
   const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
   useEffect(() => {
-    if (window.location.pathname !== '/') { document.documentElement.classList.remove('archivum-booting'); return; }
-    document.documentElement.classList.add('archivum-booting');
+    if (window.location.pathname !== '/') return;
     setShow(true);
     const leave = window.setTimeout(() => setLeaving(true), SPLASH_MS - LEAVE_MS);
-    const done = window.setTimeout(() => { setShow(false); document.documentElement.classList.remove('archivum-booting'); }, SPLASH_MS);
+    const done = window.setTimeout(() => { setLeaving(true); window.requestAnimationFrame(() => setShow(false)); }, SPLASH_MS);
     return () => { window.clearTimeout(leave); window.clearTimeout(done); };
   }, []);
   if (!show) return null;

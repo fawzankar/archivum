@@ -11,11 +11,13 @@ function PdfPage({
   pageNumber,
   scale,
   eager = false,
+  zoomed = false,
 }: {
   pdf: any;
   pageNumber: number;
   scale: number;
   eager?: boolean;
+  zoomed?: boolean;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -83,7 +85,7 @@ function PdfPage({
   }, [pdf, pageNumber, scale, visible]);
 
   return (
-    <div ref={hostRef} className="pdf-js-page" aria-label={`Page ${pageNumber}`}>
+    <div ref={hostRef} className={`pdf-js-page${zoomed ? ' is-zoomed' : ''}`} aria-label={`Page ${pageNumber}`}>
       {!rendered && <div className="pdf-js-page-placeholder"><span>Page {pageNumber}</span></div>}
       <canvas ref={canvasRef} className={rendered ? 'is-rendered' : ''} />
     </div>
@@ -99,6 +101,9 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [fullscreen, setFullscreen] = useState(false);
   const [scale, setScale] = useState(1);
   const shellRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLElement>(null);
+  const pinchRef = useRef<{ startDistance: number; startScale: number; previewScale: number } | null>(null);
+  const [pinchScale, setPinchScale] = useState<number | null>(null);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(resource.file_name || '')));
@@ -152,6 +157,52 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   }, [resource?.id, fileUrl, isImage]);
 
   useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || isImage) return;
+
+    const distance = (a: Touch, b: Touch) => Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
+
+    const onTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 2) return;
+      const startDistance = distance(event.touches[0], event.touches[1]);
+      if (!startDistance) return;
+      pinchRef.current = { startDistance, startScale: scale, previewScale: scale };
+      setPinchScale(scale);
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      const pinch = pinchRef.current;
+      if (!pinch || event.touches.length !== 2) return;
+      event.preventDefault();
+      const currentDistance = distance(event.touches[0], event.touches[1]);
+      if (!currentDistance) return;
+      const next = Math.max(0.7, Math.min(2.5, pinch.startScale * (currentDistance / pinch.startDistance)));
+      pinch.previewScale = next;
+      setPinchScale(next);
+    };
+
+    const finishPinch = () => {
+      const pinch = pinchRef.current;
+      if (!pinch) return;
+      const next = Math.round(pinch.previewScale * 10) / 10;
+      pinchRef.current = null;
+      setPinchScale(null);
+      setScale(Math.max(0.7, Math.min(2.5, next)));
+    };
+
+    stage.addEventListener('touchstart', onTouchStart, { passive: true });
+    stage.addEventListener('touchmove', onTouchMove, { passive: false });
+    stage.addEventListener('touchend', finishPinch, { passive: true });
+    stage.addEventListener('touchcancel', finishPinch, { passive: true });
+    return () => {
+      stage.removeEventListener('touchstart', onTouchStart);
+      stage.removeEventListener('touchmove', onTouchMove);
+      stage.removeEventListener('touchend', finishPinch);
+      stage.removeEventListener('touchcancel', finishPinch);
+    };
+  }, [isImage, scale]);
+
+  useEffect(() => {
     if (!resource) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -187,8 +238,9 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   };
 
   const zoom = (delta: number) => {
-    setScale(current => Math.max(0.7, Math.min(2, Math.round((current + delta) * 10) / 10)));
+    setScale(current => Math.max(0.7, Math.min(2.5, Math.round((current + delta) * 10) / 10)));
   };
+
 
   return (
     <div ref={shellRef} className="pdf-reader-shell" role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
@@ -215,7 +267,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           </div>
         </header>
 
-        <main className="pdf-reader-stage">
+        <main ref={stageRef} className="pdf-reader-stage">
           {isImage ? (
             <div className="pdf-reader-image"><img src={fileUrl} alt={resource.title} /></div>
           ) : failed ? (
@@ -236,7 +288,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
               <span>Preparing the first pages inside Archivum.</span>
             </div>
           ) : (
-            <div className="pdf-reader-pages">
+            <div className="pdf-reader-pages" style={pinchScale ? { transform: `scale(${pinchScale / scale})`, transformOrigin: '50% 0' } : undefined}>
               {Array.from({ length: pageCount }, (_, index) => (
                 <PdfPage
                   key={index + 1}
@@ -244,6 +296,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
                   pageNumber={index + 1}
                   scale={scale}
                   eager={index < 2}
+                  zoomed={scale > 1 || Boolean(pinchScale && pinchScale > 1)}
                 />
               ))}
             </div>

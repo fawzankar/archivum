@@ -21,6 +21,7 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const lockedScrollY = React.useRef(0);
 
   useEffect(() => {
     const f = () => setScrolled(window.scrollY > 16);
@@ -28,8 +29,30 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', f);
   }, []);
   useEffect(() => {
-    document.body.style.overflow = drawerOpen || searchOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    const locked = drawerOpen || searchOpen;
+    const html = document.documentElement;
+    const body = document.body;
+
+    if (locked) {
+      lockedScrollY.current = window.scrollY;
+      html.classList.add('overlay-scroll-locked');
+      body.classList.add('overlay-scroll-locked');
+      body.style.top = `-${lockedScrollY.current}px`;
+      body.style.width = '100%';
+    } else {
+      html.classList.remove('overlay-scroll-locked');
+      body.classList.remove('overlay-scroll-locked');
+      body.style.top = '';
+      body.style.width = '';
+      window.scrollTo(0, lockedScrollY.current);
+    }
+
+    return () => {
+      html.classList.remove('overlay-scroll-locked');
+      body.classList.remove('overlay-scroll-locked');
+      body.style.top = '';
+      body.style.width = '';
+    };
   }, [drawerOpen, searchOpen]);
   useEffect(() => { setDrawerOpen(false); setSearchOpen(false); }, [pathname]);
   useEffect(() => {

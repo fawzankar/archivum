@@ -753,9 +753,6 @@ html,body{max-width:100%;overflow-x:hidden}
 @media(prefers-reduced-motion:reduce){.page-motion-next [data-pdf-page],.page-motion-prev [data-pdf-page]{animation:none!important}.hero-ambient-ring,.hero-ambient-line,.hero-ambient-dot,.hero-ambient-sheet{animation:none!important}}
 
 /* ===== V6 polish: splash priority, tiger hero, menu reset, mobile reader ===== */
-html.archivum-booting body{visibility:visible}
-html.archivum-booting body>*:not(.boot-splash){visibility:hidden}
-html.archivum-booting::before{content:"";position:fixed;inset:0;z-index:2147483646;background:var(--ivory)}
 .boot-splash{z-index:2147483647!important}
 .boot-splash-credit{margin:0;color:var(--ink-muted);font-size:12px;text-align:center}
 .boot-splash-credit a{color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
@@ -4220,3 +4217,69 @@ html.profile-onboarding-active .profile-continue{height:50px!important;margin-to
 :root[data-accent="crimson-veil"] .mobile-nav-link{color:var(--ink-faint)}
 :root[data-accent="crimson-veil"] .mobile-nav-link.active{color:var(--accent)}
 :root[data-accent="crimson-veil"] .accent-swatch.active small{color:var(--accent)!important}
+
+
+/* Final fixes: lock the document behind overlays and keep the PDF reader pinchable. */
+html.overlay-scroll-locked,
+body.overlay-scroll-locked{
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+  height:100%!important;
+}
+body.overlay-scroll-locked{
+  position:fixed!important;
+  left:0!important;
+  right:0!important;
+  overflow:hidden!important;
+  touch-action:none!important;
+}
+.menu-layer.open .menu-scrim,
+.menu-layer.open .menu-drawer{
+  touch-action:auto;
+}
+
+/* The reader owns the two-finger gesture; normal site zoom remains disabled. */
+.pdf-reader-stage{
+  touch-action:pan-y!important;
+  overscroll-behavior:contain!important;
+}
+.pdf-reader-pages{
+  transform-origin:50% 0;
+  will-change:transform;
+}
+.pdf-js-page.is-zoomed{
+  width:max-content!important;
+  max-width:none!important;
+  overflow:visible!important;
+}
+.pdf-js-page.is-zoomed canvas{
+  max-width:none!important;
+}
+.pdf-reader-shell:fullscreen{
+  width:100vw!important;
+  height:100dvh!important;
+  padding:0!important;
+  background:#000!important;
+}
+.pdf-reader-shell:fullscreen .pdf-reader-window{
+  width:100vw!important;
+  height:100dvh!important;
+  max-width:none!important;
+  max-height:none!important;
+  border:0!important;
+  border-radius:0!important;
+}
+.pdf-reader-shell:fullscreen .pdf-reader-stage{
+  min-height:0!important;
+}
+
+/* Theme-aware splash contrast: each light gradient gets a dark, readable theme colour. */
+.sp-kicker,.sp-word,.sp-credit,.sp-credit strong{color:var(--sp-text)!important;font-weight:900!important}
+.sp-rule{background:color-mix(in srgb,var(--sp-text) 18%,transparent)!important}
+.sp-rule span{background:var(--sp-text)!important}
+:root[data-accent="indigo"]{--sp-text:#1b2166}
+:root[data-accent="forest"]{--sp-text:#0f4d2e}
+:root[data-accent="smoky-olive"]{--sp-text:#565449}
+:root[data-accent="smoky-ink"]{--sp-text:#202329}
+:root[data-accent="soft-pink"]{--sp-text:#7d294c}
+:root[data-accent="crimson-veil"]{--sp-text:#610027}
