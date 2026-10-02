@@ -1,9 +1,0 @@
-Delete these from your project (they are leftovers, nothing in the app uses them):
-
-patch.py                (an old patch script that points at /mnt/data/archivum_work)
-public/aboutus.html     (old "SJS CONNECT" page, still reachable at /aboutus.html)
-public/file.svg
-public/globe.svg
-public/next.svg
-public/vercel.svg
-public/window.svg       (default Next.js starter icons)
