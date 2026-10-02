@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Resource } from '@/lib/resources';
 import { X, Download, FileText, Maximize2, Minimize2, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
 
@@ -45,6 +45,10 @@ function PdfPage({
         canvas.height = Math.ceil(viewport.height * dpr);
         canvas.style.setProperty('--pdf-css-width', `${viewport.width}px`);
         canvas.style.setProperty('--pdf-css-height', `${viewport.height}px`);
+        if (hostRef.current) {
+          hostRef.current.style.width = `${viewport.width}px`;
+          hostRef.current.style.height = `${viewport.height}px`;
+        }
 
         renderTaskRef.current?.cancel?.();
         renderTaskRef.current = page.render({
@@ -84,6 +88,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [loadProgress, setLoadProgress] = useState(0);
   const [failed, setFailed] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
+  const [fitScale, setFitScale] = useState(1);
   const shellRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLElement>(null);
 
@@ -137,6 +142,36 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
 
     return () => { cancelled = true; };
   }, [resource?.id, fileUrl, isImage]);
+
+
+  useLayoutEffect(() => {
+    if (!pdf || isImage || !stageRef.current) return;
+    let cancelled = false;
+    let observer: ResizeObserver | null = null;
+
+    const measure = async () => {
+      try {
+        const firstPage = await pdf.getPage(1);
+        if (cancelled || !stageRef.current) return;
+        const base = firstPage.getViewport({ scale: 1 });
+        const availableWidth = Math.max(280, stageRef.current.clientWidth - 30);
+        // Render each PDF page as an actual sheet that fits the reader width.
+        // The source document used by Archivum is close to A4 portrait, so this
+        // gives mobile users a complete page instead of a cropped 1271px canvas.
+        const next = Math.max(0.18, Math.min(1.2, availableWidth / base.width));
+        setFitScale(next);
+      } catch {}
+    };
+
+    measure();
+    observer = new ResizeObserver(measure);
+    observer.observe(stageRef.current);
+
+    return () => {
+      cancelled = true;
+      observer?.disconnect();
+    };
+  }, [pdf, isImage]);
 
 
   useEffect(() => {
@@ -227,8 +262,8 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
                   key={index + 1}
                   pdf={pdf}
                   pageNumber={index + 1}
-                  scale={1}
-                  eager={index < 2}
+                  scale={fitScale}
+                  eager
                 />
               ))}
             </div>

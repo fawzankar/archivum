@@ -4435,3 +4435,76 @@ html.splash-booting .boot-splash{
 :root[data-accent="smoky-ink"]{--sp-text:#20252b}
 :root[data-accent="soft-pink"]{--sp-text:#70273f}
 :root[data-accent="crimson-veil"]{--sp-text:#610027}
+
+/* ===== V74: true sheet-style PDF reader ===== */
+.pdf-reader-stage{
+  overflow:auto!important;
+  padding:18px 14px 34px!important;
+  background:#dfe3e7!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+.pdf-reader-pages{
+  width:100%!important;
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:18px!important;
+  padding:4px 0 36px!important;
+}
+.pdf-js-page{
+  flex:0 0 auto!important;
+  width:var(--pdf-css-width, auto)!important;
+  height:var(--pdf-css-height, auto)!important;
+  min-height:0!important;
+  margin:0 auto!important;
+  background:#fff!important;
+  box-shadow:0 2px 14px rgba(18,27,34,.16)!important;
+  border:1px solid rgba(18,27,34,.08)!important;
+  overflow:hidden!important;
+  line-height:0!important;
+}
+.pdf-js-page-placeholder{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  display:grid!important;
+  place-items:center!important;
+  background:#fff!important;
+  color:#8b9299!important;
+}
+.pdf-js-page canvas{
+  display:block!important;
+  width:var(--pdf-css-width)!important;
+  height:var(--pdf-css-height)!important;
+  max-width:none!important;
+  max-height:none!important;
+  object-fit:contain!important;
+}
+.pdf-reader-loading{
+  position:absolute!important;
+  inset:0!important;
+  z-index:20!important;
+  background:var(--ivory)!important;
+}
+.pdf-reader-shell:fullscreen .pdf-reader-stage{
+  padding:18px 14px 34px!important;
+  background:#111!important;
+  height:100dvh!important;
+  touch-action:auto!important;
+}
+.pdf-reader-shell:fullscreen .pdf-reader-pages{padding-top:8px!important}
+
+/* Prevent the pre-hydration home page from painting before the splash. */
+html.splash-booting body{
+  visibility:visible!important;
+  background:#eef2ff!important;
+}
+html.splash-booting body:before{content:"";position:fixed;inset:0;z-index:2147483646;background:linear-gradient(140deg,#eef2ff 0%,#dce4ff 48%,#f8f9ff 100%);pointer-events:none}
+html.splash-booting .boot-splash{visibility:visible!important}
+@media(max-width:640px){
+  .pdf-reader-stage{padding:10px 8px 28px!important}
+  .pdf-reader-pages{gap:12px!important}
+  .pdf-js-page{box-shadow:0 2px 10px rgba(18,27,34,.18)!important}
+}
