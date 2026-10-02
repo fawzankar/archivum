@@ -17,10 +17,10 @@ export default function SplashScreen() {
       setShow(false);
       return;
     }
-    root.classList.add('splash-active');
     let minimumTimeElapsed = false;
     let startupReady = root.classList.contains('archivum-startup-ready');
     let leaveStarted = false;
+    let minimumTimer: number | undefined;
     let leaveTimer: number | undefined;
 
     const beginLeave = () => {
@@ -37,17 +37,31 @@ export default function SplashScreen() {
       beginLeave();
     };
 
+    const activate = () => {
+      window.clearTimeout(minimumTimer);
+      if (leaveTimer !== undefined) window.clearTimeout(leaveTimer);
+      minimumTimeElapsed = false;
+      startupReady = root.classList.contains('archivum-startup-ready');
+      leaveStarted = false;
+      setLeaving(false);
+      setShow(true);
+      root.classList.add('splash-active');
+      minimumTimer = window.setTimeout(() => {
+        minimumTimeElapsed = true;
+        beginLeave();
+      }, SPLASH_MS - LEAVE_MS);
+      if (startupReady) beginLeave();
+    };
+
     window.addEventListener('archivum:startup-ready', onStartupReady);
-    const minimumTimer = window.setTimeout(() => {
-      minimumTimeElapsed = true;
-      beginLeave();
-    }, SPLASH_MS - LEAVE_MS);
-    if (startupReady) beginLeave();
+    window.addEventListener('archivum:show-splash', activate);
+    activate();
 
     return () => {
       window.clearTimeout(minimumTimer);
       if (leaveTimer !== undefined) window.clearTimeout(leaveTimer);
       window.removeEventListener('archivum:startup-ready', onStartupReady);
+      window.removeEventListener('archivum:show-splash', activate);
       root.classList.remove('splash-active');
     };
   }, []);

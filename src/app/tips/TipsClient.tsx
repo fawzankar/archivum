@@ -22,7 +22,7 @@ export default function TipsClient({initialTips,initialClass}:{initialTips:Tip[]
  const filteredTips=useMemo(()=>allTips.filter(t=>t.class_level===classLevel && (subject==='All' || t.subject===subject || t.subject==='General')), [allTips,classLevel,subject]);
  const shuffled=useMemo(()=>[...filteredTips], [filteredTips]);
  const loadTips=(level:number,nextSubject='All')=>{ setClassLevel(level); setSubject(nextSubject); };
- const formatDate=(value:string)=>{const d=new Date(value); return Number.isNaN(d.getTime())?'Recently':d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'});};
+ const formatDate=(value:string)=>{const d=new Date(value); return Number.isNaN(d.getTime())?'Recently':new Intl.DateTimeFormat('en-GB',{timeZone:'UTC',day:'numeric',month:'short',year:'numeric'}).format(d);};
 
  const submit=async(e:React.FormEvent)=>{
    e.preventDefault(); setSending(true); setStatus('');

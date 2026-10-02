@@ -43,7 +43,7 @@ export default function UploadClient() {
   const { studentClass, displayName } = useStudentClass();
   const fileRef = useRef<HTMLInputElement>(null);
   const photoRef = useRef<HTMLInputElement>(null);
-  const [classLevel, setClassLevel] = useState<number>(studentClass || 10);
+  const [classLevel, setClassLevel] = useState<number>(10);
   const [board, setBoard] = useState('JKBOSE');
   const [subject, setSubject] = useState('Science');
   const [chapter, setChapter] = useState('');
@@ -52,7 +52,7 @@ export default function UploadClient() {
   const [paperType, setPaperType] = useState('Board');
   const [year, setYear] = useState(new Date().getFullYear());
   const [schoolName, setSchoolName] = useState('');
-  const [contributorName, setContributorName] = useState(displayName || '');
+  const [contributorName, setContributorName] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [file, setFile] = useState<File | null>(null);

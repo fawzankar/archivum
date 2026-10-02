@@ -13,7 +13,7 @@ import { FileText, Download, Eye, Bookmark, BookmarkCheck, Star, Share2, ArrowLe
 interface ResourceDetailProps { resource: Resource; relatedResources: Resource[]; }
 
 export default function ResourceDetailClient({ resource, relatedResources }: ResourceDetailProps) {
-  const [saved, setSaved] = useState(() => isResourceSaved(resource.id));
+  const [saved, setSaved] = useState(false);
   const [downloads, setDownloads] = useState(resource.downloads);
   const [userRating, setUserRating] = useState(0);
   const [avgRating, setAvgRating] = useState(resource.average_rating);
@@ -27,7 +27,13 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   const backHref = isPaper ? `/previous-papers?class=${resource.class_level}` : `/notes?class=${resource.class_level}&subject=${encodeURIComponent(resource.subject)}`;
   const artName = isPaper ? 'papers' : resource.subject;
 
-  useEffect(() => { addRecentlyViewed(resource); }, [resource]);
+  useEffect(() => {
+    addRecentlyViewed(resource);
+    const syncSaved = () => setSaved(isResourceSaved(resource.id));
+    syncSaved();
+    window.addEventListener('sjs_saved_updated', syncSaved);
+    return () => window.removeEventListener('sjs_saved_updated', syncSaved);
+  }, [resource]);
   useEffect(() => {
     if (!resource.photo_keys) return;
     fetch(`/api/resources/${resource.id}/photos`).then(r => r.json()).then(data => setPhotoUrls(Array.isArray(data.photos) ? data.photos.map((p: {url:string}) => p.url) : [])).catch(() => {});

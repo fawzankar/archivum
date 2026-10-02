@@ -40,15 +40,17 @@ function validClass(value: unknown): number | undefined {
 export default function PaperFinderClient({ bundle: serverBundle }: { bundle: LibraryBundle }) {
   const params = useSearchParams();
   const bundle = useLibraryBundle(serverBundle);
-  let initialClass = validClass(params.get('class'));
-  if (initialClass === undefined && !params.has('class')) {
-    let stored: number | undefined;
-    try { stored = validClass(localStorage.getItem('archivum_student_class')); } catch {}
-    initialClass = stored ?? 10;
-  }
+  const classFromUrl = validClass(params.get('class'));
+  const [storedClass, setStoredClass] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    if (classFromUrl !== undefined || params.has('class')) return;
+    try { setStoredClass(validClass(localStorage.getItem('archivum_student_class'))); } catch {}
+  }, [classFromUrl, params]);
+  const initialClass = classFromUrl ?? (params.has('class') ? undefined : storedClass ?? 10);
   const year = params.get('year');
   return (
     <PaperFinderView
+      key={`${initialClass ?? ''}:${params.get('subject') || ''}:${params.get('paperType') || ''}:${params.get('year') || ''}:${params.get('school') || ''}`}
       bundle={bundle}
       initialClass={initialClass}
       initialSubject={params.get('subject') || undefined}

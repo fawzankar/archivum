@@ -990,6 +990,9 @@ button,input,textarea,select,
   font-weight:600!important;
   color:#fff!important;
 }
+.hx-search .clean-search .clean-search-clear{width:32px!important;height:32px!important;flex:none!important;background:transparent!important;color:var(--ink-muted)!important;box-shadow:none!important;transform:none!important}
+.hx-search .clean-search .clean-search-clear:hover{background:var(--surface-raised)!important;color:var(--ink)!important;transform:none!important}
+.hx-search .clean-search .clean-search-clear svg{width:17px!important;height:17px!important}
 @media(max-width:640px){
   .boot-splash.sp .sp-credit{
     font-size:17px!important;

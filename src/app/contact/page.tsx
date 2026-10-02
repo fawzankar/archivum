@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Send, CheckCircle2, Camera, Mail } from 'lucide-react';
 import { useStudentClass } from '@/components/StudentClassContext';
 import PageHead from '@/components/PageHead';
@@ -9,13 +9,18 @@ const KINDS = ['Concern', 'Suggestion', 'Missing material', 'Something else'];
 export default function ContactPage() {
   const { studentClass, displayName } = useStudentClass();
   const [kind, setKind] = useState(KINDS[0]);
-  const [name, setName] = useState(displayName);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [classLevel, setClassLevel] = useState(studentClass ? String(studentClass) : '');
+  const [classLevel, setClassLevel] = useState('');
   const [message, setMessage] = useState('');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (displayName) setName(displayName);
+    if (studentClass) setClassLevel(String(studentClass));
+  }, [displayName, studentClass]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); setSending(true); setError('');

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import PdfViewerModal from '@/components/PdfViewerModal';
 import AdminUploadPanel from '@/components/AdminUploadPanel';
+import AdminNotificationComposer from '@/components/AdminNotificationComposer';
 import { useToast } from '@/components/ToastContext';
 import { 
   Shield, 
@@ -34,7 +35,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   const router = useRouter();
   const { showToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines' | 'upload' | 'feedback'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines' | 'upload' | 'feedback' | 'notifications'>('overview');
   const [resources, setResources] = useState<Resource[]>(initialResources);
   const [stats, setStats] = useState<any>(null);
   const [loadingStats, setLoadingStats] = useState(false);
@@ -301,6 +302,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           { id: 'resources', label: `All Resources (${resources.length})` },
           { id: 'tips', label: `Tips (${pendingTips.length})` },
           { id: 'feedback', label: `Feedback (${feedback.filter((item:any)=>item.status==='new').length})` },
+          { id: 'notifications', label: 'Notifications' },
           { id: 'guidelines', label: 'Admin Guidelines' },
           { id: 'upload', label: 'Add resource' },
         ].map((tab) => {
@@ -611,6 +613,8 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           {feedback.length===0?<div className="rounded-2xl border p-10 text-center text-sm" style={{background:'var(--surface)',borderColor:'var(--border)',color:'var(--ink-muted)'}}>No feedback yet.</div>:<div className="grid gap-3">{feedback.map((item:any)=><article key={item.id} className="rounded-2xl border p-4 sm:p-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}><div className="flex items-start justify-between gap-3"><div className="min-w-0"><strong className="text-sm">{item.name||'Anonymous student'}</strong><div className="text-[11px] mt-1 break-all" style={{color:'var(--ink-muted)'}}>{item.email} · Class {item.class_level} · Section {item.section} · {new Date(item.created_at).toLocaleString()}</div></div><span className="shrink-0 rounded-full px-2 py-1 text-[9px] font-bold" style={{background:item.status==='new'?'var(--accent-light)':'var(--surface-raised)',color:item.status==='new'?'var(--accent)':'var(--ink-muted)'}}>{item.status}</span></div><p className="mt-4 text-sm leading-6 whitespace-pre-wrap" style={{color:'var(--ink)'}}>{item.message}</p>{Array.isArray(item.attachments)&&item.attachments.length>0&&<div className="mt-3 flex flex-wrap gap-2">{item.attachments.map((file:string,index:number)=><a key={index} href={file} target="_blank" rel="noreferrer" className="text-xs underline" style={{color:'var(--accent)'}}>Attachment {index+1}</a>)}</div>}<div className="flex gap-2 mt-4">{item.status==='new'&&<button onClick={()=>handleFeedbackStatus(item.id,'read')} className="rounded-lg border px-3 py-2 text-[11px] font-bold" style={{borderColor:'var(--border)'}}>Mark read</button>}{item.status!=='archived'&&<button onClick={()=>handleFeedbackStatus(item.id,'archived')} className="rounded-lg border px-3 py-2 text-[11px] font-bold" style={{borderColor:'var(--border)'}}>Archive</button>}</div></article>)}</div>}
         </section>
       )}
+
+      {activeTab === 'notifications' && <AdminNotificationComposer />}
 
       {activeTab === 'upload' && (
         <section className="space-y-5">

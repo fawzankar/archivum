@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import type { LibraryBundle, Resource } from '@/lib/resources';
@@ -21,13 +21,14 @@ function validClass(value: unknown): number | null {
 export default function NotesClient({ bundle: serverBundle }: { bundle: LibraryBundle }) {
   const params = useSearchParams();
   const bundle = useLibraryBundle(serverBundle);
-  let initialClass = validClass(params.get('class'));
-  if (initialClass === null) {
-    let stored: number | null = null;
-    try { stored = validClass(localStorage.getItem('archivum_student_class')); } catch {}
-    initialClass = stored ?? 10;
-  }
-  return <NotesView bundle={bundle} initialClass={initialClass} initialSubject={params.get('subject') || ''} />;
+  const classFromUrl = validClass(params.get('class'));
+  const [storedClass, setStoredClass] = useState<number | null>(null);
+  useEffect(() => {
+    if (classFromUrl !== null) return;
+    try { setStoredClass(validClass(localStorage.getItem('archivum_student_class'))); } catch {}
+  }, [classFromUrl]);
+  const initialClass = classFromUrl ?? storedClass ?? 10;
+  return <NotesView key={initialClass} bundle={bundle} initialClass={initialClass} initialSubject={params.get('subject') || ''} />;
 }
 
 /** Pure view: all data is already in `bundle`, so switching class/subject is instant and offline-safe. */
@@ -78,7 +79,7 @@ export function NotesView({ bundle, initialClass, initialSubject }: { bundle: Li
       <section className="notes-library-panel" aria-label="Notes library filters">
         <div className="notes-library-header">
           <div>
-            <h2 className="notes-library-heading">Your subjects</h2>
+            <h2 className="notes-library-heading">Your Subjects</h2>
             <p className="notes-library-description">Choose a subject to quickly find the notes you need.</p>
           </div>
           <span className="notes-library-class-badge">Class {selectedClass}</span>

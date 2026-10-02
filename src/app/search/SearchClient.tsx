@@ -56,11 +56,9 @@ export default function SearchClient({
 
   useEffect(() => {
     const urlQuery = searchParams.get('q') || '';
-    if (urlQuery !== query) {
-      setQuery(urlQuery);
-      setPage(1);
-    }
-  }, [searchParams, query]);
+    setQuery(urlQuery);
+    setPage(1);
+  }, [searchParams]);
 
   const fetchResults = useCallback(async () => {
     requestRef.current?.abort();
@@ -140,6 +138,7 @@ export default function SearchClient({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            aria-label="Search resources"
             placeholder=""
             className="w-full py-4 px-3.5 text-sm bg-transparent outline-none font-normal"
             style={{ color: 'var(--ink)' }}
@@ -148,7 +147,15 @@ export default function SearchClient({
           {query && (
             <button
               type="button"
-              onClick={() => { setQuery(''); setPage(1); }}
+              aria-label="Clear search"
+              onClick={() => {
+                setQuery('');
+                setPage(1);
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete('q');
+                params.delete('page');
+                router.replace(`/search${params.toString() ? `?${params.toString()}` : ''}`);
+              }}
               className="mr-3 p-1 rounded-full text-zinc-400 hover:text-zinc-600"
             >
               <X className="w-4 h-4" />

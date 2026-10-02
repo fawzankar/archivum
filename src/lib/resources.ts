@@ -41,17 +41,63 @@ async function getResourcesUncached(options: ResourceFilterOptions = {}) {
   if (chapter) { where.push('LOWER(chapter) LIKE ?'); params.push(`%${chapter.toLowerCase()}%`); }
   if (topic) { where.push('LOWER(topic) LIKE ?'); params.push(`%${topic.toLowerCase()}%`); }
   if (featured !== undefined) { where.push('featured = ?'); params.push(featured ? 1 : 0); }
+  let relevanceSql = '';
+  let relevanceParams: string[] = [];
   if (search?.trim()) {
-    const q = `%${search.trim().toLowerCase()}%`;
-    where.push(`(LOWER(title) LIKE ? OR LOWER(description) LIKE ? OR LOWER(subject) LIKE ? OR LOWER(chapter) LIKE ? OR LOWER(topic) LIKE ? OR LOWER(tags) LIKE ? OR LOWER(school_name) LIKE ? OR LOWER(resource_type) LIKE ? OR LOWER(paper_type) LIKE ?)`);
-    params.push(...Array(9).fill(q));
+    const classMatch = search.match(/\bclass\s*(9|10|11|12)(?:st|nd|th)?\b/i);
+    if (classMatch) {
+      where.push('class_level = ?');
+      params.push(Number(classMatch[1]));
+    }
+    const queryText = search.replace(/\bclass\s*(9|10|11|12)(?:st|nd|th)?\b/ig, ' ').trim().toLowerCase();
+    if (queryText) {
+    const fields = [
+      { sql: 'LOWER(COALESCE(title,\'\'))', weight: 18 },
+      { sql: 'LOWER(COALESCE(chapter,\'\'))', weight: 15 },
+      { sql: 'LOWER(COALESCE(topic,\'\'))', weight: 15 },
+      { sql: 'LOWER(COALESCE(tags,\'\'))', weight: 11 },
+      { sql: 'LOWER(COALESCE(subject,\'\'))', weight: 8 },
+      { sql: 'LOWER(COALESCE(file_name,\'\'))', weight: 6 },
+      { sql: 'LOWER(COALESCE(description,\'\'))', weight: 4 },
+      { sql: 'LOWER(COALESCE(school_name,\'\'))', weight: 4 },
+      { sql: 'LOWER(COALESCE(resource_type,\'\'))', weight: 3 },
+      { sql: 'LOWER(COALESCE(paper_type,\'\'))', weight: 3 },
+      { sql: 'LOWER(COALESCE(board,\'\'))', weight: 2 },
+      { sql: 'LOWER(COALESCE(contributor_name,\'\'))', weight: 1 },
+    ];
+    const escapeLike = (value: string) => value.replace(/!/g, '!!').replace(/%/g, '!%').replace(/_/g, '!_');
+    const phrase = `%${escapeLike(queryText)}%`;
+    const tokens = [...new Set(queryText.match(/[\p{L}\p{N}]+/gu) || [])].filter((token) => !['the', 'and', 'for', 'class', 'notes', 'note', 'chapter'].includes(token));
+    const fieldMatchSql = () => `(${fields.map((field) => `${field.sql} LIKE ? ESCAPE '!'`).join(' OR ')})`;
+    const exactPhraseSql = `(${fields.map((field) => `${field.sql} LIKE ? ESCAPE '!'`).join(' OR ')})`;
+    const allTokenSql = tokens.map(() => fieldMatchSql()).join(' AND ');
+    where.push(tokens.length ? `(${exactPhraseSql} OR (${allTokenSql}))` : exactPhraseSql);
+    params.push(...Array(fields.length).fill(phrase));
+    for (const token of tokens) params.push(...Array(fields.length).fill(`%${escapeLike(token)}%`));
+
+    const scoreParts: string[] = [];
+    relevanceParams = [];
+    for (const field of fields) {
+      scoreParts.push(`CASE WHEN ${field.sql} LIKE ? ESCAPE '!' THEN ${field.weight} ELSE 0 END`);
+      relevanceParams.push(phrase);
+    }
+    for (const token of tokens) {
+      const tokenPattern = `%${escapeLike(token)}%`;
+      for (const field of fields) {
+        scoreParts.push(`CASE WHEN ${field.sql} LIKE ? ESCAPE '!' THEN ${Math.max(1, Math.round(field.weight / 3))} ELSE 0 END`);
+        relevanceParams.push(tokenPattern);
+      }
+    }
+    relevanceSql = scoreParts.join(' + ');
+    }
   }
   const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
-  const orderSql = sortBy === 'downloads' ? 'ORDER BY downloads DESC, created_at DESC' : sortBy === 'rating' ? 'ORDER BY average_rating DESC, rating_count DESC, created_at DESC' : sortBy === 'relevance' && search ? 'ORDER BY featured DESC, views DESC, downloads DESC' : 'ORDER BY created_at DESC';
+  const orderSql = sortBy === 'downloads' ? 'ORDER BY downloads DESC, created_at DESC' : sortBy === 'rating' ? 'ORDER BY average_rating DESC, rating_count DESC, created_at DESC' : sortBy === 'relevance' && relevanceSql ? 'ORDER BY relevance_score DESC, featured DESC, views DESC, created_at DESC' : 'ORDER BY created_at DESC';
   const offset = (safePage - 1) * safeLimit;
+  const scoreSelect = sortBy === 'relevance' && relevanceSql ? `, (${relevanceSql}) AS relevance_score` : '';
   const items = await query<Resource>(
-    `SELECT * FROM resources ${whereSql} ${orderSql} LIMIT ? OFFSET ?`,
-    [...params, safeLimit, offset],
+    `SELECT *${scoreSelect} FROM resources ${whereSql} ${orderSql} LIMIT ? OFFSET ?`,
+    [...(scoreSelect ? relevanceParams : []), ...params, safeLimit, offset],
   );
   if (!withCount) {
     return { items, totalCount: items.length, totalPages: 1, currentPage: safePage };

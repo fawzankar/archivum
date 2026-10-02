@@ -10,8 +10,8 @@ import Art from './Art';
 import { Bookmark, BookmarkCheck, ArrowUpRight, Star } from 'lucide-react';
 
 export default function ResourceCard({ resource, onView, compact = false }: { resource: Resource; onView?: (resource: Resource) => void; compact?: boolean }) {
-  const [saved,setSaved]=useState(()=>isResourceSaved(resource.id)); const {showToast}=useToast(); const router=useRouter();
-  useEffect(()=>{const sync=()=>setSaved(isResourceSaved(resource.id));window.addEventListener('sjs_saved_updated',sync);return()=>window.removeEventListener('sjs_saved_updated',sync)},[resource.id]);
+  const [saved,setSaved]=useState(false); const {showToast}=useToast(); const router=useRouter();
+  useEffect(()=>{const sync=()=>setSaved(isResourceSaved(resource.id));sync();window.addEventListener('sjs_saved_updated',sync);return()=>window.removeEventListener('sjs_saved_updated',sync)},[resource.id]);
   const toggle=(e:React.MouseEvent)=>{e.preventDefault();e.stopPropagation();const next=toggleSaveResource(resource);setSaved(next);showToast(next?'Saved to library':'Removed from saved',next?'success':'info')};
   const href=`/resource/${resource.slug||resource.id}`; const count=(n:number)=>n>=1000?`${(n/1000).toFixed(1)}K`:String(n);
   const isPaper=Boolean(resource.paper_type) || resource.resource_type === 'Previous Year Paper'; const tone=[...(resource.subject||'')].reduce((a,c)=>a+c.charCodeAt(0),0)%4; const prime=()=>router.prefetch(href); const artName=isPaper?'papers':(resource.subject||'notes').trim();

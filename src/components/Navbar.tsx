@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import SearchBar from './SearchBar';
+import StudyReminderSettings from './StudyReminderSettings';
 import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink } from 'lucide-react';
 
 const links = [
@@ -18,10 +19,13 @@ export default function Navbar() {
   const router = useRouter();
   const { accent, setAccent, mode, setMode } = useTheme();
   const { studentClass, displayName, resetStudentProfile } = useStudentClass();
+  const [profileReady, setProfileReady] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const lockedScrollY = React.useRef(0);
+
+  useEffect(() => { setProfileReady(true); }, []);
 
   useEffect(() => {
     const f = () => setScrolled(window.scrollY > 16);
@@ -60,7 +64,10 @@ export default function Navbar() {
     for (const [, href] of links) router.prefetch(href);
   }, [router]);
 
-  const withClass = (href: string) => studentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${studentClass}` : href;
+  const visibleStudentClass = profileReady ? studentClass : null;
+  const visibleDisplayName = profileReady ? displayName : '';
+  const visibleAccent = profileReady ? accent : 'indigo';
+  const withClass = (href: string) => visibleStudentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${visibleStudentClass}` : href;
   const active = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 
   return <>
@@ -104,16 +111,18 @@ export default function Navbar() {
         </div>
 
         <div className="menu-scroll">
-          {displayName && <div className="menu-welcome"><span className="menu-welcome-mark">{displayName.charAt(0).toUpperCase()}</span><div><strong>Hello, {displayName}</strong><small>Class {studentClass || 'Not selected'}</small></div></div>}
+          {visibleDisplayName && <div className="menu-welcome"><span className="menu-welcome-mark">{visibleDisplayName.charAt(0).toUpperCase()}</span><div><strong>Hello, {visibleDisplayName}</strong><small>Class {visibleStudentClass || 'Not selected'}</small></div></div>}
           <div className="menu-section-label">Explore</div>
           <div className="menu-links">{links.map(([label,href,Icon]) => <Link key={href} href={withClass(href)} onClick={() => setDrawerOpen(false)} className={active(href) ? 'active' : ''}><Icon /><span>{label}</span><ChevronRight /></Link>)}</div>
 
+          <StudyReminderSettings />
+
           <div className="menu-section menu-appearance">
             <div className="menu-section-label">Theme Palette</div>
-            <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ backgroundColor: item.color }} /><small>{item.label}</small></button>)}</div>
+            <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${visibleAccent === item.id ? 'active' : ''}`}><span style={{ backgroundColor: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
 
-          <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset My Profile</button>
+          <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); window.dispatchEvent(new Event('archivum:show-splash')); router.replace('/'); }}><RotateCcw /> Reset My Profile</button>
         </div>
 
           <div className="menu-quest-cta">
