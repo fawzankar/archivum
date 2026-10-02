@@ -21,8 +21,8 @@ export default function SplashScreen() {
       <span className="sp-orb sp-orb-a" aria-hidden="true" /><span className="sp-orb sp-orb-b" aria-hidden="true" />
       <div className="sp-content">
         <div className="sp-mark"><Image className="sp-logo" src="/archivum-logo-dark.png" alt="" width={72} height={72} priority /></div>
+        <p className="sp-kicker">Academic Archive</p>
         <div className="sp-word" aria-hidden="true">ARCHIVUM</div>
-        <p className="sp-kicker">A Sister Organization of Quest</p>
         <span className="sp-rule" aria-hidden="true"><span /></span>
       </div>
       <div className="sp-credit">This App Is Built By <strong>Fawzan Kar</strong></div>

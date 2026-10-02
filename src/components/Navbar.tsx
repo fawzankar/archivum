@@ -28,13 +28,8 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', f);
   }, []);
   useEffect(() => {
-    const locked = drawerOpen || searchOpen;
-    document.body.style.overflow = locked ? 'hidden' : '';
-    document.documentElement.classList.toggle('archivum-overlay-open', locked);
-    return () => {
-      document.body.style.overflow = '';
-      document.documentElement.classList.remove('archivum-overlay-open');
-    };
+    document.body.style.overflow = drawerOpen || searchOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
   }, [drawerOpen, searchOpen]);
   useEffect(() => { setDrawerOpen(false); setSearchOpen(false); }, [pathname]);
   useEffect(() => {
@@ -91,7 +86,7 @@ export default function Navbar() {
           <div className="menu-links">{links.map(([label,href,Icon]) => <Link key={href} href={withClass(href)} onClick={() => setDrawerOpen(false)} className={active(href) ? 'active' : ''}><Icon /><span>{label}</span><ChevronRight /></Link>)}</div>
 
           <div className="menu-section menu-appearance">
-            <div className="menu-section-label">Colour Theme</div>
+            <div className="menu-section-label">Theme Palette</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ backgroundColor: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
 
@@ -101,7 +96,7 @@ export default function Navbar() {
           <div className="menu-quest-cta">
             <a className="quest-visit-link" href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span>Visit <span className="quest-word">QUEST</span></span><ExternalLink /></a>
           </div>
-        <div className="menu-note"><a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">This App Is Built By Fawzan Kar</a></div>
+        <div className="menu-note"><span>This App Is Built By</span><a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">Fawzan Kar</a></div>
       </aside>
     </div>
   </>;

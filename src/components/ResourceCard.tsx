@@ -9,7 +9,7 @@ import { useToast } from './ToastContext';
 import Art from './Art';
 import { Bookmark, BookmarkCheck, ArrowUpRight, Star } from 'lucide-react';
 
-export default function ResourceCard({ resource, onView, compact = false, showOpen = true }: { resource: Resource; onView?: (resource: Resource) => void; compact?: boolean; showOpen?: boolean }) {
+export default function ResourceCard({ resource, onView, compact = false }: { resource: Resource; onView?: (resource: Resource) => void; compact?: boolean }) {
   const [saved,setSaved]=useState(()=>isResourceSaved(resource.id)); const {showToast}=useToast(); const router=useRouter();
   useEffect(()=>{const sync=()=>setSaved(isResourceSaved(resource.id));window.addEventListener('sjs_saved_updated',sync);return()=>window.removeEventListener('sjs_saved_updated',sync)},[resource.id]);
   const toggle=(e:React.MouseEvent)=>{e.preventDefault();e.stopPropagation();const next=toggleSaveResource(resource);setSaved(next);showToast(next?'Saved to library':'Removed from saved',next?'success':'info')};
@@ -30,7 +30,7 @@ export default function ResourceCard({ resource, onView, compact = false, showOp
         <Star className={resource.rating_count?'filled':''}/>
         {resource.rating_count ? `${resource.average_rating.toFixed(1)} · ${resource.rating_count} ${resource.rating_count === 1 ? 'vote' : 'votes'}` : 'No votes yet'}
       </span>
-      {showOpen && <span className="rc-open">Open <ArrowUpRight/></span>}
+      <span className="rc-open">Open <ArrowUpRight/></span>
     </div>
   </article>;
 }
