@@ -19,7 +19,6 @@ export default function FirstLaunch() {
   const router = useRouter();
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
-  const [splashDone, setSplashDone] = useState(false);
   const [name, setName] = useState(displayName);
   const [selectedClass, setSelectedClass] = useState<StudentClass | null>(studentClass);
 
@@ -28,26 +27,20 @@ export default function FirstLaunch() {
 
   useEffect(() => {
     if (pathname !== '/') {
-      setSplashDone(false);
-      setVisible(false);
-      document.documentElement.classList.remove('profile-onboarding-active');
+      document.documentElement.classList.remove('profile-onboarding-active', 'archivum-startup-ready');
       return;
     }
-    const reveal = () => setSplashDone(true);
-    // Splash is always the first screen on the home route; onboarding is revealed only after it finishes.
-    if (!document.documentElement.classList.contains('splash-active')) reveal();
-    window.addEventListener('archivum:splash-complete', reveal);
-    return () => window.removeEventListener('archivum:splash-complete', reveal);
-  }, [pathname]);
 
-  useEffect(() => {
-    if (pathname !== '/' || !splashDone) return;
     const completed = window.localStorage.getItem('archivum_profile_completed') === '1';
-    const shouldShow = !completed || !studentClass;
+    const storedClass = Number(window.localStorage.getItem('archivum_student_class'));
+    const shouldShow = !completed || ![9, 10, 11, 12].includes(storedClass);
     setVisible(shouldShow);
     document.documentElement.classList.toggle('profile-onboarding-active', shouldShow);
-    return () => document.documentElement.classList.remove('profile-onboarding-active');
-  }, [pathname, studentClass, displayName, splashDone]);
+    if (!document.documentElement.classList.contains('archivum-startup-ready')) {
+      document.documentElement.classList.add('archivum-startup-ready');
+      window.dispatchEvent(new Event('archivum:startup-ready'));
+    }
+  }, [pathname, studentClass]);
 
   const heading = useMemo(() => {
     if (!selectedClass) return 'Choose your class.';
@@ -55,7 +48,7 @@ export default function FirstLaunch() {
     return `Welcome, ${name.trim().split(' ')[0]}`;
   }, [selectedClass, name]);
 
-  if (!visible) return null;
+  if (pathname !== '/' || !visible) return null;
 
   const canFinish = Boolean(selectedClass && name.trim());
   const subjects = selectedClass ? subjectsForClass(selectedClass) : [];

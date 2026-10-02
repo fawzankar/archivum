@@ -2,46 +2,38 @@
 
 import { useEffect } from 'react';
 
-function insidePdf(target: EventTarget | null) {
-  return target instanceof Element && Boolean(target.closest('.pdf-reader-shell'));
-}
+const isInsideReader = (target: EventTarget | null) =>
+  target instanceof Element && Boolean(target.closest('.pdf-reader-shell'));
 
 export default function AppInteractionGuard() {
   useEffect(() => {
-    const contextMenu = (event: MouseEvent) => {
-      if (!insidePdf(event.target)) event.preventDefault();
+    const blockNativeBrowserZoom = (event: Event) => {
+      if (event.cancelable) event.preventDefault();
     };
-    const wheel = (event: WheelEvent) => {
-      if (!insidePdf(event.target) && (event.ctrlKey || event.metaKey)) event.preventDefault();
+    const blockTouchPinchOutsideReader = (event: TouchEvent) => {
+      if (event.touches.length > 1 && !isInsideReader(event.target)) blockNativeBrowserZoom(event);
     };
-    const keydown = (event: KeyboardEvent) => {
-      if (insidePdf(event.target)) return;
-      const zoomKey = ['+', '=', '-', '_', '0'].includes(event.key);
-      if ((event.ctrlKey || event.metaKey) && zoomKey) event.preventDefault();
+    const blockBrowserZoomKeys = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && ['+', '=', '-', '0'].includes(event.key)) event.preventDefault();
     };
-    const gesture = (event: Event) => {
-      if (!insidePdf(event.target)) event.preventDefault();
-    };
-    const touchStart = (event: TouchEvent) => {
-      if (!insidePdf(event.target) && event.touches.length > 1) event.preventDefault();
+    const blockBrowserZoomWheel = (event: WheelEvent) => {
+      if (event.ctrlKey || event.metaKey) blockNativeBrowserZoom(event);
     };
 
-    document.addEventListener('contextmenu', contextMenu);
-    document.addEventListener('wheel', wheel, { passive: false });
-    document.addEventListener('keydown', keydown);
-    document.addEventListener('gesturestart', gesture, { passive: false } as AddEventListenerOptions);
-    document.addEventListener('gesturechange', gesture, { passive: false } as AddEventListenerOptions);
-    document.addEventListener('gestureend', gesture, { passive: false } as AddEventListenerOptions);
-    document.addEventListener('touchstart', touchStart, { passive: false });
+    document.addEventListener('touchmove', blockTouchPinchOutsideReader, { passive: false, capture: true });
+    document.addEventListener('gesturestart', blockNativeBrowserZoom as EventListener, { passive: false });
+    document.addEventListener('gesturechange', blockNativeBrowserZoom as EventListener, { passive: false });
+    document.addEventListener('gestureend', blockNativeBrowserZoom as EventListener, { passive: false });
+    document.addEventListener('wheel', blockBrowserZoomWheel, { passive: false });
+    document.addEventListener('keydown', blockBrowserZoomKeys);
 
     return () => {
-      document.removeEventListener('contextmenu', contextMenu);
-      document.removeEventListener('wheel', wheel);
-      document.removeEventListener('keydown', keydown);
-      document.removeEventListener('gesturestart', gesture);
-      document.removeEventListener('gesturechange', gesture);
-      document.removeEventListener('gestureend', gesture);
-      document.removeEventListener('touchstart', touchStart);
+      document.removeEventListener('touchmove', blockTouchPinchOutsideReader, true);
+      document.removeEventListener('gesturestart', blockNativeBrowserZoom as EventListener);
+      document.removeEventListener('gesturechange', blockNativeBrowserZoom as EventListener);
+      document.removeEventListener('gestureend', blockNativeBrowserZoom as EventListener);
+      document.removeEventListener('wheel', blockBrowserZoomWheel);
+      document.removeEventListener('keydown', blockBrowserZoomKeys);
     };
   }, []);
 

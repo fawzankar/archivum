@@ -1,33 +1,24 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Resource } from '@/lib/resources';
-import { X, Download, FileText, Maximize2, Minimize2, Loader2, AlertTriangle, RefreshCw } from 'lucide-react';
+import { X, Download, FileText, Maximize2, Minimize2, AlertTriangle, RefreshCw, Minus, Plus } from 'lucide-react';
 
 interface Props { resource: Resource | null; onClose: () => void; }
 
-function PdfPage({
-  pdf,
-  pageNumber,
-  scale,
-  eager = false,
-  zoomed = false,
-}: {
-  pdf: any;
-  pageNumber: number;
-  scale: number;
-  eager?: boolean;
-  zoomed?: boolean;
-}) {
+const MIN_READER_ZOOM = 0.5;
+const MAX_READER_ZOOM = 1;
+const INITIAL_READER_ZOOM = 0.85;
+const READER_ZOOM_STEP = 0.1;
+
+function PdfPage({ pdf, pageNumber, scale, onSettled }: { pdf: any; pageNumber: number; scale: number; onSettled: (pageNumber: number) => void }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // PDF pages are rendered eagerly so a document is immediately available while scrolling.
-  const [visible] = useState(true);
   const [rendered, setRendered] = useState(false);
   const renderTaskRef = useRef<any>(null);
 
   useEffect(() => {
-    if (!visible || !pdf || !canvasRef.current) return;
+    if (!pdf || !canvasRef.current) return;
     let cancelled = false;
 
     (async () => {
@@ -38,9 +29,14 @@ function PdfPage({
         const viewport = page.getViewport({ scale });
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d', { alpha: false });
-        if (!context) return;
+        if (!context) {
+          if (!cancelled) onSettled(pageNumber);
+          return;
+        }
 
-        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const desiredDpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        const pixelCapDpr = Math.sqrt(4_000_000 / Math.max(1, viewport.width * viewport.height));
+        const dpr = Math.max(0.5, Math.min(desiredDpr, pixelCapDpr));
         canvas.width = Math.ceil(viewport.width * dpr);
         canvas.height = Math.ceil(viewport.height * dpr);
         canvas.style.setProperty('--pdf-css-width', `${viewport.width}px`);
@@ -59,10 +55,14 @@ function PdfPage({
         });
 
         await renderTaskRef.current.promise;
-        if (!cancelled) setRendered(true);
+        if (!cancelled) {
+          setRendered(true);
+          onSettled(pageNumber);
+        }
       } catch (error: any) {
         if (!cancelled && error?.name !== 'RenderingCancelledException') {
           setRendered(false);
+          onSettled(pageNumber);
         }
       }
     })();
@@ -71,10 +71,10 @@ function PdfPage({
       cancelled = true;
       renderTaskRef.current?.cancel?.();
     };
-  }, [pdf, pageNumber, scale, visible]);
+  }, [pdf, pageNumber, scale, onSettled]);
 
   return (
-    <div ref={hostRef} className={`pdf-js-page${zoomed ? ' is-zoomed' : ''}`} aria-label={`Page ${pageNumber}`}>
+    <div ref={hostRef} className="pdf-js-page" aria-label={`Page ${pageNumber}`}>
       {!rendered && <div className="pdf-js-page-placeholder"><span>Page {pageNumber}</span></div>}
       <canvas ref={canvasRef} className={rendered ? 'is-rendered' : ''} />
     </div>
@@ -89,8 +89,26 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [failed, setFailed] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [fitScale, setFitScale] = useState(1);
+  const [zoomLevel, setZoomLevel] = useState(INITIAL_READER_ZOOM);
+  const [settledPages, setSettledPages] = useState<Set<number>>(() => new Set());
+  const zoomRef = useRef(INITIAL_READER_ZOOM);
   const shellRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLElement>(null);
+
+  const changeZoom = useCallback((value: number) => {
+    const bounded = Math.min(MAX_READER_ZOOM, Math.max(MIN_READER_ZOOM, value));
+    zoomRef.current = bounded;
+    setZoomLevel(bounded);
+  }, []);
+  const onPageSettled = useCallback((pageNumber: number) => {
+    setSettledPages((current) => {
+      if (current.has(pageNumber)) return current;
+      const next = new Set(current);
+      next.add(pageNumber);
+      return next;
+    });
+  }, []);
+  const allPagesReady = Boolean(pdf && pageCount > 0 && settledPages.size >= pageCount);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(resource.file_name || '')));
@@ -104,6 +122,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     setFailed(false);
     setPdf(null);
     setPageCount(0);
+    setSettledPages(new Set());
 
     (async () => {
       try {
@@ -144,6 +163,42 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   }, [resource?.id, fileUrl, isImage]);
 
 
+  useEffect(() => {
+    const stage = stageRef.current;
+    if (!stage || isImage) return;
+    let pinchStartDistance = 0;
+    let pinchStartZoom = zoomRef.current;
+    const distance = (touches: TouchList) => {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(dx, dy);
+    };
+    const onTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 2) return;
+      pinchStartDistance = distance(event.touches);
+      pinchStartZoom = zoomRef.current;
+    };
+    const onTouchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 2 || pinchStartDistance <= 0) return;
+      event.preventDefault();
+      changeZoom(pinchStartZoom * (distance(event.touches) / pinchStartDistance));
+    };
+    const onTouchEnd = (event: TouchEvent) => {
+      if (event.touches.length < 2) pinchStartDistance = 0;
+    };
+    stage.addEventListener('touchstart', onTouchStart, { passive: true });
+    stage.addEventListener('touchmove', onTouchMove, { passive: false });
+    stage.addEventListener('touchend', onTouchEnd, { passive: true });
+    stage.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    return () => {
+      stage.removeEventListener('touchstart', onTouchStart);
+      stage.removeEventListener('touchmove', onTouchMove);
+      stage.removeEventListener('touchend', onTouchEnd);
+      stage.removeEventListener('touchcancel', onTouchEnd);
+    };
+  }, [isImage, changeZoom]);
+
+
   useLayoutEffect(() => {
     if (!pdf || isImage || !stageRef.current) return;
     let cancelled = false;
@@ -154,11 +209,12 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
         const firstPage = await pdf.getPage(1);
         if (cancelled || !stageRef.current) return;
         const base = firstPage.getViewport({ scale: 1 });
-        const availableWidth = Math.max(280, stageRef.current.clientWidth - 30);
-        // Render each PDF page as an actual sheet that fits the reader width.
-        // The source document used by Archivum is close to A4 portrait, so this
-        // gives mobile users a complete page instead of a cropped 1271px canvas.
-        const next = Math.max(0.18, Math.min(1.2, availableWidth / base.width));
+        const stage = stageRef.current;
+        const styles = window.getComputedStyle(stage);
+        const horizontalPadding = (parseFloat(styles.paddingLeft) || 0) + (parseFloat(styles.paddingRight) || 0);
+        const availableWidth = Math.max(1, stage.clientWidth - horizontalPadding - 2);
+        // Fit each original PDF page to the reader's usable width without changing its aspect ratio.
+        const next = Math.max(0.05, Math.min(1, availableWidth / base.width));
         setFitScale(next);
       } catch {}
     };
@@ -223,6 +279,9 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           </div>
 
           <div className="pdf-reader-actions">
+            <button type="button" onClick={() => changeZoom(zoomRef.current - READER_ZOOM_STEP)} disabled={zoomLevel <= MIN_READER_ZOOM} aria-label="Zoom out"><Minus /></button>
+            <span className="pdf-reader-zoom" aria-live="polite">{Math.round(zoomLevel * 100)}%</span>
+            <button type="button" onClick={() => changeZoom(zoomRef.current + READER_ZOOM_STEP)} disabled={zoomLevel >= MAX_READER_ZOOM} aria-label="Zoom in"><Plus /></button>
             <button type="button" onClick={toggleFullscreen} aria-label={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}>
               {fullscreen ? <Minimize2 /> : <Maximize2 />}
             </button>
@@ -254,18 +313,25 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
               <span>Preparing the first pages inside Archivum.</span>
             </div>
           ) : (
-            <div
-              className="pdf-reader-pages"
-            >
+            <div className="pdf-reader-pages">
               {Array.from({ length: pageCount }, (_, index) => (
                 <PdfPage
                   key={index + 1}
                   pdf={pdf}
                   pageNumber={index + 1}
-                  scale={fitScale}
-                  eager
+                  scale={fitScale * zoomLevel}
+                  onSettled={onPageSettled}
                 />
               ))}
+            </div>
+          )}
+          {!isImage && !failed && !loading && !allPagesReady && (
+            <div className="pdf-reader-preloader" role="status" aria-live="polite">
+              <div className="pdf-load-progress" role="progressbar" aria-valuemin={0} aria-valuemax={pageCount} aria-valuenow={settledPages.size} aria-label={`Preparing pages ${settledPages.size} of ${pageCount}`}>
+                <div className="pdf-load-progress-bar" style={{ width: `${pageCount ? Math.max(4, settledPages.size / pageCount * 100) : 4}%` }} />
+              </div>
+              <strong>Preparing pages · {settledPages.size}/{pageCount}</strong>
+              <span>The reader opens when every page is ready.</span>
             </div>
           )}
         </main>
