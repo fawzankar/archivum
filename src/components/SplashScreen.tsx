@@ -2,19 +2,21 @@
 
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
 
 const SPLASH_MS = 3200;
 const LEAVE_MS = 450;
 
 export default function SplashScreen() {
-  const pathname = usePathname();
   const [show, setShow] = useState(true);
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
-    if (pathname !== '/') return;
     const root = document.documentElement;
+    if (window.location.pathname !== '/') {
+      root.classList.remove('splash-active');
+      setShow(false);
+      return;
+    }
     root.classList.add('splash-active');
     let minimumTimeElapsed = false;
     let startupReady = root.classList.contains('archivum-startup-ready');
@@ -48,9 +50,9 @@ export default function SplashScreen() {
       window.removeEventListener('archivum:startup-ready', onStartupReady);
       root.classList.remove('splash-active');
     };
-  }, [pathname]);
+  }, []);
 
-  if (pathname !== '/' || !show) return null;
+  if (!show) return null;
   return (
     <div className={'boot-splash sp' + (leaving ? ' is-leaving' : '')} aria-label="Loading ARCHIVUM" role="status">
       <div className="sp-backdrop" aria-hidden="true" />
