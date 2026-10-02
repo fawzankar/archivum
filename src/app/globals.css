@@ -4197,3 +4197,76 @@ html.profile-onboarding-active .profile-continue{height:50px!important;margin-to
 :root[data-accent="crimson-veil"] .mobile-nav-link{color:var(--ink-faint)}
 :root[data-accent="crimson-veil"] .mobile-nav-link.active{color:var(--accent)}
 :root[data-accent="crimson-veil"] .accent-swatch.active small{color:var(--accent)!important}
+
+/* ===== Final visual refinement ===== */
+/* Keep pinch zoom disabled for the app itself; the reader opts back in below. */
+html, body { touch-action: pan-x pan-y; }
+html.archivum-overlay-open, html.archivum-overlay-open body { overflow: hidden !important; overscroll-behavior: none !important; }
+html.archivum-overlay-open body { touch-action: none !important; }
+
+/* Bottom navigation: a calmer active capsule with a distinct icon medallion. */
+.mobile-nav-link::before { inset: 3px 2px !important; width: auto !important; height: auto !important; transform: none !important; border-radius: 17px !important; opacity: 0 !important; background: color-mix(in srgb,var(--accent) 9%,var(--surface)) !important; box-shadow: inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent) !important; }
+.mobile-nav-link.active::before { opacity: 1 !important; }
+.mobile-nav-link.active { color: var(--accent) !important; font-weight: 800; }
+.mobile-nav-link.active svg { width: 30px !important; height: 30px !important; padding: 6px; border-radius: 11px; background: var(--accent); color: var(--accent-contrast); stroke-width: 2.35; box-shadow: 0 5px 12px color-mix(in srgb,var(--accent) 22%,transparent); }
+.mobile-nav-link span { position: relative; z-index: 2; }
+.mobile-nav-link svg { position: relative; z-index: 2; transition: transform .18s ease, background .18s ease; }
+.mobile-nav-link.active span { color: var(--accent) !important; }
+
+/* Subject cards: compact footprint, but restore the large subject artwork. */
+.hm-subject-home-card { min-height: 190px !important; }
+.hm-subject-home-card > .subject-tile { min-height: 190px !important; }
+.hm-subject-home-card .subject-tile-art { width: 108px !important; height: 108px !important; margin-top: 0 !important; }
+.hm-subject-home-card .subject-tile-copy { min-height: 34px; }
+.hm-subject-home-card .subject-tile-copy strong { font-size: 19px !important; }
+@media (max-width: 1050px) {
+  .hm-subject-home-card, .hm-subject-home-card > .subject-tile { min-height: 176px !important; }
+  .hm-subject-home-card .subject-tile-art { width: 96px !important; height: 96px !important; }
+}
+@media (max-width: 640px) {
+  .hm-subject-home-card, .hm-subject-home-card > .subject-tile { min-height: 158px !important; }
+  .hm-subject-home-card .subject-tile-art { width: 92px !important; height: 92px !important; }
+  .hm-subject-home-card .subject-tile-copy strong { font-size: 17px !important; }
+}
+
+/* Subject filters on Notes / PYQs. */
+.subject-filter-chip { transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease; }
+.subject-filter-chip:hover { transform: translateY(-1px); }
+.subject-filter-chip.is-active { box-shadow: 0 5px 14px color-mix(in srgb,var(--accent) 18%,transparent) !important; border-color: var(--accent) !important; font-weight: 800 !important; }
+
+/* Splash: larger icon frame, unchanged logo proportions, and theme-coloured typography. */
+.sp-mark { width: clamp(112px, 16vw, 132px) !important; height: clamp(112px, 16vw, 132px) !important; border-radius: 31% !important; }
+.sp-logo { width: 70% !important; height: 70% !important; }
+.sp-word { color: var(--accent-strong) !important; }
+.sp-kicker { color: var(--accent) !important; margin-top: 20px !important; text-transform: none !important; letter-spacing: .08em !important; font-size: 12px !important; }
+.sp-credit, .sp-credit strong { color: var(--accent) !important; }
+@media (max-width: 640px) {
+  .sp-mark { width: 112px !important; height: 112px !important; }
+  .sp-logo { width: 70% !important; height: 70% !important; }
+  .sp-kicker { font-size: 10px !important; letter-spacing: .06em !important; }
+}
+
+/* Hamburger drawer: prevent the page behind it from participating in scroll. */
+.menu-layer.open { overscroll-behavior: contain; }
+.menu-drawer { overscroll-behavior: contain; }
+.menu-scroll { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.menu-note { display:flex; align-items:center; justify-content:center; padding:13px 18px calc(13px + env(safe-area-inset-bottom)); text-align:center; }
+.menu-note a { color: var(--accent); font-weight: 800; letter-spacing: .01em; }
+.menu-note a:hover { text-decoration: underline; }
+
+/* Pinch zoom is intentionally available only inside the internal reader. */
+.pdf-reader-shell { touch-action: pan-x pan-y pinch-zoom !important; }
+.pdf-reader-stage { touch-action: pan-x pan-y pinch-zoom !important; -webkit-overflow-scrolling: touch; }
+.pdf-reader-pages, .pdf-js-page { touch-action: pan-x pan-y pinch-zoom !important; }
+
+/* Better selected subject state in the Notes library. */
+.notes-subject-card.active {
+  background: var(--accent-light) !important;
+  color: var(--accent) !important;
+  border: 2px solid var(--accent) !important;
+  box-shadow: 0 10px 24px color-mix(in srgb,var(--accent) 16%,transparent) !important;
+  transform: translateY(-1px) !important;
+}
+.notes-subject-card.active small { color: color-mix(in srgb,var(--accent) 78%,var(--ink-muted)) !important; }
+.notes-subject-card.active::before { background: var(--accent); opacity: 1; }
+.notes-subject-card.active::after { opacity: .10; background: var(--accent); }

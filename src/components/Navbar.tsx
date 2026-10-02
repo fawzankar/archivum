@@ -28,8 +28,13 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', f);
   }, []);
   useEffect(() => {
-    document.body.style.overflow = drawerOpen || searchOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    const locked = drawerOpen || searchOpen;
+    document.body.style.overflow = locked ? 'hidden' : '';
+    document.documentElement.classList.toggle('archivum-overlay-open', locked);
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.classList.remove('archivum-overlay-open');
+    };
   }, [drawerOpen, searchOpen]);
   useEffect(() => { setDrawerOpen(false); setSearchOpen(false); }, [pathname]);
   useEffect(() => {
@@ -96,7 +101,7 @@ export default function Navbar() {
           <div className="menu-quest-cta">
             <a className="quest-visit-link" href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span>Visit <span className="quest-word">QUEST</span></span><ExternalLink /></a>
           </div>
-        <div className="menu-note"><span>This App Is Built By</span><a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">Fawzan Kar</a></div>
+        <div className="menu-note"><a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">This App Is Built By Fawzan Kar</a></div>
       </aside>
     </div>
   </>;

@@ -169,8 +169,8 @@ export function PaperFinderView({
           <div className="rounded-2xl border p-3.5" style={{ borderColor: 'var(--border-light)', background: 'var(--surface-raised)' }}>
             <div className="flex items-center gap-2 mb-2"><Layers3 className="w-3.5 h-3.5" style={{color:'var(--accent)'}}/><span className="text-[10px] font-bold uppercase tracking-wider" style={{color:'var(--ink-muted)'}}>Subjects for Class {selectedClass}</span></div>
             <div className="flex gap-2 overflow-x-auto no-scrollbar">
-              <button onClick={()=>setSelectedSubject('')} className="shrink-0 px-3 py-2 rounded-xl text-[10px] font-bold" style={{background:!selectedSubject?'var(--accent)':'var(--surface)',color:!selectedSubject?'var(--accent-contrast)':'var(--ink-muted)'}}>All</button>
-              {subjectsForClass(selectedClass).map(sub=><button key={sub} onClick={()=>setSelectedSubject(sub)} className="shrink-0 px-3 py-2 rounded-xl text-[10px] font-bold border" style={{borderColor:selectedSubject===sub?'var(--accent)':'var(--border)',background:selectedSubject===sub?'var(--accent-light)':'var(--surface)',color:selectedSubject===sub?'var(--accent)':'var(--ink-muted)'}}>{sub}</button>)}
+              <button onClick={()=>setSelectedSubject('')} className={`subject-filter-chip shrink-0 px-3 py-2 rounded-xl text-[10px] font-bold ${!selectedSubject ? 'is-active' : ''}`} style={{background:!selectedSubject?'var(--accent)':'var(--surface)',color:!selectedSubject?'var(--accent-contrast)':'var(--ink-muted)'}}>All</button>
+              {subjectsForClass(selectedClass).map(sub=><button key={sub} onClick={()=>setSelectedSubject(sub)} className={`subject-filter-chip shrink-0 px-3 py-2 rounded-xl text-[10px] font-bold border ${selectedSubject===sub ? 'is-active' : ''}`} style={{borderColor:selectedSubject===sub?'var(--accent)':'var(--border)',background:selectedSubject===sub?'var(--accent-light)':'var(--surface)',color:selectedSubject===sub?'var(--accent)':'var(--ink-muted)'}}>{sub}</button>)}
             </div>
           </div>
         )}

@@ -77,7 +77,7 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
             </div>
           </div>
           <div className="hm-pickup-grid">
-            {recentNotes.map((resource) => <ResourceCard key={`pickup-${resource.id}`} resource={resource} compact />)}
+            {recentNotes.map((resource) => <ResourceCard key={`pickup-${resource.id}`} resource={resource} compact showOpen={false} />)}
           </div>
         </section>
       )}

@@ -19,7 +19,7 @@ import SplashScreen from '@/components/SplashScreen';
 import PrefetchRoutes from '@/components/PrefetchRoutes';
 import AppInteractionGuard from '@/components/AppInteractionGuard';
 
-export const viewport: Viewport = { themeColor: '#e4ecff', width: 'device-width', initialScale: 1, maximumScale: 1, userScalable: false, viewportFit: 'cover' };
+export const viewport: Viewport = { themeColor: '#e4ecff', width: 'device-width', initialScale: 1, viewportFit: 'cover' };
 export const metadata: Metadata = {
   title: 'ARCHIVUM | Academic Archive',
   description: 'Academic notes, previous papers, study material and exam resources for SJS students in Classes 9 to 12.',
