@@ -15,6 +15,7 @@ export default function SplashScreen() {
       setLeaving(true);
       window.setTimeout(() => {
         document.documentElement.classList.remove('splash-active');
+        document.documentElement.classList.remove('splash-booting');
         window.dispatchEvent(new Event('archivum:splash-complete'));
         setShow(false);
       }, LEAVE_MS);
@@ -23,6 +24,7 @@ export default function SplashScreen() {
       window.clearTimeout(leave);
       window.clearTimeout(done);
       document.documentElement.classList.remove('splash-active');
+      document.documentElement.classList.remove('splash-booting');
     };
   }, []);
   if (!show) return null;

@@ -4340,3 +4340,98 @@ html.splash-active body{overflow:hidden!important}
 /* The document itself stays zoomable while the rest of the site keeps its normal viewport policy. */
 .pdf-reader-stage,
 .pdf-reader-stage *{overscroll-behavior:contain}
+
+
+/* v72 — splash must be the first painted home-route layer; prevent the home UI
+   from flashing underneath it during hydration. */
+html.splash-booting body > *:not(.boot-splash){
+  visibility:hidden!important;
+}
+html.splash-booting body{
+  overflow:hidden!important;
+}
+html.splash-booting .boot-splash{
+  visibility:visible!important;
+}
+
+/* v72 — browser-native pinch zoom is enabled for the whole web app. Do not
+   intercept two-finger gestures in the PDF reader; let the browser handle
+   them exactly like any other web page. */
+.pdf-reader-stage,
+.pdf-reader-stage *{
+  touch-action:auto!important;
+}
+.pdf-reader-pages{
+  transform:none!important;
+  min-width:0!important;
+  width:max-content!important;
+}
+.pdf-js-page canvas{
+  display:block!important;
+  max-width:none!important;
+}
+
+/* Keep fullscreen document-first and leave browser pinch zoom untouched. */
+.pdf-reader-shell:fullscreen .pdf-reader-stage{
+  touch-action:auto!important;
+  padding-top:0!important;
+}
+.pdf-reader-shell:fullscreen .pdf-reader-pages{
+  width:max-content!important;
+}
+
+/* Ultra-quiet bottom navigation: active state is a tiny underline only. */
+.mobile-nav{
+  height:58px!important;
+  padding:4px 8px!important;
+  border-radius:18px!important;
+}
+.mobile-nav-link{
+  position:relative!important;
+  background:transparent!important;
+  color:var(--ink-faint)!important;
+  font-weight:600!important;
+  gap:2px!important;
+}
+.mobile-nav-link::before{
+  width:18px!important;
+  height:2px!important;
+  bottom:2px!important;
+  border-radius:999px!important;
+  opacity:0!important;
+}
+.mobile-nav-link.active{
+  color:var(--accent)!important;
+  font-weight:700!important;
+}
+.mobile-nav-link.active::before{
+  opacity:1!important;
+}
+
+
+/* v73 — keep PDF canvas crisp and correctly sized on mobile instead of stretching
+   it to the reader width. Browser pinch zoom then enlarges the real document. */
+.pdf-js-page canvas{
+  width:var(--pdf-css-width)!important;
+  height:var(--pdf-css-height)!important;
+  max-width:none!important;
+  display:block!important;
+}
+
+/* Strong, theme-specific splash contrast. The current splash compositions are
+   light, so dark editorial ink is intentionally used instead of faint cream. */
+.boot-splash.sp .sp-word,
+.boot-splash.sp .sp-kicker,
+.boot-splash.sp .sp-credit,
+.boot-splash.sp .sp-credit strong{
+  color:var(--sp-text)!important;
+  -webkit-text-fill-color:var(--sp-text)!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+:root[data-accent="indigo"]{--sp-text:#1b255f}
+:root[data-accent="forest"]{--sp-text:#123f2a}
+:root[data-accent="smoky-olive"]{--sp-text:#454238}
+:root[data-accent="smoky-ink"]{--sp-text:#20252b}
+:root[data-accent="soft-pink"]{--sp-text:#70273f}
+:root[data-accent="crimson-veil"]{--sp-text:#610027}

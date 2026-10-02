@@ -43,8 +43,8 @@ function PdfPage({
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         canvas.width = Math.ceil(viewport.width * dpr);
         canvas.height = Math.ceil(viewport.height * dpr);
-        canvas.style.width = `${viewport.width}px`;
-        canvas.style.height = `${viewport.height}px`;
+        canvas.style.setProperty('--pdf-css-width', `${viewport.width}px`);
+        canvas.style.setProperty('--pdf-css-height', `${viewport.height}px`);
 
         renderTaskRef.current?.cancel?.();
         renderTaskRef.current = page.render({
@@ -84,11 +84,8 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [loadProgress, setLoadProgress] = useState(0);
   const [failed, setFailed] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
-  const [scale, setScale] = useState(1);
   const shellRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLElement>(null);
-  const pinchRef = useRef<{ startDistance: number; startScale: number } | null>(null);
-  const [pinchScale, setPinchScale] = useState<number | null>(null);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(resource.file_name || '')));
@@ -141,53 +138,6 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     return () => { cancelled = true; };
   }, [resource?.id, fileUrl, isImage]);
 
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage || isImage) return;
-
-    const distance = (a: Touch, b: Touch) => Math.hypot(b.clientX - a.clientX, b.clientY - a.clientY);
-
-    const onTouchStart = (event: TouchEvent) => {
-      if (event.touches.length !== 2) return;
-      const startDistance = distance(event.touches[0], event.touches[1]);
-      if (!startDistance) return;
-      pinchRef.current = { startDistance, startScale: scale };
-      setPinchScale(scale);
-    };
-
-    const onTouchMove = (event: TouchEvent) => {
-      const pinch = pinchRef.current;
-      if (!pinch || event.touches.length !== 2) return;
-      // Take ownership only while two fingers are down. One-finger scrolling remains native.
-      event.preventDefault();
-      const currentDistance = distance(event.touches[0], event.touches[1]);
-      if (!currentDistance) return;
-      const next = Math.max(0.75, Math.min(4, pinch.startScale * (currentDistance / pinch.startDistance)));
-      setPinchScale(next);
-    };
-
-    const finishPinch = () => {
-      const preview = pinchRef.current;
-      if (!preview) return;
-      pinchRef.current = null;
-      setPinchScale(current => {
-        const next = current == null ? scale : Math.round(current * 100) / 100;
-        setScale(Math.max(0.75, Math.min(4, next)));
-        return null;
-      });
-    };
-
-    stage.addEventListener('touchstart', onTouchStart, { passive: true });
-    stage.addEventListener('touchmove', onTouchMove, { passive: false });
-    stage.addEventListener('touchend', finishPinch, { passive: true });
-    stage.addEventListener('touchcancel', finishPinch, { passive: true });
-    return () => {
-      stage.removeEventListener('touchstart', onTouchStart);
-      stage.removeEventListener('touchmove', onTouchMove);
-      stage.removeEventListener('touchend', finishPinch);
-      stage.removeEventListener('touchcancel', finishPinch);
-    };
-  }, [isImage, scale]);
 
   useEffect(() => {
     if (!resource) return;
@@ -209,19 +159,6 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     };
   }, [resource, onClose]);
 
-  useEffect(() => {
-    if (!resource) return;
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
-    if (!meta) return;
-    const original = meta.getAttribute('content') || '';
-    const allowZoom = () => {
-      meta.setAttribute('content', original.replace(/maximum-scale=[^,]+/i, 'maximum-scale=5').replace(/user-scalable=[^,]+/i, 'user-scalable=yes'));
-    };
-    const restore = () => meta.setAttribute('content', original);
-    const onFullscreen = () => document.fullscreenElement ? allowZoom() : restore();
-    document.addEventListener('fullscreenchange', onFullscreen);
-    return () => { document.removeEventListener('fullscreenchange', onFullscreen); restore(); };
-  }, [resource]);
 
   useEffect(() => {
     return () => { pdf?.destroy?.().catch?.(() => {}); };
@@ -284,7 +221,6 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           ) : (
             <div
               className="pdf-reader-pages"
-              style={{ zoom: (pinchScale ?? scale) } as React.CSSProperties}
             >
               {Array.from({ length: pageCount }, (_, index) => (
                 <PdfPage
