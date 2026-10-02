@@ -194,7 +194,7 @@ export async function incrementDownloadCount(id:number, sessionId:string) {
 
 export async function rateResource(id: number, sessionId: string, rating: number) {
   const normalizedSession = sessionId.trim().slice(0, 128);
-  if (!normalizedSession) return { success: false, message: 'A rating session is required.' };
+  if (!normalizedSession) return { success: false, message: 'Something went wrong with your session. Refresh and try rating again.' };
   if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
     return { success: false, message: 'Rating must be between 1 and 5 stars.' };
   }
@@ -204,7 +204,7 @@ export async function rateResource(id: number, sessionId: string, rating: number
     [id],
   );
   if (!resource || resource.status !== 'approved') {
-    return { success: false, message: 'This resource is not available for rating.' };
+    return { success: false, message: 'This one can’t be rated right now.' };
   }
 
   const now = new Date().toISOString();
@@ -246,10 +246,10 @@ export async function rateResource(id: number, sessionId: string, rating: number
 export async function checkForDuplicates(fileHash:string,title:string,classLevel:number,subject:string) {
   if (fileHash) {
     const hashMatch = await queryOne<{id:number;title:string;slug:string}>('SELECT id,title,slug FROM resources WHERE file_hash=? LIMIT 1',[fileHash]);
-    if (hashMatch) return {isDuplicate:true,reason:'Exact file already exists in the database',existing:hashMatch};
+    if (hashMatch) return {isDuplicate:true,reason:'This exact file is already in the archive.',existing:hashMatch};
   }
   const similar = await queryOne<{id:number;title:string;slug:string}>('SELECT id,title,slug FROM resources WHERE LOWER(title)=LOWER(?) AND class_level=? AND LOWER(subject)=LOWER(?) LIMIT 1',[title,classLevel,subject]);
-  if (similar) return {isDuplicate:true,reason:'A resource with the same title, class, and subject already exists',existing:similar};
+  if (similar) return {isDuplicate:true,reason:'Something with this title, class and subject is already in the archive.',existing:similar};
   return {isDuplicate:false};
 }
 

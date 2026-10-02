@@ -21,3 +21,20 @@
 - polish.css is imported last in layout.tsx.
 - Search placeholder restored (older CSS had hidden it).
 - Service worker bumped to v13 and caches /focus.
+
+## Admin
+- Admin screens, toasts and checklist rewritten in plain language.
+- Removed the default credentials hint (admin / admin123) from the public login page.
+
+## Menu
+- New slide-in menu: profile card with one-tap class switcher, shortcut tiles (Notes, Papers, Focus, Saved with count), link list, colour picker, Quest card.
+- New hamburger icon. Esc closes the menu. Fixed a hydration warning in the nav.
+
+## Cleanup (deleted)
+- src/app/api/guide (leftover AI chatbot endpoint that called OpenAI), api/blob-upload (410 stub), api/prefetch, api/library-prefetch
+- src/components/ReviewsSection.tsx (not imported anywhere)
+- patch.py, tsconfig.tsbuildinfo
+- public: aboutus.html, archivum-logo-light/mask/official-logo, archivum-mark.svg, splash-gradient-reference.png, zebra-pattern.png, and the default Next.js svgs
+
+## Copy
+- Final pass on loading screens, filters and API error messages.
