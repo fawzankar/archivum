@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import SearchBar from './SearchBar';
+import Credit from './Credit';
 import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink } from 'lucide-react';
 
 const links = [
@@ -45,7 +46,7 @@ export default function Navbar() {
       <div className="archive-shell site-header-inner">
         <Link href="/" className="brand-lockup" aria-label="ARCHIVUM home">
           <span className="brand-logo"><span className="archivum-css-logo" /></span>
-          <span><strong>ARCHIVUM</strong><small>A Sister Organization Of <span className="quest-word">Quest</span></small></span>
+          <span><strong>ARCHIVUM</strong><small>A sister organisation of <span className="quest-word">Quest</span></small></span>
         </Link>
 
         <div className="header-actions">
@@ -76,7 +77,7 @@ export default function Navbar() {
       <button className="menu-scrim" onClick={() => setDrawerOpen(false)} aria-label="Close menu" />
       <aside className="menu-drawer">
         <div className="menu-top">
-          <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>A Sister Organization Of <span className="quest-word">Quest</span></small></span></div>
+          <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>A sister organisation of <span className="quest-word">Quest</span></small></span></div>
           <button className="header-action" onClick={() => setDrawerOpen(false)} aria-label="Close menu"><X /></button>
         </div>
 
@@ -86,17 +87,17 @@ export default function Navbar() {
           <div className="menu-links">{links.map(([label,href,Icon]) => <Link key={href} href={withClass(href)} onClick={() => setDrawerOpen(false)} className={active(href) ? 'active' : ''}><Icon /><span>{label}</span><ChevronRight /></Link>)}</div>
 
           <div className="menu-section menu-appearance">
-            <div className="menu-section-label">Colour Theme</div>
+            <div className="menu-section-label">Colour theme</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${accent === item.id ? 'active' : ''}`}><span style={{ background: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
 
-          <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset My Profile</button>
+          <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); router.replace('/'); }}><RotateCcw /> Reset my profile</button>
         </div>
 
-          <div className="menu-quest-cta">
-            <a className="quest-visit-link" href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span>Visit <span className="quest-word">QUEST</span></span><ExternalLink /></a>
-          </div>
-        <div className="menu-note"><span>This App is Developed By</span><a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer">Fawzan Kar</a></div>
+        <div className="menu-quest-cta">
+          <a className="quest-visit-link" href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer"><span>Visit <span className="quest-word">QUEST</span></span><ExternalLink /></a>
+        </div>
+        <div className="menu-credit"><Credit link /></div>
       </aside>
     </div>
   </>;

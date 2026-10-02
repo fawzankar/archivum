@@ -233,7 +233,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
                 <div className="pdf-load-progress-bar" style={{ width: `${Math.max(4, loadProgress)}%` }} />
               </div>
               <strong>{loadProgress > 0 ? `Opening note · ${loadProgress}%` : 'Opening note…'}</strong>
-              <span>Preparing the first pages inside Archivum.</span>
+              <span>Getting the first pages ready.</span>
             </div>
           ) : (
             <div className="pdf-reader-pages">

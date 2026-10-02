@@ -35,11 +35,11 @@ export default async function ContributorsPage() {
 
   return (
     <main className="max-w-6xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-12">
-      <PageHead title="People building the archive." art="default" tone="mint">A live list based on approved material actually uploaded to ARCHIVUM. No inflated contributor numbers.</PageHead>
+      <PageHead title="The people behind the notes." art="default" tone="mint">This list comes straight from approved uploads, so everyone here has added something.</PageHead>
 
       <section className="contributors-intro contributors-thankyou">
         <div className="contributors-intro-icon"><Heart /></div>
-        <div><h2>Thank you to the people behind the archive.</h2><p>Every useful note, paper and study resource shared here helps keep ARCHIVUM alive. Our contributors give their time, material and helping nature to make studying a little easier for everyone who comes after them.</p><p>If you have material you think belongs in the archive, reach out to the <span className="quest-word">Quest</span> team and we’ll help you get it to the right place.</p></div>
+        <div><h2>Thank you.</h2><p>Every note and paper someone shares here saves another student a lot of searching. This archive is only as good as what people put into it.</p><p>If you have material that belongs here, message the <span className="quest-word">Quest</span> team and we’ll help you get it added.</p></div>
       </section>
       <section className="contributors-contact-grid">
         <a href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><Camera /><span><strong>Instagram</strong><small>@quest_sjs</small></span></a>
@@ -51,7 +51,7 @@ export default async function ContributorsPage() {
           <div className="rounded-xl border p-10 text-center" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
             <Trophy className="w-8 h-8 mx-auto" style={{color:'var(--accent)'}}/>
             <h2 className="font-display font-bold text-xl mt-3">No contributors yet</h2>
-            <p className="text-xs mt-2" style={{color:'var(--ink-muted)'}}>Be the first to have approved material listed here.</p>
+            <p className="text-xs mt-2" style={{color:'var(--ink-muted)'}}>Once your upload is approved, your name will show up here.</p>
           </div>
         ) : contributors.map((c, i) => (
           <div key={c.contributor_name} className="rounded-2xl border p-3.5 sm:p-5 flex items-center gap-3 sm:gap-4 min-w-0" style={{background:'var(--surface)',borderColor:'var(--border)'}}>

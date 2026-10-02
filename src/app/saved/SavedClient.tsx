@@ -54,10 +54,10 @@ export default function SavedClient() {
             <Bookmark className="w-10 h-10 mx-auto" style={{ color: 'var(--ink-faint)' }} />
             <div className="space-y-1">
               <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
-                Your saved collection is empty
+                Nothing saved yet
               </h3>
               <p className="text-xs text-zinc-500 max-w-sm mx-auto leading-relaxed">
-                Tap the bookmark icon on any note or paper card to save it for quick offline revision.
+                Tap the bookmark on any note or paper to keep it here.
               </p>
             </div>
             <Link

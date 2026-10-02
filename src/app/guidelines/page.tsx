@@ -1,8 +1,8 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Content Guidelines | ARCHIVUM',
-  description: 'Submission guidelines for academic materials on ARCHIVUM.',
+  title: 'Upload Guidelines | ARCHIVUM',
+  description: 'What to check before you upload notes or papers to ARCHIVUM.',
 };
 
 export default function GuidelinesPage() {
@@ -10,13 +10,13 @@ export default function GuidelinesPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
         <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
-          COMMUNITY STANDARDS
+          BEFORE YOU UPLOAD
         </span>
         <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
-          Content Guidelines
+          Upload guidelines
         </h1>
         <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          Requirements and quality benchmarks for publishing study materials on ARCHIVUM.
+          A few things to check before you send us something.
         </p>
       </div>
 
@@ -28,29 +28,29 @@ export default function GuidelinesPage() {
         }}
       >
         <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-          Before submitting academic material to ARCHIVUM, please ensure your contribution satisfies these standards:
+          Please run your upload through this list first:
         </p>
 
         <ul className="space-y-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-300">
           <li className="flex items-start gap-2.5">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: 'var(--sage)' }} />
-            <span><strong>Target Audience:</strong> Must be specifically relevant to students of Classes 9, 10, 11, or 12.</span>
+            <span><strong>Right level:</strong> It should be useful to students in Classes 9 to 12.</span>
           </li>
           <li className="flex items-start gap-2.5">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: 'var(--sage)' }} />
-            <span><strong>Accurate Classification:</strong> Correctly specify the academic class, subject, and chapter or paper category.</span>
+            <span><strong>Correct details:</strong> Pick the right class, subject, and chapter or paper type.</span>
           </li>
           <li className="flex items-start gap-2.5">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: 'var(--sage)' }} />
-            <span><strong>Legibility:</strong> Scans and PDFs must be clear, readable, upright, and without significant cutoffs or blurriness.</span>
+            <span><strong>Readable scans:</strong> Pages should be sharp, upright and not cut off.</span>
           </li>
           <li className="flex items-start gap-2.5">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: 'var(--sage)' }} />
-            <span><strong>School Identification:</strong> For school examinations (pre boards, unit tests), please provide the full school name and exam year.</span>
+            <span><strong>School and year:</strong> For pre-boards and unit tests, add the full school name and the exam year.</span>
           </li>
           <li className="flex items-start gap-2.5">
             <span className="w-1.5 h-1.5 rounded-full mt-2 shrink-0" style={{ backgroundColor: 'var(--sage)' }} />
-            <span><strong>Permissions:</strong> Do not upload commercial copyrighted textbooks or paid digital courses.</span>
+            <span><strong>Nothing paid:</strong> Please don’t upload commercial textbooks or paid courses.</span>
           </li>
         </ul>
       </div>

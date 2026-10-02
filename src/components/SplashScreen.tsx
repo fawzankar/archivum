@@ -1,45 +1,45 @@
 'use client';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import Credit from './Credit';
 
-const SPLASH_MS = 6300;
-const LEAVE_MS = 550;
-const LETTERS = 'ARCHIVUM'.split('');
+// How long the splash stays up, and how long the fade-out takes.
+const SPLASH_MS = 2400;
+const SPLASH_REDUCED_MS = 1200;
+const FADE_MS = 450;
 
 export default function SplashScreen() {
   const [show, setShow] = useState(false);
   const [leaving, setLeaving] = useState(false);
 
   useEffect(() => {
+    const root = document.documentElement;
+    // Only on a cold load of the home page. Other routes skip it.
     if (window.location.pathname !== '/') {
-      document.documentElement.classList.remove('archivum-booting');
+      root.classList.remove('archivum-booting');
       return;
     }
-    document.documentElement.classList.add('archivum-booting');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const total = reduced ? SPLASH_REDUCED_MS : SPLASH_MS;
+
+    root.classList.add('archivum-booting');
     setShow(true);
-    const leave = window.setTimeout(() => setLeaving(true), SPLASH_MS - LEAVE_MS);
+    const leave = window.setTimeout(() => setLeaving(true), total - FADE_MS);
     const done = window.setTimeout(() => {
       setShow(false);
-      document.documentElement.classList.remove('archivum-booting');
-    }, SPLASH_MS);
+      root.classList.remove('archivum-booting');
+    }, total);
     return () => { window.clearTimeout(leave); window.clearTimeout(done); };
   }, []);
 
   if (!show) return null;
 
   return (
-    <div className={`boot-splash sp${leaving ? ' is-leaving' : ''}`} aria-label="Loading ARCHIVUM" role="status">
-      <span className="sp-orb sp-orb-a" /><span className="sp-orb sp-orb-b" />
-      <span className="sp-frame" aria-hidden="true" />
-      <div className="sp-content">
-        <div className="sp-mark">
-          <Image className="sp-logo" src="/archivum-logo-dark.png" alt="" width={72} height={72} priority />
-        </div>
-        <div className="sp-word" aria-hidden="true">
-          {LETTERS.map((l, i) => <span key={i} style={{ ['--i' as string]: i }}>{l}</span>)}
-        </div>
+    <div className={`splash${leaving ? ' is-leaving' : ''}`} role="status" aria-label="Loading ARCHIVUM">
+      <div className="splash-center" aria-hidden="true">
+        <span className="splash-mark" />
+        <span className="splash-word">ARCHIVUM</span>
       </div>
-      <div className="sp-credit">Made by Fawzan Kar</div>
+      <Credit className="splash-credit" />
     </div>
   );
 }

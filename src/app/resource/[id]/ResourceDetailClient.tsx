@@ -140,7 +140,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
             <div className="resource-modern-kicker"><span>CLASS {resource.class_level}</span><i/> <span>{resource.subject}</span><i/> <span>{isPaper ? 'PAPER' : 'NOTES'}</span></div>
             <div className="resource-modern-art"><Art name={artName} /></div>
             <h1>{resource.title}</h1>
-            <p>{resource.description || `A carefully organised ${isPaper ? 'question paper' : 'study resource'} for Class ${resource.class_level} ${resource.subject}.`}</p>
+            <p>{resource.description || `${isPaper ? 'Question paper' : 'Study material'} for Class ${resource.class_level} ${resource.subject}.`}</p>
             <div className="resource-modern-actions">
               <button onClick={handleDownload} className="resource-primary-action"><Download /> Download</button>
               <button type="button" onClick={() => setReaderOpen(true)} className="resource-secondary-action"><Eye /> Read Online</button>
@@ -157,7 +157,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
         <div className="resource-modern-content">
           <section className="resource-modern-section">
             <div className="resource-section-heading"><span>DOCUMENT DETAILS</span><Sparkles /></div>
-            <h2>Everything you need to know before opening it.</h2>
+            <h2>The details, before you open it.</h2>
             <div className="resource-detail-grid">{details.map(([label,value]) => <div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
           </section>
 
@@ -166,7 +166,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
           <section className="resource-modern-rating">
   <div>
     <span>YOUR RATING</span><h2>Was this useful?</h2>
-    <p>Choose your own rating. Community ratings never fill your stars.</p>
+    <p>Rate it yourself. Other people’s ratings won’t fill in your stars.</p>
     {ratingCount > 0 && <div className="community-rating-summary"><strong>{avgRating.toFixed(1)} / 5</strong><span>from {ratingCount} {ratingCount === 1 ? 'rating' : 'ratings'}</span></div>}
   </div>
   <div className="resource-rating-control">

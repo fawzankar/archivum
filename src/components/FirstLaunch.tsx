@@ -69,7 +69,7 @@ export default function FirstLaunch() {
 
         <div className="profile-onboarding-copy">
           <h2 id="ob-title" key={heading}>{heading}</h2>
-          <p>Pick your class and tell us your name. We will use that to keep the archive focused on your study material.</p>
+          <p>Pick your class and tell us your name. We’ll show you the right material.</p>
         </div>
 
         <section className="profile-step" aria-labelledby="class-step-label">
@@ -128,7 +128,7 @@ export default function FirstLaunch() {
             />
             <span>{name.length}/40</span>
           </label>
-          <p className="profile-private-note">Used only on this device to personalise the app.</p>
+          <p className="profile-private-note">Stays on this device. We only use it to greet you.</p>
         </section>
 
         <button type="submit" disabled={!canFinish} className="profile-continue">

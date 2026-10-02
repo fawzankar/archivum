@@ -2,7 +2,7 @@ import React from 'react';
 
 export const metadata = {
   title: 'Privacy Policy | ARCHIVUM',
-  description: 'Zero data tracking privacy policy of ARCHIVUM.',
+  description: 'How ARCHIVUM handles your data.',
 };
 
 export default function PrivacyPage() {
@@ -10,7 +10,7 @@ export default function PrivacyPage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 space-y-8">
       <div className="space-y-2 border-b pb-6" style={{ borderColor: 'var(--border)' }}>
         <span className="text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
-          DATA & PRIVACY
+          YOUR DATA
         </span>
         <h1 className="font-display font-bold text-3xl sm:text-4xl text-zinc-900 dark:text-zinc-100">
           Privacy Policy
@@ -26,22 +26,22 @@ export default function PrivacyPage() {
         }}
       >
         <p>
-          <strong className="text-zinc-900 dark:text-zinc-100">ARCHIVUM</strong> adheres strictly to zero unnecessary data collection. We believe students should access school materials without tracking or invasive profiling.
+          <strong className="text-zinc-900 dark:text-zinc-100">ARCHIVUM</strong> collects as little as it can. You shouldn’t have to be tracked just to read your notes.
         </p>
 
         <div className="space-y-1.5 pt-2">
-          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">1. Zero Student Profiling</h3>
-          <p>We do not collect names, phone numbers, or passwords from students browsing, reading, or downloading notes and examination papers.</p>
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">1. No profiles</h3>
+          <p>We don’t collect names, phone numbers or passwords from students who browse, read or download notes and papers.</p>
         </div>
 
         <div className="space-y-1.5 pt-2">
-          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">2. Local Device Storage</h3>
-          <p>Saved resources and recently viewed items are held exclusively in your local browser storage and never uploaded to our servers.</p>
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">2. Stored on your device</h3>
+          <p>Your saved items and recently viewed list stay in your browser’s local storage. They are never uploaded to our servers.</p>
         </div>
 
         <div className="space-y-1.5 pt-2">
-          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">3. Anonymous Counters</h3>
-          <p>Download tallies and star ratings employ anonymous, randomized session tokens stored on your device to protect against duplicate voting without tracking personal identity.</p>
+          <h3 className="font-display font-bold text-sm text-zinc-900 dark:text-zinc-100">3. Counters</h3>
+          <p>Download counts and star ratings use a random, anonymous token saved on your device, so one person can’t vote twice. It isn’t tied to who you are.</p>
         </div>
       </div>
     </div>

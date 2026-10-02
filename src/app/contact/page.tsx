@@ -34,11 +34,11 @@ export default function ContactPage() {
   return <main className="ct">
     <PageHead title="Contact us" art="notes" tone="blush">Tell us what’s wrong, what’s missing, or what you’d like to see.</PageHead>
     <section className="contact-reach">
-      <a className="contact-reach-card" href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><span className="contact-reach-icon"><Camera /></span><div><strong><span className="quest-word">Quest</span> on Instagram</strong><p>Reach the <span className="quest-word">Quest</span> team for material, ideas or updates.</p><span className="contact-reach-link">@quest_sjs</span></div></a>
-      <a className="contact-reach-card" href="mailto:sjsquest26@gmail.com"><span className="contact-reach-icon"><Mail /></span><div><strong>Email the <span className="quest-word">Quest</span> team</strong><p>Send us useful notes, papers or anything worth archiving.</p><span className="contact-reach-link">sjsquest26@gmail.com</span></div></a>
+      <a className="contact-reach-card" href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><span className="contact-reach-icon"><Camera /></span><div><strong><span className="quest-word">Quest</span> on Instagram</strong><p>Message the <span className="quest-word">Quest</span> team about material, ideas or updates.</p><span className="contact-reach-link">@quest_sjs</span></div></a>
+      <a className="contact-reach-card" href="mailto:sjsquest26@gmail.com"><span className="contact-reach-icon"><Mail /></span><div><strong>Email the <span className="quest-word">Quest</span> team</strong><p>Send notes, papers or anything else that belongs in the archive.</p><span className="contact-reach-link">sjsquest26@gmail.com</span></div></a>
     </section>
     {sent
-      ? <div className="ct-done"><CheckCircle2 /><h2>Message sent.</h2><p>The admin team will read it soon.</p><button type="button" onClick={() => setSent(false)}>Send Another</button></div>
+      ? <div className="ct-done"><CheckCircle2 /><h2>Message sent.</h2><p>Thanks. The admin team will read it soon.</p><button type="button" onClick={() => setSent(false)}>Send Another</button></div>
       : <form className="ct-form" onSubmit={submit}>
         <fieldset><legend>What is this about?</legend>
           <div className="ct-chips">{KINDS.map(k => <button type="button" key={k} className={kind === k ? 'on' : ''} aria-pressed={kind === k} onClick={() => setKind(k)}>{k}</button>)}</div>

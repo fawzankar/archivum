@@ -79,7 +79,7 @@ export function NotesView({ bundle, initialClass, initialSubject }: { bundle: Li
         <div className="notes-library-header">
           <div>
             <h2 className="notes-library-heading">Your subjects</h2>
-            <p className="notes-library-description">Choose a subject to quickly find the notes you need.</p>
+            <p className="notes-library-description">Pick a subject to see its notes.</p>
           </div>
           <span className="notes-library-class-badge">Class {selectedClass}</span>
         </div>
@@ -131,7 +131,7 @@ export function NotesView({ bundle, initialClass, initialSubject }: { bundle: Li
 
       <div className="notes-result-head">
         <div>
-          <p>ARCHIVE RESULTS</p>
+          <p>RESULTS</p>
           <h3>{activeSubject || 'All subjects'} <span>· {filteredNotes.length}</span></h3>
           <p className="notes-result-rating-summary">
             {(() => {
@@ -153,7 +153,7 @@ export function NotesView({ bundle, initialClass, initialSubject }: { bundle: Li
         <div className="text-center py-16 rounded-3xl border space-y-3" style={{ background: 'var(--surface)', borderColor: 'var(--border)' }}>
           <BookOpen className="w-10 h-10 mx-auto" style={{ color: 'var(--ink-faint)' }} />
           <h3 className="font-display font-bold text-lg">No notes yet for {activeSubject || 'this class'}</h3>
-          <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>The subject is available in ARCHIVUM. Check back when new material is added to the archive.</p>
+          <p className="text-xs max-w-sm mx-auto" style={{ color: 'var(--ink-muted)' }}>Nothing here yet. New notes show up once they’re added.</p>
           <Link href="/about" className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full text-xs font-bold" style={{ background: 'var(--accent)', color: 'var(--accent-contrast)' }}>
             About ARCHIVUM <ArrowRight className="w-3.5 h-3.5" />
           </Link>
