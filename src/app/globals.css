@@ -4283,3 +4283,60 @@ body.overlay-scroll-locked{
 :root[data-accent="smoky-ink"]{--sp-text:#202329}
 :root[data-accent="soft-pink"]{--sp-text:#7d294c}
 :root[data-accent="crimson-veil"]{--sp-text:#610027}
+
+/* ===== Final polish: splash-first boot, readable splash type, minimal nav, real PDF pinch ===== */
+html.splash-active{overflow:hidden!important}
+html.splash-active body{overflow:hidden!important}
+
+/* The splash is deliberately the first visual layer.  Onboarding is revealed only
+   after the splash-complete event, then the normal page is available underneath it. */
+.profile-onboarding{z-index:2147482000!important}
+
+/* Splash text contrast: choose a strong colour for each light theme instead of
+   the previous near-white text that disappeared into the gradient. */
+.sp-kicker,.sp-word,.sp-credit,.sp-credit strong{
+  color:var(--sp-text)!important;
+  font-weight:900!important;
+  text-shadow:0 1px 0 color-mix(in srgb,var(--surface) 22%,transparent);
+}
+.sp-kicker{font-family:"Lato",Arial,sans-serif!important;letter-spacing:.24em!important}
+.sp-word{font-family:"Lato",Arial,sans-serif!important;letter-spacing:.18em!important}
+.sp-credit{font-family:"Lato",Arial,sans-serif!important;letter-spacing:.025em!important}
+.sp-rule{background:color-mix(in srgb,var(--sp-text) 18%,transparent)!important}
+.sp-rule span{background:var(--sp-text)!important}
+:root[data-accent="indigo"]{--sp-text:#161c59}
+:root[data-accent="forest"]{--sp-text:#0b3a24}
+:root[data-accent="smoky-olive"]{--sp-text:#3e3c34}
+:root[data-accent="smoky-ink"]{--sp-text:#1f2328}
+:root[data-accent="soft-pink"]{--sp-text:#762744}
+:root[data-accent="crimson-veil"]{--sp-text:#5a0027}
+
+/* Minimal bottom navigation: no active pill/capsule.  The active item is only a
+   small accent dot + accent typography, keeping the bar visually quiet. */
+.mobile-nav{height:64px!important;padding:5px!important;border-radius:22px!important;box-shadow:0 12px 32px var(--app-shadow)!important}
+.mobile-nav-inner{gap:0!important}
+.mobile-nav-link{gap:3px!important;background:transparent!important;border-radius:12px!important;color:var(--ink-faint)!important;font-weight:600!important;transform:none!important}
+.mobile-nav-link::before{content:""!important;inset:auto auto 5px 50%!important;width:4px!important;height:4px!important;border-radius:50%!important;background:var(--accent)!important;box-shadow:none!important;opacity:0!important;transform:translateX(-50%)!important;transition:opacity .18s ease!important}
+.mobile-nav-link.active{color:var(--accent)!important;font-weight:700!important;background:transparent!important}
+.mobile-nav-link.active::before{opacity:1!important;transform:translateX(-50%)!important}
+.mobile-nav-link.active svg{stroke-width:2.2!important}
+.mobile-nav-link svg{width:18px!important;height:18px!important}
+.mobile-nav-link span{font-size:9px!important;line-height:1!important}
+
+/* PDF reader: own the gesture only inside the document surface. */
+.pdf-reader-stage{touch-action:pan-x pan-y!important;overscroll-behavior:contain!important}
+.pdf-reader-pages{transform-origin:top left!important;will-change:zoom!important;min-width:max-content!important}
+.pdf-js-page{flex:0 0 auto!important;overflow:visible!important}
+.pdf-js-page canvas{max-width:none!important}
+/* Fullscreen means document-first: remove the title/file block and leave only controls. */
+.pdf-reader-shell:fullscreen .pdf-reader-window{grid-template-rows:46px minmax(0,1fr)!important}
+.pdf-reader-shell:fullscreen .pdf-reader-title{display:none!important}
+.pdf-reader-shell:fullscreen .pdf-reader-header{justify-content:flex-end!important;background:rgba(0,0,0,.42)!important;border-bottom:0!important;position:absolute!important;left:0;right:0;top:0;z-index:5;color:#fff!important}
+.pdf-reader-shell:fullscreen .pdf-reader-actions button,
+.pdf-reader-shell:fullscreen .pdf-reader-actions a{color:#fff!important}
+.pdf-reader-shell:fullscreen .pdf-reader-stage{height:100dvh!important;touch-action:pan-x pan-y!important;background:#111!important;padding-top:52px!important}
+.pdf-reader-shell:fullscreen .pdf-reader-pages{padding:12px 0 48px!important}
+
+/* The document itself stays zoomable while the rest of the site keeps its normal viewport policy. */
+.pdf-reader-stage,
+.pdf-reader-stage *{overscroll-behavior:contain}

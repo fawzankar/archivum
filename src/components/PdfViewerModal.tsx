@@ -21,25 +21,10 @@ function PdfPage({
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [visible, setVisible] = useState(eager);
+  // PDF pages are rendered eagerly so a document is immediately available while scrolling.
+  const [visible] = useState(true);
   const [rendered, setRendered] = useState(false);
   const renderTaskRef = useRef<any>(null);
-
-  useEffect(() => {
-    const host = hostRef.current;
-    if (!host || visible) return;
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries.some(entry => entry.isIntersecting)) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: '900px 0px' },
-    );
-    observer.observe(host);
-    return () => observer.disconnect();
-  }, [visible]);
 
   useEffect(() => {
     if (!visible || !pdf || !canvasRef.current) return;
@@ -102,7 +87,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [scale, setScale] = useState(1);
   const shellRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLElement>(null);
-  const pinchRef = useRef<{ startDistance: number; startScale: number; previewScale: number } | null>(null);
+  const pinchRef = useRef<{ startDistance: number; startScale: number } | null>(null);
   const [pinchScale, setPinchScale] = useState<number | null>(null);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
@@ -166,28 +151,30 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       if (event.touches.length !== 2) return;
       const startDistance = distance(event.touches[0], event.touches[1]);
       if (!startDistance) return;
-      pinchRef.current = { startDistance, startScale: scale, previewScale: scale };
+      pinchRef.current = { startDistance, startScale: scale };
       setPinchScale(scale);
     };
 
     const onTouchMove = (event: TouchEvent) => {
       const pinch = pinchRef.current;
       if (!pinch || event.touches.length !== 2) return;
+      // Take ownership only while two fingers are down. One-finger scrolling remains native.
       event.preventDefault();
       const currentDistance = distance(event.touches[0], event.touches[1]);
       if (!currentDistance) return;
-      const next = Math.max(0.7, Math.min(2.5, pinch.startScale * (currentDistance / pinch.startDistance)));
-      pinch.previewScale = next;
+      const next = Math.max(0.75, Math.min(4, pinch.startScale * (currentDistance / pinch.startDistance)));
       setPinchScale(next);
     };
 
     const finishPinch = () => {
-      const pinch = pinchRef.current;
-      if (!pinch) return;
-      const next = Math.round(pinch.previewScale * 10) / 10;
+      const preview = pinchRef.current;
+      if (!preview) return;
       pinchRef.current = null;
-      setPinchScale(null);
-      setScale(Math.max(0.7, Math.min(2.5, next)));
+      setPinchScale(current => {
+        const next = current == null ? scale : Math.round(current * 100) / 100;
+        setScale(Math.max(0.75, Math.min(4, next)));
+        return null;
+      });
     };
 
     stage.addEventListener('touchstart', onTouchStart, { passive: true });
@@ -223,6 +210,20 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   }, [resource, onClose]);
 
   useEffect(() => {
+    if (!resource) return;
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+    if (!meta) return;
+    const original = meta.getAttribute('content') || '';
+    const allowZoom = () => {
+      meta.setAttribute('content', original.replace(/maximum-scale=[^,]+/i, 'maximum-scale=5').replace(/user-scalable=[^,]+/i, 'user-scalable=yes'));
+    };
+    const restore = () => meta.setAttribute('content', original);
+    const onFullscreen = () => document.fullscreenElement ? allowZoom() : restore();
+    document.addEventListener('fullscreenchange', onFullscreen);
+    return () => { document.removeEventListener('fullscreenchange', onFullscreen); restore(); };
+  }, [resource]);
+
+  useEffect(() => {
     return () => { pdf?.destroy?.().catch?.(() => {}); };
   }, [pdf]);
 
@@ -237,11 +238,6 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     } catch {}
   };
 
-  const zoom = (delta: number) => {
-    setScale(current => Math.max(0.7, Math.min(2.5, Math.round((current + delta) * 10) / 10)));
-  };
-
-
   return (
     <div ref={shellRef} className="pdf-reader-shell" role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
       <section className="pdf-reader-window">
@@ -255,8 +251,6 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           </div>
 
           <div className="pdf-reader-actions">
-            {!isImage && <button type="button" onClick={() => zoom(-0.1)} aria-label="Zoom out">−</button>}
-            {!isImage && <button type="button" onClick={() => zoom(0.1)} aria-label="Zoom in">+</button>}
             <button type="button" onClick={toggleFullscreen} aria-label={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}>
               {fullscreen ? <Minimize2 /> : <Maximize2 />}
             </button>
@@ -288,15 +282,17 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
               <span>Preparing the first pages inside Archivum.</span>
             </div>
           ) : (
-            <div className="pdf-reader-pages" style={pinchScale ? { transform: `scale(${pinchScale / scale})`, transformOrigin: '50% 0' } : undefined}>
+            <div
+              className="pdf-reader-pages"
+              style={{ zoom: (pinchScale ?? scale) } as React.CSSProperties}
+            >
               {Array.from({ length: pageCount }, (_, index) => (
                 <PdfPage
                   key={index + 1}
                   pdf={pdf}
                   pageNumber={index + 1}
-                  scale={scale}
+                  scale={1}
                   eager={index < 2}
-                  zoomed={scale > 1 || Boolean(pinchScale && pinchScale > 1)}
                 />
               ))}
             </div>

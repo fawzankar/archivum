@@ -19,6 +19,7 @@ export default function FirstLaunch() {
   const router = useRouter();
   const pathname = usePathname();
   const [visible, setVisible] = useState(false);
+  const [splashDone, setSplashDone] = useState(false);
   const [name, setName] = useState(displayName);
   const [selectedClass, setSelectedClass] = useState<StudentClass | null>(studentClass);
 
@@ -27,16 +28,26 @@ export default function FirstLaunch() {
 
   useEffect(() => {
     if (pathname !== '/') {
+      setSplashDone(false);
       setVisible(false);
       document.documentElement.classList.remove('profile-onboarding-active');
       return;
     }
+    const reveal = () => setSplashDone(true);
+    // Splash is always the first screen on the home route; onboarding is revealed only after it finishes.
+    if (!document.documentElement.classList.contains('splash-active')) reveal();
+    window.addEventListener('archivum:splash-complete', reveal);
+    return () => window.removeEventListener('archivum:splash-complete', reveal);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (pathname !== '/' || !splashDone) return;
     const completed = window.localStorage.getItem('archivum_profile_completed') === '1';
     const shouldShow = !completed || !studentClass;
     setVisible(shouldShow);
     document.documentElement.classList.toggle('profile-onboarding-active', shouldShow);
     return () => document.documentElement.classList.remove('profile-onboarding-active');
-  }, [pathname, studentClass, displayName]);
+  }, [pathname, studentClass, displayName, splashDone]);
 
   const heading = useMemo(() => {
     if (!selectedClass) return 'Choose your class.';

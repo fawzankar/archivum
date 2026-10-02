@@ -8,10 +8,22 @@ export default function SplashScreen() {
   const [leaving, setLeaving] = useState(false);
   useEffect(() => {
     if (window.location.pathname !== '/') return;
+    document.documentElement.classList.add('splash-active');
     setShow(true);
     const leave = window.setTimeout(() => setLeaving(true), SPLASH_MS - LEAVE_MS);
-    const done = window.setTimeout(() => { setLeaving(true); window.requestAnimationFrame(() => setShow(false)); }, SPLASH_MS);
-    return () => { window.clearTimeout(leave); window.clearTimeout(done); };
+    const done = window.setTimeout(() => {
+      setLeaving(true);
+      window.setTimeout(() => {
+        document.documentElement.classList.remove('splash-active');
+        window.dispatchEvent(new Event('archivum:splash-complete'));
+        setShow(false);
+      }, LEAVE_MS);
+    }, SPLASH_MS);
+    return () => {
+      window.clearTimeout(leave);
+      window.clearTimeout(done);
+      document.documentElement.classList.remove('splash-active');
+    };
   }, []);
   if (!show) return null;
   return (
