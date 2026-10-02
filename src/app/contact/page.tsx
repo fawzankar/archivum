@@ -27,7 +27,7 @@ export default function ContactPage() {
       const j = await r.json();
       if (!r.ok) throw new Error(j.error || 'Couldn’t send your message. Please try again.');
       setSent(true); setMessage('');
-    } catch (err) { setError(err instanceof Error ? err.message : 'Couldn’t send your message.'); }
+    } catch (err) { setError(err instanceof Error ? err.message : 'Could not send your message.'); }
     finally { setSending(false); }
   };
 

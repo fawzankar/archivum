@@ -73,22 +73,22 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
     const res = await fetch(`/api/admin/reviews/${id}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
     if (res.ok) {
       setPendingReviews((prev) => prev.filter((item) => item.id !== id));
-      showToast(status === 'approved' ? 'Review is now live.' : 'Review rejected.', status === 'approved' ? 'success' : 'info');
-    } else showToast('Couldn’t update that review. Try again.', 'error');
+      showToast(status === 'approved' ? 'Review published.' : 'Review rejected.', status === 'approved' ? 'success' : 'info');
+    } else showToast('Could not update review.', 'error');
   };
 
 
-  const handleFeedbackStatus = async (id:number,status:'read'|'archived') => { const res=await fetch('/api/admin/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status})}); if(res.ok){setFeedback(prev=>prev.map(item=>item.id===id?{...item,status}:item));showToast(status==='read'?'Marked as read.':'Feedback archived.');} else showToast('Couldn’t update that feedback. Try again.','error'); };
+  const handleFeedbackStatus = async (id:number,status:'read'|'archived') => { const res=await fetch('/api/admin/feedback',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,status})}); if(res.ok){setFeedback(prev=>prev.map(item=>item.id===id?{...item,status}:item));showToast(status==='read'?'Feedback marked read.':'Feedback archived.');} else showToast('Could not update feedback.','error'); };
 
   const handleTipAction = async (id: number, status: 'approved' | 'rejected') => {
     const res = await fetch('/api/admin/tips', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id,status}) });
-    if (res.ok) { setPendingTips((prev) => prev.filter((item) => item.id !== id)); showToast(status === 'approved' ? 'Tip is now live.' : 'Tip rejected.', status === 'approved' ? 'success' : 'info'); }
-    else showToast('Couldn’t update that tip. Try again.', 'error');
+    if (res.ok) { setPendingTips((prev) => prev.filter((item) => item.id !== id)); showToast(status === 'approved' ? 'Tip published.' : 'Tip rejected.', status === 'approved' ? 'success' : 'info'); }
+    else showToast('Could not update tip.', 'error');
   };
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
-    showToast('You’re signed out');
+    showToast('Logged out of admin portal');
     router.push('/admin/login');
   };
 
@@ -101,19 +101,19 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast('Approved and published ✓');
+        showToast('Resource approved and published! ✓');
         setResources((prev) => prev.map((r) => (r.id === id ? { ...r, status: 'approved' } : r)));
         fetchStats();
       } else {
-        showToast(data.error || 'Couldn’t approve it. Try again.', 'error');
+        showToast(data.error || 'Approval failed', 'error');
       }
     } catch {
-      showToast('Something went wrong. Try again.', 'error');
+      showToast('Action failed', 'error');
     }
   };
 
   const handleReject = async (id: number) => {
-    const reason = prompt('Why are you rejecting this? (optional, only admins see it)', 'Details are wrong, or the file is hard to read');
+    const reason = prompt('Internal rejection reason (optional):', 'Metadata non-compliance or poor legibility');
     if (reason === null) return;
 
     try {
@@ -128,15 +128,15 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         setResources((prev) => prev.map((r) => (r.id === id ? { ...r, status: 'rejected', rejection_reason: reason } : r)));
         fetchStats();
       } else {
-        showToast(data.error || 'Couldn’t reject it. Try again.', 'error');
+        showToast(data.error || 'Rejection failed', 'error');
       }
     } catch {
-      showToast('Something went wrong. Try again.', 'error');
+      showToast('Action failed', 'error');
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Delete this resource for good? Its file, photos, ratings and download counts will all go too. This can’t be undone.')) return;
+    if (!confirm('Permanently delete this resource, its photos, storage object, ratings and download records? This cannot be undone.')) return;
 
     try {
       const res = await fetch('/api/admin/delete', {
@@ -146,14 +146,14 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast('Resource deleted');
+        showToast('Resource permanently deleted');
         setResources((prev) => prev.filter((r) => r.id !== id));
         fetchStats();
       } else {
-        showToast(data.error || 'Couldn’t delete it. Try again.', 'error');
+        showToast(data.error || 'Delete failed', 'error');
       }
     } catch {
-      showToast('Something went wrong. Try again.', 'error');
+      showToast('Action failed', 'error');
     }
   };
 
@@ -167,13 +167,13 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast(newFeatured ? 'Now featured on the home page ⭐' : 'No longer featured');
+        showToast(newFeatured ? 'Resource marked as Featured ⭐' : 'Removed from Featured');
         setResources((prev) => prev.map((r) => (r.id === id ? { ...r, featured: newFeatured } : r)));
       } else {
-        showToast(data.error || 'Couldn’t update that. Try again.', 'error');
+        showToast(data.error || 'Feature update failed', 'error');
       }
     } catch {
-      showToast('Something went wrong. Try again.', 'error');
+      showToast('Action failed', 'error');
     }
   };
 
@@ -205,10 +205,10 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         <div className="space-y-1">
           <div className="inline-flex items-center gap-2 text-[10px] font-bold tracking-wider uppercase" style={{ color: 'var(--sage)' }}>
             <Shield className="w-3.5 h-3.5" />
-            <span>ADMIN AREA</span>
+            <span>ARCHIVUM CONTROL CENTRE</span>
           </div>
           <h1 className="font-display font-bold text-3xl text-zinc-900 dark:text-zinc-100">
-            Manage the archive
+            Content Management
           </h1>
           <p className="text-xs text-zinc-500">
             Logged in as <span className="font-semibold text-zinc-800 dark:text-zinc-200">{adminUsername}</span>
@@ -288,7 +288,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           <div className="h-full rounded-full transition-all" style={{ width: `${Math.min(100, Number(stats?.storage?.percent ?? 0))}%`, background: 'var(--accent)' }} />
         </div>
         <div className="text-[10px] mt-2" style={{ color: 'var(--ink-muted)' }}>
-          {stats?.storage ? `${stats.storage.remaining} remaining` : 'Checking storage…'}
+          {stats?.storage ? `${stats.storage.remaining} remaining` : 'Checking quota…'}
         </div>
       </div>
 
@@ -297,12 +297,12 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar border-b" style={{ borderColor: 'var(--border-light)' }}>
         {[
           { id: 'overview', label: 'Overview' },
-          { id: 'pending', label: `To review (${pendingQueue.length})` },
+          { id: 'pending', label: `Pending Queue (${pendingQueue.length})` },
           { id: 'resources', label: `All Resources (${resources.length})` },
           { id: 'tips', label: `Tips (${pendingTips.length})` },
           { id: 'feedback', label: `Feedback (${feedback.filter((item:any)=>item.status==='new').length})` },
-          { id: 'guidelines', label: 'Review checklist' },
-          { id: 'upload', label: 'Add a resource' },
+          { id: 'guidelines', label: 'Admin Guidelines' },
+          { id: 'upload', label: 'Add resource' },
         ].map((tab) => {
           const active = activeTab === tab.id;
           return (
@@ -553,7 +553,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
                         <div className="flex items-center justify-end gap-1.5">
                           <button
                             onClick={() => handleToggleFeature(item.id, item.featured)}
-                            title={item.featured ? 'Unfeature' : 'Feature on the home page'}
+                            title={item.featured ? 'Unfeature' : 'Feature on homepage'}
                             className={`p-1.5 rounded-lg border text-xs cursor-pointer ${
                               item.featured ? 'bg-amber-50 border-amber-300 text-amber-600' : 'border-zinc-200 text-zinc-400'
                             }`}
@@ -563,7 +563,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
 
                           <button
                             onClick={() => setActivePdf(item)}
-                            title="Open the file"
+                            title="Inspect PDF"
                             className="p-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 cursor-pointer"
                           >
                             <Eye className="w-3.5 h-3.5" />
@@ -590,11 +590,11 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
       {activeTab === 'tips' && (
         <div className="space-y-4">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-[.18em]" style={{ color:'var(--accent)' }}>STUDENT TIPS</span>
-            <h2 className="font-display font-bold text-2xl" style={{ color:'var(--ink)' }}>Review tips</h2>
-            <p className="text-xs" style={{ color:'var(--ink-muted)' }}>Read each tip and publish the ones that are genuinely useful.</p>
+            <span className="text-[10px] font-bold uppercase tracking-[.18em]" style={{ color:'var(--accent)' }}>EXAM PLAYBOOK</span>
+            <h2 className="font-display font-bold text-2xl" style={{ color:'var(--ink)' }}>Tip moderation</h2>
+            <p className="text-xs" style={{ color:'var(--ink-muted)' }}>Approve practical, class-specific study tips before they enter the public archive.</p>
           </div>
-          {pendingTips.length === 0 ? <div className="rounded-2xl border border-dashed p-8 text-center text-xs" style={{borderColor:'var(--border)',color:'var(--ink-muted)'}}>Nothing to review. You’re all caught up.</div> : pendingTips.map((item) => (
+          {pendingTips.length === 0 ? <div className="rounded-2xl border border-dashed p-8 text-center text-xs" style={{borderColor:'var(--border)',color:'var(--ink-muted)'}}>No pending tips.</div> : pendingTips.map((item) => (
             <div key={item.id} className="rounded-2xl border p-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}>
               <div className="flex items-start justify-between gap-4"><div><span className="text-[10px] font-bold uppercase tracking-wider" style={{color:'var(--accent)'}}>Class {item.class_level}</span><h3 className="font-display font-bold text-lg mt-1">{item.title}</h3></div><Lightbulb className="w-5 h-5" style={{color:'var(--accent)'}}/></div>
               <p className="text-sm leading-relaxed mt-3" style={{color:'var(--ink-muted)'}}>{item.body}</p>
@@ -607,8 +607,8 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
 
       {activeTab === 'feedback' && (
         <section className="space-y-4">
-          <div><h2 className="font-display font-bold text-2xl">What students are saying</h2><p className="text-sm mt-1" style={{color:'var(--ink-muted)'}}>Messages from the Contact page show up here.</p></div>
-          {feedback.length===0?<div className="rounded-2xl border p-10 text-center text-sm" style={{background:'var(--surface)',borderColor:'var(--border)',color:'var(--ink-muted)'}}>No messages yet.</div>:<div className="grid gap-3">{feedback.map((item:any)=><article key={item.id} className="rounded-2xl border p-4 sm:p-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}><div className="flex items-start justify-between gap-3"><div className="min-w-0"><strong className="text-sm">{item.name||'A student'}</strong><div className="text-[11px] mt-1 break-all" style={{color:'var(--ink-muted)'}}>{item.email} · Class {item.class_level} · Section {item.section} · {new Date(item.created_at).toLocaleString()}</div></div><span className="shrink-0 rounded-full px-2 py-1 text-[9px] font-bold" style={{background:item.status==='new'?'var(--accent-light)':'var(--surface-raised)',color:item.status==='new'?'var(--accent)':'var(--ink-muted)'}}>{item.status}</span></div><p className="mt-4 text-sm leading-6 whitespace-pre-wrap" style={{color:'var(--ink)'}}>{item.message}</p>{Array.isArray(item.attachments)&&item.attachments.length>0&&<div className="mt-3 flex flex-wrap gap-2">{item.attachments.map((file:string,index:number)=><a key={index} href={file} target="_blank" rel="noreferrer" className="text-xs underline" style={{color:'var(--accent)'}}>Attachment {index+1}</a>)}</div>}<div className="flex gap-2 mt-4">{item.status==='new'&&<button onClick={()=>handleFeedbackStatus(item.id,'read')} className="rounded-lg border px-3 py-2 text-[11px] font-bold" style={{borderColor:'var(--border)'}}>Mark read</button>}{item.status!=='archived'&&<button onClick={()=>handleFeedbackStatus(item.id,'archived')} className="rounded-lg border px-3 py-2 text-[11px] font-bold" style={{borderColor:'var(--border)'}}>Archive</button>}</div></article>)}</div>}
+          <div><h2 className="font-display font-bold text-2xl">Student feedback</h2><p className="text-sm mt-1" style={{color:'var(--ink-muted)'}}>Messages sent from the Feedback page appear here.</p></div>
+          {feedback.length===0?<div className="rounded-2xl border p-10 text-center text-sm" style={{background:'var(--surface)',borderColor:'var(--border)',color:'var(--ink-muted)'}}>No feedback yet.</div>:<div className="grid gap-3">{feedback.map((item:any)=><article key={item.id} className="rounded-2xl border p-4 sm:p-5" style={{background:'var(--surface)',borderColor:'var(--border)'}}><div className="flex items-start justify-between gap-3"><div className="min-w-0"><strong className="text-sm">{item.name||'Anonymous student'}</strong><div className="text-[11px] mt-1 break-all" style={{color:'var(--ink-muted)'}}>{item.email} · Class {item.class_level} · Section {item.section} · {new Date(item.created_at).toLocaleString()}</div></div><span className="shrink-0 rounded-full px-2 py-1 text-[9px] font-bold" style={{background:item.status==='new'?'var(--accent-light)':'var(--surface-raised)',color:item.status==='new'?'var(--accent)':'var(--ink-muted)'}}>{item.status}</span></div><p className="mt-4 text-sm leading-6 whitespace-pre-wrap" style={{color:'var(--ink)'}}>{item.message}</p>{Array.isArray(item.attachments)&&item.attachments.length>0&&<div className="mt-3 flex flex-wrap gap-2">{item.attachments.map((file:string,index:number)=><a key={index} href={file} target="_blank" rel="noreferrer" className="text-xs underline" style={{color:'var(--accent)'}}>Attachment {index+1}</a>)}</div>}<div className="flex gap-2 mt-4">{item.status==='new'&&<button onClick={()=>handleFeedbackStatus(item.id,'read')} className="rounded-lg border px-3 py-2 text-[11px] font-bold" style={{borderColor:'var(--border)'}}>Mark read</button>}{item.status!=='archived'&&<button onClick={()=>handleFeedbackStatus(item.id,'archived')} className="rounded-lg border px-3 py-2 text-[11px] font-bold" style={{borderColor:'var(--border)'}}>Archive</button>}</div></article>)}</div>}
         </section>
       )}
 
@@ -617,7 +617,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           <div className="flex items-end justify-between gap-4">
             <div>
               <h2 className="font-display font-bold text-2xl">Add a resource</h2>
-              <p className="mt-1 text-sm" style={{ color: 'var(--ink-muted)' }}>Upload new material straight to the archive. It goes live right away.</p>
+              <p className="mt-1 text-sm" style={{ color: 'var(--ink-muted)' }}>Publish new archive material from the CMS. Student-facing uploads are disabled.</p>
             </div>
             <UploadCloud className="w-6 h-6" style={{ color: 'var(--accent)' }} />
           </div>
@@ -631,16 +631,16 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
         >
           <h3 className="font-display font-bold text-lg text-zinc-900 dark:text-zinc-100">
-            What to check before approving
+            Administrative Moderation Principles
           </h3>
           <p>
-            Before you approve a submission, make sure that:
+            When moderating submitted documents, verify that:
           </p>
           <ul className="list-disc pl-5 space-y-2">
-            <li>The file is upright and easy to read on both phones and computers.</li>
-            <li>The title is short and clearly says the class, subject and chapter or paper.</li>
-            <li>Exam papers show the school name and the year.</li>
-            <li>Duplicates are rejected, with a short note explaining why.</li>
+            <li>The PDF is readable, oriented correctly, and legible on both mobile screens and desktops.</li>
+            <li>The title is concise and accurately mentions the class, subject, and chapter or paper topic.</li>
+            <li>Examination papers clearly list the school name and calendar year.</li>
+            <li>Duplicate uploads of identical content are rejected with an explanatory note to keep the repository clean.</li>
           </ul>
         </div>
       )}
