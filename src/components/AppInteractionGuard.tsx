@@ -13,6 +13,9 @@ export default function AppInteractionGuard() {
     const blockTouchPinchOutsideReader = (event: TouchEvent) => {
       if (event.touches.length > 1 && !isInsideReader(event.target)) blockNativeBrowserZoom(event);
     };
+    const blockGestureOutsideReader = (event: Event) => {
+      if (!isInsideReader(event.target)) blockNativeBrowserZoom(event);
+    };
     const blockBrowserZoomKeys = (event: KeyboardEvent) => {
       if ((event.ctrlKey || event.metaKey) && ['+', '=', '-', '0'].includes(event.key)) event.preventDefault();
     };
@@ -21,17 +24,17 @@ export default function AppInteractionGuard() {
     };
 
     document.addEventListener('touchmove', blockTouchPinchOutsideReader, { passive: false, capture: true });
-    document.addEventListener('gesturestart', blockNativeBrowserZoom as EventListener, { passive: false });
-    document.addEventListener('gesturechange', blockNativeBrowserZoom as EventListener, { passive: false });
-    document.addEventListener('gestureend', blockNativeBrowserZoom as EventListener, { passive: false });
+    document.addEventListener('gesturestart', blockGestureOutsideReader, { passive: false });
+    document.addEventListener('gesturechange', blockGestureOutsideReader, { passive: false });
+    document.addEventListener('gestureend', blockGestureOutsideReader, { passive: false });
     document.addEventListener('wheel', blockBrowserZoomWheel, { passive: false });
     document.addEventListener('keydown', blockBrowserZoomKeys);
 
     return () => {
       document.removeEventListener('touchmove', blockTouchPinchOutsideReader, true);
-      document.removeEventListener('gesturestart', blockNativeBrowserZoom as EventListener);
-      document.removeEventListener('gesturechange', blockNativeBrowserZoom as EventListener);
-      document.removeEventListener('gestureend', blockNativeBrowserZoom as EventListener);
+      document.removeEventListener('gesturestart', blockGestureOutsideReader);
+      document.removeEventListener('gesturechange', blockGestureOutsideReader);
+      document.removeEventListener('gestureend', blockGestureOutsideReader);
       document.removeEventListener('wheel', blockBrowserZoomWheel);
       document.removeEventListener('keydown', blockBrowserZoomKeys);
     };

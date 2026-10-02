@@ -8,12 +8,13 @@ interface Props { resource: Resource | null; onClose: () => void; }
 
 const MIN_READER_ZOOM = 0.5;
 const MAX_READER_ZOOM = 1;
-const INITIAL_READER_ZOOM = 0.85;
+const INITIAL_READER_ZOOM = 0.68;
 const READER_ZOOM_STEP = 0.1;
 
-function PdfPage({ pdf, pageNumber, scale, onSettled }: { pdf: any; pageNumber: number; scale: number; onSettled: (pageNumber: number) => void }) {
+function PdfPage({ pdf, pageNumber, scale, zoomLevel, onSettled }: { pdf: any; pageNumber: number; scale: number; zoomLevel: number; onSettled: (pageNumber: number) => void }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [baseSize, setBaseSize] = useState<{ width: number; height: number } | null>(null);
   const [rendered, setRendered] = useState(false);
   const renderTaskRef = useRef<any>(null);
 
@@ -27,6 +28,8 @@ function PdfPage({ pdf, pageNumber, scale, onSettled }: { pdf: any; pageNumber: 
         if (cancelled || !canvasRef.current) return;
 
         const viewport = page.getViewport({ scale });
+        const nextBaseSize = { width: viewport.width, height: viewport.height };
+        setBaseSize(nextBaseSize);
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d', { alpha: false });
         if (!context) {
@@ -73,6 +76,22 @@ function PdfPage({ pdf, pageNumber, scale, onSettled }: { pdf: any; pageNumber: 
     };
   }, [pdf, pageNumber, scale, onSettled]);
 
+  useLayoutEffect(() => {
+    if (!baseSize) return;
+    const width = `${baseSize.width * zoomLevel}px`;
+    const height = `${baseSize.height * zoomLevel}px`;
+    const host = hostRef.current;
+    const canvas = canvasRef.current;
+    if (host) {
+      host.style.width = width;
+      host.style.height = height;
+    }
+    if (canvas) {
+      canvas.style.setProperty('--pdf-css-width', width);
+      canvas.style.setProperty('--pdf-css-height', height);
+    }
+  }, [baseSize, zoomLevel]);
+
   return (
     <div ref={hostRef} className="pdf-js-page" aria-label={`Page ${pageNumber}`}>
       {!rendered && <div className="pdf-js-page-placeholder"><span>Page {pageNumber}</span></div>}
@@ -89,6 +108,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [failed, setFailed] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [fitScale, setFitScale] = useState(1);
+  const [fitScaleReady, setFitScaleReady] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(INITIAL_READER_ZOOM);
   const [settledPages, setSettledPages] = useState<Set<number>>(() => new Set());
   const zoomRef = useRef(INITIAL_READER_ZOOM);
@@ -108,7 +128,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       return next;
     });
   }, []);
-  const allPagesReady = Boolean(pdf && pageCount > 0 && settledPages.size >= pageCount);
+  const allPagesReady = Boolean(pdf && fitScaleReady && pageCount > 0 && settledPages.size >= pageCount);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(resource.file_name || '')));
@@ -123,6 +143,9 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     setPdf(null);
     setPageCount(0);
     setSettledPages(new Set());
+    setFitScaleReady(false);
+    zoomRef.current = INITIAL_READER_ZOOM;
+    setZoomLevel(INITIAL_READER_ZOOM);
 
     (async () => {
       try {
@@ -168,33 +191,78 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     if (!stage || isImage) return;
     let pinchStartDistance = 0;
     let pinchStartZoom = zoomRef.current;
+    let gestureEventActive = false;
+    let animationFrame = 0;
+    let pendingZoom = zoomRef.current;
     const distance = (touches: TouchList) => {
       const dx = touches[0].clientX - touches[1].clientX;
       const dy = touches[0].clientY - touches[1].clientY;
       return Math.hypot(dx, dy);
     };
+    const scheduleZoom = (value: number) => {
+      pendingZoom = Math.min(MAX_READER_ZOOM, Math.max(MIN_READER_ZOOM, value));
+      if (animationFrame) return;
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = 0;
+        changeZoom(pendingZoom);
+      });
+    };
+    const finishPinch = () => {
+      pinchStartDistance = 0;
+      gestureEventActive = false;
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+      }
+      changeZoom(pendingZoom);
+    };
     const onTouchStart = (event: TouchEvent) => {
-      if (event.touches.length !== 2) return;
+      if (event.touches.length !== 2 || gestureEventActive) return;
       pinchStartDistance = distance(event.touches);
       pinchStartZoom = zoomRef.current;
+      pendingZoom = pinchStartZoom;
     };
     const onTouchMove = (event: TouchEvent) => {
-      if (event.touches.length !== 2 || pinchStartDistance <= 0) return;
+      if (gestureEventActive || event.touches.length !== 2 || pinchStartDistance <= 0) return;
       event.preventDefault();
-      changeZoom(pinchStartZoom * (distance(event.touches) / pinchStartDistance));
+      scheduleZoom(pinchStartZoom * (distance(event.touches) / pinchStartDistance));
     };
     const onTouchEnd = (event: TouchEvent) => {
-      if (event.touches.length < 2) pinchStartDistance = 0;
+      if (event.touches.length < 2 && pinchStartDistance > 0) finishPinch();
+    };
+    const onGestureStart = (event: Event) => {
+      gestureEventActive = true;
+      pinchStartZoom = zoomRef.current;
+      pendingZoom = pinchStartZoom;
+      event.preventDefault();
+    };
+    const onGestureChange = (event: Event) => {
+      if (!gestureEventActive) return;
+      event.preventDefault();
+      const scale = (event as Event & { scale?: number }).scale;
+      if (typeof scale === 'number') scheduleZoom(pinchStartZoom * scale);
+    };
+    const onGestureEnd = (event: Event) => {
+      if (!gestureEventActive) return;
+      event.preventDefault();
+      finishPinch();
     };
     stage.addEventListener('touchstart', onTouchStart, { passive: true });
     stage.addEventListener('touchmove', onTouchMove, { passive: false });
     stage.addEventListener('touchend', onTouchEnd, { passive: true });
     stage.addEventListener('touchcancel', onTouchEnd, { passive: true });
+    stage.addEventListener('gesturestart', onGestureStart, { passive: false });
+    stage.addEventListener('gesturechange', onGestureChange, { passive: false });
+    stage.addEventListener('gestureend', onGestureEnd, { passive: false });
     return () => {
+      if (animationFrame) window.cancelAnimationFrame(animationFrame);
       stage.removeEventListener('touchstart', onTouchStart);
       stage.removeEventListener('touchmove', onTouchMove);
       stage.removeEventListener('touchend', onTouchEnd);
       stage.removeEventListener('touchcancel', onTouchEnd);
+      stage.removeEventListener('gesturestart', onGestureStart);
+      stage.removeEventListener('gesturechange', onGestureChange);
+      stage.removeEventListener('gestureend', onGestureEnd);
     };
   }, [isImage, changeZoom]);
 
@@ -216,6 +284,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
         // Fit each original PDF page to the reader's usable width without changing its aspect ratio.
         const next = Math.max(0.05, Math.min(1, availableWidth / base.width));
         setFitScale(next);
+        setFitScaleReady(true);
       } catch {}
     };
 
@@ -302,7 +371,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
               <span>Please try again.</span>
               <button type="button" onClick={() => window.location.reload()}><RefreshCw /> Try again</button>
             </div>
-          ) : loading ? (
+          ) : loading || !fitScaleReady ? (
             <div className="pdf-reader-loading">
               <div className="pdf-load-progress" role="progressbar"
                 aria-valuemin={0} aria-valuemax={100} aria-valuenow={loadProgress}
@@ -319,13 +388,14 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
                   key={index + 1}
                   pdf={pdf}
                   pageNumber={index + 1}
-                  scale={fitScale * zoomLevel}
+                  scale={fitScale}
+                  zoomLevel={zoomLevel}
                   onSettled={onPageSettled}
                 />
               ))}
             </div>
           )}
-          {!isImage && !failed && !loading && !allPagesReady && (
+          {!isImage && !failed && !loading && fitScaleReady && !allPagesReady && (
             <div className="pdf-reader-preloader" role="status" aria-live="polite">
               <div className="pdf-load-progress" role="progressbar" aria-valuemin={0} aria-valuemax={pageCount} aria-valuenow={settledPages.size} aria-label={`Preparing pages ${settledPages.size} of ${pageCount}`}>
                 <div className="pdf-load-progress-bar" style={{ width: `${pageCount ? Math.max(4, settledPages.size / pageCount * 100) : 4}%` }} />
