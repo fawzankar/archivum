@@ -4270,3 +4270,165 @@ html.archivum-overlay-open body { touch-action: none !important; }
 .notes-subject-card.active small { color: color-mix(in srgb,var(--accent) 78%,var(--ink-muted)) !important; }
 .notes-subject-card.active::before { background: var(--accent); opacity: 1; }
 .notes-subject-card.active::after { opacity: .10; background: var(--accent); }
+
+/* ===== FINAL USER PASS: olive palette, minimal navigation, editorial splash, real reader zoom ===== */
+:root[data-accent="smoky-olive"]{
+  --navy:#303027;
+  --ink:#303027;
+  --ink-muted:#666454;
+  --ink-faint:#8a8878;
+  --sun:#d9d3bc;
+  --peri:#aaa58f;
+  --blush:#d8cfc0;
+  --mint:#e9e5d8;
+  --ivory:#fbfaf5;
+  --ivory-deep:#efede4;
+  --border:#d7d3c5;
+  --border-light:#e7e3d8;
+  --surface:#fffefa;
+  --surface-raised:#f3f0e7;
+  --accent:#6b6959;
+  --accent-strong:#4c4a3d;
+  --accent-light:#e8e4d8;
+  --accent-contrast:#fffefa;
+  --app-shadow:rgba(48,48,39,.12);
+}
+:root[data-accent="smoky-olive"] .site-header,
+:root[data-accent="smoky-olive"] .site-header.is-scrolled{
+  background:color-mix(in srgb,var(--surface) 95%,transparent);
+  color:var(--ink);
+}
+:root[data-accent="smoky-olive"] .mobile-nav{background:color-mix(in srgb,var(--surface) 96%,transparent)}
+
+/* Splash: no box/frame behind the logo. The mark floats cleanly on the theme field. */
+.boot-splash.sp{
+  background:
+    radial-gradient(circle at 50% 37%,color-mix(in srgb,var(--accent-light) 82%,transparent) 0 15%,transparent 48%),
+    radial-gradient(circle at 14% 88%,color-mix(in srgb,var(--sun) 30%,transparent),transparent 34%),
+    radial-gradient(circle at 88% 14%,color-mix(in srgb,var(--accent) 10%,transparent),transparent 31%),
+    var(--ivory) !important;
+  color:var(--splash-ink,var(--ink)) !important;
+}
+.sp-backdrop{background:transparent !important}
+.sp-backdrop::before{background:transparent !important}
+.sp-orb{opacity:.18 !important;filter:blur(18px) !important}
+.sp-content{transform:translateY(-4vh) !important}
+.sp-mark{
+  width:clamp(112px,17vw,142px) !important;
+  height:clamp(112px,17vw,142px) !important;
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+  border-radius:0 !important;
+}
+.sp-logo{width:100% !important;height:100% !important;filter:none !important;object-fit:contain !important}
+.sp-kicker{
+  margin-top:28px !important;
+  color:var(--splash-muted,var(--ink-muted)) !important;
+  font-family:"Lato",Arial,sans-serif !important;
+  font-size:clamp(10px,1.5vw,13px) !important;
+  font-weight:700 !important;
+  letter-spacing:.22em !important;
+  text-transform:uppercase !important;
+}
+.sp-word{
+  margin-top:11px !important;
+  color:var(--splash-ink,var(--ink)) !important;
+  font-family:"Libre Baskerville",Georgia,serif !important;
+  font-size:clamp(31px,7.4vw,58px) !important;
+  font-weight:700 !important;
+  letter-spacing:.15em !important;
+  line-height:1 !important;
+}
+.sp-rule{width:72px !important;height:2px !important;margin-top:23px !important;background:color-mix(in srgb,var(--splash-accent,var(--accent)) 20%,var(--border)) !important}
+.sp-rule span{background:var(--splash-accent,var(--accent)) !important}
+.sp-credit{
+  bottom:max(24px,env(safe-area-inset-bottom)) !important;
+  color:var(--splash-muted,var(--ink-muted)) !important;
+  font-family:"Lato",Arial,sans-serif !important;
+  font-size:clamp(10px,1.45vw,12px) !important;
+  font-weight:700 !important;
+  letter-spacing:.075em !important;
+  text-transform:none !important;
+}
+.sp-credit strong{color:var(--splash-ink,var(--ink)) !important;font-weight:900 !important}
+
+:root[data-accent="indigo"]{--splash-ink:#1b2166;--splash-muted:#59618f;--splash-accent:#1b2166}
+:root[data-accent="forest"]{--splash-ink:#0f4d2e;--splash-muted:#4d725e;--splash-accent:#0f4d2e}
+:root[data-accent="smoky-ink"]{--splash-ink:#202329;--splash-muted:#626875;--splash-accent:#202329}
+:root[data-accent="smoky-olive"]{--splash-ink:#303027;--splash-muted:#6b6959;--splash-accent:#6b6959}
+:root[data-accent="soft-pink"]{--splash-ink:#8f3155;--splash-muted:#936176;--splash-accent:#9b3160}
+:root[data-accent="crimson-veil"]{--splash-ink:#610027;--splash-muted:#7c4659;--splash-accent:#8f1748}
+
+@media(max-width:640px){
+  .sp-content{transform:translateY(-3vh) !important;padding:14px !important}
+  .sp-mark{width:116px !important;height:116px !important}
+  .sp-kicker{margin-top:24px !important;font-size:9px !important;letter-spacing:.16em !important}
+  .sp-word{font-size:clamp(29px,10vw,43px) !important;letter-spacing:.11em !important}
+  .sp-credit{font-size:9px !important;letter-spacing:.055em !important}
+}
+
+/* Bottom navigation: one quiet active colour, no stacked capsules or medallions. */
+.mobile-nav{height:66px !important;padding:5px 7px !important;border-radius:22px !important}
+.mobile-nav-inner{gap:1px !important}
+.mobile-nav-link::before{display:none !important}
+.mobile-nav-link::after{
+  content:"";position:absolute;left:50%;bottom:3px;width:4px;height:4px;border-radius:50%;
+  transform:translateX(-50%) scale(0);background:var(--accent);transition:transform .18s ease;
+}
+.mobile-nav-link.active{color:var(--accent) !important;background:transparent !important;font-weight:800 !important}
+.mobile-nav-link.active::after{transform:translateX(-50%) scale(1)}
+.mobile-nav-link.active svg{
+  width:21px !important;height:21px !important;padding:0 !important;border-radius:0 !important;
+  background:transparent !important;color:var(--accent) !important;box-shadow:none !important;
+  stroke-width:2.6 !important;transform:translateY(-1px);
+}
+.mobile-nav-link span{font-size:9px !important;line-height:1.05 !important}
+.mobile-nav-link.active span{color:var(--accent) !important}
+
+/* Internal reader: allow browser pinch zoom only here. */
+html,body{touch-action:auto !important}
+.pdf-reader-shell,
+.pdf-reader-shell *{touch-action:pan-x pan-y pinch-zoom !important}
+.pdf-reader-stage{overscroll-behavior:contain !important;-webkit-overflow-scrolling:touch !important}
+
+/* Fullscreen means the document, not the reader chrome. */
+.pdf-reader-shell.is-fullscreen{
+  padding:0 !important;background:#000 !important;
+}
+.pdf-reader-shell.is-fullscreen .pdf-reader-window{
+  width:100vw !important;height:100dvh !important;max-width:none !important;max-height:none !important;
+  border:0 !important;border-radius:0 !important;box-shadow:none !important;
+  grid-template-rows:1fr !important;background:#000 !important;
+}
+.pdf-reader-shell.is-fullscreen .pdf-reader-header,
+.pdf-reader-shell.is-fullscreen .pdf-reader-footer{display:none !important}
+.pdf-reader-shell.is-fullscreen .pdf-reader-stage{
+  width:100vw !important;height:100dvh !important;padding:0 !important;background:#111 !important;
+  display:block !important;overflow:auto !important;
+}
+.pdf-reader-shell.is-fullscreen .pdf-reader-pages{
+  min-height:100dvh !important;padding:0 !important;gap:0 !important;align-items:center !important;
+}
+.pdf-reader-shell.is-fullscreen .pdf-js-page{margin:0 auto !important;box-shadow:none !important}
+.pdf-reader-shell.is-fullscreen .pdf-js-page canvas{box-shadow:none !important}
+.pdf-reader-shell.is-fullscreen .pdf-reader-image{padding:0 !important;background:#111 !important;min-height:100dvh !important}
+.pdf-reader-shell.is-fullscreen .pdf-reader-image img{max-width:100vw !important;max-height:100dvh !important;box-shadow:none !important}
+
+/* The PDF pages must retain their rendered width so zoom actually changes their size. */
+.pdf-reader-pages .pdf-js-page{
+  width:max-content !important;
+  max-width:none !important;
+  overflow:visible !important;
+}
+.pdf-reader-pages .pdf-js-page canvas{
+  width:auto !important;
+  max-width:none !important;
+  height:auto !important;
+}
+@media(max-width:700px){
+  .pdf-reader-stage{overflow:auto !important;touch-action:pan-x pan-y !important}
+  .pdf-reader-pages{width:max-content !important;min-width:100% !important;align-items:center !important}
+  .pdf-reader-pages .pdf-js-page{width:max-content !important;max-width:none !important}
+  .pdf-reader-pages .pdf-js-page canvas{width:auto !important;max-width:none !important}
+}

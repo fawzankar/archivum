@@ -98,6 +98,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [failed, setFailed] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [scale, setScale] = useState(1);
+  const pinchRef = useRef<{ distance: number; scale: number } | null>(null);
   const shellRef = useRef<HTMLDivElement>(null);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
@@ -175,23 +176,63 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     return () => { pdf?.destroy?.().catch?.(() => {}); };
   }, [pdf]);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 700) {
+      setScale(current => current === 1 ? 0.72 : current);
+    }
+  }, []);
+
   if (!resource) return null;
 
   const toggleFullscreen = async () => {
     const target = shellRef.current;
     if (!target) return;
     try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else if (target.requestFullscreen) await target.requestFullscreen();
-    } catch {}
+      if (document.fullscreenElement || fullscreen) {
+        if (document.fullscreenElement) await document.exitFullscreen();
+        setFullscreen(false);
+        return;
+      }
+      if (target.requestFullscreen) {
+        await target.requestFullscreen();
+      } else {
+        setFullscreen(true);
+      }
+    } catch {
+      setFullscreen(true);
+    }
   };
 
   const zoom = (delta: number) => {
-    setScale(current => Math.max(0.7, Math.min(2, Math.round((current + delta) * 10) / 10)));
+    setScale(current => Math.max(0.5, Math.min(2.5, Math.round((current + delta) * 10) / 10)));
+  };
+
+  const onReaderTouchStart = (event: React.TouchEvent<HTMLElement>) => {
+    if (event.touches.length !== 2) return;
+    const [a, b] = Array.from(event.touches);
+    const dx = a.clientX - b.clientX;
+    const dy = a.clientY - b.clientY;
+    pinchRef.current = { distance: Math.hypot(dx, dy), scale };
+  };
+
+  const onReaderTouchMove = (event: React.TouchEvent<HTMLElement>) => {
+    if (event.touches.length !== 2 || !pinchRef.current) return;
+    event.preventDefault();
+    const [a, b] = Array.from(event.touches);
+    const dx = a.clientX - b.clientX;
+    const dy = a.clientY - b.clientY;
+    const distance = Math.hypot(dx, dy);
+    const ratio = distance / Math.max(1, pinchRef.current.distance);
+    const next = Math.max(0.5, Math.min(2.5, Math.round((pinchRef.current.scale * ratio) * 20) / 20));
+    setScale(next);
+  };
+
+  const onReaderTouchEnd = (event: React.TouchEvent<HTMLElement>) => {
+    if (event.touches.length < 2) pinchRef.current = null;
   };
 
   return (
-    <div ref={shellRef} className="pdf-reader-shell" role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
+    <div ref={shellRef} className={`pdf-reader-shell ${fullscreen ? 'is-fullscreen' : ''}`} role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
       <section className="pdf-reader-window">
         <header className="pdf-reader-header">
           <div className="pdf-reader-title">
@@ -215,7 +256,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
           </div>
         </header>
 
-        <main className="pdf-reader-stage">
+        <main className="pdf-reader-stage" onTouchStart={onReaderTouchStart} onTouchMove={onReaderTouchMove} onTouchEnd={onReaderTouchEnd}>
           {isImage ? (
             <div className="pdf-reader-image"><img src={fileUrl} alt={resource.title} /></div>
           ) : failed ? (
