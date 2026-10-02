@@ -37,9 +37,11 @@ export default function SearchClient({
 }: SearchClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const urlQuery = searchParams.get('q') || '';
 
   const [query, setQuery] = useState(initialQuery);
+  // The query that actually drives fetching/URL. `query` is just what's typed in the box.
+  const [activeQuery, setActiveQuery] = useState(initialQuery);
+  const lastUrlQuery = useRef(initialQuery);
   const [selectedClass, setSelectedClass] = useState<number | undefined>(initialClass);
   const [selectedSubject, setSelectedSubject] = useState<string>(initialSubject || '');
   const [selectedType, setSelectedType] = useState<string>(initialType || '');
@@ -55,10 +57,37 @@ export default function SearchClient({
   const firstFetch = useRef(true);
   const requestRef = useRef<AbortController | null>(null);
 
+  // Only follow the URL when it changed from somewhere else (e.g. the navbar search),
+  // never because of our own typing/clearing - that was snapping the box back.
+  const urlQuery = searchParams.get('q') || '';
   useEffect(() => {
+    if (urlQuery === lastUrlQuery.current) return;
+    lastUrlQuery.current = urlQuery;
     setQuery(urlQuery);
+    setActiveQuery(urlQuery);
     setPage(1);
   }, [urlQuery]);
+
+  const syncUrl = useCallback((value: string) => {
+    const trimmed = value.trim();
+    lastUrlQuery.current = trimmed;
+    const params = new URLSearchParams(window.location.search);
+    if (trimmed) params.set('q', trimmed); else params.delete('q');
+    params.delete('page');
+    const qs = params.toString();
+    router.replace(`/search${qs ? `?${qs}` : ''}`, { scroll: false });
+  }, [router]);
+
+  // Live search: wait for a short pause in typing (including deleting) before fetching.
+  useEffect(() => {
+    if (query.trim() === activeQuery.trim()) return;
+    const timer = window.setTimeout(() => {
+      setActiveQuery(query);
+      setPage(1);
+      syncUrl(query);
+    }, 280);
+    return () => window.clearTimeout(timer);
+  }, [query, activeQuery, syncUrl]);
 
   const fetchResults = useCallback(async () => {
     requestRef.current?.abort();
@@ -67,7 +96,7 @@ export default function SearchClient({
     setLoading(true);
     try {
       const params = new URLSearchParams();
-      if (query.trim()) params.set('q', query.trim());
+      if (activeQuery.trim()) params.set('q', activeQuery.trim());
       if (selectedClass) params.set('class', selectedClass.toString());
       if (selectedSubject) params.set('subject', selectedSubject);
       if (selectedType) params.set('type', selectedType);
@@ -87,7 +116,7 @@ export default function SearchClient({
     } finally {
       setLoading(false);
     }
-  }, [query, selectedClass, selectedSubject, selectedType, selectedPaperType, selectedYear, selectedSchool, sortBy, page]);
+  }, [activeQuery, selectedClass, selectedSubject, selectedType, selectedPaperType, selectedYear, selectedSchool, sortBy, page]);
 
   useEffect(() => {
     if (firstFetch.current) { firstFetch.current = false; return; }
@@ -97,16 +126,22 @@ export default function SearchClient({
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const nextPage = 1;
-    setPage(nextPage);
-    const params = new URLSearchParams(searchParams.toString());
-    if (query.trim()) params.set('q', query.trim()); else params.delete('q');
-    params.delete('page');
-    router.replace(`/search${params.toString() ? `?${params.toString()}` : ''}`);
+    setActiveQuery(query);
+    setPage(1);
+    syncUrl(query);
+  };
+
+  const clearSearch = () => {
+    setQuery('');
+    setActiveQuery('');
+    setPage(1);
+    syncUrl('');
   };
 
   const resetAll = () => {
     setQuery('');
+    setActiveQuery('');
+    syncUrl('');
     setSelectedClass(undefined);
     setSelectedSubject('');
     setSelectedType('');
@@ -148,14 +183,7 @@ export default function SearchClient({
             <button
               type="button"
               aria-label="Clear search"
-              onClick={() => {
-                setQuery('');
-                setPage(1);
-                const params = new URLSearchParams(searchParams.toString());
-                params.delete('q');
-                params.delete('page');
-                router.replace(`/search${params.toString() ? `?${params.toString()}` : ''}`);
-              }}
+              onClick={clearSearch}
               className="mr-3 p-1 rounded-full text-zinc-400 hover:text-zinc-600"
             >
               <X className="w-4 h-4" />

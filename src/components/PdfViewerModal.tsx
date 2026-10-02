@@ -11,11 +11,18 @@ const A4_WIDTH = 595.28;
 const A4_HEIGHT = 841.89;
 const PAGE_CACHE_DPR = 2;
 const MIN_READER_ZOOM = 0.5;
-const MAX_READER_ZOOM = 2.5;
+const MAX_READER_ZOOM = 4;
 const INITIAL_READER_ZOOM = 1;
-const READER_ZOOM_STEP = 0.15;
+const READER_ZOOM_STEP = 0.25;
+const DOUBLE_TAP_ZOOM = 2.2;
+const MAX_HIRES_QUALITY = 4;
+const MAX_HIRES_PIXELS = 12_000_000;
+const CHROME_HIDE_DELAY = 3000;
 
 const pdfDocuments = new Map<string, Promise<any>>();
+
+type Focal = { x: number; y: number };
+type ZoomAnchor = { ratio: number; x0: number; y0: number; x1: number; y1: number; sx: number; sy: number };
 
 function loadPdfDocument(fileUrl: string, onProgress: (loaded: number, total: number) => void) {
   const existing = pdfDocuments.get(fileUrl);
@@ -35,25 +42,49 @@ function canvasBlob(canvas: HTMLCanvasElement): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/webp', 0.9));
 }
 
-const PdfPage = React.memo(function PdfPage({ pdf, pageNumber, fileKey, onSettled }: {
-  pdf: any; pageNumber: number; fileKey: string;
-  onSettled: (pageNumber: number) => void;
+/** Watches an element and reports whether it is within `margin` of the scroll container. */
+function useNearViewport(hostRef: React.RefObject<HTMLDivElement | null>, rootRef: React.RefObject<HTMLElement | null>, margin: string) {
+  const [near, setNear] = useState(false);
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
+    if (typeof IntersectionObserver === 'undefined') { setNear(true); return; }
+    const observer = new IntersectionObserver(
+      (entries) => { for (const entry of entries) setNear(entry.isIntersecting); },
+      { root: rootRef.current, rootMargin: margin },
+    );
+    observer.observe(host);
+    return () => observer.disconnect();
+  }, [hostRef, rootRef, margin]);
+  return near;
+}
+
+function PdfPage({ pdf, pageNumber, fileKey, displayScale, zoomLevel, settledZoom, stageRef }: {
+  pdf: any; pageNumber: number; fileKey: string; displayScale: number; zoomLevel: number; settledZoom: number;
+  stageRef: React.RefObject<HTMLElement | null>;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const hiCanvasRef = useRef<HTMLCanvasElement>(null);
   const [rendered, setRendered] = useState(false);
-  const renderTaskRef = useRef<any>(null);
+  const baseDoneRef = useRef(false);
+  const near = useNearViewport(hostRef, stageRef, '1400px 0px');
+  const visible = useNearViewport(hostRef, stageRef, '250px 0px');
 
+  const cssWidth = A4_WIDTH * displayScale * zoomLevel;
+  const cssHeight = A4_HEIGHT * displayScale * zoomLevel;
+
+  // Base render (cached, low zoom). Pages only render once they are near the viewport.
   useEffect(() => {
-    if (!pdf || !canvasRef.current) return;
+    if (!pdf || !near || baseDoneRef.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
     let cancelled = false;
+    let task: any = null;
 
     (async () => {
-      const canvas = canvasRef.current;
-      if (!canvas) return;
       canvas.width = Math.round(A4_WIDTH * PAGE_CACHE_DPR);
       canvas.height = Math.round(A4_HEIGHT * PAGE_CACHE_DPR);
-
       try {
         const cacheKey = `${fileKey}:a4-v1:${pageNumber}`;
         const cached = await readPdfPage(cacheKey);
@@ -76,43 +107,72 @@ const PdfPage = React.memo(function PdfPage({ pdf, pageNumber, fileKey, onSettle
           const viewport = page.getViewport({ scale: contentScale });
           const offsetX = (canvas.width - viewport.width * PAGE_CACHE_DPR) / 2;
           const offsetY = (canvas.height - viewport.height * PAGE_CACHE_DPR) / 2;
-          renderTaskRef.current?.cancel?.();
-          renderTaskRef.current = page.render({
-            canvasContext: context,
-            viewport,
-            transform: [PAGE_CACHE_DPR, 0, 0, PAGE_CACHE_DPR, offsetX, offsetY],
-            intent: 'display',
-          });
-          await renderTaskRef.current.promise;
+          task = page.render({ canvasContext: context, viewport, transform: [PAGE_CACHE_DPR, 0, 0, PAGE_CACHE_DPR, offsetX, offsetY], intent: 'display' });
+          await task.promise;
           if (cancelled) return;
           const blob = await canvasBlob(canvas);
           if (blob && !cancelled) await writePdfPage(cacheKey, blob);
         }
-        if (!cancelled) {
-          setRendered(true);
-          onSettled(pageNumber);
-        }
+        if (!cancelled) { baseDoneRef.current = true; setRendered(true); }
       } catch (error: any) {
-        if (!cancelled && error?.name !== 'RenderingCancelledException') {
-          setRendered(false);
-          onSettled(pageNumber);
-        }
+        if (!cancelled && error?.name !== 'RenderingCancelledException') setRendered(false);
       }
     })();
 
-    return () => {
-      cancelled = true;
-      renderTaskRef.current?.cancel?.();
-    };
-  }, [pdf, pageNumber, fileKey, onSettled]);
+    return () => { cancelled = true; task?.cancel?.(); };
+  }, [pdf, pageNumber, fileKey, near]);
+
+  // Sharp render for zoomed-in pages that are actually on screen.
+  useEffect(() => {
+    const hi = hiCanvasRef.current;
+    if (!hi) return;
+    const dpr = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 3) : 1;
+    const wanted = displayScale * settledZoom * dpr;
+    const clear = () => { if (hi.width !== 0) { hi.width = 0; hi.height = 0; } };
+    if (!pdf || !visible || !rendered || wanted <= PAGE_CACHE_DPR * 1.05) { clear(); return; }
+
+    const pixelCap = Math.sqrt(MAX_HIRES_PIXELS / (A4_WIDTH * A4_HEIGHT));
+    const quality = Math.min(wanted, MAX_HIRES_QUALITY, pixelCap);
+    let cancelled = false;
+    let task: any = null;
+
+    (async () => {
+      try {
+        const page = await pdf.getPage(pageNumber);
+        if (cancelled) return;
+        const baseViewport = page.getViewport({ scale: 1 });
+        const contentScale = Math.min(A4_WIDTH / baseViewport.width, A4_HEIGHT / baseViewport.height);
+        const viewport = page.getViewport({ scale: contentScale });
+        const off = document.createElement('canvas');
+        off.width = Math.round(A4_WIDTH * quality);
+        off.height = Math.round(A4_HEIGHT * quality);
+        const context = off.getContext('2d', { alpha: false });
+        if (!context) return;
+        context.fillStyle = '#fff';
+        context.fillRect(0, 0, off.width, off.height);
+        const offsetX = (off.width - viewport.width * quality) / 2;
+        const offsetY = (off.height - viewport.height * quality) / 2;
+        task = page.render({ canvasContext: context, viewport, transform: [quality, 0, 0, quality, offsetX, offsetY], intent: 'display' });
+        await task.promise;
+        if (cancelled) return;
+        hi.width = off.width;
+        hi.height = off.height;
+        hi.getContext('2d')?.drawImage(off, 0, 0);
+        off.width = 0; off.height = 0;
+      } catch { /* cancelled or failed: keep the base render */ }
+    })();
+
+    return () => { cancelled = true; task?.cancel?.(); };
+  }, [pdf, pageNumber, visible, rendered, displayScale, settledZoom]);
 
   return (
-    <div ref={hostRef} className="pdf-js-page" aria-label={`Page ${pageNumber}`}>
+    <div ref={hostRef} className="pdf-js-page" aria-label={`Page ${pageNumber}`} style={{ width: cssWidth, height: cssHeight }}>
       {!rendered && <div className="pdf-js-page-placeholder"><span>Page {pageNumber}</span></div>}
       <canvas ref={canvasRef} className={rendered ? 'is-rendered' : ''} />
+      <canvas ref={hiCanvasRef} className="pdf-js-hires" aria-hidden="true" />
     </div>
   );
-});
+}
 
 export default function PdfViewerModal({ resource, onClose }: Props) {
   const [pdf, setPdf] = useState<any>(null);
@@ -120,29 +180,56 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [loading, setLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);
   const [failed, setFailed] = useState(false);
-  const [fullscreen, setFullscreen] = useState(false);
+  const [nativeFullscreen, setNativeFullscreen] = useState(false);
+  const [pseudoFullscreen, setPseudoFullscreen] = useState(false);
+  const [chromeHidden, setChromeHidden] = useState(false);
   const [fitScale, setFitScale] = useState(0.7);
   const [fitScaleReady, setFitScaleReady] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(INITIAL_READER_ZOOM);
-  const [settledPages, setSettledPages] = useState<Set<number>>(() => new Set());
+  const [settledZoom, setSettledZoom] = useState(INITIAL_READER_ZOOM);
   const zoomRef = useRef(INITIAL_READER_ZOOM);
+  const anchorRef = useRef<ZoomAnchor | null>(null);
+  const fullscreenRef = useRef(false);
+  const chromeTimerRef = useRef<number | null>(null);
   const shellRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLElement>(null);
 
-  const changeZoom = useCallback((value: number) => {
+  const fullscreen = nativeFullscreen || pseudoFullscreen;
+  fullscreenRef.current = fullscreen;
+
+  /** Zoom while keeping the content under the fingers / cursor in place. */
+  const applyZoom = useCallback((value: number, focal?: Focal, previousFocal?: Focal) => {
     const bounded = Math.min(MAX_READER_ZOOM, Math.max(MIN_READER_ZOOM, value));
+    const old = zoomRef.current;
+    const stage = stageRef.current;
+    if (Math.abs(bounded - old) < 0.0005) return;
+    if (stage) {
+      const rect = stage.getBoundingClientRect();
+      const f1 = focal ? { x: focal.x - rect.left, y: focal.y - rect.top } : { x: stage.clientWidth / 2, y: stage.clientHeight / 2 };
+      const f0 = previousFocal ? { x: previousFocal.x - rect.left, y: previousFocal.y - rect.top } : f1;
+      const ratio = bounded / old;
+      const pending = anchorRef.current;
+      if (pending) { pending.ratio *= ratio; pending.x1 = f1.x; pending.y1 = f1.y; }
+      else anchorRef.current = { ratio, x0: f0.x, y0: f0.y, x1: f1.x, y1: f1.y, sx: stage.scrollLeft, sy: stage.scrollTop };
+    }
     zoomRef.current = bounded;
     setZoomLevel(bounded);
   }, []);
-  const onPageSettled = useCallback((pageNumber: number) => {
-    setSettledPages((current) => {
-      if (current.has(pageNumber)) return current;
-      const next = new Set(current);
-      next.add(pageNumber);
-      return next;
-    });
-  }, []);
-  const allPagesReady = Boolean(pdf && fitScaleReady && pageCount > 0 && settledPages.size >= pageCount);
+
+  useLayoutEffect(() => {
+    const anchor = anchorRef.current;
+    const stage = stageRef.current;
+    anchorRef.current = null;
+    if (!anchor || !stage) return;
+    stage.scrollLeft = (anchor.sx + anchor.x0) * anchor.ratio - anchor.x1;
+    stage.scrollTop = (anchor.sy + anchor.y0) * anchor.ratio - anchor.y1;
+  }, [zoomLevel]);
+
+  // Re-render sharp canvases only after zooming has paused.
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSettledZoom(zoomLevel), 260);
+    return () => window.clearTimeout(timer);
+  }, [zoomLevel]);
 
   const fileUrl = resource ? `/api/resources/${resource.id}/file` : '';
   const isImage = Boolean(resource && (resource.file_type?.startsWith('image/') || /\.(jpg|jpeg|png|webp|gif)$/i.test(resource.file_name || '')));
@@ -156,10 +243,10 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     setFailed(false);
     setPdf(null);
     setPageCount(0);
-    setSettledPages(new Set());
     setFitScaleReady(false);
     zoomRef.current = INITIAL_READER_ZOOM;
     setZoomLevel(INITIAL_READER_ZOOM);
+    setSettledZoom(INITIAL_READER_ZOOM);
 
     loadPdfDocument(fileUrl, (loaded, total) => {
       if (total > 0 && !cancelled) setLoadProgress(Math.max(1, Math.min(99, Math.round((loaded / total) * 100))));
@@ -177,94 +264,130 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     return () => { cancelled = true; };
   }, [resource?.id, fileUrl, isImage]);
 
+  // Chrome (header) visibility in fullscreen.
+  const showChrome = useCallback((autoHide: boolean) => {
+    setChromeHidden(false);
+    if (chromeTimerRef.current) window.clearTimeout(chromeTimerRef.current);
+    chromeTimerRef.current = null;
+    if (autoHide && fullscreenRef.current) {
+      chromeTimerRef.current = window.setTimeout(() => setChromeHidden(true), CHROME_HIDE_DELAY);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (fullscreen) showChrome(true);
+    else { if (chromeTimerRef.current) window.clearTimeout(chromeTimerRef.current); setChromeHidden(false); }
+    return () => { if (chromeTimerRef.current) window.clearTimeout(chromeTimerRef.current); };
+  }, [fullscreen, showChrome]);
+
+  // Pinch-to-zoom, double-tap, trackpad pinch (ctrl+wheel). The stage allows native panning only.
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage || isImage) return;
-    let pinchStartDistance = 0;
-    let pinchStartZoom = zoomRef.current;
-    let gestureEventActive = false;
-    let animationFrame = 0;
+    let pinching = false;
+    let startDistance = 0;
+    let startZoom = zoomRef.current;
+    let lastMid: Focal = { x: 0, y: 0 };
     let pendingZoom = zoomRef.current;
+    let pendingMid: Focal = lastMid;
+    let frame = 0;
     let tapStart: { x: number; y: number; at: number; moved: boolean } | null = null;
     let lastTap: { x: number; y: number; at: number } | null = null;
-    const distance = (touches: TouchList) => Math.hypot(touches[0].clientX - touches[1].clientX, touches[0].clientY - touches[1].clientY);
-    const scheduleZoom = (value: number) => {
-      pendingZoom = Math.min(MAX_READER_ZOOM, Math.max(MIN_READER_ZOOM, value));
-      if (animationFrame) return;
-      animationFrame = window.requestAnimationFrame(() => { animationFrame = 0; changeZoom(pendingZoom); });
-    };
-    const finishPinch = () => {
-      pinchStartDistance = 0;
-      gestureEventActive = false;
-      if (animationFrame) { window.cancelAnimationFrame(animationFrame); animationFrame = 0; }
-      changeZoom(pendingZoom);
+    let singleTapTimer = 0;
+
+    const distance = (t: TouchList) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+    const midpoint = (t: TouchList): Focal => ({ x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 });
+    const flush = () => {
+      frame = 0;
+      applyZoom(pendingZoom, pendingMid, lastMid);
+      lastMid = pendingMid;
     };
     const onTouchStart = (event: TouchEvent) => {
       if ((event.target as Element | null)?.closest('button,a')) return;
       if (event.touches.length === 1) {
-        const touch = event.touches[0];
-        tapStart = { x: touch.clientX, y: touch.clientY, at: performance.now(), moved: false };
-      } else if (event.touches.length === 2 && !gestureEventActive) {
+        const t = event.touches[0];
+        tapStart = { x: t.clientX, y: t.clientY, at: performance.now(), moved: false };
+      } else if (event.touches.length === 2) {
         tapStart = null;
-        pinchStartDistance = distance(event.touches);
-        pinchStartZoom = zoomRef.current;
-        pendingZoom = pinchStartZoom;
+        pinching = true;
+        startDistance = Math.max(1, distance(event.touches));
+        startZoom = zoomRef.current;
+        pendingZoom = startZoom;
+        lastMid = midpoint(event.touches);
+        pendingMid = lastMid;
       }
     };
     const onTouchMove = (event: TouchEvent) => {
       if (event.touches.length === 1 && tapStart) {
-        const touch = event.touches[0];
-        if (Math.hypot(touch.clientX - tapStart.x, touch.clientY - tapStart.y) > 12) tapStart.moved = true;
+        const t = event.touches[0];
+        if (Math.hypot(t.clientX - tapStart.x, t.clientY - tapStart.y) > 10) tapStart.moved = true;
         return;
       }
-      if (gestureEventActive || event.touches.length !== 2 || pinchStartDistance <= 0) return;
-      event.preventDefault();
-      scheduleZoom(pinchStartZoom * (distance(event.touches) / pinchStartDistance));
+      if (!pinching || event.touches.length !== 2) return;
+      if (event.cancelable) event.preventDefault();
+      pendingZoom = Math.min(MAX_READER_ZOOM, Math.max(MIN_READER_ZOOM, startZoom * (distance(event.touches) / startDistance)));
+      pendingMid = midpoint(event.touches);
+      if (!frame) frame = window.requestAnimationFrame(flush);
     };
     const onTouchEnd = (event: TouchEvent) => {
-      if (event.touches.length < 2 && pinchStartDistance > 0) finishPinch();
+      if (pinching && event.touches.length < 2) {
+        pinching = false;
+        if (frame) { window.cancelAnimationFrame(frame); frame = 0; }
+        applyZoom(pendingZoom, pendingMid, lastMid);
+        tapStart = null;
+        return;
+      }
       if (event.touches.length !== 0 || !tapStart) return;
       const ended = event.changedTouches[0];
       const tap = tapStart;
       tapStart = null;
-      if (!ended || tap.moved || performance.now() - tap.at > 360) return;
-      if (lastTap && performance.now() - lastTap.at < 340 && Math.hypot(ended.clientX - lastTap.x, ended.clientY - lastTap.y) < 42) {
-        changeZoom(zoomRef.current > 1.01 ? 1 : 2);
+      if (!ended || tap.moved || performance.now() - tap.at > 320) return;
+      const now = performance.now();
+      if (lastTap && now - lastTap.at < 320 && Math.hypot(ended.clientX - lastTap.x, ended.clientY - lastTap.y) < 40) {
+        window.clearTimeout(singleTapTimer);
         lastTap = null;
-      } else lastTap = { x: ended.clientX, y: ended.clientY, at: performance.now() };
+        const focal = { x: ended.clientX, y: ended.clientY };
+        applyZoom(zoomRef.current > INITIAL_READER_ZOOM + 0.05 ? INITIAL_READER_ZOOM : DOUBLE_TAP_ZOOM, focal);
+      } else {
+        lastTap = { x: ended.clientX, y: ended.clientY, at: now };
+        singleTapTimer = window.setTimeout(() => {
+          if (fullscreenRef.current) setChromeHidden((hidden) => !hidden);
+        }, 330);
+      }
     };
-    const onGestureStart = (event: Event) => {
-      gestureEventActive = true;
-      pinchStartZoom = zoomRef.current;
-      pendingZoom = pinchStartZoom;
+    const onGesture = (event: Event) => { if (event.cancelable) event.preventDefault(); }; // stop Safari's native page zoom
+    const onWheel = (event: WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) return;
       event.preventDefault();
+      applyZoom(zoomRef.current * Math.exp(-event.deltaY * 0.012), { x: event.clientX, y: event.clientY });
     };
-    const onGestureChange = (event: Event) => {
-      if (!gestureEventActive) return;
-      event.preventDefault();
-      const scale = (event as Event & { scale?: number }).scale;
-      if (typeof scale === 'number') scheduleZoom(pinchStartZoom * scale);
-    };
-    const onGestureEnd = (event: Event) => { if (gestureEventActive) { event.preventDefault(); finishPinch(); } };
+    const onMouseMove = () => { if (fullscreenRef.current) showChrome(true); };
+
     stage.addEventListener('touchstart', onTouchStart, { passive: true });
     stage.addEventListener('touchmove', onTouchMove, { passive: false });
     stage.addEventListener('touchend', onTouchEnd, { passive: true });
     stage.addEventListener('touchcancel', onTouchEnd, { passive: true });
-    stage.addEventListener('gesturestart', onGestureStart, { passive: false });
-    stage.addEventListener('gesturechange', onGestureChange, { passive: false });
-    stage.addEventListener('gestureend', onGestureEnd, { passive: false });
+    stage.addEventListener('gesturestart', onGesture, { passive: false });
+    stage.addEventListener('gesturechange', onGesture, { passive: false });
+    stage.addEventListener('gestureend', onGesture, { passive: false });
+    stage.addEventListener('wheel', onWheel, { passive: false });
+    stage.addEventListener('mousemove', onMouseMove, { passive: true });
     return () => {
-      if (animationFrame) window.cancelAnimationFrame(animationFrame);
+      if (frame) window.cancelAnimationFrame(frame);
+      window.clearTimeout(singleTapTimer);
       stage.removeEventListener('touchstart', onTouchStart);
       stage.removeEventListener('touchmove', onTouchMove);
       stage.removeEventListener('touchend', onTouchEnd);
       stage.removeEventListener('touchcancel', onTouchEnd);
-      stage.removeEventListener('gesturestart', onGestureStart);
-      stage.removeEventListener('gesturechange', onGestureChange);
-      stage.removeEventListener('gestureend', onGestureEnd);
+      stage.removeEventListener('gesturestart', onGesture);
+      stage.removeEventListener('gesturechange', onGesture);
+      stage.removeEventListener('gestureend', onGesture);
+      stage.removeEventListener('wheel', onWheel);
+      stage.removeEventListener('mousemove', onMouseMove);
     };
-  }, [isImage, changeZoom]);
+  }, [isImage, applyZoom, showChrome, loading, failed]);
 
+  // Fit pages to the available width.
   useLayoutEffect(() => {
     if (!pdf || isImage || !stageRef.current) return;
     let cancelled = false;
@@ -274,7 +397,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       const styles = window.getComputedStyle(stage);
       const horizontalPadding = (parseFloat(styles.paddingLeft) || 0) + (parseFloat(styles.paddingRight) || 0);
       const availableWidth = Math.max(1, stage.clientWidth - horizontalPadding - 2);
-      setFitScale(Math.max(0.1, Math.min(1.2, availableWidth / A4_WIDTH)));
+      setFitScale(Math.max(0.1, Math.min(1.6, availableWidth / A4_WIDTH)));
       setFitScaleReady(true);
     };
     measure();
@@ -283,34 +406,66 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     return () => { cancelled = true; observer.disconnect(); };
   }, [pdf, isImage, fullscreen]);
 
+  const exitFullscreen = useCallback(async () => {
+    const doc = document as any;
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else if (doc.webkitFullscreenElement) await doc.webkitExitFullscreen?.();
+    } catch { /* ignore */ }
+    setPseudoFullscreen(false);
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    if (fullscreenRef.current) { await exitFullscreen(); return; }
+    const target = shellRef.current as any;
+    const request = target?.requestFullscreen || target?.webkitRequestFullscreen;
+    if (request) {
+      try { await request.call(target); return; } catch { /* fall through to in-page fullscreen */ }
+    }
+    // iPhone Safari and some in-app browsers can't fullscreen a div: fill the screen ourselves.
+    setPseudoFullscreen(true);
+  }, [exitFullscreen]);
+
   useEffect(() => {
     if (!resource) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    const onFullscreen = () => setFullscreen(Boolean(document.fullscreenElement));
-    document.addEventListener('fullscreenchange', onFullscreen);
-    const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape' && !document.fullscreenElement) onClose(); };
+    const onFullscreenChange = () => {
+      const doc = document as any;
+      setNativeFullscreen(Boolean(document.fullscreenElement || doc.webkitFullscreenElement));
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (fullscreenRef.current && !document.fullscreenElement) setPseudoFullscreen(false);
+        else if (!document.fullscreenElement) onClose();
+        return;
+      }
+      if (!(event.ctrlKey || event.metaKey) || isImage) return;
+      if (event.key === '+' || event.key === '=') { event.preventDefault(); applyZoom(zoomRef.current + READER_ZOOM_STEP); }
+      else if (event.key === '-') { event.preventDefault(); applyZoom(zoomRef.current - READER_ZOOM_STEP); }
+      else if (event.key === '0') { event.preventDefault(); applyZoom(INITIAL_READER_ZOOM); }
+    };
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', onFullscreenChange);
     window.addEventListener('keydown', onKey);
     return () => {
       document.body.style.overflow = previousOverflow;
-      document.removeEventListener('fullscreenchange', onFullscreen);
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
       window.removeEventListener('keydown', onKey);
+      const doc = document as any;
+      if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+      else if (doc.webkitFullscreenElement) doc.webkitExitFullscreen?.();
+      setPseudoFullscreen(false);
     };
-  }, [resource, onClose]);
+  }, [resource, onClose, applyZoom, isImage]);
 
   if (!resource) return null;
 
-  const toggleFullscreen = async () => {
-    const target = shellRef.current;
-    if (!target) return;
-    try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else if (target.requestFullscreen) await target.requestFullscreen();
-    } catch {}
-  };
+  const shellClass = `pdf-reader-shell${fullscreen ? ' is-fullscreen' : ''}${fullscreen && chromeHidden ? ' chrome-hidden' : ''}`;
 
   return (
-    <div ref={shellRef} className="pdf-reader-shell" role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
+    <div ref={shellRef} className={shellClass} role="dialog" aria-modal="true" aria-label={`Reading ${resource.title}`}>
       <section className="pdf-reader-window">
         <header className="pdf-reader-header">
           <div className="pdf-reader-title">
@@ -318,15 +473,17 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
             <div className="min-w-0"><strong>{resource.title}</strong><span>Class {resource.class_level} · {resource.subject}{pageCount ? ` · ${pageCount} pages` : ''}</span></div>
           </div>
           <div className="pdf-reader-actions">
-            <button type="button" onClick={() => changeZoom(zoomRef.current - READER_ZOOM_STEP)} disabled={zoomLevel <= MIN_READER_ZOOM} aria-label="Zoom out"><Minus /></button>
-            <span className="pdf-reader-zoom" aria-live="polite">{Math.round(zoomLevel * 100)}%</span>
-            <button type="button" onClick={() => changeZoom(zoomRef.current + READER_ZOOM_STEP)} disabled={zoomLevel >= MAX_READER_ZOOM} aria-label="Zoom in"><Plus /></button>
+            {!isImage && <>
+              <button type="button" onClick={() => applyZoom(zoomRef.current - READER_ZOOM_STEP)} disabled={zoomLevel <= MIN_READER_ZOOM} aria-label="Zoom out"><Minus /></button>
+              <button type="button" className="pdf-reader-zoom" onClick={() => applyZoom(INITIAL_READER_ZOOM)} aria-label="Reset zoom" title="Reset zoom">{Math.round(zoomLevel * 100)}%</button>
+              <button type="button" onClick={() => applyZoom(zoomRef.current + READER_ZOOM_STEP)} disabled={zoomLevel >= MAX_READER_ZOOM} aria-label="Zoom in"><Plus /></button>
+            </>}
             <button type="button" onClick={toggleFullscreen} aria-label={fullscreen ? 'Exit fullscreen' : 'Fullscreen'}>{fullscreen ? <Minimize2 /> : <Maximize2 />}</button>
             <a href={fileUrl} download={resource.file_name || resource.title} aria-label="Download"><Download /></a>
-            <button type="button" onClick={onClose} aria-label="Close reader"><X /></button>
+            <button type="button" onClick={() => { if (fullscreenRef.current) void exitFullscreen(); onClose(); }} aria-label="Close reader"><X /></button>
           </div>
         </header>
-        <main ref={stageRef} className={`pdf-reader-stage${allPagesReady || isImage || failed ? '' : ' is-preloading'}`} aria-busy={!allPagesReady && !isImage && !failed}>
+        <main ref={stageRef} className="pdf-reader-stage" aria-busy={loading && !isImage && !failed}>
           {isImage ? (
             <div className="pdf-reader-image"><img src={fileUrl} alt={resource.title} /></div>
           ) : failed ? (
@@ -337,19 +494,10 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
               <strong>{loadProgress > 0 ? `Opening note · ${loadProgress}%` : 'Opening note…'}</strong><span>Preparing the pages inside Archivum.</span>
             </div>
           ) : (
-            <div className="pdf-reader-pages" style={{
-              '--pdf-css-width': `${A4_WIDTH * fitScale * zoomLevel}px`,
-              '--pdf-css-height': `${A4_HEIGHT * fitScale * zoomLevel}px`,
-            } as React.CSSProperties}>
+            <div className="pdf-reader-pages">
               {Array.from({ length: pageCount }, (_, index) => (
-                <PdfPage key={`${fileKey}-${index + 1}`} pdf={pdf} pageNumber={index + 1} fileKey={fileKey} onSettled={onPageSettled} />
+                <PdfPage key={`${fileKey}-${index + 1}`} pdf={pdf} pageNumber={index + 1} fileKey={fileKey} displayScale={fitScale} zoomLevel={zoomLevel} settledZoom={settledZoom} stageRef={stageRef} />
               ))}
-            </div>
-          )}
-          {!isImage && !failed && !loading && fitScaleReady && !allPagesReady && (
-            <div className="pdf-reader-preloader" role="status" aria-live="polite">
-              <div className="pdf-load-progress" role="progressbar" aria-valuemin={0} aria-valuemax={pageCount} aria-valuenow={settledPages.size} aria-label={`Preparing pages ${settledPages.size} of ${pageCount}`}><div className="pdf-load-progress-bar" style={{ width: `${pageCount ? Math.max(4, settledPages.size / pageCount * 100) : 4}%` }} /></div>
-              <strong>Preparing pages · {settledPages.size}/{pageCount}</strong><span>Opening as soon as every page is ready.</span>
             </div>
           )}
         </main>

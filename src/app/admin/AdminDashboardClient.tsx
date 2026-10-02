@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import PdfViewerModal from '@/components/PdfViewerModal';
 import AdminUploadPanel from '@/components/AdminUploadPanel';
-import AdminNotificationComposer from '@/components/AdminNotificationComposer';
 import { useToast } from '@/components/ToastContext';
 import { 
   Shield, 
@@ -35,7 +34,7 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
   const router = useRouter();
   const { showToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines' | 'upload' | 'feedback' | 'notifications'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'pending' | 'resources' | 'tips' | 'guidelines' | 'upload' | 'feedback'>('overview');
   const [resources, setResources] = useState<Resource[]>(initialResources);
   const [stats, setStats] = useState<any>(null);
   const [loadingStats, setLoadingStats] = useState(false);
@@ -302,7 +301,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
           { id: 'resources', label: `All Resources (${resources.length})` },
           { id: 'tips', label: `Tips (${pendingTips.length})` },
           { id: 'feedback', label: `Feedback (${feedback.filter((item:any)=>item.status==='new').length})` },
-          { id: 'notifications', label: 'Notifications' },
           { id: 'guidelines', label: 'Admin Guidelines' },
           { id: 'upload', label: 'Add resource' },
         ].map((tab) => {
@@ -614,7 +612,6 @@ export default function AdminDashboardClient({ initialResources, adminUsername }
         </section>
       )}
 
-      {activeTab === 'notifications' && <AdminNotificationComposer />}
 
       {activeTab === 'upload' && (
         <section className="space-y-5">

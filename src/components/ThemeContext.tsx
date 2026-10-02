@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useLayoutEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 export type Accent = 'indigo' | 'forest' | 'smoky-olive' | 'smoky-ink' | 'soft-pink' | 'crimson-veil';
 export const ACCENTS: { id: Accent; label: string; color: string }[] = [
@@ -23,18 +23,20 @@ function migrateAccent(saved: string | null): Accent | null {
 }
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [accent, setAccentState] = useState<Accent>('indigo');
-  useLayoutEffect(() => {
-    let saved: string | null = null;
-    try { saved = localStorage.getItem('archivum_accent'); } catch {}
+  const [accentInitialized, setAccentInitialized] = useState(false);
+  useEffect(() => {
+    const saved = localStorage.getItem('archivum_accent');
     const migrated = migrateAccent(saved);
-    const initialAccent = migrated || 'indigo';
-    setAccentState(initialAccent);
-    document.documentElement.setAttribute('data-accent', initialAccent);
-    if (migrated && saved !== migrated) {
-      try { localStorage.setItem('archivum_accent', migrated); } catch {}
+    if (migrated) {
+      setAccentState(migrated);
+      if (saved !== migrated) localStorage.setItem('archivum_accent', migrated);
     }
+    setAccentInitialized(true);
     document.documentElement.classList.remove('dark');
   }, []);
+  useEffect(() => {
+    if (accentInitialized) document.documentElement.setAttribute('data-accent', accent);
+  }, [accent, accentInitialized]);
   const setAccent = (next: Accent) => {
     document.documentElement.setAttribute('data-accent', next);
     setAccentState(next);

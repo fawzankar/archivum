@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const SPLASH_MS = 3200;
 const LEAVE_MS = 450;
@@ -10,7 +10,7 @@ export default function SplashScreen() {
   const [show, setShow] = useState(true);
   const [leaving, setLeaving] = useState(false);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const root = document.documentElement;
     if (window.location.pathname !== '/') {
       root.classList.remove('splash-active');

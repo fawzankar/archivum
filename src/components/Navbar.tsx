@@ -6,7 +6,6 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import SearchBar from './SearchBar';
-import StudyReminderSettings from './StudyReminderSettings';
 import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink } from 'lucide-react';
 
 const links = [
@@ -114,8 +113,6 @@ export default function Navbar() {
           {visibleDisplayName && <div className="menu-welcome"><span className="menu-welcome-mark">{visibleDisplayName.charAt(0).toUpperCase()}</span><div><strong>Hello, {visibleDisplayName}</strong><small>Class {visibleStudentClass || 'Not selected'}</small></div></div>}
           <div className="menu-section-label">Explore</div>
           <div className="menu-links">{links.map(([label,href,Icon]) => <Link key={href} href={withClass(href)} onClick={() => setDrawerOpen(false)} className={active(href) ? 'active' : ''}><Icon /><span>{label}</span><ChevronRight /></Link>)}</div>
-
-          <StudyReminderSettings />
 
           <div className="menu-section menu-appearance">
             <div className="menu-section-label">Theme Palette</div>

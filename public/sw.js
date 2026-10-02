@@ -1,4 +1,4 @@
-const VERSION = 'archivum-offline-v15';
+const VERSION = 'archivum-offline-v14';
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const DATA_CACHE = `${VERSION}-data`;
@@ -123,34 +123,4 @@ self.addEventListener('fetch', (event) => {
       throw new Error('offline');
     })
   );
-});
-
-self.addEventListener('push', (event) => {
-  let payload = {};
-  try {
-    const decoded = event.data ? event.data.json() : {};
-    payload = decoded && typeof decoded === 'object' ? decoded : { body: String(decoded || '') };
-  } catch { payload = { body: event.data?.text() || '' }; }
-  const title = typeof payload.title === 'string' ? payload.title.slice(0, 80) : 'A gentle study reminder';
-  const body = typeof payload.body === 'string' ? payload.body.slice(0, 280) : 'Take a few minutes to revise something today.';
-  const url = typeof payload.url === 'string' && payload.url.startsWith('/') ? payload.url : '/';
-  event.waitUntil(self.registration.showNotification(title, {
-    body,
-    icon: '/icon-192.png',
-    badge: '/icon-192.png',
-    data: { url },
-    tag: payload.tag || 'archivum-study-reminder',
-    renotify: Boolean(payload.renotify),
-  }));
-});
-
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  const path = typeof event.notification.data?.url === 'string' && event.notification.data.url.startsWith('/') ? event.notification.data.url : '/';
-  const target = new URL(path, self.location.origin).href;
-  event.waitUntil(clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (windows) => {
-    const existing = windows.find((client) => new URL(client.url).origin === self.location.origin);
-    if (existing) { await existing.navigate(target); return existing.focus(); }
-    return clients.openWindow(target);
-  }));
 });

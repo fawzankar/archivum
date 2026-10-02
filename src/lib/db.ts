@@ -109,8 +109,6 @@ async function runFullInit(db: Client): Promise<void> {
       { sql: `CREATE TABLE IF NOT EXISTS reviews (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, rating INTEGER NOT NULL, review TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS app_migrations (id TEXT PRIMARY KEY, applied_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS tips (id INTEGER PRIMARY KEY AUTOINCREMENT, class_level INTEGER NOT NULL, subject TEXT NOT NULL DEFAULT 'General', title TEXT NOT NULL, body TEXT NOT NULL, author TEXT, status TEXT NOT NULL DEFAULT 'pending', created_at TEXT NOT NULL)`, args: [] },
-      { sql: `CREATE TABLE IF NOT EXISTS push_subscriptions (endpoint TEXT PRIMARY KEY, p256dh TEXT NOT NULL, auth TEXT NOT NULL, timezone TEXT NOT NULL DEFAULT 'UTC', reminder_hour INTEGER NOT NULL DEFAULT 19, last_reminder_date TEXT, created_at TEXT NOT NULL)`, args: [] },
-      { sql: `CREATE INDEX IF NOT EXISTS idx_push_subscriptions_reminder ON push_subscriptions(reminder_hour,last_reminder_date)`, args: [] },
       { sql: `CREATE TABLE IF NOT EXISTS feedback (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, email TEXT NOT NULL, class_level INTEGER NOT NULL DEFAULT 0, section TEXT NOT NULL DEFAULT '', message TEXT NOT NULL, attachments TEXT, status TEXT NOT NULL DEFAULT 'new', created_at TEXT NOT NULL)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_tips_class_status ON tips(class_level,status)`, args: [] },
       { sql: `CREATE INDEX IF NOT EXISTS idx_tips_status_class_subject_created ON tips(status,class_level,subject,created_at DESC)`, args: [] },
