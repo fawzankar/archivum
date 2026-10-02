@@ -1,14 +1,12 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Search, X } from 'lucide-react';
 
 export default function SearchBar({ className = '', initialValue = '', onSearch, autoFocus = false }: { className?: string; initialValue?: string; onSearch?: () => void; autoFocus?: boolean }) {
   const router = useRouter();
   const [query, setQuery] = useState(initialValue);
-  const inputRef = useRef<HTMLInputElement>(null);
-
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -19,8 +17,8 @@ export default function SearchBar({ className = '', initialValue = '', onSearch,
 
   return <form className={`clean-search ${className}`.trim()} onSubmit={submit} role="search">
     <Search aria-hidden="true" />
-    <input ref={inputRef} value={query} onChange={event => setQuery(event.target.value)} aria-label="Search the archive" placeholder="Search notes, papers and study material" autoComplete="off" autoFocus={autoFocus} />
-    {query && <button type="button" className="clean-search-clear" aria-label="Clear search" onClick={() => { setQuery(''); inputRef.current?.focus(); }}><X /></button>}
+    <input value={query} onChange={event => setQuery(event.target.value)} aria-label="Search the archive" placeholder="Search notes, papers and study material" autoComplete="off" autoFocus={autoFocus} />
+    {query && <button type="button" className="clean-search-clear" aria-label="Clear search" onClick={() => setQuery('')}><X /></button>}
     <button type="submit" aria-label="Search"><ArrowRight /></button>
   </form>;
 }
