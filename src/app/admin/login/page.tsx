@@ -15,7 +15,7 @@ export default function AdminLoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!username || !password) {
-      showToast('Please enter your username and password', 'error');
+      showToast('Enter username and password', 'error');
       return;
     }
 
@@ -29,13 +29,13 @@ export default function AdminLoginPage() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        showToast('Welcome back!');
+        showToast('Admin authenticated successfully');
         router.push('/admin');
       } else {
-        showToast(data.error || 'Those details don’t match. Please try again.', 'error');
+        showToast(data.error || 'Invalid admin credentials', 'error');
       }
     } catch {
-      showToast('Couldn’t reach the server. Please try again.', 'error');
+      showToast('Login request failed', 'error');
     } finally {
       setLoading(false);
     }
@@ -62,9 +62,9 @@ export default function AdminLoginPage() {
             ADMIN ACCESS
           </span>
           <h1 className="font-display font-bold text-2xl text-zinc-900 dark:text-zinc-100">
-            Admin sign in
+            CMS Portal Login
           </h1>
-          <p className="text-xs text-zinc-500">Review submissions and manage the archive</p>
+          <p className="text-xs text-zinc-500">ARCHIVUM Academic Moderation & Resource Management</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4 text-left">
@@ -107,10 +107,17 @@ export default function AdminLoginPage() {
             disabled={loading}
             className="w-full py-3 rounded-full font-medium text-xs text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-50 transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
           >
-            {loading ? 'Signing in…' : 'Sign in'}
+            {loading ? 'Authenticating...' : 'Sign In to Portal'}
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
+
+        <div
+          className="pt-4 border-t text-[11px] text-zinc-400"
+          style={{ borderColor: 'var(--border-light)' }}
+        >
+          Default seed credentials: <code className="px-1.5 py-0.5 rounded font-mono text-zinc-700 dark:text-zinc-300 font-bold" style={{ backgroundColor: 'var(--surface-raised)' }}>admin / admin123</code>
+        </div>
       </div>
     </div>
   );

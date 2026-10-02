@@ -1,0 +1,114 @@
+/* ============================================================
+   Splash screen + author credit.
+   Loaded last, so nothing here needs !important.
+   Change the timing in components/SplashScreen.tsx, the credit
+   wording in lib/credit.ts.
+   ============================================================ */
+
+:root {
+  --splash-bg: #141a55;
+  --splash-bg-deep: #0e1340;
+  --splash-ink: #fff4c9;
+}
+
+/* ---------- Author credit (base styles, used by menu, about and splash) ---------- */
+.credit {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+.credit-name { font-weight: 700; color: var(--ink); }
+a.credit-name {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a.credit-name:hover { text-decoration-thickness: 2px; }
+
+.menu-credit {
+  padding: 16px 20px calc(18px + env(safe-area-inset-bottom, 0px));
+  text-align: center;
+  border-top: 1px solid var(--border-light);
+}
+
+/* Hide the page behind the splash, and paint the same navy before
+   React mounts so there is no light flash on a cold load. */
+html.archivum-booting body { visibility: visible; }
+html.archivum-booting body > *:not(.splash) { visibility: hidden; }
+html.archivum-booting::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  background: var(--splash-bg);
+}
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: grid;
+  place-items: center;
+  color: var(--splash-ink);
+  background:
+    radial-gradient(55% 45% at 50% 44%, #232b7a 0%, transparent 72%),
+    linear-gradient(165deg, var(--splash-bg) 0%, var(--splash-bg-deep) 100%);
+}
+.splash.is-leaving { animation: splashOut .45s ease forwards; }
+
+.splash-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 20px;
+  transform: translateY(-3vh);
+}
+
+/* The logo PNG has about a quarter of empty space on every side, so the box is
+   bigger than the glyph and the negative margins pull the wordmark back up. */
+.splash-mark {
+  display: block;
+  width: 120px;
+  height: 120px;
+  margin: -22px 0 -9px;
+  background: var(--splash-ink);
+  -webkit-mask: url('/archivum-mark-transparent.png') center / contain no-repeat;
+  mask: url('/archivum-mark-transparent.png') center / contain no-repeat;
+  animation: splashRise .7s cubic-bezier(.2, .7, .2, 1) .1s both;
+}
+
+.splash-word {
+  font-family: "Lato", Arial, sans-serif;
+  font-size: clamp(26px, 7vw, 40px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: .22em;
+  margin-right: -.22em; /* cancels the trailing letter-space so the word sits dead centre */
+  animation: splashRise .7s cubic-bezier(.2, .7, .2, 1) .35s both;
+}
+
+.splash-credit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 32px);
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: .02em;
+  color: color-mix(in srgb, var(--splash-ink) 62%, transparent);
+  animation: splashFade .6s ease 1s both;
+}
+.splash-credit .credit-name { color: var(--splash-ink); }
+
+@keyframes splashRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes splashFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes splashOut  { to { opacity: 0; visibility: hidden; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-mark, .splash-word, .splash-credit { animation: none; }
+  .splash.is-leaving { animation-duration: .2s; }
+}
+
+.ab-credit { padding: 8px 16px 32px; text-align: center; }

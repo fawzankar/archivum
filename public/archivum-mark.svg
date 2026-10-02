@@ -1,0 +1,5 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M256 70L391 408H344L312 326H200L168 408H121L256 70Z" fill="currentColor"/>
+  <path d="M218 281H294L256 181L218 281Z" fill="var(--logo-cutout,#fff)"/>
+  <path d="M205 326H307" stroke="currentColor" stroke-width="18" stroke-linecap="round"/>
+</svg>
