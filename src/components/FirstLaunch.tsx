@@ -14,6 +14,16 @@ const classes: { level: StudentClass; stage: string }[] = [
   { level: 12, stage: 'Senior Secondary' },
 ];
 
+// Lets the splash know the first real screen (home or onboarding) is mounted, so it never fades out onto a blank page.
+function markAppReady() {
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const root = document.documentElement;
+    if (root.dataset.axReady === '1') return;
+    root.dataset.axReady = '1';
+    window.dispatchEvent(new Event('archivum:app-ready'));
+  }));
+}
+
 export default function FirstLaunch() {
   const { studentClass, displayName, setStudentClass, setDisplayName } = useStudentClass();
   const router = useRouter();
@@ -28,6 +38,7 @@ export default function FirstLaunch() {
   useEffect(() => {
     if (pathname !== '/') {
       document.documentElement.classList.remove('profile-onboarding-active');
+      markAppReady();
       return;
     }
 
@@ -36,6 +47,7 @@ export default function FirstLaunch() {
     const shouldShow = !completed || ![9, 10, 11, 12].includes(storedClass);
     setVisible(shouldShow);
     document.documentElement.classList.toggle('profile-onboarding-active', shouldShow);
+    markAppReady();
   }, [pathname, studentClass]);
 
   const heading = useMemo(() => {

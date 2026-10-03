@@ -23,3 +23,10 @@ Required environment variables are listed in `.env.example`.
 - `public/manifest.json`, `public/icons/`, `public/offline.html` and `public/sw.js` make up the PWA. Bump `VERSION` in `sw.js` whenever you change cached assets.
 - `InstallPwaPrompt.tsx` shows the install card after the splash and onboarding. Closing it asks "Never show this again?"; "Never" is stored in `localStorage` under `archivum_pwa_install`, "Remind me later" snoozes for 3 days.
 - The service worker and install prompt only run in production builds (`npm run build && npm start`) over HTTPS or localhost.
+
+## Motion
+
+- `src/app/template.tsx` gives every page a fade-and-rise entrance; cards and tiles stagger in (`motion.css`).
+- The bottom nav (`MobileNav.tsx`) has one sliding pill; its look lives only in `motion.css`.
+- Toasts and the install card share one style in `src/components/feedback.css`.
+- The splash waits until the first real screen is mounted (`archivum:app-ready`, sent by `FirstLaunch`), then fades out over the finished page.

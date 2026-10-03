@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Download, Share, X } from 'lucide-react';
 import { useToast } from './ToastContext';
-import './InstallPwaPrompt.css';
+import './feedback.css';
 
 // Chrome/Edge/Samsung Internet fire this before they offer installation.
 interface InstallEvent extends Event {
@@ -44,6 +44,13 @@ function detectPlatform(): Platform {
   if (/iphone|ipad|ipod/i.test(ua) || (/Macintosh/i.test(ua) && navigator.maxTouchPoints > 1)) return 'ios';
   return /android/i.test(ua) ? 'android' : 'desktop';
 }
+
+// Short, scannable version shown in the dialog.
+const LATER_STEPS: Record<Platform, string> = {
+  ios: 'Tap the Share button, then Add to Home Screen.',
+  android: 'Tap the ⋮ (3 dots) menu, then Install app.',
+  desktop: 'Click the install icon in the address bar, or open ⋮ and choose Install ARCHIVUM.',
+};
 
 const LATER_HINT: Record<Platform, string> = {
   ios: 'Tap the Share button, then choose Add to Home Screen.',
@@ -155,8 +162,8 @@ export default function InstallPwaPrompt() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') { e.preventDefault(); later(); }
       if (e.key === 'Tab') {
-        const first = neverButton.current;
-        const last = laterButton.current;
+        const first = laterButton.current;
+        const last = neverButton.current;
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
       }
@@ -174,7 +181,7 @@ export default function InstallPwaPrompt() {
         <span className="ax-install__icon" aria-hidden="true"><span className="archivum-css-logo" /></span>
         <div className="ax-install__copy">
           <strong>Install ARCHIVUM</strong>
-          <p>{ios ? 'Tap Share, then Add to Home Screen.' : 'Open it like an app and read saved PDFs offline.'}</p>
+          <p>{ios ? 'Tap Share, then Add to Home Screen.' : 'Works offline, like an app.'}</p>
         </div>
         <button type="button" className="ax-install__go" onClick={install}>
           {ios ? <Share aria-hidden="true" /> : <Download aria-hidden="true" />}
@@ -195,13 +202,16 @@ export default function InstallPwaPrompt() {
             aria-describedby="ax-install-text"
             onClick={e => e.stopPropagation()}
           >
+            <span className="ax-install-dialog__badge" aria-hidden="true"><Download /></span>
             <h2 id="ax-install-title">Never show this again?</h2>
-            <p id="ax-install-text">
-              Want to install later instead? {LATER_HINT[platform]}
-            </p>
+            <p id="ax-install-text">Want to install later instead? You can do it any time from your browser.</p>
+            <div className="ax-install-dialog__hint">
+              <span className="ax-install-dialog__dots" aria-hidden="true">{ios ? <Share /> : '⋮'}</span>
+              <span>{LATER_STEPS[platform]}</span>
+            </div>
             <div className="ax-install-dialog__actions">
-              <button ref={neverButton} type="button" className="ax-install-dialog__never" onClick={never}>Never show again</button>
               <button ref={laterButton} type="button" className="ax-install-dialog__later" onClick={later}>Remind me later</button>
+              <button ref={neverButton} type="button" className="ax-install-dialog__never" onClick={never}>Never show again</button>
             </div>
           </div>
         </div>

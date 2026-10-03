@@ -4,6 +4,7 @@ import '@fontsource/lato/latin-700.css';
 import '@fontsource/lato/latin-900.css';
 import './globals.css';
 import './hero-v2.css';
+import './motion.css';
 import { Suspense } from 'react';
 import { ThemeProvider } from '@/components/ThemeContext';
 import { ToastProvider } from '@/components/ToastContext';

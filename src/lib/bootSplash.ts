@@ -25,9 +25,9 @@ export const BOOT_CSS = [
   // While booting, nothing but the splash is visible, so the home page can never flash before it.
   'html.ax-booting{background:var(--ax-solid)!important;overflow:hidden!important}',
   'html.ax-booting body{overflow:hidden!important}',
-  'html.ax-booting body>*:not(.ax-splash){visibility:hidden!important}',
+  'html.ax-booting body>*:not(.ax-splash),html.ax-booting body>*:not(.ax-splash) *{visibility:hidden!important}',
   '.ax-splash{display:none}',
-  'html.ax-booting .ax-splash{display:grid;visibility:visible!important}',
+  'html.ax-booting .ax-splash,html.ax-leaving .ax-splash{display:grid;visibility:visible!important}',
   '.ax-splash{position:fixed;inset:0;z-index:2147483647;place-items:center;overflow:hidden;color:var(--ax-ink);' +
     'background:radial-gradient(circle at 24% 24%,var(--ax-glow-a) 0,transparent 34%),radial-gradient(circle at 78% 72%,var(--ax-glow-b) 0,transparent 30%),linear-gradient(140deg,var(--ax-c1) 0%,var(--ax-c2) 48%,var(--ax-c3) 100%);' +
     'transition:opacity .45s ease,transform .45s ease}',

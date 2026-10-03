@@ -138,15 +138,6 @@ a{text-decoration:none;color:inherit}
 .profile-continue:disabled{opacity:.4;cursor:not-allowed}
 .profile-continue svg{width:18px}
 /* Footer and mobile nav */
-.mobile-nav{display:none;position:fixed;left:10px;right:10px;bottom:max(9px,env(safe-area-inset-bottom));height:68px;z-index:90;background:color-mix(in srgb,var(--surface) 95%,transparent);border:1px solid var(--border);border-radius:20px;box-shadow:0 18px 50px rgba(10,22,30,.17);backdrop-filter:blur(18px);padding:5px}
-.mobile-nav-inner{height:100%;display:grid;grid-template-columns:repeat(5,1fr)}
-.mobile-nav-link{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--ink-faint);font-size:10px;font-weight:600;border-radius:14px}
-.mobile-nav-link::before{content:"";position:absolute;inset:7px 50% auto;width:46px;height:28px;transform:translateX(-50%) scale(.7);border-radius:12px;background:var(--accent-light);opacity:0;transition:.22s ease}
-.mobile-nav-link.active{color:var(--accent)}
-.mobile-nav-link.active::before{opacity:1;transform:translateX(-50%) scale(1)}
-.mobile-nav-link svg,.mobile-nav-link span{position:relative;z-index:1}
-.mobile-nav-link svg{width:19px;height:19px}
-.mobile-nav-link:active{transform:scale(.93)}
 .nav-progress{position:fixed;top:0;left:0;right:0;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;opacity:0;z-index:300;transition:transform .2s ease,opacity .2s ease}
 .nav-progress.is-active{opacity:1;transform:scaleX(.75);animation:progress .8s ease-in-out infinite alternate}
 @keyframes progress{to{transform:scaleX(1)}}
@@ -161,7 +152,6 @@ a{text-decoration:none;color:inherit}
 .site-header-inner{height:66px}
 .header-menu span{display:none}
 .header-menu{width:40px;justify-content:center;padding:0}
-.mobile-nav{display:block}
 }
 @media(max-width:640px) {
 body{font-size:14px}
@@ -176,8 +166,6 @@ body{font-size:14px}
 .subject-tile{min-height:88px;padding:13px}
 .resource-card{min-height:220px}
 .resource-card h3{font-size:18px}
-.mobile-nav{left:8px;right:8px;height:65px}
-.mobile-nav-link{font-size:9px}
 .profile-onboarding{padding:12px}
 .profile-onboarding-panel{padding:23px;border-radius:22px}
 .profile-onboarding-copy{margin-top:24px}
@@ -248,7 +236,6 @@ h1,h2,h3{letter-spacing:-.02em}
 .subject-modal{border-radius:var(--r-lg)}
 .subject-modal-art{width:96px;height:96px;margin-bottom:8px}
 .subject-choice-grid button{border-radius:var(--r-md)}
-.mobile-nav{border-radius:999px;box-shadow:var(--soft)}
 .art{display:block;width:100%;height:auto}
 .hm-shell{width:min(1120px,calc(100% - 40px));margin-inline:auto;padding:28px 0 120px;display:grid;gap:44px}
 .hm-jump{display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -304,9 +291,6 @@ main img{border-radius:10px}
 .ab-art{position:absolute;right:14px;bottom:10px;width:120px;transform:rotate(-6deg)}
 .ab-links{display:flex;flex-wrap:wrap;gap:12px}
 .ab-link{padding:13px 22px;border-radius:999px;background:#fff;color:var(--navy);font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.06)}
-.mobile-nav{background:var(--navy);border:0}
-.mobile-nav-link{color:#c9cffd}
-.mobile-nav-link.active{color:var(--navy);background:var(--sun);border-radius:999px}
 .menu-drawer{background:var(--ivory);border-radius:14px 0 0 28px}
 .menu-links a{border-radius:16px}
 .menu-links a.active{background:var(--sun);color:var(--navy)}
@@ -344,10 +328,6 @@ body{font-family:"Lato",Arial,sans-serif}
 .menu-links a.active{background:var(--navy);color:#fff}
 .accent-swatch.active{background:var(--navy);color:#fff}
 .accent-swatch span{border-radius:8px;height:26px;display:block}
-/* bottom nav */
-.mobile-nav{background:var(--navy);border-radius:16px;left:10px;right:10px;height:64px;box-shadow:0 4px 12px rgba(0,0,0,.12)}
-.mobile-nav-link{color:rgba(255,255,255,.72);border-radius:12px}
-.mobile-nav-link.active{background:var(--sun);color:var(--navy);font-weight:700}
 /* home */
 .hm-shell{gap:32px}
 .hm-jump-card{min-height:210px;padding:24px}
@@ -426,9 +406,6 @@ main .max-w-6xl {padding-left:14px;padding-right:14px}
 input,select,textarea{font-size:16px!important}
 .header-action{min-height:44px}
 body{padding-bottom:env(safe-area-inset-bottom)}
-}
-@media(min-width:1024px) {
-.mobile-nav{display:none!important}
 }
 /* Header/search: one menu control, and a search field without the bulky surrounding panel. */
 .header-menu{min-width:82px;justify-content:center}
@@ -1861,7 +1838,6 @@ small,
 .menu-layer{z-index:2000!important}
 .menu-drawer{z-index:2002!important}
 .menu-scrim{z-index:2001!important}
-.mobile-nav{z-index:1000!important}
 /* Notes class selector: proper segmented control instead of unstyled tabs. */
 .notes-seg{
   display:grid!important;
@@ -1915,7 +1891,6 @@ body{padding-top:72px!important}
 .menu-layer{z-index:3000!important}
 .menu-drawer{z-index:3002!important}
 .menu-scrim{z-index:3001!important}
-.mobile-nav{z-index:1900!important}
 /* Contributors get the same lively surface language as the rest of Archivum. */
 main:has(.contributors-intro){background:transparent!important}
 .contributors-thankyou{
@@ -1965,7 +1940,6 @@ html.profile-onboarding-active body {
   height: 100%;
 }
 html.profile-onboarding-active .site-header,
-html.profile-onboarding-active .mobile-nav,
 html.profile-onboarding-active .nav-progress {
   display: none !important;
 }
@@ -2287,9 +2261,6 @@ html.profile-onboarding-active .cls-sub .art{width:19px!important;height:19px!im
 }
 :root[data-accent="crimson-veil"] .site-header,.site-header.is-scrolled{background:rgba(44,5,18,.88);backdrop-filter:blur(16px);color:#fff}
 :root[data-accent="crimson-veil"] .brand-logo{background:#fff;color:#610027;border-color:#fff}
-:root[data-accent="crimson-veil"] .mobile-nav{background:rgba(32,4,14,.92);border-color:rgba(255,255,255,.14)}
-:root[data-accent="crimson-veil"] .mobile-nav-link{color:rgba(255,255,255,.58)}
-:root[data-accent="crimson-veil"] .mobile-nav-link.active{color:#fff}
 /* Theme picker active state */
 .accent-grid{grid-template-columns:repeat(6,minmax(0,1fr));gap:7px}
 .accent-swatch{position:relative;min-height:66px;padding:7px 3px;cursor:pointer;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
@@ -2297,20 +2268,6 @@ html.profile-onboarding-active .cls-sub .art{width:19px!important;height:19px!im
 .accent-swatch.active{border:2px solid var(--accent);background:var(--accent-light);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent),0 10px 24px var(--app-shadow);transform:translateY(-2px)}
 .accent-swatch.active::after{content:"✓";position:absolute;right:4px;top:4px;width:16px;height:16px;display:grid;place-items:center;border-radius:50%;background:var(--accent);color:var(--accent-contrast);font-size:11px;font-weight:900}
 .accent-swatch span{width:28px;height:28px;border-radius:8px}
-/* Better bottom navigation */
-.mobile-nav{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:max(12px,env(safe-area-inset-bottom));height:72px;padding:6px;border-radius:24px;background:color-mix(in srgb,var(--surface) 94%,transparent);border:1px solid color-mix(in srgb,var(--accent) 16%,var(--border));box-shadow:0 18px 45px rgba(8,18,26,.18),0 3px 12px var(--app-shadow);backdrop-filter:blur(22px) saturate(1.25)}
-.mobile-nav-inner{gap:4px}
-.mobile-nav-link{min-width:0;gap:4px;padding:3px 4px;color:var(--ink-faint);border-radius:18px;transition:transform .18s ease,color .18s ease,background .18s ease}
-.mobile-nav-link::before{inset:7px 50% auto;width:54px;height:36px;border-radius:16px;background:var(--accent-light);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 10%,transparent)}
-.mobile-nav-link.active{color:var(--accent);font-weight:800}
-.mobile-nav-link.active svg{stroke-width:2.6}
-.mobile-nav-link span{font-size:10px;line-height:1}
-.mobile-nav-link:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:-2px}
-@media(max-width:640px) {
-.mobile-nav{height:68px;left:8px;right:8px;border-radius:22px}
-.mobile-nav-link svg{width:20px;height:20px}
-.mobile-nav-link span{font-size:9px}
-}
 /* Subject cards open the Notes/PYQs chooser */
 .hm-subject-home-card{padding:0!important;min-height:225px!important}
 .hm-subject-home-card>.subject-tile{min-height:225px;width:100%;height:100%;padding:18px;border:0!important;border-radius:inherit;background:transparent!important;box-shadow:none!important;color:inherit!important}
@@ -2397,9 +2354,6 @@ html.profile-onboarding-active .cls-sub .art{width:19px!important;height:19px!im
 :root[data-accent="crimson-veil"] .site-header,
 :root[data-accent="crimson-veil"] .site-header.is-scrolled{background:color-mix(in srgb,var(--surface) 94%,transparent);color:var(--ink);border-bottom-color:var(--border)}
 :root[data-accent="crimson-veil"] .brand-logo{background:var(--navy);color:#fff;border-color:var(--navy)}
-:root[data-accent="crimson-veil"] .mobile-nav{background:color-mix(in srgb,var(--surface) 95%,transparent);border-color:var(--border)}
-:root[data-accent="crimson-veil"] .mobile-nav-link{color:var(--ink-faint)}
-:root[data-accent="crimson-veil"] .mobile-nav-link.active{color:var(--accent)}
 :root[data-accent="crimson-veil"] .accent-swatch.active small{color:var(--accent)!important}
 /* Final fixes: lock the document behind overlays and keep the PDF reader pinchable. */
 html.overlay-scroll-locked,
@@ -2419,67 +2373,6 @@ body.overlay-scroll-locked{
 .menu-layer.open .menu-drawer{
   touch-action:auto;
 }
-/* Theme-aware splash contrast: each light gradient gets a dark, readable theme colour. */
-:root[data-accent="indigo"]{--sp-text:#1b2166}
-:root[data-accent="forest"]{--sp-text:#0f4d2e}
-:root[data-accent="smoky-olive"]{--sp-text:#565449}
-:root[data-accent="smoky-ink"]{--sp-text:#202329}
-:root[data-accent="soft-pink"]{--sp-text:#7d294c}
-:root[data-accent="crimson-veil"]{--sp-text:#610027}
-/* Splash text contrast: choose a strong colour for each light theme instead of
-   the previous near-white text that disappeared into the gradient. */
-:root[data-accent="indigo"]{--sp-text:#161c59}
-:root[data-accent="forest"]{--sp-text:#0b3a24}
-:root[data-accent="smoky-olive"]{--sp-text:#3e3c34}
-:root[data-accent="smoky-ink"]{--sp-text:#1f2328}
-:root[data-accent="soft-pink"]{--sp-text:#762744}
-:root[data-accent="crimson-veil"]{--sp-text:#5a0027}
-/* Minimal bottom navigation: no active pill/capsule.  The active item is only a
-   small accent dot + accent typography, keeping the bar visually quiet. */
-.mobile-nav{height:64px!important;padding:5px!important;border-radius:22px!important;box-shadow:0 12px 32px var(--app-shadow)!important}
-.mobile-nav-inner{gap:0!important}
-.mobile-nav-link{gap:3px!important;background:transparent!important;border-radius:12px!important;color:var(--ink-faint)!important;font-weight:600!important;transform:none!important}
-.mobile-nav-link::before{content:""!important;inset:auto auto 5px 50%!important;width:4px!important;height:4px!important;border-radius:50%!important;background:var(--accent)!important;box-shadow:none!important;opacity:0!important;transform:translateX(-50%)!important;transition:opacity .18s ease!important}
-.mobile-nav-link.active{color:var(--accent)!important;font-weight:700!important;background:transparent!important}
-.mobile-nav-link.active::before{opacity:1!important;transform:translateX(-50%)!important}
-.mobile-nav-link.active svg{stroke-width:2.2!important}
-.mobile-nav-link svg{width:18px!important;height:18px!important}
-.mobile-nav-link span{font-size:9px!important;line-height:1!important}
-/* Ultra-quiet bottom navigation: active state is a tiny underline only. */
-.mobile-nav{
-  height:58px!important;
-  padding:4px 8px!important;
-  border-radius:18px!important;
-}
-.mobile-nav-link{
-  position:relative!important;
-  background:transparent!important;
-  color:var(--ink-faint)!important;
-  font-weight:600!important;
-  gap:2px!important;
-}
-.mobile-nav-link::before{
-  width:18px!important;
-  height:2px!important;
-  bottom:2px!important;
-  border-radius:999px!important;
-  opacity:0!important;
-}
-.mobile-nav-link.active{
-  color:var(--accent)!important;
-  font-weight:700!important;
-}
-.mobile-nav-link.active::before{
-  opacity:1!important;
-}
-/* Strong, theme-specific splash contrast. The current splash compositions are
-   light, so dark editorial ink is intentionally used instead of faint cream. */
-:root[data-accent="indigo"]{--sp-text:#1b255f}
-:root[data-accent="forest"]{--sp-text:#123f2a}
-:root[data-accent="smoky-olive"]{--sp-text:#454238}
-:root[data-accent="smoky-ink"]{--sp-text:#20252b}
-:root[data-accent="soft-pink"]{--sp-text:#70273f}
-:root[data-accent="crimson-veil"]{--sp-text:#610027}
 /* ARCHIVUM PDF reader: one fitting scroll viewport for regular and fullscreen modes. */
 .pdf-reader-shell{position:fixed;inset:0;z-index:2147483000;display:grid;place-items:center;padding:12px;background:rgba(5,11,16,.72)}
 .pdf-reader-window{position:relative;width:min(1500px,calc(100vw - 24px));height:min(94dvh,1100px);min-width:0;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden;border:1px solid var(--border);border-radius:18px;background:#e8edf1;box-shadow:0 30px 100px rgba(0,0,0,.32)}

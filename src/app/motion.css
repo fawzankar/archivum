@@ -1,0 +1,95 @@
+/* =====================================================================
+   Motion + smoothness layer. Loaded last, so it is the single source of truth for:
+   page transitions, the bottom navigation, list entrances, press feedback and the Notes subject circles.
+   ===================================================================== */
+:root{--ax-ease:cubic-bezier(.2,.8,.2,1);--ax-spring:cubic-bezier(.34,1.45,.5,1)}
+
+/* ---------- Whole-app smoothness ---------- */
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-rendering:optimizeLegibility}
+a,button,[role="button"],[role="tab"],[role="radio"],summary,label,input,select,textarea,
+.resource-card,.subject-tile,.hm-jump-card{
+  transition-property:background-color,border-color,color,box-shadow,opacity,transform,scale;
+  transition-duration:.22s;transition-timing-function:var(--ax-ease);
+}
+/* Press feedback uses the independent `scale` property so it never fights an element's own transform. */
+button:not(:disabled):active,[role="tab"]:active,[role="radio"]:active,
+.resource-card:active,.subject-tile:active,.hm-jump-card:active,.notes-subject-card:active{scale:.965}
+.ax-page{animation:axPageIn .38s var(--ax-ease) backwards}
+@keyframes axPageIn{from{opacity:0;transform:translateY(12px)}}
+
+/* Cards and tiles rise in one after another. */
+.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card){animation:axRise .5s var(--ax-ease) backwards}
+.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card):nth-child(1){animation-delay:.03s}
+.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card):nth-child(2){animation-delay:.07s}
+.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card):nth-child(3){animation-delay:.11s}
+.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card):nth-child(4){animation-delay:.15s}
+.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card):nth-child(5){animation-delay:.19s}
+.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card):nth-child(6){animation-delay:.23s}
+.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card):nth-child(n+7){animation-delay:.27s}
+@keyframes axRise{from{opacity:0;transform:translateY(16px) scale(.98)}}
+
+/* ---------- Bottom navigation ---------- */
+.mobile-nav{
+  display:none;position:fixed;z-index:1000;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));
+  height:64px;padding:5px;border-radius:24px;
+  background:color-mix(in srgb,var(--surface) 92%,transparent);
+  -webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);
+  border:1px solid color-mix(in srgb,var(--accent) 14%,var(--border));
+  box-shadow:0 14px 36px var(--app-shadow);
+}
+@media(max-width:1023px){.mobile-nav{display:block}}
+html.profile-onboarding-active .mobile-nav{display:none!important}
+.mobile-nav-inner{position:relative;height:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.mobile-nav-pill{
+  position:absolute;top:0;bottom:0;left:0;width:20%;display:flex;justify-content:center;align-items:flex-start;padding-top:3px;pointer-events:none;
+  transform:translateX(calc(var(--i,0) * 100%));
+  transition:transform .55s var(--ax-spring),opacity .25s ease;
+}
+.mobile-nav-pill.is-hidden{opacity:0}
+.mobile-nav-pill i{
+  display:block;width:52px;height:30px;border-radius:15px;
+  background:color-mix(in srgb,var(--accent) 14%,transparent);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 12%,transparent);
+}
+.mobile-nav-link{
+  position:relative;z-index:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  padding:3px 2px;border-radius:18px;color:var(--ink-faint);font-size:9.5px;font-weight:700;line-height:1;
+}
+.mobile-nav-link svg{width:20px;height:20px;transition:transform .45s var(--ax-spring),stroke-width .2s ease}
+.mobile-nav-link span{transition:color .25s ease,transform .45s var(--ax-spring)}
+.mobile-nav-link.active{color:var(--accent)}
+.mobile-nav-link.active svg{transform:translateY(-1px) scale(1.12);stroke-width:2.4}
+.mobile-nav-link.active span{transform:translateY(1px)}
+.mobile-nav-link:active svg{transform:scale(.86)}
+.mobile-nav-link:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 35%,transparent);outline-offset:-3px}
+
+/* ---------- Notes: subject animation lives inside a circle (Android + desktop) ---------- */
+.notes-subject-card{justify-content:flex-start!important;align-items:flex-start!important;min-height:0!important}
+.notes-subject-card .notes-subject-art{
+  position:relative;display:grid!important;place-items:center!important;
+  width:68px!important;height:68px!important;flex:0 0 68px!important;margin:0 0 12px!important;align-self:flex-start!important;
+  border-radius:50%!important;
+  overflow:hidden!important;                      /* the animated parts can never leave the circle */
+  clip-path:circle(50% at 50% 50%);
+  -webkit-mask-image:-webkit-radial-gradient(#fff,#000); /* Android Chrome / Safari clip fix for animated children */
+  isolation:isolate;contain:paint;
+  background:color-mix(in srgb,var(--subject-card-accent,var(--accent)) 13%,var(--surface))!important;
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--subject-card-accent,var(--accent)) 24%,transparent);
+  transition:transform .35s var(--ax-spring),box-shadow .25s ease,background .25s ease!important;
+}
+.notes-subject-card .notes-subject-art .art{
+  width:72%!important;height:72%!important;max-width:none!important;max-height:none!important;display:block!important;margin:0!important;
+}
+.notes-subject-card:hover .notes-subject-art{transform:scale(1.06)}
+.notes-subject-card.active .notes-subject-art{
+  background:var(--surface)!important;
+  box-shadow:inset 0 0 0 2px var(--subject-card-accent,var(--accent)),0 6px 16px color-mix(in srgb,var(--subject-card-accent,var(--accent)) 25%,transparent);
+}
+@media(max-width:700px){
+  .notes-subject-card .notes-subject-art{width:56px!important;height:56px!important;flex-basis:56px!important;margin-bottom:9px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .ax-page,.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card){animation:none!important}
+  .mobile-nav-pill,.mobile-nav-link svg,.mobile-nav-link span{transition-duration:.01ms!important}
+}
