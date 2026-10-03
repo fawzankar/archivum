@@ -5,6 +5,15 @@ import { ArrowRight, GraduationCap } from 'lucide-react';
 import SubjectPicker from '@/components/SubjectPicker';
 import { CLASS_SUBJECTS, SUBJECT_DETAILS } from '@/lib/subjects';
 import { getPreferredClass } from '@/lib/studentClass';
+import type { Metadata } from 'next';
+import { OG_IMAGE } from '@/lib/site';
+
+export const metadata: Metadata = {
+  title: 'Subjects: Notes & Papers by Class',
+  description: 'Browse notes and previous papers by subject for Classes 9 to 12: Maths, Science, SST, English, Hindi, Urdu, Physics, Chemistry and Biology.',
+  alternates: { canonical: '/subjects' },
+  openGraph: { title: 'Subjects | ARCHIVUM', description: 'Pick a subject to find notes and papers for your class.', url: '/subjects', type: 'website', images: [OG_IMAGE] },
+};
 
 export const revalidate = 0;
 

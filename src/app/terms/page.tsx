@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Terms of Service | ARCHIVUM',
+  title: 'Terms of Service',
   description: 'Terms of Service and educational usage guidelines for ARCHIVUM.',
 };
 

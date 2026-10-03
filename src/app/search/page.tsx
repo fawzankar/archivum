@@ -3,6 +3,13 @@ import { getPreferredClass } from '@/lib/studentClass';
 import PageHead from '@/components/PageHead';
 import { getResources } from '@/lib/resources';
 import SearchClient from './SearchClient';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Search Notes & Papers',
+  description: 'Search every note and previous paper on ARCHIVUM by title, subject, class or year.',
+  robots: { index: false, follow: true },
+};
 
 export const revalidate = 60;
 

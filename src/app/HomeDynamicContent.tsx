@@ -22,7 +22,7 @@ export function HomeHeroContent() {
     <div className="hx-copy">
       <PersonalGreeting activeClass={activeClass} />
       <p className="hx-intro">
-        Your Class {activeClass} Notes, PYQs and Study Material, all organised in one place so that you can find whatever you need.
+        Your Class {activeClass} notes, previous-year papers, and study material — neatly organised so you can find what you need without digging through folders.
       </p>
       <div className="hx-search"><HomeClient /></div>
     </div>
@@ -56,11 +56,11 @@ export default function HomeDynamicContent({ recentByClass }: { recentByClass: R
       <section className="hm-jump" aria-label="Start here">
         <Link href={`/notes?class=${activeClass}`} className="hm-jump-card hm-sun">
           <div className="hm-jump-icon"><Art name="notes" /></div>
-          <div><h2>Class {activeClass} Notes</h2><p>Chapter wise notes and all the extra study material you need, neatly organised in one place.</p><span className="hm-pill">Open Notes</span></div>
+          <div><h2>Class {activeClass} Notes</h2><p>Chapter-wise notes, summaries, and revision material in one place.</p><span className="hm-pill">Open Notes</span></div>
         </Link>
         <Link href={`/previous-papers?class=${activeClass}`} className="hm-jump-card hm-peri">
           <div className="hm-jump-icon"><Art name="papers" /></div>
-          <div><h2>Previous Year Question Papers</h2><p>Previous Year Question Papers to practise, revise, and prepare with confidence.</p><span className="hm-pill">Find Papers</span></div>
+          <div><h2>Previous Papers</h2><p>Previous-year papers to practise, revise, and prepare with confidence.</p><span className="hm-pill">Find Papers</span></div>
         </Link>
       </section>
 

@@ -2,6 +2,16 @@ import React from 'react';
 import PageHead from '@/components/PageHead';
 import { getTipsBundle } from '@/lib/tips';
 import TipsClient from './TipsClient';
+import type { Metadata } from 'next';
+import { OG_IMAGE } from '@/lib/site';
+
+export const metadata: Metadata = {
+  title: 'Exam Tips & Tricks from the SJS Community',
+  description: 'Study tips, exam strategies and shortcuts shared by students for Classes 9 to 12. Learn how to revise smarter before boards and annual exams.',
+  keywords: ['exam tips', 'study tips for students', 'board exam preparation', 'revision tricks', 'how to score well in exams'],
+  alternates: { canonical: '/tips' },
+  openGraph: { title: 'Exam Tips & Tricks | ARCHIVUM', description: 'Student-shared study tips and exam strategies.', url: '/tips', type: 'website', images: [OG_IMAGE] },
+};
 
 export const revalidate=300;
 

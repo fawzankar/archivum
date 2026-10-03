@@ -181,7 +181,7 @@ export default function InstallPwaPrompt() {
         <span className="ax-install__icon" aria-hidden="true"><span className="archivum-css-logo" /></span>
         <div className="ax-install__copy">
           <strong>Install ARCHIVUM</strong>
-          <p>{ios ? 'Tap Share, then Add to Home Screen.' : 'Works offline, like an app.'}</p>
+          <p>{ios ? 'Tap Share, then Add to Home Screen.' : 'Open it like an app from your home screen.'}</p>
         </div>
         <button type="button" className="ax-install__go" onClick={install}>
           {ios ? <Share aria-hidden="true" /> : <Download aria-hidden="true" />}

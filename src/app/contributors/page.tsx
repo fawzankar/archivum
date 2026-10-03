@@ -2,6 +2,16 @@ import { unstable_cache } from 'next/cache';
 import { query } from '@/lib/db';
 import { Users, Upload, Trophy, Camera, Mail, Heart } from 'lucide-react';
 import PageHead from '@/components/PageHead';
+import type { Metadata } from 'next';
+import { OG_IMAGE } from '@/lib/site';
+
+export const metadata: Metadata = {
+  title: 'Contributors: Students Who Share Notes & Papers',
+  description: 'Meet the students who upload notes and previous papers to ARCHIVUM, and see how you can contribute study material for your batch.',
+  keywords: ['contributors', 'share notes', 'upload study material', 'student community', 'ARCHIVUM contributors'],
+  alternates: { canonical: '/contributors' },
+  openGraph: { title: 'Contributors | ARCHIVUM', description: 'Students who keep the archive growing.', url: '/contributors', type: 'website', images: [OG_IMAGE] },
+};
 
 // Render on request instead of during `next build`, so a Turso hiccup can never fail a deploy.
 // The query result is still cached for 5 minutes by unstable_cache below.
