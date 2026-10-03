@@ -76,8 +76,8 @@ const STRUCTURED_DATA = [
   },
 ];
 
-// Libre Baskerville is only used for the QUEST wordmark, so it loads after the page instead of blocking the first paint.
-const LATE_FONTS = `addEventListener('load',function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap';document.head.appendChild(l)})`;
+// Libre Baskerville is used for the QUEST wordmark (splash, header, menu), so it starts loading right away without blocking paint.
+const LATE_FONTS = `(function(){var l=document.createElement('link');l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&display=swap';document.head.appendChild(l)})()`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

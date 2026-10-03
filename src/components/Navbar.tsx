@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import SearchBar from './SearchBar';
-import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink } from 'lucide-react';
+import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink, Moon, Sun } from 'lucide-react';
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],
@@ -22,7 +22,6 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const lockedScrollY = React.useRef(0);
 
   useEffect(() => { setProfileReady(true); }, []);
 
@@ -32,29 +31,14 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', f);
   }, []);
   useEffect(() => {
+    // Lock page scroll behind the menu/search with overflow only. Making <body> position:fixed made the page vanish.
     const locked = drawerOpen || searchOpen;
     const html = document.documentElement;
-    const body = document.body;
-
-    if (locked) {
-      lockedScrollY.current = window.scrollY;
-      html.classList.add('overlay-scroll-locked');
-      body.classList.add('overlay-scroll-locked');
-      body.style.top = `-${lockedScrollY.current}px`;
-      body.style.width = '100%';
-    } else {
-      html.classList.remove('overlay-scroll-locked');
-      body.classList.remove('overlay-scroll-locked');
-      body.style.top = '';
-      body.style.width = '';
-      window.scrollTo(0, lockedScrollY.current);
-    }
-
+    html.classList.toggle('overlay-scroll-locked', locked);
+    document.body.classList.toggle('overlay-scroll-locked', locked);
     return () => {
       html.classList.remove('overlay-scroll-locked');
-      body.classList.remove('overlay-scroll-locked');
-      body.style.top = '';
-      body.style.width = '';
+      document.body.classList.remove('overlay-scroll-locked');
     };
   }, [drawerOpen, searchOpen]);
   useEffect(() => { setDrawerOpen(false); setSearchOpen(false); }, [pathname]);
@@ -66,6 +50,7 @@ export default function Navbar() {
   const visibleStudentClass = profileReady ? studentClass : null;
   const visibleDisplayName = profileReady ? displayName : '';
   const visibleAccent = profileReady ? accent : 'indigo';
+  const visibleMode = profileReady ? mode : 'light';
   const withClass = (href: string) => visibleStudentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${visibleStudentClass}` : href;
   const active = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 
@@ -115,6 +100,11 @@ export default function Navbar() {
           <div className="menu-links">{links.map(([label,href,Icon]) => <Link key={href} href={withClass(href)} onClick={() => setDrawerOpen(false)} className={active(href) ? 'active' : ''}><Icon /><span>{label}</span><ChevronRight /></Link>)}</div>
 
           <div className="menu-section menu-appearance">
+            <button type="button" role="switch" aria-checked={visibleMode === 'dark'} aria-label="Dark mode" className={`dark-toggle ${visibleMode === 'dark' ? 'is-on' : ''}`} onClick={() => setMode(visibleMode === 'dark' ? 'light' : 'dark')}>
+              <span className="dark-toggle-icon">{visibleMode === 'dark' ? <Moon /> : <Sun />}</span>
+              <span className="dark-toggle-text"><strong>Dark mode</strong><small>{visibleMode === 'dark' ? 'On' : 'Off'}</small></span>
+              <span className="dark-toggle-track" aria-hidden="true"><i /></span>
+            </button>
             <div className="menu-section-label">Theme Palette</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${visibleAccent === item.id ? 'active' : ''}`}><span style={{ backgroundColor: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>

@@ -22,6 +22,7 @@ export const ACCENT_IDS = THEMES.map(t => t[0]);
 export const BOOT_CSS = [
   `:root{--ax-mark:url("${MARK}");${vars(THEMES[0])}}`,
   ...THEMES.slice(1).map(t => `html[data-accent="${t[0]}"]{${vars(t)}}`),
+  'html.dark{--ax-glow-a:rgba(120,135,255,.20);--ax-glow-b:rgba(255,199,95,.08);--ax-c1:#0f1419;--ax-c2:#131a21;--ax-c3:#0c1116;--ax-ink:#eef2f6;--ax-solid:#0f1419}',
   // While booting, nothing but the splash is visible, so the home page can never flash before it.
   'html.ax-booting{background:var(--ax-solid)!important;overflow:hidden!important}',
   'html.ax-booting body{overflow:hidden!important}',
@@ -36,6 +37,7 @@ export const BOOT_CSS = [
   '.ax-splash__mark{width:clamp(84px,22vw,116px);aspect-ratio:1.05;background:var(--ax-ink);-webkit-mask:var(--ax-mark) center/contain no-repeat;mask:var(--ax-mark) center/contain no-repeat;animation:axPop .6s cubic-bezier(.2,.8,.2,1) both}',
   '.ax-splash__word{margin-top:22px;font-family:"Lato",system-ui,Arial,sans-serif;font-size:clamp(28px,8vw,52px);font-weight:900;letter-spacing:.18em;line-height:1;text-indent:.18em;animation:axUp .6s ease .12s both}',
   '.ax-splash__kicker{margin:16px 0 0;font-family:"Lato",system-ui,Arial,sans-serif;font-size:clamp(9.5px,2.6vw,11px);font-weight:700;letter-spacing:.24em;opacity:.8;animation:axUp .6s ease .28s both}',
+  '.ax-splash__quest{font-family:"Libre Baskerville",Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:.2em}',
   '.ax-splash__bar{display:block;position:relative;width:min(230px,58vw);height:3px;margin-top:26px;border-radius:99px;overflow:hidden}',
   '.ax-splash__bar::before,.ax-splash__bar i{content:"";position:absolute;inset:0;background:var(--ax-ink)}',
   '.ax-splash__bar::before{opacity:.16}',
@@ -50,4 +52,4 @@ export const BOOT_CSS = [
 
 // Runs before anything is painted: applies the saved theme, switches the splash on and keeps hold of the
 // install event (it can fire before React is ready). If the app never boots, the splash lets go after 9s.
-export const BOOT_SCRIPT = `(function(d,w){var r=d.documentElement;r.classList.add('ax-booting');try{var a=localStorage.getItem('archivum_accent');var m=a==='tangerine'||a==='ink-wash'||a==='golden-taupe'?'smoky-ink':a==='berry'||a==='cherry-blossom'?'soft-pink':a==='ocean'?'crimson-veil':a;if(${JSON.stringify(ACCENT_IDS)}.indexOf(m)>-1)r.setAttribute('data-accent',m)}catch(e){}w.addEventListener('beforeinstallprompt',function(e){e.preventDefault();w.__axInstall=e});setTimeout(function(){if(r.classList.contains('ax-booting')){w.__axBootTimedOut=true;r.classList.remove('ax-booting')}},9000)})(document,window);`;
+export const BOOT_SCRIPT = `(function(d,w){var r=d.documentElement;r.classList.add('ax-booting');try{if(localStorage.getItem('archivum_theme')==='dark')r.classList.add('dark')}catch(e){}try{var a=localStorage.getItem('archivum_accent');var m=a==='tangerine'||a==='ink-wash'||a==='golden-taupe'?'smoky-ink':a==='berry'||a==='cherry-blossom'?'soft-pink':a==='ocean'?'crimson-veil':a;if(${JSON.stringify(ACCENT_IDS)}.indexOf(m)>-1)r.setAttribute('data-accent',m)}catch(e){}w.addEventListener('beforeinstallprompt',function(e){e.preventDefault();w.__axInstall=e});setTimeout(function(){if(r.classList.contains('ax-booting')){w.__axBootTimedOut=true;r.classList.remove('ax-booting')}},9000)})(document,window);`;

@@ -10,7 +10,7 @@ export const ACCENTS: { id: Accent; label: string; color: string }[] = [
   { id: 'soft-pink', label: 'Soft Pink', color: '#D46C8C' },
   { id: 'crimson-veil', label: 'Velvet Ember', color: '#610027' },
 ];
-type ThemeMode = 'light';
+type ThemeMode = 'light' | 'dark';
 interface ThemeContextType { accent: Accent; setAccent: (accent: Accent) => void; mode: ThemeMode; setMode: (mode: ThemeMode) => void; }
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 function migrateAccent(saved: string | null): Accent | null {
@@ -24,6 +24,7 @@ function migrateAccent(saved: string | null): Accent | null {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [accent, setAccentState] = useState<Accent>('indigo');
   const [accentInitialized, setAccentInitialized] = useState(false);
+  const [mode, setModeState] = useState<ThemeMode>('light');
   useEffect(() => {
     const saved = localStorage.getItem('archivum_accent');
     const migrated = migrateAccent(saved);
@@ -32,7 +33,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       if (saved !== migrated) localStorage.setItem('archivum_accent', migrated);
     }
     setAccentInitialized(true);
-    document.documentElement.classList.remove('dark');
+    let savedMode: string | null = null;
+    try { savedMode = localStorage.getItem('archivum_theme'); } catch {}
+    const initial: ThemeMode = savedMode === 'dark' ? 'dark' : 'light';
+    setModeState(initial);
+    document.documentElement.classList.toggle('dark', initial === 'dark');
   }, []);
   useEffect(() => {
     if (accentInitialized) document.documentElement.setAttribute('data-accent', accent);
@@ -42,6 +47,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setAccentState(next);
     localStorage.setItem('archivum_accent', next);
   };
-  return <ThemeContext.Provider value={{ accent, setAccent, mode: 'light', setMode: () => {} }}>{children}</ThemeContext.Provider>;
+  const setMode = (next: ThemeMode) => {
+    document.documentElement.classList.toggle('dark', next === 'dark');
+    setModeState(next);
+    try { localStorage.setItem('archivum_theme', next); } catch {}
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', next === 'dark' ? '#0f1419' : '#e4ecff');
+  };
+  return <ThemeContext.Provider value={{ accent, setAccent, mode, setMode }}>{children}</ThemeContext.Provider>;
 }
 export function useTheme() { const context = useContext(ThemeContext); if (!context) throw new Error('useTheme must be used within ThemeProvider'); return context; }

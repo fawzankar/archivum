@@ -81,7 +81,7 @@ export default function SplashScreen() {
       <div className="ax-splash__body">
         <div className="ax-splash__mark" aria-hidden="true" />
         <div className="ax-splash__word" aria-hidden="true">ARCHIVUM</div>
-        <p className="ax-splash__kicker">A SISTER ORGANIZATION OF QUEST</p>
+        <p className="ax-splash__kicker">A SISTER ORGANIZATION OF <span className="ax-splash__quest">QUEST</span></p>
         <span className="ax-splash__bar" aria-hidden="true"><i /></span>
       </div>
       <div className="ax-splash__credit">This App Is Built By <strong>Fawzan Kar</strong></div>
