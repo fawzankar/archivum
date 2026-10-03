@@ -16,7 +16,8 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(caches.keys().then((keys) => Promise.all(
-    keys.filter((key) => !key.startsWith(VERSION)).map((key) => caches.delete(key))
+    // Keep user-downloaded PDFs across app updates. Only versioned app caches are disposable.
+    keys.filter((key) => key.startsWith('archivum-offline-') && !key.startsWith(VERSION) && !key.startsWith('archivum-offline-pdfs-')).map((key) => caches.delete(key))
   )));
   self.clients.claim();
 });
