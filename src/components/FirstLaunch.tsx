@@ -27,7 +27,7 @@ export default function FirstLaunch() {
 
   useEffect(() => {
     if (pathname !== '/') {
-      document.documentElement.classList.remove('profile-onboarding-active', 'archivum-startup-ready');
+      document.documentElement.classList.remove('profile-onboarding-active');
       return;
     }
 
@@ -36,10 +36,6 @@ export default function FirstLaunch() {
     const shouldShow = !completed || ![9, 10, 11, 12].includes(storedClass);
     setVisible(shouldShow);
     document.documentElement.classList.toggle('profile-onboarding-active', shouldShow);
-    if (!document.documentElement.classList.contains('archivum-startup-ready')) {
-      document.documentElement.classList.add('archivum-startup-ready');
-      window.dispatchEvent(new Event('archivum:startup-ready'));
-    }
   }, [pathname, studentClass]);
 
   const heading = useMemo(() => {

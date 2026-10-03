@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e4ecff">
+<title>ARCHIVUM | Offline</title>
+<style>
+  :root{color-scheme:light}
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0}
+  body{display:grid;place-items:center;padding:24px;background:linear-gradient(140deg,#eef2ff,#dce4ff 55%,#f8f9ff);color:#1b2166;font:16px/1.5 Lato,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;text-align:center}
+  main{max-width:360px}
+  h1{margin:0 0 8px;font-size:26px;letter-spacing:.02em}
+  p{margin:0 0 22px;color:#474d8a}
+  .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  a,button{font:inherit;font-weight:700;padding:12px 20px;border-radius:12px;border:1px solid #1b2166;text-decoration:none;cursor:pointer}
+  button{background:#1b2166;color:#fff}
+  a{background:transparent;color:#1b2166}
+</style>
+</head>
+<body>
+<main>
+  <h1>You're offline</h1>
+  <p>This page isn't saved on your device yet. Reconnect to keep browsing, or open the PDFs you've already saved for offline reading.</p>
+  <div class="row">
+    <button type="button" onclick="location.reload()">Try again</button>
+    <a href="/saved">Saved files</a>
+  </div>
+</main>
+</body>
+</html>

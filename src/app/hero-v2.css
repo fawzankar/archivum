@@ -1,12 +1,3 @@
-/* ============================================================
-   ARCHIVUM v2 — hero, splash, onboarding.
-   Loaded after globals.css. Uses its own class prefixes
-   (hx-, sp-, ob-) so the legacy cascade cannot interfere.
-   Every colour derives from theme variables (--accent, --peri,
-   --sun, --blush, --ivory, --ink ...) so accent switching
-   recolours everything.
-   ============================================================ */
-
 /* ---------- HERO ---------- */
 .hx-hero{
   --hx-tint: color-mix(in srgb,var(--peri) 38%,var(--ivory));
@@ -41,38 +32,7 @@
 .hx-wash-c{width:40%;aspect-ratio:1.4;left:22%;bottom:-38%;background:color-mix(in srgb,var(--accent) 22%,transparent)}
 .hx-grain{position:absolute;inset:0;opacity:.35;mix-blend-mode:soft-light;
   background-image:radial-gradient(color-mix(in srgb,var(--ink) 40%,transparent) .5px,transparent .6px);background-size:5px 5px}
-
 .hx-d{position:absolute;display:block;fill:none;stroke:var(--accent);stroke-width:3;stroke-linecap:round;stroke-linejoin:round;overflow:visible;opacity:.86}
-.hx-d.hx-warm,.hx-warm{stroke:color-mix(in srgb,var(--sun) 88%,#b57900)}
-.hx-warm-fill{fill:color-mix(in srgb,var(--sun) 88%,#b57900);stroke:none}
-.hx-soft{stroke:color-mix(in srgb,var(--accent) 55%,transparent);stroke-width:2.4}
-.hx-dash{stroke-dasharray:2 6;stroke-width:2.4}
-.hx-plane-body{fill:color-mix(in srgb,var(--surface) 70%,transparent)}
-.hx-trail{stroke:color-mix(in srgb,var(--accent) 60%,var(--peri));stroke-width:2.4;stroke-dasharray:3 7;}
-.hx-d-pencil{fill:color-mix(in srgb,var(--sun) 40%,transparent)}
-.hx-d-root{width:74px;left:2.4%;top:8%;transform:rotate(-8deg);}
-.hx-d-star{width:40px;left:2.6%;top:40%;}
-.hx-d-plane{width:66px;right:19%;top:11%;}
-.hx-d-trail{width:210px;right:23%;top:14%;opacity:.7}
-.hx-d-pyramid{width:70px;right:3%;top:18%;}
-.hx-d-pencil{width:42px;right:5.5%;top:44%;transform:rotate(28deg);}
-.hx-d-book{width:104px;left:2.4%;bottom:6%;transform:rotate(-9deg);fill:color-mix(in srgb,var(--surface) 55%,transparent)}
-.hx-d-atom{width:62px;right:3.2%;bottom:5%;}
-.hx-d-leaf{fill:color-mix(in srgb,var(--accent) 34%,transparent);stroke:none;width:52px;opacity:.7}
-.hx-d-leaf-l{left:17%;bottom:2%;transform:rotate(-8deg)}
-.hx-d-leaf-r{right:19%;bottom:1%;transform:rotate(14deg) scaleX(-1)}
-.hx-dot{position:absolute;border-radius:50%;background:color-mix(in srgb,var(--accent) 45%,var(--peri))}
-.hx-dot-1{width:14px;height:14px;left:52%;top:16%;}
-.hx-dot-2{width:8px;height:8px;left:33%;bottom:24%;background:var(--sun)}
-.hx-dot-3{width:18px;height:18px;right:9%;bottom:24%;opacity:.8}
-.hx-dot-4{width:6px;height:6px;right:16%;bottom:16%;opacity:.7}
-.hx-spark{position:absolute;width:20px;height:20px;opacity:.9}
-.hx-spark::before,.hx-spark::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:100%;border-radius:2px;background:var(--sun);transform:translate(-50%,-50%) rotate(var(--r,0deg))}
-.hx-spark::after{--r:90deg;transform:translate(-50%,-50%) rotate(90deg);height:60%}
-.hx-spark-1{left:7.5%;top:9%;--r:0deg;}
-.hx-spark-2{right:12.5%;top:9%;}
-.hx-spark-3{right:2.5%;top:60%;}
-
 .hx-copy{position:relative;z-index:2;width:min(100%,1000px);min-width:0;}
 .hx-hello h1{margin:0;font-family:"Lato",Arial,sans-serif;font-size:clamp(40px,6.2vw,80px);line-height:1;letter-spacing:-.045em;color:var(--ink);white-space:nowrap;display:flex;align-items:center;gap:.22em;flex-wrap:nowrap}
 .hx-hello-light{font-weight:400}
@@ -87,132 +47,20 @@
 .hx-search .clean-search input{font-size:16px!important}
 .hx-search .clean-search button{width:48px!important;height:46px!important;border-radius:12px!important;background:var(--accent)!important;box-shadow:none!important;transition:transform .2s,background .2s}
 .hx-search .clean-search button:hover{transform:translateX(2px);background:var(--accent-strong)!important}
-
-@media(max-width:900px){
-  .hx-d-trail,.hx-d-pyramid,.hx-d-atom,.hx-dot-3,.hx-dot-4,.hx-spark-3{display:none}
-  .hx-d-plane{right:6%;top:8%;width:52px}
-  .hx-d-pencil{right:3%;top:auto;bottom:24%;width:32px}
+@media(max-width:640px) {
+.hx-hero{min-height:0;padding:26px 18px 30px;align-items:flex-start}
+.hx-hello h1{font-size:clamp(32px,10.5vw,46px)}
+.hx-search .clean-search{height:54px!important;border-radius:14px!important;padding-left:14px!important}
+.hx-search .clean-search button{width:44px!important;height:42px!important}
 }
-@media(max-width:640px){
-  .hx-hero{min-height:0;padding:26px 18px 30px;align-items:flex-start}
-  .hx-hello h1{font-size:clamp(32px,10.5vw,46px)}
-  .hx-d-root,.hx-d-star,.hx-d-book,.hx-d-pencil,.hx-dot-1,.hx-spark-2,.hx-d-leaf-r{display:none}
-  .hx-d-plane{width:44px;right:5%;top:5%;opacity:.6}
-  .hx-d-leaf-l{left:auto;right:6%}
-  .hx-search .clean-search{height:54px!important;border-radius:14px!important;padding-left:14px!important}
-  .hx-search .clean-search button{width:44px!important;height:42px!important}
-}
-
-@keyframes hxRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes hxFloat{0%,100%{translate:0 0}50%{translate:0 -7px}}
-@keyframes hxGlide{0%,100%{translate:0 0;rotate:0deg}50%{translate:6px -8px;rotate:4deg}}
-@keyframes hxTilt{0%,100%{rotate:0deg}50%{rotate:5deg}}
-@keyframes hxTwinkle{0%,100%{opacity:.95;scale:1}50%{opacity:.4;scale:.82}}
-@keyframes hxBreathe{0%,100%{opacity:.7;scale:1}50%{opacity:.95;scale:1.08}}
-@keyframes hxSway{from{transform:translateX(-2%)}to{transform:translateX(2%)}}
-@keyframes hxDash{to{stroke-dashoffset:-200}}
-@keyframes hxSpin{to{rotate:360deg}}
 @keyframes hxWave{0%,55%,100%{transform:rotate(0)}10%,30%{transform:rotate(16deg)}20%,40%{transform:rotate(-10deg)}}
-
-/* ---------- SPLASH ---------- */
-.boot-splash.sp{position:fixed;inset:0;display:grid;place-items:center;overflow:hidden;color:var(--ink);
-  background:
-    radial-gradient(90% 70% at 50% 42%,color-mix(in srgb,var(--surface) 80%,var(--accent-light)) 0,transparent 70%),
-    linear-gradient(160deg,var(--ivory) 0%,color-mix(in srgb,var(--ivory) 65%,var(--peri)) 100%)!important;
-  animation:spBg .8s ease both}
-.boot-splash.sp.is-leaving{animation:spOut .55s cubic-bezier(.6,0,.4,1) forwards}
-.sp-orb{position:absolute;border-radius:50%;filter:blur(50px);opacity:.55}
-.sp-orb-a{width:46vmax;height:46vmax;left:-14vmax;top:-18vmax;background:color-mix(in srgb,var(--peri) 55%,transparent);animation:hxBreathe 8s ease-in-out infinite}
-.sp-orb-b{width:38vmax;height:38vmax;right:-12vmax;bottom:-16vmax;background:color-mix(in srgb,var(--sun) 50%,transparent);animation:hxBreathe 10s ease-in-out 1s infinite}
-.sp-frame{position:absolute;inset:clamp(14px,3vw,28px);border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);border-radius:clamp(18px,3vw,30px);animation:spFade 1.2s ease .2s both}
-.sp-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 16px;transform:translateY(-2vh)}
-.sp-mark{position:relative;width:96px;height:96px;display:grid;place-items:center;margin-bottom:clamp(22px,4vh,36px)}
-.sp-logo{width:60px;height:60px;object-fit:contain;animation:spLogo .9s cubic-bezier(.2,.9,.25,1) .1s both}
-.sp-ring{position:absolute;inset:0;border-radius:50%;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);animation:spRing 1.2s cubic-bezier(.2,.8,.2,1) both}
-.sp-ring::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid color-mix(in srgb,var(--accent) 14%,transparent);animation:spRing 1.5s cubic-bezier(.2,.8,.2,1) .15s both}
-.sp-word{display:flex;justify-content:center;font-family:"Libre Baskerville",Georgia,"Times New Roman",serif;font-weight:400;font-size:clamp(24px,6.4vw,46px);line-height:1;color:var(--ink)}
-.sp-word span{display:inline-block;margin:0 .19em;
-  background:linear-gradient(105deg,var(--ink) 38%,color-mix(in srgb,var(--accent) 45%,#fff) 50%,var(--ink) 62%) 100% 0/300% 100%;
-  -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
-  animation:
-    spLetter .95s cubic-bezier(.2,.8,.2,1) calc(.45s + var(--i)*.085s) both,
-    spShine 1.5s ease calc(1.55s + var(--i)*.07s) both}
-.sp-rule{width:min(240px,52vw);height:1px;margin-top:clamp(20px,3.6vh,30px);background:color-mix(in srgb,var(--accent) 16%,transparent);overflow:hidden;position:relative}
-.sp-rule i{position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent),transparent);transform:translateX(-101%);animation:spRule 1.5s cubic-bezier(.5,0,.2,1) 1.05s both}
-.sp-tag{margin:16px 0 0;font-size:clamp(9px,2.3vw,11px);letter-spacing:.34em;text-transform:uppercase;font-weight:700;color:var(--ink-muted);animation:spTag .9s ease 1.5s both}
-.sp-tag b{color:var(--accent);margin:0 .25em;font-weight:400}
-.sp-credit{position:absolute;left:0;right:0;bottom:max(34px,env(safe-area-inset-bottom));text-align:center;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-faint);animation:spTag .9s ease 1.9s both}
-
-@keyframes spBg{from{opacity:0}to{opacity:1}}
-@keyframes spOut{to{opacity:0;transform:scale(1.03);filter:blur(6px);visibility:hidden}}
-@keyframes spFade{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
-@keyframes spLogo{from{opacity:0;transform:scale(.6) rotate(-14deg)}to{opacity:1;transform:none}}
-@keyframes spRing{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:none}}
-@keyframes spLetter{from{opacity:0;transform:translateY(.55em);filter:blur(10px)}to{opacity:1;transform:none;filter:blur(0)}}
-@keyframes spShine{from{background-position:100% 0}to{background-position:0 0}}
-@keyframes spRule{0%{transform:translateX(-101%)}60%{transform:translateX(0)}100%{transform:translateX(0);opacity:.55}}
-@keyframes spTag{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media(max-width:380px){.sp-word span{margin:0 .13em}}
-
 /* ---------- ONBOARDING ---------- */
-.ob{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:16px;overflow:auto;
-  background:linear-gradient(160deg,var(--ivory) 0%,color-mix(in srgb,var(--ivory) 62%,var(--peri)) 100%);animation:spBg .5s ease both}
-.ob-orb{position:absolute;border-radius:50%;filter:blur(46px);opacity:.6;pointer-events:none}
-.ob-orb-a{width:44vmax;height:44vmax;left:-14vmax;top:-16vmax;background:color-mix(in srgb,var(--peri) 55%,transparent);animation:hxBreathe 9s ease-in-out infinite}
-.ob-orb-b{width:34vmax;height:34vmax;right:-10vmax;bottom:-14vmax;background:color-mix(in srgb,var(--sun) 48%,transparent);animation:hxBreathe 11s ease-in-out 1s infinite}
-.ob-card{position:relative;width:min(372px,100%);padding:22px 20px 18px;border-radius:24px;
-  background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(14px);
-  border:1px solid color-mix(in srgb,var(--accent) 12%,var(--border));
-  box-shadow:0 30px 70px -28px color-mix(in srgb,var(--accent) 45%,transparent);
-  animation:obCard .7s cubic-bezier(.2,.9,.25,1) both}
-.ob-top{display:flex;align-items:center;justify-content:space-between}
-.ob-brand{font-family:"Libre Baskerville",Georgia,serif;font-size:11px;letter-spacing:.34em;color:var(--ink);font-weight:700}
-.ob-steps{display:flex;gap:5px}
-.ob-steps i{width:14px;height:4px;border-radius:4px;background:color-mix(in srgb,var(--accent) 16%,transparent);transition:width .35s cubic-bezier(.3,.9,.3,1),background .3s}
-.ob-steps i.on{background:var(--accent);width:22px}
 .ob-title{margin:18px 0 14px;font-family:"Lato",Arial,sans-serif;font-size:27px;line-height:1.1;font-weight:800;letter-spacing:-.03em;color:var(--ink);animation:obTitle .45s cubic-bezier(.2,.8,.2,1) both;overflow-wrap:anywhere}
-.ob-classes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.ob-class{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:11px 2px 9px;border-radius:14px;cursor:pointer;
-  border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 90%,transparent);color:var(--ink);
-  transition:transform .28s cubic-bezier(.3,1.5,.5,1),background .25s,border-color .25s,color .25s,box-shadow .25s;
-  animation:obPop .5s cubic-bezier(.2,.9,.25,1) var(--d) both}
-.ob-class small{font-size:9px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ink-faint);transition:color .25s}
-.ob-class strong{font-size:26px;line-height:1.1;font-weight:900;letter-spacing:-.04em}
-.ob-class em{font-style:normal;font-size:8.5px;font-weight:700;color:var(--ink-faint);white-space:nowrap;transition:color .25s}
-.ob-class:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--accent) 45%,var(--border))}
-.ob-class:active{transform:scale(.95)}
-.ob-class:focus-visible,.ob-go:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.ob-class.is-on{background:var(--accent);border-color:var(--accent);color:#fff;transform:translateY(-3px) scale(1.04);box-shadow:0 14px 24px -12px color-mix(in srgb,var(--accent) 80%,transparent)}
-.ob-class.is-on small,.ob-class.is-on em{color:rgba(255,255,255,.72)}
-.ob-class-check{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--sun);color:#3a2a00;transform:scale(0);transition:transform .3s cubic-bezier(.3,1.8,.5,1)}
-.ob-class-check svg{width:10px;height:10px}
-.ob-class.is-on .ob-class-check{transform:scale(1)}
-
-.ob-field{position:relative;display:block;margin-top:14px}
-.ob-field input{width:100%;height:52px;padding:18px 48px 0 14px;border-radius:14px;border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 92%,transparent);color:var(--ink);font-size:15px;font-weight:600;outline:0;transition:border-color .2s,box-shadow .2s}
-.ob-field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 18%,transparent)}
-.ob-float{position:absolute;left:14px;top:50%;translate:0 -50%;font-size:14px;color:var(--ink-faint);pointer-events:none;transition:top .2s,font-size .2s,color .2s,letter-spacing .2s}
-.ob-field input:focus~.ob-float,.ob-field input:not(:placeholder-shown)~.ob-float{top:14px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
-.ob-count{position:absolute;right:13px;top:50%;translate:0 -50%;font-size:10px;color:var(--ink-faint)}
-.ob-go{width:100%;height:48px;margin-top:14px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;background:var(--accent);color:#fff;font-weight:800;font-size:14px;cursor:pointer;
-  transition:transform .2s,opacity .25s,box-shadow .25s,filter .25s}
-.ob-go svg{width:17px;transition:transform .25s}
-.ob-go:disabled{opacity:.38;cursor:not-allowed;filter:saturate(.5)}
-.ob-go:not(:disabled){box-shadow:0 14px 26px -14px color-mix(in srgb,var(--accent) 90%,transparent);animation:obReady .5s cubic-bezier(.3,1.6,.5,1)}
-.ob-go:not(:disabled):hover{transform:translateY(-2px)}
-.ob-go:not(:disabled):hover svg{transform:translateX(4px)}
-.ob-note{margin:10px 0 0;text-align:center;font-size:10.5px;color:var(--ink-faint)}
-
-@keyframes obCard{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes obTitle{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes obPop{from{opacity:0;transform:translateY(12px) scale(.9)}to{opacity:1;transform:none}}
-@keyframes obReady{0%{transform:scale(.96)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
-
-@media(prefers-reduced-motion:reduce){
-  .hx-hero *,.hx-copy,.sp *,.boot-splash.sp,.ob,.ob *{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-  .sp-word span{-webkit-text-fill-color:var(--ink);background:none;color:var(--ink)}
+@media(prefers-reduced-motion:reduce) {
+.hx-hero *,
+.hx-copy {animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
-
 /* ============================================================
    V8 HERO PASS — large search, flat paper surface, new archive
    doodles, and the only hero motion: slow layered paper waves.
@@ -232,7 +80,6 @@
 }
 .hx-scene{z-index:0}
 .hx-wash,.hx-grain{pointer-events:none}
-
 /* No translucent/glass panel behind the search. */
 .hx-search{width:min(100%,1080px);max-width:none;margin-top:clamp(22px,2.8vw,34px)}
 .hx-search .clean-search{
@@ -259,97 +106,28 @@
 .hx-search .clean-search input::placeholder{color:var(--ink-faint)!important}
 .hx-search .clean-search button{width:58px!important;height:58px!important;border-radius:16px!important;background:var(--accent)!important;box-shadow:none!important}
 .hx-search .clean-search button svg{width:24px!important;height:24px!important}
-
 /* Completely new, static Archivum doodle language. */
 .hx-d{position:absolute;display:block;fill:none;stroke:color-mix(in srgb,var(--accent) 88%,#24306f);stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;overflow:visible;opacity:.84;z-index:1}
-.hx-soft{stroke:color-mix(in srgb,var(--accent) 48%,transparent);stroke-width:2.2}
-.hx-warm-fill{fill:color-mix(in srgb,var(--sun) 90%,#a66a00);stroke:none}
-.hx-d-stack{width:94px;left:2.5%;top:12%;transform:rotate(-7deg)}
-.hx-d-bookmark{width:42px;left:17%;top:7%;transform:rotate(7deg)}
-.hx-d-cap{width:78px;right:15%;top:10%;transform:rotate(-4deg)}
-.hx-d-file{width:60px;right:5.5%;top:30%;transform:rotate(7deg)}
-.hx-d-pencil{width:38px;right:15%;bottom:23%;transform:rotate(25deg);stroke:color-mix(in srgb,var(--sun) 84%,#9a6900)}
-.hx-d-magnify{width:52px;left:7%;bottom:19%;transform:rotate(-10deg)}
 .hx-d-pages{width:78px;right:3.5%;bottom:6%;transform:rotate(6deg)}
-.hx-d-check{width:42px;left:28%;bottom:8%;stroke:color-mix(in srgb,var(--accent) 70%,#26336d)}
-
-/* The large ground-like wave strip from the previous hero pass is intentionally removed. */
-
 /* Quiet decorative dots; unlike the old version, nothing else moves. */
-.hx-dot{position:absolute;border-radius:50%;background:color-mix(in srgb,var(--accent) 46%,var(--peri));z-index:1}
-.hx-dot-1{width:12px;height:12px;left:51%;top:15%}
-.hx-dot-2{width:8px;height:8px;left:33%;bottom:19%;background:var(--sun)}
-.hx-dot-3{width:15px;height:15px;right:10%;bottom:20%;opacity:.75}
-.hx-spark{position:absolute;width:19px;height:19px;opacity:.86;z-index:1}
-.hx-spark::before,.hx-spark::after{content:"";position:absolute;left:50%;top:50%;width:3px;height:100%;border-radius:2px;background:var(--sun);transform:translate(-50%,-50%)}
-.hx-spark::after{height:60%;transform:translate(-50%,-50%) rotate(90deg)}
-.hx-spark-1{left:12%;top:17%}
-.hx-spark-2{right:12%;top:12%}
-
-@media(max-width:900px){
-  .hx-d-bookmark,.hx-d-check{display:none}
-  .hx-d-cap{right:7%;top:8%;width:62px}
-  .hx-d-file{right:3%;width:48px}
-  .hx-d-pages{right:3%;width:62px}
-  .hx-search{width:100%}
+@media(max-width:900px) {
+.hx-d-pages{right:3%;width:62px}
+.hx-search{width:100%}
 }
-@media(max-width:640px){
-  .hx-hero{min-height:380px;padding:28px 18px 32px}
-  .hx-search{margin-top:22px}
-  .hx-search .clean-search{height:66px!important;border-radius:18px!important;padding-left:18px!important}
-  .hx-search .clean-search input{font-size:15px!important}
-  .hx-search .clean-search button{width:50px!important;height:50px!important;border-radius:14px!important}
-  .hx-d-stack{width:66px;left:2%;top:7%}
-  .hx-d-magnify{width:40px;left:4%;bottom:17%}
-  .hx-d-cap{width:50px;right:5%;top:6%}
-  .hx-d-file,.hx-d-pages,.hx-d-pencil{display:none}
-  .hx-spark-1{left:24%;top:9%}
-  .hx-spark-2{right:17%;top:17%}
+@media(max-width:640px) {
+.hx-hero{min-height:380px;padding:28px 18px 32px}
+.hx-search{margin-top:22px}
+.hx-search .clean-search{height:66px!important;border-radius:18px!important;padding-left:18px!important}
+.hx-search .clean-search input{font-size:15px!important}
+.hx-search .clean-search button{width:50px!important;height:50px!important;border-radius:14px!important}
+.hx-d-pages {display:none}
 }
-
-
-
-
 /* ============================================================
    V9 HERO FINISH — cleaner study doodles + waving greeting hand.
    ============================================================ */
-.hx-d-stack,.hx-d-bookmark,.hx-d-cap,.hx-d-file,.hx-d-magnify,.hx-d-pages,.hx-d-check,
-.hx-dot,.hx-spark{display:none!important}
+.hx-d-pages {display:none!important}
 .hx-equation{position:absolute;z-index:1;color:color-mix(in srgb,var(--accent) 82%,var(--ink));font-family:Georgia,"Times New Roman",serif;font-weight:700;line-height:1;white-space:nowrap;opacity:.78;pointer-events:none}
-.hx-equation-a{left:3.6%;top:10%;font-size:clamp(22px,2.7vw,34px);transform:rotate(-7deg)}
-.hx-equation-b{right:8%;top:12%;font-size:clamp(18px,2.2vw,28px);transform:rotate(5deg);color:color-mix(in srgb,var(--accent) 70%,var(--sun))}
-.hx-d-pencil-new{width:42px;right:17%;top:38%;transform:rotate(25deg);stroke:color-mix(in srgb,var(--accent) 84%,#24306f)}
-.hx-d-folder{width:86px;left:4%;bottom:10%;transform:rotate(-5deg)}
-.hx-d-paper{width:56px;right:4.5%;bottom:12%;transform:rotate(7deg)}
-.hx-d-bookmark-new{width:34px;left:15%;top:7%;transform:rotate(6deg)}
-
 .hx-wave{animation:hxWave 1.35s ease-in-out infinite;will-change:transform}
-
-/* Splash: full-viewport background, no framed/container outline. */
-.sp-frame{display:none!important}
-.boot-splash.sp{background:
-  radial-gradient(75% 80% at 18% 12%,color-mix(in srgb,var(--peri) 38%,transparent),transparent 68%),
-  radial-gradient(65% 70% at 88% 82%,color-mix(in srgb,var(--sun) 28%,transparent),transparent 70%),
-  linear-gradient(145deg,var(--ivory) 0%,color-mix(in srgb,var(--ivory) 72%,var(--peri)) 52%,color-mix(in srgb,var(--surface) 90%,var(--accent-light)) 100%)!important}
-.sp-word{font-family:"Lato",Arial,sans-serif;font-weight:800;letter-spacing:.22em}
-.sp-word span{font-family:"Lato",Arial,sans-serif;font-weight:800}
-.sp-tag,.sp-credit{font-family:"Lato",Arial,sans-serif}
-
-@media(max-width:900px){
-  .hx-equation-a{left:3%;top:8%}
-  .hx-equation-b{right:5%;top:10%}
-  .hx-d-pencil-new{right:8%;top:35%;width:34px}
-  .hx-d-bookmark-new{left:20%;top:6%;display:none}
-}
-@media(max-width:640px){
-  .hx-equation-a{left:4%;top:8%;font-size:20px}
-  .hx-equation-b{right:5%;top:15%;font-size:17px}
-  .hx-d-pencil-new{right:6%;top:31%;width:30px}
-  .hx-d-folder{left:3%;bottom:8%;width:68px}
-  .hx-d-paper{right:3%;bottom:7%;width:48px}
-}
-
-
 /* ============================================================
    V10 — supplied doodle direction: clean right-side study marks.
    Nothing decorative is placed on the left side of the hero.
@@ -408,26 +186,22 @@
   margin-left:.16em;
 }
 /* Remove every previous left-side decorative mark. */
-.hx-d-stack,.hx-d-bookmark,.hx-d-cap,.hx-d-file,.hx-d-pencil,.hx-d-magnify,.hx-d-pages,.hx-d-check,
-.hx-d-folder,.hx-d-paper,.hx-d-bookmark-new,.hx-dot,.hx-spark,.hx-equation-a,.hx-equation-b{display:none!important}
-
-@media(max-width:900px){
-  .hx-equation-root{right:29%;top:8%;font-size:24px}
-  .hx-equation-energy{right:6%;top:22%;font-size:21px}
-  .hx-d-pencil-ref{right:14%;top:41%;width:104px}
-  .hx-d-cap-ref{right:5%;top:7%;width:68px}
-  .hx-d-paper-ref{right:3%;bottom:10%;width:44px}
+.hx-d-pages {display:none!important}
+@media(max-width:900px) {
+.hx-equation-root{right:29%;top:8%;font-size:24px}
+.hx-equation-energy{right:6%;top:22%;font-size:21px}
+.hx-d-pencil-ref{right:14%;top:41%;width:104px}
+.hx-d-cap-ref{right:5%;top:7%;width:68px}
+.hx-d-paper-ref{right:3%;bottom:10%;width:44px}
 }
-@media(max-width:640px){
-  .hx-equation-root{right:25%;top:7%;font-size:19px}
-  .hx-equation-energy{right:5%;top:21%;font-size:17px}
-  .hx-d-pencil-ref{right:8%;top:40%;width:84px}
-  .hx-d-cap-ref{right:4%;top:6%;width:54px}
-  .hx-d-paper-ref{display:none}
-  .hx-wave{margin-left:.12em}
+@media(max-width:640px) {
+.hx-equation-root{right:25%;top:7%;font-size:19px}
+.hx-equation-energy{right:5%;top:21%;font-size:17px}
+.hx-d-pencil-ref{right:8%;top:40%;width:84px}
+.hx-d-cap-ref{right:4%;top:6%;width:54px}
+.hx-d-paper-ref{display:none}
+.hx-wave{margin-left:.12em}
 }
-
-
 /* v63 refinement: distinctive student-name typography + redesigned pencil doodle */
 .hx-hello h1 strong{
   font-family:"Trebuchet MS","Arial Rounded MT Bold",Arial,sans-serif!important;
@@ -436,7 +210,6 @@
   color:color-mix(in srgb,var(--sun) 78%,var(--accent))!important;
   text-shadow:0 1px 0 color-mix(in srgb,var(--surface) 65%,transparent);
 }
-
 /* A cleaner, more hand-drawn pencil treatment: slightly larger, slimmer and angled. */
 .hx-d-pencil-ref{
   width:154px!important;
@@ -460,80 +233,52 @@
   stroke:#242424!important;
   stroke-width:3.1!important;
 }
-@media(max-width:900px){
-  .hx-d-pencil-ref{
+@media(max-width:900px) {
+.hx-d-pencil-ref{
     width:116px!important;
     right:12%!important;
     top:40%!important;
   }
 }
-@media(max-width:640px){
-  .hx-d-pencil-ref{
+@media(max-width:640px) {
+.hx-d-pencil-ref{
     width:92px!important;
     right:7%!important;
     top:39%!important;
   }
 }
-
-
 /* v64: Android/mobile hero polish */
-@media (max-width: 640px){
-  .hero-scene{
-    width:calc(100% - 28px)!important;
-    max-width:none!important;
-    margin-left:14px!important;
-    margin-right:14px!important;
-    border-radius:24px!important;
-    overflow:hidden!important;
-  }
-
-  .hx-doodle,
-  .hx-d-pencil-ref,
-  .hero-scene svg,
-  .hero-scene [class*="doodle"],
-  .hero-scene [class*="Doodle"]{
+@media (max-width: 640px) {
+.hx-d-pencil-ref {
     opacity:.28!important;
   }
-
-  .hx-hello{
+.hx-hello{
     position:relative;
     z-index:5;
   }
-
-  .hx-hello h1,
+.hx-hello h1,
   .hx-hello p{
     position:relative;
     z-index:6;
   }
-
-  .hx-d-pencil-ref{
+.hx-d-pencil-ref{
     right:5%!important;
     top:18%!important;
     width:76px!important;
     opacity:.22!important;
   }
-
-  .hx-hello h1{
+.hx-hello h1{
     max-width:88%!important;
   }
 }
-
 /* Narrow Android phones */
-@media (max-width:390px){
-  .hero-scene{
-    width:calc(100% - 20px)!important;
-    margin-left:10px!important;
-    margin-right:10px!important;
-  }
-
-  .hx-d-pencil-ref{
+@media (max-width:390px) {
+.hx-d-pencil-ref{
     right:3%!important;
     top:15%!important;
     width:62px!important;
   }
 }
-
-
 /* v65 — the input itself fills the search bar; no small pill/cylindrical inner container. */
 .hx-search .clean-search{
   overflow:hidden!important;
@@ -564,7 +309,6 @@
   background:color-mix(in srgb,var(--accent) 16%,var(--peri))!important;
   color:var(--ink)!important;
 }
-
 /* Hey + the student's name use the same expressive display face. */
 .hx-hello h1,
 .hx-hello h1 .hx-hello-light,
@@ -576,213 +320,35 @@
 .hx-hello h1 strong{
   color:color-mix(in srgb,var(--sun) 78%,var(--accent))!important;
 }
-
 /* v65: the reference pencil stays away from the search field. */
 .hx-d-pencil-ref{
   top:25%!important;
   right:12%!important;
 }
-@media(max-width:900px){
-  .hx-d-pencil-ref{top:23%!important;right:9%!important;width:102px!important}
+@media(max-width:900px) {
+.hx-d-pencil-ref{top:23%!important;right:9%!important;width:102px!important}
 }
-@media(max-width:640px){
-  .hx-d-pencil-ref{top:18%!important;right:7%!important;width:76px!important;opacity:.20!important}
+@media(max-width:640px) {
+.hx-d-pencil-ref{top:18%!important;right:7%!important;width:76px!important;opacity:.20!important}
 }
-
-
-/* v65 — premium navy splash, no circular logo treatment. */
-.boot-splash.sp{
-  background:
-    radial-gradient(70% 65% at 15% 12%,color-mix(in srgb,var(--peri) 24%,transparent),transparent 70%),
-    radial-gradient(60% 65% at 88% 84%,color-mix(in srgb,var(--sun) 18%,transparent),transparent 72%),
-    linear-gradient(145deg,#171d5d 0%,#20286f 52%,#11164d 100%)!important;
-  color:#fff8df!important;
-}
-.boot-splash.sp .sp-frame{display:none!important}
-.boot-splash.sp .sp-mark{
-  width:auto!important;
-  height:auto!important;
-  margin-bottom:clamp(20px,4vh,34px)!important;
-}
-.boot-splash.sp .sp-ring{display:none!important}
-.boot-splash.sp .sp-logo{
-  width:74px!important;
-  height:74px!important;
-  filter:brightness(0) invert(1)!important;
-}
-.boot-splash.sp .sp-word{
-  font-family:"Lato",Arial,sans-serif!important;
-  font-weight:400!important;
-  letter-spacing:.24em!important;
-  color:#fff4c9!important;
-}
-.boot-splash.sp .sp-word span{
-  font-family:"Lato",Arial,sans-serif!important;
-  font-weight:400!important;
-  background:none!important;
-  color:#fff4c9!important;
-  -webkit-text-fill-color:#fff4c9!important;
-  animation:
-    spLetter .95s cubic-bezier(.2,.8,.2,1) calc(.45s + var(--i)*.085s) both!important;
-}
-.boot-splash.sp .sp-rule{
-  background:rgba(255,244,201,.20)!important;
-}
-.boot-splash.sp .sp-rule i{
-  background:linear-gradient(90deg,transparent,#f5c95d,transparent)!important;
-}
-.boot-splash.sp .sp-tag{
-  color:rgba(255,244,201,.68)!important;
-  font-weight:400!important;
-}
-.boot-splash.sp .sp-tag b{
-  color:#f5c95d!important;
-  font-weight:400!important;
-}
-.boot-splash.sp .sp-credit{
-  color:rgba(255,244,201,.55)!important;
-  font-weight:400!important;
-}
-
-
 /* v66 — remove the pencil doodle entirely */
 .hx-d-pencil-ref{
   display:none!important;
 }
-
-/* Remove the decorative splash rule/line. */
-.boot-splash.sp .sp-rule{
-  display:none!important;
-}
-
-/* Splash typography: substantial, readable weight — no hairline credit text. */
-.boot-splash.sp .sp-word,
-.boot-splash.sp .sp-word span{
-  font-family:"Lato",Arial,sans-serif!important;
-  font-weight:600!important;
-  letter-spacing:.20em!important;
-}
-.boot-splash.sp .sp-tag,
-.boot-splash.sp .sp-tag b,
-.boot-splash.sp .sp-credit{
-  font-family:"Lato",Arial,sans-serif!important;
-  font-weight:600!important;
-  letter-spacing:.04em!important;
-}
-
-
 /* v67 — compact Android home cards + quieter hero decoration */
-@media (max-width: 640px){
-  /* Keep the hero compact instead of occupying most of the viewport. */
-  .hero-scene{
-    min-height:0!important;
-    height:auto!important;
-    padding-bottom:26px!important;
-  }
-
-  /* Make the hero doodles smaller and less visually dominant on phones. */
-  .hx-doodle,
-  .hero-scene svg,
-  .hero-scene [class*="doodle"],
-  .hero-scene [class*="Doodle"]{
-    opacity:.18!important;
-  }
-  .hx-hello h1{
+@media (max-width: 640px) {
+/* Make the hero doodles smaller and less visually dominant on phones. */
+.hx-hello h1{
     font-size:clamp(2.9rem,13vw,4.2rem)!important;
     line-height:.96!important;
     max-width:94%!important;
   }
-  .hx-hello p{
+.hx-hello p{
     max-width:92%!important;
     font-size:1rem!important;
     line-height:1.42!important;
   }
-
-  /* The feature/notes card below the hero becomes a compact app card. */
-  .home-feature-card,
-  .notes-feature-card,
-  .resource-feature-card{
-    min-height:0!important;
-    height:auto!important;
-    padding:24px 22px!important;
-    border-radius:28px!important;
-    margin-top:18px!important;
-  }
-
-  .home-feature-card h2,
-  .notes-feature-card h2,
-  .resource-feature-card h2{
-    font-size:2rem!important;
-    line-height:1.05!important;
-    margin-bottom:8px!important;
-  }
-
-  .home-feature-card p,
-  .notes-feature-card p,
-  .resource-feature-card p{
-    font-size:1rem!important;
-    line-height:1.35!important;
-    max-width:68%!important;
-    margin-bottom:14px!important;
-  }
-
-  .home-feature-card .open-button,
-  .notes-feature-card .open-button,
-  .resource-feature-card .open-button{
-    min-height:54px!important;
-    padding:0 22px!important;
-    border-radius:18px!important;
-  }
-
-  .home-feature-card .feature-art,
-  .notes-feature-card .feature-art,
-  .resource-feature-card .feature-art{
-    transform:scale(.72)!important;
-    transform-origin:right center!important;
-    right:8px!important;
-  }
-
-  /* Keep the floating chat/action control compact and out of the card copy. */
-  .home-feature-card .floating-action,
-  .notes-feature-card .floating-action,
-  .resource-feature-card .floating-action{
-    width:56px!important;
-    height:56px!important;
-    right:12px!important;
-    bottom:12px!important;
-  }
 }
-
-/* Small phones: preserve the compact rhythm without squeezing text. */
-@media (max-width:390px){
-  .hero-scene{
-    width:calc(100% - 20px)!important;
-    margin-left:10px!important;
-    margin-right:10px!important;
-    padding-bottom:22px!important;
-  }
-
-  .home-feature-card,
-  .notes-feature-card,
-  .resource-feature-card{
-    padding:20px 18px!important;
-    border-radius:24px!important;
-  }
-
-  .home-feature-card h2,
-  .notes-feature-card h2,
-  .resource-feature-card h2{
-    font-size:1.72rem!important;
-  }
-}
-
-@media (max-width:640px){
-  .hero-section + section{
-    min-height:0!important;
-  }
-}
-
-
 /* v68 — deep mobile hero/layout fix */
 .hx-hello h1{
   white-space:normal!important;
@@ -798,48 +364,38 @@
   overflow-wrap:break-word!important;
   word-break:normal!important;
 }
-
-@media (max-width:640px){
-  .hx-hero{
+@media (max-width:640px) {
+.hx-hero{
     min-height:300px!important;
     height:auto!important;
     padding:22px 16px 24px!important;
   }
-  .hx-copy{
+.hx-copy{
     width:100%!important;
     max-width:100%!important;
   }
-  .hx-hello h1{
+.hx-hello h1{
     font-size:clamp(2.65rem,11.5vw,4rem)!important;
     line-height:.98!important;
     gap:.14em .18em!important;
   }
-  .hx-hello h1 strong{
+.hx-hello h1 strong{
     flex:0 1 auto!important;
     max-width:100%!important;
   }
-  .hx-intro{
+.hx-intro{
     max-width:94%!important;
     margin-top:12px!important;
     font-size:.96rem!important;
     line-height:1.4!important;
   }
-  .hx-search{
+.hx-search{
     margin-top:16px!important;
   }
-  .hx-search .clean-search{
+.hx-search .clean-search{
     height:60px!important;
   }
 }
-
-/* v68 — splash supporting lines should read as normal Lato, not bold */
-.boot-splash.sp .sp-tag,
-.boot-splash.sp .sp-tag b,
-.boot-splash.sp .sp-credit{
-  font-weight:400!important;
-}
-
-
 /* v69 — centered hero composition on every viewport */
 .hx-hero{
   align-items:center!important;
@@ -872,68 +428,54 @@
   transform:rotate(-6deg);
   opacity:.86;
 }
-@media(max-width:900px){
-  .hx-root-doodle{
+@media(max-width:900px) {
+.hx-root-doodle{
     width:52px;
     right:25%;
     top:7%;
   }
 }
-@media(max-width:640px){
-  .hx-hero{
+@media(max-width:640px) {
+.hx-hero{
     min-height:300px!important;
     padding:24px 16px 26px!important;
     align-items:center!important;
     justify-content:center!important;
   }
-  .hx-copy{
+.hx-copy{
     transform:none!important;
   }
-  .hx-root-doodle{
+.hx-root-doodle{
     width:42px;
     right:24%;
     top:6%;
     opacity:.20!important;
   }
 }
-
-/* v69 — splash supporting lines: readable normal weight */
-.boot-splash.sp .sp-tag,
-.boot-splash.sp .sp-tag b,
-.boot-splash.sp .sp-credit{
-  font-weight:400!important;
-}
-
-.boot-splash.sp .sp-tag{animation-delay:2.6s!important}
-.boot-splash.sp .sp-credit{animation-delay:3.1s!important}
-
-
 /* v70 — warmer, more human UI typography and cleaner mobile hero */
 :root{
   --human-ui-font:"Trebuchet MS","Segoe UI",Arial,sans-serif;
 }
-
 /* Keep the ARCHIVUM wordmark itself in its established font; make surrounding copy friendlier. */
 body,
-button,input,textarea,select,
+button,
+input,
+textarea,
+select,
 .hx-hello h1,
 .hx-intro,
 .hm-jump-card,
 .hm-subjects-home,
 .hm-head,
-.hm-recent,
-.ob,
-.ob-card{
+.hm-recent {
   font-family:var(--human-ui-font)!important;
 }
-
 /* The greeting and name share the same human display face. */
 .hx-hello h1,
 .hx-hello h1 .hx-hello-light,
 .hx-hello h1 strong{
   font-family:var(--human-ui-font)!important;
 }
-
 /* Remove the old white edge/highlight around the name. */
 .hx-hello h1 strong{
   text-shadow:none!important;
@@ -943,58 +485,20 @@ button,input,textarea,select,
   -webkit-background-clip:border-box!important;
   -webkit-text-fill-color:currentColor!important;
 }
-
 /* Mobile: hide decorative hero doodles/equations so they never overlap copy. */
-@media(max-width:640px){
-  .hx-scene .hx-d,
-  .hx-scene .hx-equation,
-  .hx-scene .hx-dot,
-  .hx-scene .hx-spark,
-  .hx-scene .hx-root-doodle{
+@media(max-width:640px) {
+.hx-scene .hx-d,
+.hx-scene .hx-equation,
+.hx-scene .hx-root-doodle {
     display:none!important;
   }
-
-  .hx-hello h1,
+.hx-hello h1,
   .hx-hello h1 .hx-hello-light,
   .hx-hello h1 strong{
     font-family:var(--human-ui-font)!important;
   }
 }
-
-.boot-splash.sp .sp-word,
-.boot-splash.sp .sp-word span{
-  font-family:"Lato",Arial,sans-serif!important;
-}
-.boot-splash.sp .sp-tag,
-.boot-splash.sp .sp-credit{
-  font-family:var(--human-ui-font)!important;
-}
-
-
 /* v71 splash refinement */
-.boot-splash.sp .sp-tag{
-  display:none!important;
-}
-.boot-splash.sp .sp-credit{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
-  font-size:18px!important;
-  font-weight:500!important;
-  letter-spacing:.02em!important;
-  text-transform:none!important;
-  color:#fff!important;
-  opacity:1!important;
-  text-shadow:none!important;
-}
-.boot-splash.sp .sp-credit strong{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif!important;
-  font-weight:600!important;
-  color:#fff!important;
-}
 .hx-search .clean-search .clean-search-clear{width:32px!important;height:32px!important;flex:none!important;background:transparent!important;color:var(--ink-muted)!important;box-shadow:none!important;transform:none!important}
 .hx-search .clean-search .clean-search-clear:hover{background:var(--surface-raised)!important;color:var(--ink)!important;transform:none!important}
 .hx-search .clean-search .clean-search-clear svg{width:17px!important;height:17px!important}
-@media(max-width:640px){
-  .boot-splash.sp .sp-credit{
-    font-size:17px!important;
-  }
-}

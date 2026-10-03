@@ -1,8 +1,8 @@
-const VERSION = 'archivum-offline-v14';
+const VERSION = 'archivum-offline-v15';
 const STATIC_CACHE = `${VERSION}-static`;
 const PAGE_CACHE = `${VERSION}-pages`;
 const DATA_CACHE = `${VERSION}-data`;
-const STATIC_ASSETS = ['/manifest.json', '/icon-192.png', '/icon-512.png', '/archivum-icon-192.png', '/archivum-icon-512.png'];
+const STATIC_ASSETS = ['/manifest.json', '/offline.html', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png'];
 // Statically generated pages: identical HTML for every query string, so cache them by pathname.
 const LIBRARY_PAGES = ['/notes', '/previous-papers', '/tips'];
 const LIBRARY_DATA = '/api/library';
@@ -116,10 +116,7 @@ self.addEventListener('fetch', (event) => {
       const cached = await caches.match(request);
       if (cached) return cached;
       if (request.mode === 'navigate') {
-        return (await caches.match('/')) || new Response(
-          '<!doctype html><title>ARCHIVUM Offline</title><body style="font-family:system-ui;padding:2rem">ARCHIVUM is offline.</body>',
-          { status: 503, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
-        );
+        return (await caches.match('/')) || (await caches.match('/offline.html')) || new Response('ARCHIVUM is offline.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
       }
       throw new Error('offline');
     })
