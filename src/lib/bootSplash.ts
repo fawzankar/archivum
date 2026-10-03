@@ -22,7 +22,6 @@ export const ACCENT_IDS = THEMES.map(t => t[0]);
 export const BOOT_CSS = [
   `:root{--ax-mark:url("${MARK}");${vars(THEMES[0])}}`,
   ...THEMES.slice(1).map(t => `html[data-accent="${t[0]}"]{${vars(t)}}`),
-  'html.dark{--ax-glow-a:rgba(120,135,255,.20);--ax-glow-b:rgba(255,199,95,.08);--ax-c1:#0f1419;--ax-c2:#131a21;--ax-c3:#0c1116;--ax-ink:#eef2f6;--ax-solid:#0f1419}',
   // While booting, nothing but the splash is visible, so the home page can never flash before it.
   'html.ax-booting{background:var(--ax-solid)!important;overflow:hidden!important}',
   'html.ax-booting body{overflow:hidden!important}',
@@ -52,4 +51,4 @@ export const BOOT_CSS = [
 
 // Runs before anything is painted: applies the saved theme, switches the splash on and keeps hold of the
 // install event (it can fire before React is ready). If the app never boots, the splash lets go after 9s.
-export const BOOT_SCRIPT = `(function(d,w){var r=d.documentElement;r.classList.add('ax-booting');try{if(localStorage.getItem('archivum_theme')==='dark')r.classList.add('dark')}catch(e){}try{var a=localStorage.getItem('archivum_accent');var m=a==='tangerine'||a==='ink-wash'||a==='golden-taupe'?'smoky-ink':a==='berry'||a==='cherry-blossom'?'soft-pink':a==='ocean'?'crimson-veil':a;if(${JSON.stringify(ACCENT_IDS)}.indexOf(m)>-1)r.setAttribute('data-accent',m)}catch(e){}w.addEventListener('beforeinstallprompt',function(e){e.preventDefault();w.__axInstall=e});setTimeout(function(){if(r.classList.contains('ax-booting')){w.__axBootTimedOut=true;r.classList.remove('ax-booting')}},9000)})(document,window);`;
+export const BOOT_SCRIPT = `(function(d,w){var r=d.documentElement;r.classList.add('ax-booting');try{var a=localStorage.getItem('archivum_accent');var m=a==='tangerine'||a==='ink-wash'||a==='golden-taupe'?'smoky-ink':a==='berry'||a==='cherry-blossom'?'soft-pink':a==='ocean'?'crimson-veil':a;if(${JSON.stringify(ACCENT_IDS)}.indexOf(m)>-1)r.setAttribute('data-accent',m)}catch(e){}w.addEventListener('beforeinstallprompt',function(e){e.preventDefault();w.__axInstall=e});setTimeout(function(){if(r.classList.contains('ax-booting')){w.__axBootTimedOut=true;r.classList.remove('ax-booting')}},9000)})(document,window);`;

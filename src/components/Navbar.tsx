@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import SearchBar from './SearchBar';
-import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink, Moon, Sun } from 'lucide-react';
+import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink } from 'lucide-react';
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],
@@ -16,7 +16,7 @@ const links = [
 export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const { accent, setAccent, mode, setMode } = useTheme();
+  const { accent, setAccent } = useTheme();
   const { studentClass, displayName, resetStudentProfile } = useStudentClass();
   const [profileReady, setProfileReady] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -50,7 +50,6 @@ export default function Navbar() {
   const visibleStudentClass = profileReady ? studentClass : null;
   const visibleDisplayName = profileReady ? displayName : '';
   const visibleAccent = profileReady ? accent : 'indigo';
-  const visibleMode = profileReady ? mode : 'light';
   const withClass = (href: string) => visibleStudentClass ? `${href}${href.includes('?') ? '&' : '?'}class=${visibleStudentClass}` : href;
   const active = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
 
@@ -100,11 +99,6 @@ export default function Navbar() {
           <div className="menu-links">{links.map(([label,href,Icon]) => <Link key={href} href={withClass(href)} onClick={() => setDrawerOpen(false)} className={active(href) ? 'active' : ''}><Icon /><span>{label}</span><ChevronRight /></Link>)}</div>
 
           <div className="menu-section menu-appearance">
-            <button type="button" role="switch" aria-checked={visibleMode === 'dark'} aria-label="Dark mode" className={`dark-toggle ${visibleMode === 'dark' ? 'is-on' : ''}`} onClick={() => setMode(visibleMode === 'dark' ? 'light' : 'dark')}>
-              <span className="dark-toggle-icon">{visibleMode === 'dark' ? <Moon /> : <Sun />}</span>
-              <span className="dark-toggle-text"><strong>Dark mode</strong><small>{visibleMode === 'dark' ? 'On' : 'Off'}</small></span>
-              <span className="dark-toggle-track" aria-hidden="true"><i /></span>
-            </button>
             <div className="menu-section-label">Theme Palette</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${visibleAccent === item.id ? 'active' : ''}`}><span style={{ backgroundColor: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
