@@ -34,13 +34,21 @@ function loadPdfDocument(fileUrl: string, fileKey: string, onProgress: (loaded: 
   const pending = (async () => {
     const pdfjs = await import('pdfjs-dist/build/pdf.mjs');
     pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-    // A saved copy wins: it opens instantly the next time.
-    const offline = await getOfflinePdf(fileKey);
-    const task = offline
-      ? pdfjs.getDocument({ data: new Uint8Array(offline) })
-      : pdfjs.getDocument({ url: fileUrl, rangeChunkSize: 512 * 1024, disableAutoFetch: false, disableStream: false });
-    (task as any).onProgress = ({ loaded, total }: { loaded: number; total: number }) => onProgress(loaded, total);
-    return task.promise;
+    const openOnline = () => {
+      const task = pdfjs.getDocument({ url: fileUrl, rangeChunkSize: 512 * 1024, disableAutoFetch: false, disableStream: false });
+      (task as any).onProgress = ({ loaded, total }: { loaded: number; total: number }) => onProgress(loaded, total);
+      return task.promise;
+    };
+    // A saved copy opens instantly. If it is damaged or unreadable, drop it and fall back to the normal download.
+    const saved = await getOfflinePdf(fileKey);
+    if (saved) {
+      try {
+        return await pdfjs.getDocument({ data: new Uint8Array(saved) }).promise;
+      } catch {
+        try { await removeOfflinePdf(Number(fileKey.split(':')[0])); } catch { /* ignore */ }
+      }
+    }
+    return openOnline();
   })();
   pdfDocuments.set(fileKey, pending);
   pending.catch(() => { if (pdfDocuments.get(fileKey) === pending) pdfDocuments.delete(fileKey); });
@@ -321,7 +329,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
   const [focusToken, setFocusToken] = useState(0);
   const pendingFocusRef = useRef(false);
 
-  // Night reading + offline
+  // Night reading + saved copy
   const [night, setNight] = useState(() => getNightMode());
   const [offlineState, setOfflineState] = useState<'none' | 'saving' | 'saved'>('none');
   const [offlineProgress, setOfflineProgress] = useState(0);
@@ -728,7 +736,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     const observer = new ResizeObserver(measure);
     observer.observe(stageRef.current);
     return () => { cancelled = true; observer.disconnect(); };
-  }, [pdf, isImage, fullscreen]);
+  }, [pdf, isImage, fullscreen, fitScaleReady]);
 
   const exitFullscreen = useCallback(async () => {
     const doc = document as any;

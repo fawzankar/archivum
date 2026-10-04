@@ -2459,7 +2459,6 @@ body.overlay-scroll-locked{
 /* ===== PDF reader v3: page pager, search, selectable text, night reading ===== */
 .pdf-reader-window{position:relative}
 .pdf-reader-actions button.is-active{background:var(--accent-light);color:var(--accent)}
-.pdf-offline-pct{font-size:9px;font-weight:800;font-variant-numeric:tabular-nums}
 /* Text layer: invisible text above the canvas so it can be selected, copied and searched. */
 .pdf-js-text-wrap{position:absolute;z-index:2;pointer-events:none;line-height:1;--scale-round-x:1px;--scale-round-y:1px;--user-unit:1}
 .pdf-js-text{position:relative;text-align:initial;overflow:clip;opacity:1;line-height:1;text-size-adjust:none;-webkit-text-size-adjust:none;forced-color-adjust:none;transform-origin:0 0;pointer-events:auto}
@@ -2930,3 +2929,5 @@ svg.aic:hover .aic-nxy{animation:aic-nxy .55s ease-in-out both}
 /* Lightbulb rays: soft glow pulse instead of the scale/rotate flicker */
 .art .ai-rays{animation:aiRays 2.6s ease-in-out infinite}
 @keyframes aiRays{0%,100%{opacity:.35}50%{opacity:1}}
+
+.pdf-offline-pct{font-size:9px;font-weight:800;font-variant-numeric:tabular-nums}
