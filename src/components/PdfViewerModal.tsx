@@ -34,7 +34,7 @@ function loadPdfDocument(fileUrl: string, fileKey: string, onProgress: (loaded: 
   const pending = (async () => {
     const pdfjs = await import('pdfjs-dist/build/pdf.mjs');
     pdfjs.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
-    // A copy saved for offline reading wins: it opens instantly and works without a connection.
+    // A saved copy wins: it opens instantly the next time.
     const offline = await getOfflinePdf(fileKey);
     const task = offline
       ? pdfjs.getDocument({ data: new Uint8Array(offline) })
@@ -573,7 +573,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     if (offlineState === 'saved') {
       await removeOfflinePdf(resource.id);
       setOfflineState('none');
-      showToast('Removed from offline notes', 'info');
+      showToast('Removed from saved. It will load normally next time.', 'info');
       return;
     }
     setOfflineState('saving');
@@ -581,10 +581,10 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     try {
       await saveOfflinePdf({ id: resource.id, title: resource.title, fileKey, url: fileUrl, pageUrl: `/resource/${resource.slug || resource.id}` }, setOfflineProgress);
       setOfflineState('saved');
-      showToast('Saved for offline reading', 'success');
+      showToast('Saved. It will load faster next time.', 'success');
     } catch {
       setOfflineState('none');
-      showToast('Could not save this note offline. Check your connection and storage.', 'error');
+      showToast('Could not save this note. Check your connection and storage.', 'error');
     }
   }, [resource, offlineState, fileKey, fileUrl, showToast]);
 
@@ -807,7 +807,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
               <button type="button" className={searchOpen ? 'is-active' : ''} onClick={() => (searchOpen ? closeSearch() : openSearch())} aria-label="Search in this note" aria-pressed={searchOpen} title="Search (Ctrl+F)"><Search /></button>
               <button type="button" className={night ? 'is-active' : ''} onClick={toggleNight} aria-label={night ? 'Switch to day reading' : 'Switch to night reading'} aria-pressed={night} title={night ? 'Day mode' : 'Night mode'}>{night ? <Sun /> : <Moon />}</button>
               {offlineSupported() && (
-                <button type="button" className={`pdf-offline-btn${offlineState === 'saved' ? ' is-active' : ''}`} onClick={toggleOffline} disabled={offlineState === 'saving'} aria-label={offlineState === 'saved' ? 'Remove offline copy' : 'Save for offline reading'} title={offlineState === 'saved' ? 'Saved offline. Tap to remove' : offlineState === 'saving' ? `Saving ${offlineProgress}%` : 'Save for offline reading'}>
+                <button type="button" className={`pdf-offline-btn${offlineState === 'saved' ? ' is-active' : ''}`} onClick={toggleOffline} disabled={offlineState === 'saving'} aria-label={offlineState === 'saved' ? 'Remove saved copy' : 'Save so it loads faster next time'} title={offlineState === 'saved' ? 'Saved. Loads faster next time. Tap to remove' : offlineState === 'saving' ? `Saving ${offlineProgress}%` : 'Save. Next time it will load faster'}>
                   {offlineState === 'saving' ? <span className="pdf-offline-pct">{offlineProgress}%</span> : offlineState === 'saved' ? <Check /> : <HardDriveDownload />}
                 </button>
               )}
