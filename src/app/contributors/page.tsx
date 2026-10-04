@@ -1,7 +1,6 @@
-import Link from 'next/link';
 import { unstable_cache } from 'next/cache';
 import { query } from '@/lib/db';
-import { AUpload as Upload, ACamera as Camera, AMail as Mail } from '@/components/AnimatedIcons';
+import { ACamera as Camera, AMail as Mail } from '@/components/AnimatedIcons';
 import PageHead from '@/components/PageHead';
 import ContributorList, { type Contributor } from './ContributorList';
 import type { Metadata } from 'next';
@@ -71,9 +70,8 @@ export default async function ContributorsPage() {
 
       <section className="cbx-join">
         <h2>Have something to share?</h2>
-        <p>Upload your notes or papers and they’ll appear here once approved. You can also reach the <span className="quest-word">Quest</span> team and we’ll help get it to the right place.</p>
+        <p>Reach out to the <span className="quest-word">Quest</span> team and we’ll help get it to the right place.</p>
         <div>
-          <Link href="/upload"><Upload /> Upload</Link>
           <a href="https://instagram.com/quest_sjs" target="_blank" rel="noopener noreferrer"><Camera /> @quest_sjs</a>
           <a href="mailto:sjsquest26@gmail.com"><Mail /> sjsquest26@gmail.com</a>
         </div>

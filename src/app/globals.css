@@ -2552,7 +2552,6 @@ body.overlay-scroll-locked{
 .cbx-join div{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
 .cbx-join a{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 15px;border:1px solid var(--border);border-radius:12px;background:var(--surface);font-size:13px;font-weight:700;color:var(--ink);transition:border-color .15s ease,transform .15s ease}
 .cbx-join a:hover{border-color:var(--accent);transform:translateY(-1px)}
-.cbx-join a:first-child{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast)}
 .cbx-join svg{width:16px;height:16px}
 
 /* ===== Animated icon set (AnimatedIcons.tsx) ===== */
