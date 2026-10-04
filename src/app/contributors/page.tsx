@@ -43,6 +43,11 @@ const getContributors = unstable_cache(
   { revalidate: 300, tags: ['library'] },
 );
 
+function initials(name: string) {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : (parts[0] || '?').slice(0, 2)).toUpperCase();
+}
+
 export default async function ContributorsPage() {
   let list: Contributor[] = [];
   let loadFailed = false;
@@ -64,11 +69,12 @@ export default async function ContributorsPage() {
         <p className="cbx-note">No contributors yet. Be the first to have approved material listed here.</p>
       ) : (
         <>
-          <p className="cbx-summary">{list.length} {list.length === 1 ? 'contributor' : 'contributors'} · {total} {total === 1 ? 'upload' : 'uploads'}</p>
+          <div className="cbx-summary"><h2>Contributors</h2><span>{list.length} {list.length === 1 ? 'person' : 'people'} · {total} {total === 1 ? 'upload' : 'uploads'}</span></div>
           <ol className="cbx-list">
             {list.map((c, i) => (
               <li key={c.contributor_name}>
                 <span className={`cbx-rank${i < 3 ? ' top' : ''}`}>{i + 1}</span>
+                <span className="cbx-av" aria-hidden="true">{initials(c.contributor_name)}</span>
                 <div className="cbx-main">
                   <strong>{c.contributor_name}</strong>
                   {c.latest_title && (c.latest_id
