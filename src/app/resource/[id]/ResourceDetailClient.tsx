@@ -8,7 +8,8 @@ import ResourceCard from '@/components/ResourceCard';
 import PdfViewerModal from '@/components/PdfViewerModal';
 import Art from '@/components/Art';
 import { useToast } from '@/components/ToastContext';
-import { FileText, Download, Eye, Bookmark, BookmarkCheck, Star, Share2, ArrowLeft, ExternalLink, Image as ImageIcon, Sparkles } from 'lucide-react';
+import { Download, Eye, Star, Share2, ArrowLeft, ExternalLink, Image as ImageIcon } from 'lucide-react';
+import { AFile as FileText, ABookmark as Bookmark, ABookmarkCheck as BookmarkCheck, ASparkles as Sparkles } from '@/components/AnimatedIcons';
 
 interface ResourceDetailProps { resource: Resource; relatedResources: Resource[]; }
 

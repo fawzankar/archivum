@@ -6,7 +6,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useTheme, ACCENTS, type Accent } from './ThemeContext';
 import { useStudentClass } from './StudentClassContext';
 import SearchBar from './SearchBar';
-import { Search, X, Menu, ChevronRight, Home, BookOpen, FileText, Lightbulb, Info, Users, RotateCcw, MessageCircle, ExternalLink } from 'lucide-react';
+import { X, Menu, ChevronRight, RotateCcw, ExternalLink } from 'lucide-react';
+import { ASearch as Search, AHome as Home, ABook as BookOpen, AFile as FileText, ABulb as Lightbulb, AInfo as Info, AUsers as Users, AChat as MessageCircle } from '@/components/AnimatedIcons';
 
 const links = [
   ['Home','/',Home], ['Notes','/notes',BookOpen], ['Previous Papers','/previous-papers',FileText],

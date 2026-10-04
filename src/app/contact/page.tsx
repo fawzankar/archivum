@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { Send, CheckCircle2, Camera, Mail } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
+import { ASend as Send, ACamera as Camera, AMail as Mail } from '@/components/AnimatedIcons';
 import { useStudentClass } from '@/components/StudentClassContext';
 import PageHead from '@/components/PageHead';
 

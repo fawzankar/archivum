@@ -5,7 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
 import PdfViewerModal from '@/components/PdfViewerModal';
-import { Search, SlidersHorizontal, ChevronLeft, ChevronRight, X, RotateCcw } from 'lucide-react';
+import { SlidersHorizontal, ChevronLeft, ChevronRight, X, RotateCcw } from 'lucide-react';
+import { ASearch as Search } from '@/components/AnimatedIcons';
 
 interface SearchClientProps {
   initialQuery: string;

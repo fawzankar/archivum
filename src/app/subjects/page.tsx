@@ -1,7 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import PageHead from '@/components/PageHead';
-import { ArrowRight, GraduationCap } from 'lucide-react';
+import { GraduationCap } from 'lucide-react';
+import { AArrowRight as ArrowRight } from '@/components/AnimatedIcons';
 import SubjectPicker from '@/components/SubjectPicker';
 import { CLASS_SUBJECTS, SUBJECT_DETAILS } from '@/lib/subjects';
 import { getPreferredClass } from '@/lib/studentClass';

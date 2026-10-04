@@ -6,7 +6,8 @@ import { Resource } from '@/lib/resources';
 import { getSavedResourcesList, getRecentlyViewed } from '@/lib/savedStorage';
 import ResourceCard from '@/components/ResourceCard';
 import PdfViewerModal from '@/components/PdfViewerModal';
-import { Bookmark, Clock, ArrowRight } from 'lucide-react';
+import { Clock } from 'lucide-react';
+import { ABookmark as Bookmark, AArrowRight as ArrowRight } from '@/components/AnimatedIcons';
 
 export default function SavedClient() {
   const [savedItems, setSavedItems] = useState<Resource[]>([]);

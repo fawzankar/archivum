@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { MessageSquareQuote, Star, Send } from 'lucide-react';
+import { MessageSquareQuote, Star } from 'lucide-react';
+import { ASend as Send } from '@/components/AnimatedIcons';
 
 type Review = { id:number; name:string; rating:number; review:string; created_at:string };
 

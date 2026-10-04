@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, BookOpen, FileText, Bookmark, Info } from 'lucide-react';
+import { AHome as Home, ABook as BookOpen, AFile as FileText, ABookmark as Bookmark, AInfo as Info } from '@/components/AnimatedIcons';
 import { useStudentClass } from './StudentClassContext';
 
 const NAVS = [['Home', '/', Home], ['Notes', '/notes', BookOpen], ['Papers', '/previous-papers', FileText], ['Saved', '/saved', Bookmark], ['About', '/about', Info]] as const;

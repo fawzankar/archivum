@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import type { LibraryBundle, Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
 import Art from '@/components/Art';
-import { BookOpen, ArrowRight } from 'lucide-react';
+import { ABook as BookOpen, AArrowRight as ArrowRight } from '@/components/AnimatedIcons';
 import { resourceSubjectMatches, subjectsForClass } from '@/lib/subjects';
 import { useLibraryBundle } from '@/lib/libraryCache';
 

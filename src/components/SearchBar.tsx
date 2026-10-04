@@ -2,7 +2,8 @@
 
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Search, X } from 'lucide-react';
+import { X } from 'lucide-react';
+import { AArrowRight as ArrowRight, ASearch as Search } from '@/components/AnimatedIcons';
 
 export default function SearchBar({ className = '', initialValue = '', onSearch, autoFocus = false }: { className?: string; initialValue?: string; onSearch?: () => void; autoFocus?: boolean }) {
   const router = useRouter();

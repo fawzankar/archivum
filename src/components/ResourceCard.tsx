@@ -7,7 +7,8 @@ import { Resource } from '@/lib/resources';
 import { isResourceSaved, toggleSaveResource } from '@/lib/savedStorage';
 import { useToast } from './ToastContext';
 import Art from './Art';
-import { Bookmark, BookmarkCheck, ArrowUpRight, Star } from 'lucide-react';
+import { Star } from 'lucide-react';
+import { ABookmark as Bookmark, ABookmarkCheck as BookmarkCheck, AArrowUpRight as ArrowUpRight } from '@/components/AnimatedIcons';
 
 export default function ResourceCard({ resource, onView, compact = false, badge }: { resource: Resource; onView?: (resource: Resource) => void; compact?: boolean; badge?: string }) {
   const [saved,setSaved]=useState(false); const {showToast}=useToast(); const router=useRouter();

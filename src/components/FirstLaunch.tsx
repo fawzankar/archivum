@@ -2,7 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import { ArrowRight, Check, GraduationCap, UserRound } from 'lucide-react';
+import { Check, GraduationCap, UserRound } from 'lucide-react';
+import { AArrowRight as ArrowRight } from '@/components/AnimatedIcons';
 import Art from './Art';
 import { subjectsForClass } from '@/lib/subjects';
 import { useStudentClass, type StudentClass } from './StudentClassContext';

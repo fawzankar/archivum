@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import { Lightbulb, Send, ShieldCheck, Clock3 } from 'lucide-react';
+import { ShieldCheck, Clock3 } from 'lucide-react';
+import { ABulb as Lightbulb, ASend as Send } from '@/components/AnimatedIcons';
 import type { Tip } from '@/lib/tips';
 import { subjectsForClass } from '@/lib/subjects';
 import { useStudentClass } from '@/components/StudentClassContext';

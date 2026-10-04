@@ -5,7 +5,8 @@ import dynamic from 'next/dynamic';
 import { useSearchParams } from 'next/navigation';
 import type { LibraryBundle, Resource } from '@/lib/resources';
 import ResourceCard from '@/components/ResourceCard';
-import { Filter, FileText, RotateCcw, Layers3 } from 'lucide-react';
+import { Filter, RotateCcw, Layers3 } from 'lucide-react';
+import { AFile as FileText } from '@/components/AnimatedIcons';
 import { subjectsForClass, resourceSubjectMatches } from '@/lib/subjects';
 import { allPapersSorted, useLibraryBundle } from '@/lib/libraryCache';
 

@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import Art from './Art';
-import { ArrowUpRight, BookOpen, Calculator, FlaskConical, Globe2, Languages, Leaf, Atom, Beaker, X, FileText } from 'lucide-react';
+import { Calculator, FlaskConical, Globe2, Languages, Leaf, Atom, Beaker, X } from 'lucide-react';
+import { AArrowUpRight as ArrowUpRight, ABook as BookOpen, AFile as FileText } from '@/components/AnimatedIcons';
 
 const iconMap: Record<string, React.ElementType> = {
   Maths: Calculator, Science: FlaskConical, SST: Globe2, English: Languages,
