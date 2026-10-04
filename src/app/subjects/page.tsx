@@ -24,7 +24,7 @@ export default async function SubjectsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-9 sm:py-14 space-y-10">
-      <PageHead title="Find your subject." art="Science" tone="peri">Every class has its own subject set. Pick one to jump straight into its notes and papers.</PageHead>
+      <PageHead title="Find your subject." art="subjects" tone="peri">Every class has its own subject set. Pick one to jump straight into its notes and papers.</PageHead>
 
       <div className="space-y-8">
         {levels.map(level => (

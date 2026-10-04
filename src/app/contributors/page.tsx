@@ -61,7 +61,7 @@ export default async function ContributorsPage() {
 
   return (
     <main className="cbx">
-      <PageHead title="People building the archive." art="default" tone="mint">Everyone who has had notes or papers approved on ARCHIVUM, ranked by how much they have shared.</PageHead>
+      <PageHead title="People building the archive." art="people" tone="mint">Everyone who has had notes or papers approved on ARCHIVUM, ranked by how much they have shared.</PageHead>
 
       {loadFailed ? (
         <p className="cbx-note">The contributor list couldn’t load just now. Please refresh in a minute.</p>

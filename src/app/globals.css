@@ -2912,3 +2912,9 @@ svg.aic:hover .aic-nxy{animation:aic-nxy .55s ease-in-out both}
 @keyframes aic-nx{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}
 @keyframes aic-nxy{0%,100%{transform:translate(0,0)}50%{transform:translate(2px,-2px)}}
 @media(prefers-reduced-motion:reduce){.aic *{animation:none!important}}
+
+/* New page illustrations */
+.art .ai-needle{animation:aiNeedle 3.4s ease-in-out infinite}
+.art .ai-flag{transform-origin:0% 50%;animation:aiFlag 1.8s ease-in-out infinite}
+@keyframes aiNeedle{0%,100%{transform:rotate(-20deg)}45%{transform:rotate(26deg)}70%{transform:rotate(-8deg)}}
+@keyframes aiFlag{0%,100%{transform:scaleX(1) skewY(0)}50%{transform:scaleX(.82) skewY(6deg)}}

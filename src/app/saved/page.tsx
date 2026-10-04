@@ -11,7 +11,7 @@ export const metadata = {
 export default function SavedPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-      <PageHead title="Saved Resources" art="default" tone="blush">
+      <PageHead title="Saved Resources" art="saved" tone="blush">
           Your personal collection of saved notes and examination papers stored locally on this device.
         </PageHead>
 

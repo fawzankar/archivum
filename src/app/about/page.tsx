@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return <main className="ab">
-    <PageHead title="A home for the academic archive." art="notes" tone="sun">
+    <PageHead title="A home for the academic archive." art="about" tone="sun">
       ARCHIVUM is a student-built academic archive for SJS students to keep, find and share notes, previous-year papers, MCQs and other useful study material.
     </PageHead>
 
@@ -41,13 +41,13 @@ export default function AboutPage() {
         <h2>ARCHIVUM × <span className="quest-word">QUEST</span></h2>
         <p>ARCHIVUM is connected with the <span className="quest-word">Quest</span> community and is currently looked after by <span className="quest-word">Quest</span> Club members.</p>
         <a href="https://sjsquest.vercel.app" target="_blank" rel="noopener noreferrer" className="hm-pill quest-visit">Visit <span className="quest-word">QUEST</span></a>
-        <Art name="SST" className="ab-art" />
+        <Art name="quest" className="ab-art" />
       </div>
       <div className="ab-block ab-blush">
         <h2>Want ARCHIVUM for your school?</h2>
         <p>Message Fawzan Kar and ask for the code. He’s happy to share it for free.</p>
         <a href="https://linktr.ee/fawzankar" target="_blank" rel="noopener noreferrer" className="hm-pill">Message Fawzan</a>
-        <Art name="Chemistry" className="ab-art" />
+        <Art name="school" className="ab-art" />
       </div>
     </section>
 

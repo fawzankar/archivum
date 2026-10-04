@@ -167,6 +167,84 @@ const art: Record<string, React.ReactNode> = {
     <rect className="ai-stack" style={v({ animationDelay: '.15s' })} x="22" y="48" width="80" height="22" rx="4" fill={Y} stroke={N} strokeWidth="4"/>
     <rect className="ai-stack" x="18" y="26" width="84" height="22" rx="4" fill={K} stroke={N} strokeWidth="4"/>
   </>,
+
+  /* ---- Page illustrations: one per page/section so no two headers share the same picture ---- */
+  about: <>
+    <path d="M60 10 14 40h92Z" fill={Y} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
+    <circle className="ai-twinkle" cx="60" cy="29" r="5" fill={W} stroke={N} strokeWidth="3"/>
+    {[22, 42, 62, 82].map((x, i) => <rect key={x} className="ai-grow" style={v({ animationDelay: `${i * 0.25}s` })} x={x} y="47" width="14" height="44" rx="2" fill={W} stroke={N} strokeWidth="3.5"/>)}
+    <rect x="12" y="92" width="96" height="14" rx="4" fill={P} stroke={N} strokeWidth="4"/>
+  </>,
+
+  contact: <>
+    <rect x="14" y="40" width="72" height="52" rx="8" fill={W} stroke={N} strokeWidth="4"/>
+    <path d="M17 46 50 70 83 46" fill="none" stroke={N} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
+    <g className="ai-float">
+      <path d="M62 14h38a10 10 0 0 1 10 10v22a10 10 0 0 1-10 10H88L78 68V56H62a10 10 0 0 1-10-10V24a10 10 0 0 1 10-10Z" fill={K} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
+      {[67, 81, 95].map((x, i) => <circle key={x} className="ai-pop" style={v({ animationDelay: `${i * 0.25}s` })} cx={x} cy="35" r="3.4" fill={N}/>)}
+    </g>
+  </>,
+
+  people: <>
+    <g className="ai-hop" style={v({ animationDelay: '.3s' })}><circle cx="34" cy="46" r="11" fill={P} stroke={N} strokeWidth="4"/><path d="M14 94c0-16 9-26 20-26s20 10 20 26Z" fill={P} stroke={N} strokeWidth="4" strokeLinejoin="round"/></g>
+    <g className="ai-hop" style={v({ animationDelay: '.15s' })}><circle cx="86" cy="46" r="11" fill={K} stroke={N} strokeWidth="4"/><path d="M66 94c0-16 9-26 20-26s20 10 20 26Z" fill={K} stroke={N} strokeWidth="4" strokeLinejoin="round"/></g>
+    <g className="ai-hop"><circle cx="60" cy="36" r="14" fill={Y} stroke={N} strokeWidth="4"/><path d="M34 102c0-20 11-32 26-32s26 12 26 32Z" fill={Y} stroke={N} strokeWidth="4" strokeLinejoin="round"/></g>
+  </>,
+
+  saved: <>
+    <rect x="24" y="14" width="72" height="92" rx="8" fill={W} stroke={N} strokeWidth="4"/>
+    <path d="M38 40h20M38 54h20M38 80h44M38 92h28" stroke={P} strokeWidth="4.5" strokeLinecap="round"/>
+    <path className="ai-hop" d="M66 14h22v46l-11-9-11 9Z" fill={K} stroke={N} strokeWidth="3.5" strokeLinejoin="round"/>
+  </>,
+
+  search: <>
+    <g className="ai-float">
+      <circle cx="52" cy="52" r="30" fill={S} stroke={N} strokeWidth="5"/>
+      <path className="ai-twinkle" d="M36 46a17 17 0 0 1 12-12" fill="none" stroke={W} strokeWidth="5" strokeLinecap="round"/>
+      <path d="M75 75 101 101" stroke={N} strokeWidth="11" strokeLinecap="round"/>
+      <path d="M75 75 101 101" stroke={Y} strokeWidth="4" strokeLinecap="round"/>
+    </g>
+  </>,
+
+  tips: <>
+    <g className="ai-twinkle"><path d="M18 22 10 16M102 22l8-6M16 46H6M104 46h10" stroke={N} strokeWidth="4" strokeLinecap="round"/></g>
+    <g className="ai-float">
+      <path d="M60 12c-19 0-32 14-32 31 0 11 6 18 12 24 4 4 5 8 5 13h30c0-5 1-9 5-13 6-6 12-13 12-24 0-17-13-31-32-31Z" fill={Y} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
+      <path d="M51 48l9 14 9-14" fill="none" stroke={N} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <rect x="44" y="84" width="32" height="9" rx="4" fill={W} stroke={N} strokeWidth="3.5"/>
+      <rect x="48" y="95" width="24" height="8" rx="4" fill={P} stroke={N} strokeWidth="3.5"/>
+    </g>
+  </>,
+
+  subjects: <>
+    <g className="ai-pop"><rect x="14" y="14" width="44" height="44" rx="10" fill={P} stroke={N} strokeWidth="4"/><path d="M36 26v20M26 36h20" stroke={W} strokeWidth="4.5" strokeLinecap="round"/></g>
+    <g className="ai-pop" style={v({ animationDelay: '.3s' })}><rect x="62" y="14" width="44" height="44" rx="10" fill={Y} stroke={N} strokeWidth="4"/><path d="M73 48l7-20 7 20M75 42h10" fill="none" stroke={N} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/></g>
+    <g className="ai-pop" style={v({ animationDelay: '.6s' })}><rect x="14" y="62" width="44" height="44" rx="10" fill={K} stroke={N} strokeWidth="4"/><path d="M26 94c0-12 8-18 22-18 0 12-8 20-22 18Z" fill={W} stroke={N} strokeWidth="3" strokeLinejoin="round"/></g>
+    <g className="ai-pop" style={v({ animationDelay: '.9s' })}><rect x="62" y="62" width="44" height="44" rx="10" fill={G2} stroke={N} strokeWidth="4"/><circle cx="84" cy="84" r="11" fill={W} stroke={N} strokeWidth="3"/><path d="M73 84h22" stroke={N} strokeWidth="3"/></g>
+  </>,
+
+  quest: <>
+    <circle cx="60" cy="60" r="44" fill={W} stroke={N} strokeWidth="5"/>
+    <circle cx="60" cy="60" r="34" fill="none" stroke={P} strokeWidth="3"/>
+    <path d="M60 20v8M60 92v8M20 60h8M92 60h8" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+    <g className="ai-needle">
+      <path d="M60 30l9 30H51Z" fill={K} stroke={N} strokeWidth="3" strokeLinejoin="round"/>
+      <path d="M60 90l-9-30h18Z" fill={P} stroke={N} strokeWidth="3" strokeLinejoin="round"/>
+    </g>
+    <circle cx="60" cy="60" r="4" fill={N}/>
+  </>,
+
+  school: <>
+    <path d="M60 18V4" stroke={N} strokeWidth="3" strokeLinecap="round"/>
+    <path className="ai-flag" d="M60 4h19l-5 5.5L79 15H60Z" fill={K} stroke={N} strokeWidth="2.5" strokeLinejoin="round"/>
+    <path d="M12 52 60 18l48 34Z" fill={Y} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
+    <rect x="20" y="52" width="80" height="50" rx="4" fill={W} stroke={N} strokeWidth="4"/>
+    <circle cx="60" cy="40" r="7" fill={W} stroke={N} strokeWidth="3"/>
+    <path d="M60 36v4h3.5" fill="none" stroke={N} strokeWidth="2.5" strokeLinecap="round"/>
+    <rect x="28" y="62" width="16" height="14" rx="2" fill={S} stroke={N} strokeWidth="3"/>
+    <rect x="76" y="62" width="16" height="14" rx="2" fill={S} stroke={N} strokeWidth="3"/>
+    <rect x="50" y="72" width="20" height="30" rx="4" fill={P} stroke={N} strokeWidth="3.5"/>
+  </>,
 };
 
 /* [centreX, centreY, scale] of each artwork's real painted bounds, so all icons sit dead-centre
@@ -175,6 +253,8 @@ const FIT: Record<string, [number, number, number]> = {
   Maths: [60, 58, 0.97], Science: [60, 56.3, 1], SST: [60, 60.2, 1], English: [60, 60, 1],
   Hindi: [60, 60, 0.92], Urdu: [60, 60, 0.92], Biology: [60, 60, 0.97], Physics: [60.3, 60, 0.98],
   Chemistry: [60, 57.8, 0.96], notes: [67.9, 60, 1], papers: [60.4, 55.4, 0.95], default: [60, 58, 1],
+  about: [60, 58, 1], contact: [62, 53, 1], people: [60, 61, 1], saved: [60, 60, 1], search: [64, 64, 0.95],
+  tips: [59, 58, 0.92], subjects: [60, 60, 1], quest: [60, 60, 1.1], school: [60, 53, 1],
 };
 
 export default function Art({ name, className = '' }: { name: string; className?: string }) {
