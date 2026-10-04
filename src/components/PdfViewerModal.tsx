@@ -55,6 +55,13 @@ function loadPdfDocument(fileUrl: string, fileKey: string, onProgress: (loaded: 
   return pending;
 }
 
+// Closing the reader must hand the document's memory back. On phones, pages and PDFs left behind exhaust GPU memory
+// and the browser starts painting black rectangles over fixed layers (like the bottom nav) until a full reload.
+function releasePdfDocument(fileKey: string, document: any) {
+  pdfDocuments.delete(fileKey);
+  try { document?.destroy?.(); } catch { /* already gone */ }
+}
+
 /** Wraps every occurrence of `query` inside the text-layer spans; returns the active mark (if any). */
 function highlightSpans(container: HTMLElement, query: string, activeOrdinal: number): HTMLElement | null {
   const needle = query.toLowerCase();
@@ -140,6 +147,10 @@ const PdfPage = memo(function PdfPage({ pdf, pageNumber, fileKey, displayScale, 
   const cssHeight = A4_HEIGHT * displayScale * zoomLevel;
 
   // Base render (cached, low zoom). Pages only render once they are near the viewport.
+  useEffect(() => () => {
+    for (const c of [canvasRef.current, hiCanvasRef.current]) { if (c) { c.width = 0; c.height = 0; } }
+  }, []);
+
   useEffect(() => {
     if (!pdf || !near || baseDoneRef.current) return;
     const canvas = canvasRef.current;
@@ -401,10 +412,12 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
     setIndexedPages(0);
     addRecentlyViewed(resource);
 
+    let loadedDoc: any = null;
     loadPdfDocument(fileUrl, fileKey, (loaded, total) => {
       if (total > 0 && !cancelled) setLoadProgress(Math.max(1, Math.min(99, Math.round((loaded / total) * 100))));
     }).then((document) => {
-      if (cancelled) return;
+      loadedDoc = document;
+      if (cancelled) { releasePdfDocument(fileKey, document); return; }
       setPdf(document);
       setPageCount(document.numPages);
       setLoadProgress(100);
@@ -414,7 +427,7 @@ export default function PdfViewerModal({ resource, onClose }: Props) {
       if (!cancelled) { setLoading(false); setFailed(true); }
     });
 
-    return () => { cancelled = true; };
+    return () => { cancelled = true; if (loadedDoc) releasePdfDocument(fileKey, loadedDoc); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resource?.id, fileUrl, fileKey, isImage]);
 

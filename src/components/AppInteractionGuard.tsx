@@ -1,11 +1,29 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 
 const isInsideReader = (target: EventTarget | null) =>
   target instanceof Element && Boolean(target.closest('.pdf-reader-shell'));
 
 export default function AppInteractionGuard() {
+  const pathname = usePathname();
+
+  // Leaving a note (or restoring a page from the back/forward cache) must never leave the page in a "reader open" state.
+  useEffect(() => {
+    const reset = () => {
+      if (!document.querySelector('.pdf-reader-shell')) document.body.style.removeProperty('overflow');
+      if (!document.querySelector('.search-modal, .menu-layer.open')) {
+        document.documentElement.classList.remove('overlay-scroll-locked');
+        document.body.classList.remove('overlay-scroll-locked');
+      }
+      if (document.fullscreenElement && !document.querySelector('.pdf-reader-shell')) document.exitFullscreen?.().catch(() => {});
+    };
+    reset();
+    window.addEventListener('pageshow', reset);
+    return () => window.removeEventListener('pageshow', reset);
+  }, [pathname]);
+
   useEffect(() => {
     const blockNativeBrowserZoom = (event: Event) => {
       if (event.cancelable) event.preventDefault();

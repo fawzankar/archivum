@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Resource } from '@/lib/resources';
 import { isResourceSaved, toggleSaveResource, addRecentlyViewed } from '@/lib/savedStorage';
@@ -24,6 +24,7 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
   const [readerOpen, setReaderOpen] = useState(false);
   const { showToast } = useToast();
+  const closeReader = useCallback(() => setReaderOpen(false), []);
   const isPaper = resource.resource_type === 'Previous Year Paper' || Boolean(resource.paper_type);
   const backHref = isPaper ? `/previous-papers?class=${resource.class_level}` : `/notes?class=${resource.class_level}&subject=${encodeURIComponent(resource.subject)}`;
   const artName = isPaper ? 'papers' : resource.subject;
@@ -192,6 +193,6 @@ export default function ResourceDetailClient({ resource, relatedResources }: Res
 
       {relatedResources.length > 0 && <section className="resource-related"><div><span>RELATED MATERIAL</span><h2>More for Class {resource.class_level} {resource.subject}</h2></div><div className="resource-related-grid">{relatedResources.slice(0,3).map(res => <ResourceCard key={res.id} resource={res} />)}</div></section>}
     </div>
-    <PdfViewerModal resource={readerOpen ? resource : null} onClose={() => setReaderOpen(false)} />
+    <PdfViewerModal resource={readerOpen ? resource : null} onClose={closeReader} />
   </main>;
 }

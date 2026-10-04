@@ -32,8 +32,7 @@ button:not(:disabled):active,[role="tab"]:active,[role="radio"]:active,
 .mobile-nav{
   display:none;position:fixed;z-index:1000;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));
   height:64px;padding:5px;border-radius:24px;
-  background:color-mix(in srgb,var(--surface) 92%,transparent);
-  -webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);
+  background:color-mix(in srgb,var(--surface) 97%,transparent);
   border:1px solid color-mix(in srgb,var(--accent) 14%,var(--border));
   box-shadow:0 14px 36px var(--app-shadow);
 }
@@ -98,3 +97,9 @@ html.profile-onboarding-active .mobile-nav{display:none!important}
   .ax-page,.ax-page :is(.resource-card,.hm-jump-card,.subject-tile,.hm-subject-home-card,.notes-subject-card){animation:none!important}
   .mobile-nav-pill,.mobile-nav-link svg,.mobile-nav-link span{transition-duration:.01ms!important}
 }
+
+/* The page can never show a black hole: the document always fills the screen and a themed layer sits behind everything,
+   so any area the browser fails to paint after a back-navigation shows the page colour instead of black. */
+html{min-height:100%;background-color:var(--ivory)}
+body{min-height:100vh;min-height:100dvh}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--ivory);pointer-events:none}
