@@ -38,6 +38,11 @@ button:not(:disabled):active,[role="tab"]:active,[role="radio"]:active,
   box-shadow:0 14px 36px var(--app-shadow);
 }
 @media(max-width:1023px){.mobile-nav{display:block}}
+/* Desktop / landscape: the same dock, centred, so it is always reachable */
+@media(min-width:1024px){
+  .mobile-nav{display:block;left:50%;right:auto;width:min(560px,calc(100vw - 48px));transform:translateX(-50%)}
+  body{padding-bottom:96px}
+}
 html.profile-onboarding-active .mobile-nav{display:none!important}
 .mobile-nav-inner{position:relative;height:100%;display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
 .mobile-nav-pill{

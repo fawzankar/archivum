@@ -186,9 +186,11 @@ const art: Record<string, React.ReactNode> = {
   </>,
 
   people: <>
-    <g className="ai-hop" style={v({ animationDelay: '.3s' })}><circle cx="34" cy="46" r="11" fill={P} stroke={N} strokeWidth="4"/><path d="M14 94c0-16 9-26 20-26s20 10 20 26Z" fill={P} stroke={N} strokeWidth="4" strokeLinejoin="round"/></g>
-    <g className="ai-hop" style={v({ animationDelay: '.15s' })}><circle cx="86" cy="46" r="11" fill={K} stroke={N} strokeWidth="4"/><path d="M66 94c0-16 9-26 20-26s20 10 20 26Z" fill={K} stroke={N} strokeWidth="4" strokeLinejoin="round"/></g>
-    <g className="ai-hop"><circle cx="60" cy="36" r="14" fill={Y} stroke={N} strokeWidth="4"/><path d="M34 102c0-20 11-32 26-32s26 12 26 32Z" fill={Y} stroke={N} strokeWidth="4" strokeLinejoin="round"/></g>
+    <g className="ai-hop" style={v({ animationDelay: '.25s' })}><g transform="rotate(8 74 30)"><rect x="58" y="8" width="32" height="46" rx="4" fill={K} stroke={N} strokeWidth="3.5"/><path d="M65 22h18M65 32h12" stroke={N} strokeWidth="3" strokeLinecap="round"/></g></g>
+    <g className="ai-hop"><g transform="rotate(-6 50 34)"><rect x="32" y="12" width="34" height="46" rx="4" fill={W} stroke={N} strokeWidth="3.5"/><path d="M40 26h18M40 36h18M40 46h10" stroke={P} strokeWidth="3.5" strokeLinecap="round"/></g></g>
+    <rect x="18" y="58" width="84" height="46" rx="8" fill={P} stroke={N} strokeWidth="4"/>
+    <rect x="14" y="46" width="92" height="16" rx="6" fill={Y} stroke={N} strokeWidth="4"/>
+    <rect x="46" y="76" width="28" height="11" rx="3" fill={W} stroke={N} strokeWidth="3"/>
   </>,
 
   saved: <>
@@ -207,7 +209,7 @@ const art: Record<string, React.ReactNode> = {
   </>,
 
   tips: <>
-    <g className="ai-twinkle"><path d="M18 22 10 16M102 22l8-6M16 46H6M104 46h10" stroke={N} strokeWidth="4" strokeLinecap="round"/></g>
+    <g className="ai-rays"><path d="M18 22 10 16M102 22l8-6M16 46H6M104 46h10" stroke={N} strokeWidth="4" strokeLinecap="round"/></g>
     <g className="ai-float">
       <path d="M60 12c-19 0-32 14-32 31 0 11 6 18 12 24 4 4 5 8 5 13h30c0-5 1-9 5-13 6-6 12-13 12-24 0-17-13-31-32-31Z" fill={Y} stroke={N} strokeWidth="4" strokeLinejoin="round"/>
       <path d="M51 48l9 14 9-14" fill="none" stroke={N} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -253,7 +255,7 @@ const FIT: Record<string, [number, number, number]> = {
   Maths: [60, 58, 0.97], Science: [60, 56.3, 1], SST: [60, 60.2, 1], English: [60, 60, 1],
   Hindi: [60, 60, 0.92], Urdu: [60, 60, 0.92], Biology: [60, 60, 0.97], Physics: [60.3, 60, 0.98],
   Chemistry: [60, 57.8, 0.96], notes: [67.9, 60, 1], papers: [60.4, 55.4, 0.95], default: [60, 58, 1],
-  about: [60, 58, 1], contact: [62, 53, 1], people: [60, 61, 1], saved: [60, 60, 1], search: [64, 64, 0.95],
+  about: [60, 58, 1], contact: [62, 53, 1], people: [60, 56, 1], saved: [60, 60, 1], search: [64, 64, 0.95],
   tips: [59, 58, 0.92], subjects: [60, 60, 1], quest: [60, 60, 1.1], school: [60, 53, 1],
 };
 
