@@ -1,6 +1,9 @@
-// Tiny synthesised tap sounds (Web Audio). No audio files, nothing to download, works offline.
+// Synthesised "pop" sounds (Web Audio): a soft, rounded bubble pop with a faint click on top.
+// No audio files, nothing to download, works offline.
 const KEY = 'archivum-sound';
 let ctx: AudioContext | null = null;
+let master: GainNode | null = null;
+let noise: AudioBuffer | null = null;
 
 export function isSoundOn(): boolean {
   try { return localStorage.getItem(KEY) !== 'off'; } catch { return true; }
@@ -15,43 +18,79 @@ function audio(): AudioContext | null {
   if (!ctx) {
     const AC = window.AudioContext || (window as any).webkitAudioContext;
     if (!AC) return null;
-    try { ctx = new AC(); } catch { return null; }
+    try {
+      ctx = new AC();
+      // Master chain keeps everything smooth and never harsh: gentle low-pass, light compression.
+      const lp = ctx.createBiquadFilter();
+      lp.type = 'lowpass'; lp.frequency.value = 7000; lp.Q.value = 0.5;
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -18; comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.12;
+      master = ctx.createGain(); master.gain.value = 0.9;
+      master.connect(lp); lp.connect(comp); comp.connect(ctx.destination);
+      // 20 ms of noise, reused for the click transient.
+      noise = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.02), ctx.sampleRate);
+      const d = noise.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+    } catch { return null; }
   }
   if (ctx.state === 'suspended') ctx.resume().catch(() => {});
   return ctx;
 }
 
-function blip(c: AudioContext, freq: number, start: number, dur: number, gain: number, type: OscillatorType = 'sine') {
-  const osc = c.createOscillator();
-  const g = c.createGain();
-  osc.type = type;
-  osc.frequency.setValueAtTime(freq, start);
-  osc.frequency.exponentialRampToValueAtTime(freq * 0.82, start + dur);
-  g.gain.setValueAtTime(0.0001, start);
-  g.gain.exponentialRampToValueAtTime(gain, start + 0.008);
-  g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-  osc.connect(g).connect(c.destination);
-  osc.start(start);
-  osc.stop(start + dur + 0.02);
+/** One bubble pop: the pitch drops fast from high to rest, a quiet octave above adds sparkle, a hint of click gives it snap. */
+function pop(c: AudioContext, t: number, freq: number, level: number, tail = 0.11) {
+  const out = master as GainNode;
+
+  const body = c.createOscillator();
+  const bg = c.createGain();
+  body.type = 'sine';
+  body.frequency.setValueAtTime(freq * 2.1, t);
+  body.frequency.exponentialRampToValueAtTime(freq, t + 0.05);
+  bg.gain.setValueAtTime(0.0001, t);
+  bg.gain.exponentialRampToValueAtTime(level, t + 0.004);
+  bg.gain.exponentialRampToValueAtTime(0.0001, t + tail);
+  body.connect(bg).connect(out);
+  body.start(t); body.stop(t + tail + 0.03);
+
+  const spark = c.createOscillator();
+  const sg = c.createGain();
+  spark.type = 'sine';
+  spark.frequency.setValueAtTime(freq * 4.2, t);
+  spark.frequency.exponentialRampToValueAtTime(freq * 2, t + 0.04);
+  sg.gain.setValueAtTime(0.0001, t);
+  sg.gain.exponentialRampToValueAtTime(level * 0.22, t + 0.003);
+  sg.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+  spark.connect(sg).connect(out);
+  spark.start(t); spark.stop(t + 0.07);
+
+  if (noise) {
+    const src = c.createBufferSource();
+    const hp = c.createBiquadFilter();
+    const ng = c.createGain();
+    src.buffer = noise;
+    hp.type = 'highpass'; hp.frequency.value = 2500;
+    ng.gain.setValueAtTime(level * 0.16, t);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t + 0.014);
+    src.connect(hp).connect(ng).connect(out);
+    src.start(t);
+  }
 }
 
 export type SoundKind = 'tap' | 'nav' | 'soft';
 
-/** `step` lets the five bottom tabs each have their own note. */
+/** `step` gives each of the five bottom tabs its own pitch. */
 export function playSound(kind: SoundKind = 'tap', step = 0) {
   if (!isSoundOn()) return;
   if (document.visibilityState === 'hidden') return;
   const c = audio();
-  if (!c) return;
-  const t = c.currentTime;
+  if (!c || !master) return;
+  const t = c.currentTime + 0.005;
   if (kind === 'nav') {
-    const scale = [523.25, 587.33, 659.25, 783.99, 880]; // C D E G A: always sounds pleasant
-    const f = scale[Math.max(0, Math.min(4, step))];
-    blip(c, f, t, 0.16, 0.07);
-    blip(c, f * 2, t + 0.012, 0.09, 0.025);
+    const notes = [440, 494, 554, 659, 740]; // gentle rising scale across the tabs
+    pop(c, t, notes[Math.max(0, Math.min(4, step))], 0.16, 0.14);
   } else if (kind === 'soft') {
-    blip(c, 420, t, 0.09, 0.05);
+    pop(c, t, 330, 0.11, 0.1);
   } else {
-    blip(c, 720, t, 0.07, 0.06, 'triangle');
+    pop(c, t, 520, 0.14, 0.11);
   }
 }
