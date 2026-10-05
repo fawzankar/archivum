@@ -1,9 +1,9 @@
 // ARCHIVUM needs the internet to load notes and papers, so this worker does only two things:
 // 1) keeps the app shell assets fast (cache-first for immutable build files and icons), and
 // 2) when a page can't be reached because there is no connection, shows a clear "You're offline" screen.
-const VERSION = 'archivum-offline-v16';
+const VERSION = 'archivum-offline-v17';
 const STATIC_CACHE = `${VERSION}-static`;
-const STATIC_ASSETS = ['/manifest.json', '/offline.html', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png'];
+const STATIC_ASSETS = ['/manifest.json', '/offline.html', '/icons/icon-192.png', '/icons/icon-512.png', '/icons/apple-touch-icon.png', '/sounds/pop.mp3'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(STATIC_CACHE).then((cache) => cache.addAll(STATIC_ASSETS)).catch(() => {}));

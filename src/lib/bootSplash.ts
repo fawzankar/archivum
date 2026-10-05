@@ -36,7 +36,7 @@ export const BOOT_CSS = [
   '.ax-splash__mark{width:clamp(84px,22vw,116px);aspect-ratio:1.05;background:var(--ax-ink);-webkit-mask:var(--ax-mark) center/contain no-repeat;mask:var(--ax-mark) center/contain no-repeat;animation:axPop .6s cubic-bezier(.2,.8,.2,1) both}',
   '.ax-splash__word{margin-top:22px;font-family:"Lato",system-ui,Arial,sans-serif;font-size:clamp(28px,8vw,52px);font-weight:900;letter-spacing:.18em;line-height:1;text-indent:.18em;animation:axUp .6s ease .12s both}',
   '.ax-splash__kicker{margin:16px 0 0;font-family:"Lato",system-ui,Arial,sans-serif;font-size:clamp(9.5px,2.6vw,11px);font-weight:700;letter-spacing:.24em;opacity:.8;animation:axUp .6s ease .28s both}',
-  '.ax-splash__quest{font-family:"Libre Baskerville",Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:.2em}',
+  '.ax-splash__quest{font-family:"Libre Baskerville",Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:-.015em}',
   '.ax-splash__bar{display:block;position:relative;width:min(230px,58vw);height:3px;margin-top:26px;border-radius:99px;overflow:hidden}',
   '.ax-splash__bar::before,.ax-splash__bar i{content:"";position:absolute;inset:0;background:var(--ax-ink)}',
   '.ax-splash__bar::before{opacity:.16}',
