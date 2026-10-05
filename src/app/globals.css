@@ -2931,3 +2931,71 @@ svg.aic:hover .aic-nxy{animation:aic-nxy .55s ease-in-out both}
 @keyframes aiRays{0%,100%{opacity:.35}50%{opacity:1}}
 
 .pdf-offline-pct{font-size:9px;font-weight:800;font-variant-numeric:tabular-nums}
+
+/* ===== Home cards: choreographed icon animation ===== */
+@keyframes aiNl1{0%,3%{stroke-dashoffset:1;opacity:1}22%{stroke-dashoffset:0}90%{stroke-dashoffset:0;opacity:1}96%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes aiNl2{0%,28%{stroke-dashoffset:1;opacity:1}47%{stroke-dashoffset:0}90%{stroke-dashoffset:0;opacity:1}96%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes aiNl3{0%,53%{stroke-dashoffset:1;opacity:1}66%{stroke-dashoffset:0}90%{stroke-dashoffset:0;opacity:1}96%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes aiPen{
+  0%{transform:translate(36px,50px);opacity:0;animation-timing-function:ease}
+  3%{transform:translate(36px,50px);opacity:1;animation-timing-function:linear}
+  22%{transform:translate(78px,50px);animation-timing-function:ease-in-out}
+  28%{transform:translate(36px,64px);animation-timing-function:linear}
+  47%{transform:translate(78px,64px);animation-timing-function:ease-in-out}
+  53%{transform:translate(36px,78px);animation-timing-function:linear}
+  66%{transform:translate(62px,78px);animation-timing-function:ease-in-out}
+  90%{transform:translate(62px,78px);opacity:1}
+  95%,100%{transform:translate(62px,78px);opacity:0}
+}
+.art .ai-nl1,.art .ai-nl2,.art .ai-nl3,.art .ai-pl1,.art .ai-pl2,.art .ai-pl3,.art .ai-check{stroke-dasharray:1 1;stroke-dashoffset:0}
+.art .ai-nl1{animation:aiNl1 5.2s linear infinite}
+.art .ai-nl2{animation:aiNl2 5.2s linear infinite}
+.art .ai-nl3{animation:aiNl3 5.2s linear infinite}
+.art .ai-pen{transform-box:view-box;transform-origin:0 0;animation:aiPen 5.2s linear infinite}
+
+@keyframes aiPl1{0%{stroke-dashoffset:1;opacity:1}10%{stroke-dashoffset:0}88%{stroke-dashoffset:0;opacity:1}95%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes aiPl2{0%,6%{stroke-dashoffset:1;opacity:1}16%{stroke-dashoffset:0}88%{stroke-dashoffset:0;opacity:1}95%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes aiPl3{0%,12%{stroke-dashoffset:1;opacity:1}22%{stroke-dashoffset:0}88%{stroke-dashoffset:0;opacity:1}95%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes aiBadge{0%,26%{transform:scale(0);opacity:0}38%{transform:scale(1.22);opacity:1}46%{transform:scale(.94)}52%{transform:scale(1)}88%{transform:scale(1);opacity:1}95%,100%{transform:scale(.7);opacity:0}}
+@keyframes aiCheck{0%,38%{stroke-dashoffset:1}52%{stroke-dashoffset:0}100%{stroke-dashoffset:0}}
+@keyframes aiRing{0%,38%{transform:scale(1);opacity:0}40%{transform:scale(1);opacity:.8}62%,100%{transform:scale(2.3);opacity:0}}
+@keyframes aiFan{0%,22%{transform:translate(0,0) rotate(0)}42%,80%{transform:translate(3px,-2px) rotate(4deg)}100%{transform:translate(0,0) rotate(0)}}
+.art .ai-pl1{animation:aiPl1 5.2s ease-out infinite}
+.art .ai-pl2{animation:aiPl2 5.2s ease-out infinite}
+.art .ai-pl3{animation:aiPl3 5.2s ease-out infinite}
+.art .ai-badge{animation:aiBadge 5.2s ease-in-out infinite}
+.art .ai-check{animation:aiCheck 5.2s ease-out infinite}
+.art .ai-ring{animation:aiRing 5.2s ease-out infinite}
+.art .ai-fan{animation:aiFan 5.2s ease-in-out infinite}
+
+/* The icon tile itself: pops in, then floats; a soft glow breathes behind it. */
+@keyframes hmIconIn{from{opacity:0;transform:translateY(12px) scale(.78) rotate(-6deg)}to{opacity:1;transform:none}}
+@keyframes hmIconFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+@keyframes hmIconGlow{0%,100%{opacity:.35;transform:scale(.92)}50%{opacity:.8;transform:scale(1.08)}}
+.hm-jump-icon{position:relative;animation:hmIconIn .7s cubic-bezier(.34,1.56,.64,1) both,hmIconFloat 4.6s ease-in-out .7s infinite}
+.hm-jump-card:nth-child(2) .hm-jump-icon{animation-delay:.12s,.9s}
+.hm-jump-icon::before{content:"";position:absolute;inset:-14%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.7),transparent);animation:hmIconGlow 4.6s ease-in-out infinite;pointer-events:none}
+.hm-jump-icon>svg{position:relative;z-index:1;transition:transform .45s cubic-bezier(.34,1.56,.64,1)}
+.hm-jump-card:hover .hm-jump-icon>svg{transform:scale(1.1) rotate(-3deg)}
+.hm-jump-card:active .hm-jump-icon>svg{transform:scale(.95)}
+@media(prefers-reduced-motion:reduce){
+  .hm-jump-icon,.hm-jump-icon::before,.art .ai-nl1,.art .ai-nl2,.art .ai-nl3,.art .ai-pen,.art .ai-pl1,.art .ai-pl2,.art .ai-pl3,.art .ai-badge,.art .ai-check,.art .ai-ring,.art .ai-fan{animation:none!important}
+}
+
+/* Hamburger menu: the page behind the drawer is hidden by a heavy gaussian blur (no dark box), and tapping it shows no focus rectangle. */
+.menu-scrim,
+.menu-scrim:hover,
+.menu-scrim:focus,
+.menu-scrim:focus-visible,
+.menu-scrim:active{
+  outline:none!important;
+  box-shadow:none!important;
+  -webkit-tap-highlight-color:transparent;
+  cursor:default;
+}
+.menu-scrim{
+  background:color-mix(in srgb,var(--surface) 38%,transparent)!important;
+  -webkit-backdrop-filter:blur(26px) saturate(1.1);
+  backdrop-filter:blur(26px) saturate(1.1);
+}
+:root.dark .menu-scrim{background:color-mix(in srgb,var(--surface) 42%,transparent)!important}

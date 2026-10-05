@@ -90,7 +90,7 @@ export default function Navbar() {
     </header>
 
     <div className={`menu-layer ${drawerOpen ? 'open' : ''}`}>
-      <button className="menu-scrim" onClick={() => setDrawerOpen(false)} aria-label="Close menu" />
+      <button className="menu-scrim" tabIndex={-1} onClick={() => setDrawerOpen(false)} aria-label="Close menu" />
       <aside className="menu-drawer">
         <div className="menu-top">
           <div className="brand-lockup"><span className="brand-logo"><span className="archivum-css-logo" /></span><span><strong>ARCHIVUM</strong><small>A Sister Organization Of <span className="quest-word">QUEST</span></small></span></div>

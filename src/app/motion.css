@@ -118,14 +118,6 @@ button:not(:disabled):active,.header-action:active,.profile-reset:active{transfo
 .menu-links a{transition:transform .25s var(--ax-spring),background .2s ease}
 .menu-links a:active{transform:translateX(4px) scale(.985)}
 
-/* Tap ripple (drawn above the app, never changes layout) */
-.ax-ripple{
-  position:fixed;z-index:2147483600;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;pointer-events:none;
-  background:color-mix(in srgb,var(--accent) 30%,transparent);
-  animation:axRipple .55s var(--ax-ease) forwards;
-}
-@keyframes axRipple{from{transform:scale(.4);opacity:.9}to{transform:scale(7);opacity:0}}
-
 /* Touch sounds switch in the menu */
 .sound-toggle{
   display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:14px;padding:13px 16px;
@@ -137,5 +129,5 @@ button:not(:disabled):active,.header-action:active,.profile-reset:active{transfo
 .sound-toggle[aria-checked="true"] i::after{transform:translateX(18px)}
 
 @media(prefers-reduced-motion:reduce){
-  .mobile-nav-inner[data-moving] .mobile-nav-pill i,.mobile-nav-link.active svg,.ax-ripple{animation:none!important}
+  .mobile-nav-inner[data-moving] .mobile-nav-pill i,.mobile-nav-link.active svg{animation:none!important}
 }

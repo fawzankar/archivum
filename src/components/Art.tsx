@@ -146,20 +146,32 @@ const art: Record<string, React.ReactNode> = {
     <rect x="22" y="12" width="70" height="96" rx="8" fill={W} stroke={N} strokeWidth="4"/>
     <path d="M22 30h70" stroke={N} strokeWidth="4"/>
     <circle cx="38" cy="21" r="3" fill={N}/><circle cx="57" cy="21" r="3" fill={N}/><circle cx="76" cy="21" r="3" fill={N}/>
-    <path className="ai-line" style={v({ animationDelay: '0s' })} d="M36 50h42" stroke={P} strokeWidth="5" strokeLinecap="round"/>
-    <path className="ai-line" style={v({ animationDelay: '.35s' })} d="M36 64h42" stroke={P} strokeWidth="5" strokeLinecap="round"/>
-    <path className="ai-line" style={v({ animationDelay: '.7s' })} d="M36 78h26" stroke={P} strokeWidth="5" strokeLinecap="round"/>
-    <path className="ai-write" d="M92 74l12-40 10 4-12 40-12 8Z" fill={K} stroke={N} strokeWidth="3.5" strokeLinejoin="round"/>
+    <path className="ai-nl1" pathLength={1} d="M36 50h42" fill="none" stroke={P} strokeWidth="5" strokeLinecap="round"/>
+    <path className="ai-nl2" pathLength={1} d="M36 64h42" fill="none" stroke={P} strokeWidth="5" strokeLinecap="round"/>
+    <path className="ai-nl3" pathLength={1} d="M36 78h26" fill="none" stroke={P} strokeWidth="5" strokeLinecap="round"/>
+    <g transform="translate(88 40)"><path className="ai-twinkle" style={v({ animationDelay: '.4s' })} d={SPARK} fill={Y} stroke={N} strokeWidth="1.5"/></g>
+    <g className="ai-pen" transform="translate(62 78)">
+      <g transform="rotate(40)">
+        <path d="M0 0-4.5-10h9Z" fill="#f4d3ae" stroke={N} strokeWidth="3" strokeLinejoin="round"/>
+        <path d="M0 0-1.8-4.2h3.6Z" fill={N}/>
+        <rect x="-4.5" y="-34" width="9" height="24" fill={Y} stroke={N} strokeWidth="3" strokeLinejoin="round"/>
+        <rect x="-4.5" y="-43" width="9" height="9" rx="2.5" fill={K} stroke={N} strokeWidth="3"/>
+      </g>
+    </g>
   </>,
 
   papers: <>
-    <g transform="rotate(8 67 52)"><rect className="ai-sheet" x="34" y="8" width="66" height="88" rx="8" fill={Y} stroke={N} strokeWidth="4"/></g>
+    <g transform="rotate(8 67 52)"><rect className="ai-fan" x="34" y="8" width="66" height="88" rx="8" fill={Y} stroke={N} strokeWidth="4"/></g>
     <rect x="16" y="18" width="66" height="88" rx="8" fill={W} stroke={N} strokeWidth="4"/>
-    <path d="M30 42h38M30 56h38M30 70h24" stroke={N} strokeWidth="4" strokeLinecap="round"/>
-    <g className="ai-pop">
+    <path className="ai-pl1" pathLength={1} d="M30 42h38" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+    <path className="ai-pl2" pathLength={1} d="M30 56h38" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+    <path className="ai-pl3" pathLength={1} d="M30 70h24" stroke={N} strokeWidth="4" strokeLinecap="round"/>
+    <circle className="ai-ring" cx="66" cy="88" r="12" fill="none" stroke={G} strokeWidth="3"/>
+    <g className="ai-badge">
       <circle cx="66" cy="88" r="12" fill={G} stroke={N} strokeWidth="3.5"/>
-      <path d="M60 88l4 4 8-8" stroke={W} strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      <path className="ai-check" pathLength={1} d="M60 88l4 4 8-8" stroke={W} strokeWidth="4" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
     </g>
+    <g transform="translate(96 24)"><path className="ai-twinkle" style={v({ animationDelay: '1.2s' })} d={SPARK} fill={P} stroke={N} strokeWidth="1.5"/></g>
   </>,
 
   default: <>
@@ -254,7 +266,7 @@ const art: Record<string, React.ReactNode> = {
 const FIT: Record<string, [number, number, number]> = {
   Maths: [60, 58, 0.97], Science: [60, 56.3, 1], SST: [60, 60.2, 1], English: [60, 60, 1],
   Hindi: [60, 60, 0.92], Urdu: [60, 60, 0.92], Biology: [60, 60, 0.97], Physics: [60.3, 60, 0.98],
-  Chemistry: [60, 57.8, 0.96], notes: [67.9, 60, 1], papers: [60.4, 55.4, 0.95], default: [60, 58, 1],
+  Chemistry: [60, 57.8, 0.96], notes: [64, 60, 1], papers: [60.4, 55.4, 0.95], default: [60, 58, 1],
   about: [60, 58, 1], contact: [62, 53, 1], people: [60, 56, 1], saved: [60, 60, 1], search: [64, 64, 0.95],
   tips: [59, 58, 0.92], subjects: [60, 60, 1], quest: [60, 60, 1.1], school: [60, 53, 1],
 };
