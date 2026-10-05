@@ -1,5 +1,6 @@
 'use client';
 
+import { isSoundOn, setSoundOn, playSound } from '@/lib/sound';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -21,6 +22,8 @@ export default function Navbar() {
   const { studentClass, displayName, resetStudentProfile } = useStudentClass();
   const [profileReady, setProfileReady] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [soundOn, setSoundState] = useState(true);
+  useEffect(() => { setSoundState(isSoundOn()); }, [drawerOpen]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -103,6 +106,8 @@ export default function Navbar() {
             <div className="menu-section-label">Theme Palette</div>
             <div className="accent-grid">{ACCENTS.map(item => <button key={item.id} type="button" title={item.label} aria-label={`Use ${item.label} colour`} onClick={() => setAccent(item.id as Accent)} className={`accent-swatch ${visibleAccent === item.id ? 'active' : ''}`}><span style={{ backgroundColor: item.color }} /><small>{item.label}</small></button>)}</div>
           </div>
+
+          <button type="button" className="sound-toggle" role="switch" aria-checked={soundOn} onClick={() => { const next = !soundOn; setSoundOn(next); setSoundState(next); if (next) playSound('tap'); }}><span>Touch sounds</span><i aria-hidden="true" /></button>
 
           <button type="button" className="profile-reset" onClick={() => { resetStudentProfile(); setDrawerOpen(false); window.dispatchEvent(new Event('archivum:show-splash')); router.replace('/'); }}><RotateCcw /> Reset My Profile</button>
         </div>

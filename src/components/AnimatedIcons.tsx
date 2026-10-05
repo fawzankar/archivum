@@ -18,9 +18,8 @@ function Base({ children, size = 24, strokeWidth = 2, live, className, ...rest }
 
 export const AHome = (p: IconProps) => (
   <Base {...p}>
-    <path className="aic-roof" d="M3 11.5 12 4l9 7.5" />
-    <path d="M5.5 10v9.5a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V10" />
-    <path className="aic-door" d="M10 20.5v-5h4v5" />
+    <path className="aic-roof" d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
   </Base>
 );
 

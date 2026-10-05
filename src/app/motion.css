@@ -103,3 +103,39 @@ html.profile-onboarding-active .mobile-nav{display:none!important}
 html{min-height:100%;background-color:var(--ivory)}
 body{min-height:100vh;min-height:100dvh}
 body::before{content:"";position:fixed;inset:0;z-index:-1;background:var(--ivory);pointer-events:none}
+
+/* ---------- Smoother motion ---------- */
+@keyframes axPageIn{from{opacity:0;transform:translateY(14px) scale(.995)}}
+.mobile-nav-inner[data-moving] .mobile-nav-pill i{animation:axPillStretch .55s var(--ax-ease)}
+@keyframes axPillStretch{0%{transform:scale(1,1)}35%{transform:scale(1.5,.86)}70%{transform:scale(.94,1.06)}100%{transform:scale(1,1)}}
+.mobile-nav-link.active svg{animation:axTabBounce .5s var(--ax-spring)}
+@keyframes axTabBounce{0%{transform:translateY(3px) scale(.85)}60%{transform:translateY(-3px) scale(1.2)}100%{transform:translateY(-1px) scale(1.12)}}
+/* Everything tappable gives a little under the finger */
+button,.resource-card,.hm-jump-card,.subject-tile,.notes-subject-card,.accent-swatch{-webkit-tap-highlight-color:transparent}
+.resource-card:active,.hm-jump-card:active,.subject-tile:active,.notes-subject-card:active{transform:scale(.975);transition:transform .12s ease-out}
+button:not(:disabled):active,.header-action:active,.profile-reset:active{transform:scale(.95);transition:transform .12s ease-out}
+.menu-drawer{transition-timing-function:var(--ax-ease)}
+.menu-links a{transition:transform .25s var(--ax-spring),background .2s ease}
+.menu-links a:active{transform:translateX(4px) scale(.985)}
+
+/* Tap ripple (drawn above the app, never changes layout) */
+.ax-ripple{
+  position:fixed;z-index:2147483600;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;pointer-events:none;
+  background:color-mix(in srgb,var(--accent) 30%,transparent);
+  animation:axRipple .55s var(--ax-ease) forwards;
+}
+@keyframes axRipple{from{transform:scale(.4);opacity:.9}to{transform:scale(7);opacity:0}}
+
+/* Touch sounds switch in the menu */
+.sound-toggle{
+  display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:14px;padding:13px 16px;
+  border:1px solid var(--border);border-radius:14px;background:var(--surface-raised);color:var(--ink);font-size:14px;font-weight:700;
+}
+.sound-toggle i{position:relative;width:42px;height:24px;border-radius:12px;background:var(--border);transition:background .25s ease}
+.sound-toggle i::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--surface);box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .35s var(--ax-spring)}
+.sound-toggle[aria-checked="true"] i{background:var(--accent)}
+.sound-toggle[aria-checked="true"] i::after{transform:translateX(18px)}
+
+@media(prefers-reduced-motion:reduce){
+  .mobile-nav-inner[data-moving] .mobile-nav-pill i,.mobile-nav-link.active svg,.ax-ripple{animation:none!important}
+}

@@ -20,6 +20,7 @@ import SplashScreen from '@/components/SplashScreen';
 import ConnectionStatus from '@/components/ConnectionStatus';
 import PrefetchRoutes from '@/components/PrefetchRoutes';
 import AppInteractionGuard from '@/components/AppInteractionGuard';
+import TouchFeedback from '@/components/TouchFeedback';
 import { BOOT_CSS, BOOT_SCRIPT } from '@/lib/bootSplash';
 import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, SITE_TAGLINE, KEYWORDS, AUTHOR, SISTER_SITE, INSTAGRAM, OG_IMAGE, absoluteUrl, jsonLd } from '@/lib/site';
 
@@ -93,6 +94,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <SplashScreen />
           <ConnectionStatus />
           <AppInteractionGuard />
+          <TouchFeedback />
           <PwaRegister /><NavigationProgress /><ClassTransitionOverlay /><FirstLaunch /><PrefetchRoutes />
           <Suspense fallback={null}><Navbar /></Suspense>
           <main className="flex-1">{children}</main>

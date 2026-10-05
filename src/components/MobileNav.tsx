@@ -18,14 +18,22 @@ export default function MobileNav() {
   const current = NAVS.findIndex(([, base]) => isActive(base, pathname));
   // On pages that aren't a tab (search, contact...) the pill stays where it was and fades out.
   const [shown, setShown] = useState(Math.max(current, 0));
-  useEffect(() => { if (current > -1) setShown(current); }, [current]);
+  const [moving, setMoving] = useState(false);
+  useEffect(() => {
+    if (current < 0 || current === shown) return;
+    setShown(current);
+    setMoving(true);
+    const t = window.setTimeout(() => setMoving(false), 560);
+    return () => window.clearTimeout(t);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [current]);
 
   const visibleStudentClass = profileReady ? studentClass : null;
   const href = (base: string) => (visibleStudentClass ? `${base}?class=${visibleStudentClass}` : base);
 
   return (
     <nav className="mobile-nav" aria-label="Mobile navigation">
-      <div className="mobile-nav-inner" style={{ ['--i' as string]: shown }}>
+      <div className="mobile-nav-inner" data-moving={moving || undefined} style={{ ['--i' as string]: shown }}>
         <span className={'mobile-nav-pill' + (current < 0 ? ' is-hidden' : '')} aria-hidden="true"><i /></span>
         {NAVS.map(([label, base, Icon]) => {
           const active = isActive(base, pathname);
