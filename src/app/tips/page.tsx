@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGE } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Exam Tips & Tricks from the SJS Community',
+  title: 'Tips',
   description: 'Study tips, exam strategies and shortcuts shared by students for Classes 9 to 12. Learn how to revise smarter before boards and annual exams.',
   keywords: ['exam tips', 'study tips for students', 'board exam preparation', 'revision tricks', 'how to score well in exams'],
   alternates: { canonical: '/tips' },

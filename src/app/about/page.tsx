@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGE } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'About ARCHIVUM: A Student-Built Academic Archive',
+  title: 'About',
   description: 'ARCHIVUM was built by Fawzan Kar to keep notes, previous papers and MCQs in one organised place for SJS students. Managed by the Quest Club.',
   keywords: ['about ARCHIVUM', 'Fawzan Kar', 'Quest Club', 'SJS students', 'student built archive'],
   alternates: { canonical: '/about' },

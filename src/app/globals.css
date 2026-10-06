@@ -2999,3 +2999,22 @@ svg.aic:hover .aic-nxy{animation:aic-nxy .55s ease-in-out both}
   backdrop-filter:blur(26px) saturate(1.1);
 }
 :root.dark .menu-scrim{background:color-mix(in srgb,var(--surface) 42%,transparent)!important}
+
+/* Blur backdrop: no press-scale "pop" (the global button:active shrink); a calm, premium fade/slide instead. */
+.menu-scrim:active,
+.menu-scrim:not(:disabled):active{
+  transform:none!important;
+  scale:1!important;
+  transition:opacity .45s cubic-bezier(.22,1,.36,1)!important;
+}
+.menu-scrim{
+  transition:opacity .45s cubic-bezier(.22,1,.36,1),backdrop-filter .45s cubic-bezier(.22,1,.36,1),-webkit-backdrop-filter .45s cubic-bezier(.22,1,.36,1)!important;
+}
+.menu-layer:not(.open) .menu-scrim{
+  -webkit-backdrop-filter:blur(0);
+  backdrop-filter:blur(0);
+}
+.menu-drawer{
+  transition:transform .5s cubic-bezier(.22,1,.36,1)!important;
+}
+img,a{-webkit-user-drag:none}

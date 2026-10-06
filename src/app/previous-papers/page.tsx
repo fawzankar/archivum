@@ -6,7 +6,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGE } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Previous Year Question Papers: JKBOSE & School Papers',
+  title: 'Previous Papers',
   description: 'Previous year question papers, JKBOSE board papers, pre-boards and annual exam papers for Classes 9 to 12. Filter by class, subject, year and school.',
   keywords: ['previous year question papers', 'JKBOSE previous papers', 'JKBOSE class 10 question paper', 'JKBOSE class 12 question paper', 'pre-board papers', 'annual exam papers', 'board exam papers PDF'],
   alternates: { canonical: '/previous-papers' },

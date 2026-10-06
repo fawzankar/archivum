@@ -41,6 +41,17 @@ export default function AppInteractionGuard() {
       if (event.ctrlKey || event.metaKey) blockNativeBrowserZoom(event);
     };
 
+    const isEditable = (t: EventTarget | null) =>
+      t instanceof Element && Boolean(t.closest('input, textarea, [contenteditable="true"]'));
+    const blockContextMenu = (event: Event) => {
+      if (!isEditable(event.target) && event.cancelable) event.preventDefault();
+    };
+    const blockDrag = (event: Event) => {
+      if (event.target instanceof Element && event.target.closest('img, a') && event.cancelable) event.preventDefault();
+    };
+    document.addEventListener('contextmenu', blockContextMenu);
+    document.addEventListener('dragstart', blockDrag);
+
     document.addEventListener('touchmove', blockTouchPinchOutsideReader, { passive: false, capture: true });
     document.addEventListener('gesturestart', blockGestureOutsideReader, { passive: false });
     document.addEventListener('gesturechange', blockGestureOutsideReader, { passive: false });
@@ -49,6 +60,8 @@ export default function AppInteractionGuard() {
     document.addEventListener('keydown', blockBrowserZoomKeys);
 
     return () => {
+      document.removeEventListener('contextmenu', blockContextMenu);
+      document.removeEventListener('dragstart', blockDrag);
       document.removeEventListener('touchmove', blockTouchPinchOutsideReader, true);
       document.removeEventListener('gesturestart', blockGestureOutsideReader);
       document.removeEventListener('gesturechange', blockGestureOutsideReader);

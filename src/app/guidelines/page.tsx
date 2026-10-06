@@ -1,7 +1,7 @@
 import React from 'react';
 
 export const metadata = {
-  title: 'Content Guidelines',
+  title: 'Guidelines',
   description: 'Submission guidelines for academic materials on ARCHIVUM.',
 };
 

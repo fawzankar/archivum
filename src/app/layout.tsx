@@ -27,7 +27,7 @@ import { SITE_URL, SITE_NAME, SITE_TITLE, SITE_DESCRIPTION, SITE_TAGLINE, KEYWOR
 export const viewport: Viewport = { themeColor: '#e4ecff', width: 'device-width', initialScale: 1, maximumScale: 1, userScalable: false, viewportFit: 'cover' };
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: { default: SITE_TITLE, template: `%s | ${SITE_NAME}` },
+  title: { default: `Home | ${SITE_NAME}`, template: `%s | ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
   keywords: KEYWORDS,

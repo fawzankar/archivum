@@ -19,11 +19,11 @@ const kindOf = (resource: Resource) => (resource.resource_type === 'Previous Yea
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   const resource = await loadResource(id);
-  if (!resource) return { title: 'Resource Not Found', robots: { index: false, follow: false } };
+  if (!resource) return { title: 'Not Found', robots: { index: false, follow: false } };
 
   const kind = kindOf(resource);
   const board = resource.board || 'JKBOSE';
-  const title = `${resource.title}: Class ${resource.class_level} ${resource.subject} ${kind}${resource.year ? ` ${resource.year}` : ''}`;
+  const title = `${resource.subject} ${kind}`;
   const description = (resource.description && resource.description.trim().length > 20
     ? resource.description.trim()
     : `Free Class ${resource.class_level} ${resource.subject} ${kind.toLowerCase()}${resource.chapter ? ` on ${resource.chapter}` : ''} (${board}). Read online or download the PDF from ARCHIVUM.`

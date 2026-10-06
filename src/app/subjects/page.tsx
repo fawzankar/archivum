@@ -10,7 +10,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGE } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Subjects: Notes & Papers by Class',
+  title: 'Subjects',
   description: 'Browse notes and previous papers by subject for Classes 9 to 12: Maths, Science, SST, English, Hindi, Urdu, Physics, Chemistry and Biology.',
   alternates: { canonical: '/subjects' },
   openGraph: { title: 'Subjects | ARCHIVUM', description: 'Pick a subject to find notes and papers for your class.', url: '/subjects', type: 'website', images: [OG_IMAGE] },

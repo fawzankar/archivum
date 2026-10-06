@@ -6,7 +6,7 @@ import SearchClient from './SearchClient';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Search Notes & Papers',
+  title: 'Search',
   description: 'Search every note and previous paper on ARCHIVUM by title, subject, class or year.',
   robots: { index: false, follow: true },
 };

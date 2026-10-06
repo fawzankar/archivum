@@ -7,7 +7,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGE } from '@/lib/site';
 
 export const metadata: Metadata = {
-  title: 'Contributors: Students Who Share Notes & Papers',
+  title: 'Contributors',
   description: 'Meet the students who upload notes and previous papers to ARCHIVUM, and see how you can contribute study material for your batch.',
   keywords: ['contributors', 'share notes', 'upload study material', 'student community', 'ARCHIVUM contributors'],
   alternates: { canonical: '/contributors' },
